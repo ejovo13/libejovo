@@ -19,7 +19,7 @@ int main() {
     char n_str[num_digits + 1];
     // n_str[num_digits] = '\0';
 
-    sprintf(n_str, "%d\0", n);
+    sprintf(n_str, "%d", n);
 
     int ones_count = 0;
 
