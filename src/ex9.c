@@ -1,6 +1,6 @@
 // Fractions Egyptiennes
 
-#include <stdio.h>
+#include "hw_printer.h"
 #include <stdlib.h>
 
 #define MAX_ITER 10000
@@ -103,6 +103,8 @@ struct EgyptianFraction egyptian_fraction_decomp(int n, int d) {
 int main() {
 
     // get the numerator and denominator
+
+    ex(9, "Entrer une fraction p/q et donner sa decomposition egyptienne");
 
     printf("Please input the numerator and denominator of a positive fraction to decompose\n");
     printf("You must follow this format: num/den\n\n");

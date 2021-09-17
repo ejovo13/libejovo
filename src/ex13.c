@@ -1,6 +1,6 @@
 // Nombres Premiers
 
-#include <stdio.h>
+#include "hw_printer.h"
 // #include <stdlib.h>
 #include <math.h>
 #include <stdbool.h>
@@ -33,6 +33,8 @@ bool is_prime(int p) {
 }
 
 int main() {
+
+    ex(13, "Afficher les nombres premiers entre 2 et MAX");
 
     int m = 0;
 

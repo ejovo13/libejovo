@@ -1,6 +1,8 @@
-#include <stdio.h>
+#include "hw_printer.h"
 
 int main() {
+
+    ex(5, "Evalue le somme de deux entiers donnes par l'utilisateur");
 
     printf("Please enter two integers\n");
 

@@ -1,4 +1,4 @@
-#include <stdio.h>
+#include "hw_printer.h"
 #include <stdbool.h>
 
 int PGCD(int a, int b) {
@@ -7,14 +7,15 @@ int PGCD(int a, int b) {
     int r = 0;
 
     do {
+        // take the remainder of [bigger number] divided by [smaller number]
         if (a > b) {
             a = a % b;
-            r = a;
+            // r = a;
         } else {
             b = b % a;
-            r = b;
+            // r = b;
         }
-    } while(r != 0);
+    } while(a != 0 && b != 0);
 
     if (a > b) {
         return a;
@@ -26,6 +27,8 @@ int PGCD(int a, int b) {
 int main() {
 
     // Lit deux entiers, verifie qu'ils sont bien strictement positifs et affiche leur PGCD
+
+    ex(6, "Calculer le PGCD de deux entiers");
 
     printf("Please enter two integers (a, b) to compute the GCD(a, b)\n\n");
 
@@ -40,7 +43,6 @@ int main() {
     }
 
     printf("PGCD(%d, %d) = %d\n", a, b, PGCD(a, b));
-
 
     return 0;
 }

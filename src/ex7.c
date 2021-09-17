@@ -3,13 +3,15 @@
 // Ecrire un program qui demande a l'utilisateur de saisir un entier strictement positif, puis affiche
 // cet entier dans le sens inverse. Par example, si l'utilisateur saisit 5628, le programme affiche 8265.
 
-#include <stdio.h>
+#include "hw_printer.h"
 #include <math.h>
 #include <stdlib.h>
 
 int main() {
 
     // get input
+
+    ex(7, "Saisir un entier et afficher son inverse");
 
     printf("Please enter a strictly positive integer\n\n");
 

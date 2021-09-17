@@ -1,6 +1,7 @@
-#include <stdio.h>
+#include "hw_printer.h"
 #include <stdlib.h>
 #include <math.h>
+#include <time.h>
 
 int get_rand_int(int max) {
 // get random integer between 1 and max
@@ -15,6 +16,10 @@ void demo_rand() {
 }
 
 int main() {
+
+    ex(11, "Jeu de 'guess'");
+
+    srand( time(NULL) );
 
     int rn = get_rand_int(100);
 

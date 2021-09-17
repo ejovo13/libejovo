@@ -1,25 +1,27 @@
-#include <stdio.h>
+#include "hw_printer.h"
 #include <stdlib.h>
 #include <math.h>
 
 int main() {
 
-    int n = 0;
+    long int n = 0;
+
+    ex(12, "Afficher le nombre de chiffres 1 dans un entier");
 
     printf("Please enter an integer\n\n");
 
-    scanf("%d", &n);
+    scanf("%ld", &n);
 
 
-    int num_digits = (int) log10(n) + 1;
+    long int num_digits = (int) log10(n) + 1;
 
-    printf("Value entered: %d\n", n);
-    printf("Number of digits: %d\n", num_digits);
+    printf("Value entered: %ld\n", n);
+    printf("Number of digits: %ld\n", num_digits);
 
     char n_str[num_digits + 1];
     // n_str[num_digits] = '\0';
 
-    sprintf(n_str, "%d", n);
+    sprintf(n_str, "%ld", n);
 
     int ones_count = 0;
 

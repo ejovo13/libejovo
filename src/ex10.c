@@ -1,8 +1,8 @@
 // Suite de Fibonacci
 
-#include <stdio.h>
+#include "hw_printer.h"
 
-int compute_fib(int n) {
+long int compute_fib(long int n) {
 
     if (n == 0 || n == 1) {
         return 1;
@@ -23,13 +23,20 @@ void fib_demo() {
 
 int main() {
 
-    int n = 0;
+    ex(10, "Computer le nieme nombre de Fibonacci");
+
+    long int n = 0;
 
     printf("Please enter the nth Fibonacci value that you would like to compute\n");
 
-    scanf("%d", &n);
+    scanf("%ld", &n);
 
-    printf("fib(%d) = %d\n", n, compute_fib(n));
+    if (n > 40) {
+        printf("Please enter a smaller number\n");
+        return 2;
+    }
+
+    printf("fib(%ld) = %ld\n", n, compute_fib(n));
 
     return 0;
 }

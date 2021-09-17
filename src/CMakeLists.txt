@@ -14,6 +14,7 @@ list(APPEND SRC
     ex12
     ex13
     ex14
+    ex15
 )
 
 list(APPEND LIB
@@ -22,7 +23,7 @@ list(APPEND LIB
 )
 
 foreach(FILE ${SRC})
-    message(STATUS "File = ${FILE}")
+    message(STATUS "Adding ${FILE}")
     add_executable(${FILE} "${FILE}.c")
 endforeach(FILE)
 
@@ -33,3 +34,4 @@ target_link_libraries(ex7 m)
 target_link_libraries(ex11 m)
 target_link_libraries(ex12 m)
 target_link_libraries(ex13 m)
+target_link_libraries(ex15 m)

@@ -1,11 +1,11 @@
-#include <stdio.h>
+#include "hw_printer.h"
 
 // Suite recurrente d'ordre 2
 
 #define A 5
 #define B 10
 
-int suite_n(int n) {
+long int suite_n(long int n) {
 // Return the nth element of the sequence definded by U_n = a*U_{n-1} + b*U_{n-2}
 
     if (n == 0) {
@@ -15,20 +15,19 @@ int suite_n(int n) {
     } else {
         return A * suite_n(n - 1) + B * suite_n(n - 2);
     }
-
-
-
 }
 
 int main() {
 
-    printf("Please enter a positive integer n\n\n");
+    ex(14, "Suite recurrente d'order 2: U_n = a*U_{n-1} + b*U_{n-2}");
 
-    int n = 0;
+    printf("Please enter a positive integer <= 23\n\n\n");
 
-    scanf("%d", &n);
+    long int n = 0;
 
-    printf("The %dth value in the series is: %d\n", n, suite_n(n));
+    scanf("%ld", &n);
+
+    printf("The %ldth value in the series is: %ld\n", n, suite_n(n));
 
 
     return 0;
