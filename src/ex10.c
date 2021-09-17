@@ -15,7 +15,7 @@ void fib_demo() {
 
     for (int fib = 0; fib < 10; fib ++) {
 
-        printf("fib(%d) = %d\n", fib, compute_fib(fib));
+        printf("fib(%ld) = %ld\n", fib, compute_fib(fib));
 
     }
 
