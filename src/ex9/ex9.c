@@ -18,13 +18,6 @@ int main() {
     // create board
     uint8_t board[10][10] = {0};
 
-
-
-
-
-
-
-
     DockingStation enemy_station = make_new_game(board);
 
 
@@ -34,8 +27,9 @@ int main() {
     place_submarine(0, 2, 'E', board);
     place_destroyer(7, 8, 'E', board);
 
+    play_game(&enemy_station);
 
-    print_full_board(board);
+    // print_full_board(board);
 
 
     // printf("Selected board[%d][%d]\n", i, j);

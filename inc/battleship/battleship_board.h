@@ -226,6 +226,8 @@ void print_full_board(uint8_t * board) {
         printf("\n");
     }
 
+    printf("\n");
+
 }
 
 #endif

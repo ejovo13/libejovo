@@ -94,7 +94,7 @@ uint32_t get_col_index() {
     return d - 1;
 }
 
-void player_turn(DockingStation ds) {
+void player_turn(DockingStation * ds) {
 // Prompt the user for a location in the form of 'A8' and process that information
 
     uint8_t i = 0;
@@ -106,7 +106,7 @@ void player_turn(DockingStation ds) {
         // get guess
         i = get_row_index();
         j = get_col_index();
-        value = ds.board[i*10 + j];
+        value = ds->board[i*10 + j];
 
         if ( is_attempted(value) ) {
             printf("You already tried this location, try again\n");
@@ -114,44 +114,44 @@ void player_turn(DockingStation ds) {
         } else if ( is_occupied(value) ) { // We got a hit!!!
 
             printf("Hit. ");
-            ds.board[i*10 + j] += (HIT + ATTEMPTED);
+            ds->board[i*10 + j] += (HIT + ATTEMPTED);
 
             if ( is_carrier(value) ) {
-                ds.carrier_lives_left --;
+                ds->carrier_lives_left --;
 
-                if ( ds.carrier_lives_left == 0 ) {
+                if ( ds->carrier_lives_left == 0 ) {
                     printf("You've sunk my carrier!!!\n");
                 } else {
                     printf("Carrier\n");
                 }
             } else if ( is_battleship(value) ) {
-                ds.battleship_lives_left --;
+                ds->battleship_lives_left --;
 
-                if ( ds.battleship_lives_left == 0 ) {
+                if ( ds->battleship_lives_left == 0 ) {
                     printf("You've sunk my battleship!!!\n");
                 } else {
                     printf("Battleship\n");
                 }
             } else if ( is_cruiser(value) ) {
-                ds.cruiser_lives_left --;
+                ds->cruiser_lives_left --;
 
-                if ( ds.cruiser_lives_left == 0 ) {
+                if ( ds->cruiser_lives_left == 0 ) {
                     printf("You've sunk my cruiser!!!\n");
                 } else {
                     printf("Cruiser\n");
                 }
             } else if ( is_submarine(value) ) {
-                ds.submarine_lives_left --;
+                ds->submarine_lives_left --;
 
-                if ( ds.submarine_lives_left == 0 ) {
+                if ( ds->submarine_lives_left == 0 ) {
                     printf("You've sunk my submarine!!!\n");
                 } else {
                     printf("Submarine\n");
                 }
             } else if ( is_destroyer(value) ) {
-                ds.destroyer_lives_left --;
+                ds->destroyer_lives_left --;
 
-                if ( ds.destroyer_lives_left == 0 ) {
+                if ( ds->destroyer_lives_left == 0 ) {
                     printf("You've sunk my destroyer!!!\n");
                 } else {
                     printf("Destroyer\n");
@@ -160,12 +160,27 @@ void player_turn(DockingStation ds) {
 
         } else { // Then we missed!
 
-            ds.board[i*10 + j] += (MISS + ATTEMPTED);
+            printf("Miss!\n");
+            ds->board[i*10 + j] += (MISS + ATTEMPTED);
 
         }
 
         turn_over = true;
     }
+}
+
+void enemy_turn() {
+
+    printf("Waiting for enemy");
+
+    // for (int i = 0; i < 5; i ++) {
+    //     printf(".");
+    //     dsleep(0.5);
+    // }
+
+    printf("\n");
+
+
 }
 
 bool is_game_over(DockingStation ds) {
@@ -174,15 +189,24 @@ bool is_game_over(DockingStation ds) {
             ds.submarine_lives_left == 0 && ds.destroyer_lives_left == 0);
 }
 
-void step(DockingStation ds) {
+void step(DockingStation * ds) {
 
-    print_full_board(ds.board);
+    print_full_board(ds->board);
+    printf("Please make a selection: ");
     player_turn(ds);
-    //enemy_turn();
-
+    enemy_turn();
 
 }
 
+void play_game(DockingStation * ds) {
+
+    while ( !is_game_over(*ds) ) {
+
+        step(ds);
+
+    }
+
+}
 
 
 
