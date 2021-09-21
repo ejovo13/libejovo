@@ -1,17 +1,11 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-#include <math.h>
+#include "ejovo_print.h"
+#include "ejovo_rand.h"
 
 #define N 50
 
-int get_rand_int(int max) {
-// get random integer between 1 and max
-    double x = ((double) rand()) / RAND_MAX;
-    return (int) ceil(x * max);
-}
-
 int main() {
+
+    ex(3, "Garder que la premiere occurrence de chaque entier");
 
     srand( time( NULL ) );
 
@@ -31,6 +25,8 @@ int main() {
 
     }
 
+    printf("Filtering duplicate integers...\n\n");
+
     int index = -1;
     int ncount = 0;
 
@@ -49,24 +45,11 @@ int main() {
         ncount = 0;
     }
 
-    printf("Filtering duplicate integers...\n\n");
-
     printf("Original array:\n");
-    printf("{");
-    for(int i = 0; i < N; i ++) {
-
-        printf("%d, ", arr_og[i]);
-    }
-    printf("}\n\n");
+    print_int_array(arr_og, N);
 
     printf("Modified array:\n");
-    printf("{");
-    for(int i = 0; i < N; i ++) {
-
-        printf("%d, ", arr[i]);
-    }
-    printf("}\n");
-
+    print_int_array(arr, N);
 
     return 0;
 }

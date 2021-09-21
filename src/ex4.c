@@ -2,21 +2,17 @@
 // premier element est un entier aleatoire compris entre 1 et 10.
 // T[i] = T[i-1] + r, avec r un entier aleatoire compris entre 0 et P
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-#include <math.h>
+#include "ejovo_print.h"
+#include "ejovo_rand.h"
 
 #define N 50
 #define P 3
 
-int get_rand_int(int max) {
-// get random integer between 1 and max inclusive on both sides
-    double x = ((double) rand()) / RAND_MAX;
-    return (int) ceil(x * max);
-}
+
 
 int main() {
+
+    ex(4, "Generer un tableau d'entiers N dans l'ordre croissant");
 
     srand( time( NULL) );
 
@@ -31,12 +27,8 @@ int main() {
 
     }
 
-    printf("Generated array: \n {");
-    for (int i = 0; i < N-1; i ++) {
-        printf("%d, ", T[i]);
-    }
-
-    printf("%d}\n\n", T[N-1]);
+    printf("Generated array: \n");
+    print_int_array(T, N);
 
     return 0;
 }

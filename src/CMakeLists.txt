@@ -1,12 +1,13 @@
 list(APPEND SRC
+    test
     ex1
     ex2
     ex3
     ex4
     ex5
     # ex6
-    # ex7
-    # ex8
+    ex7
+    ex8
     # ex9
     # ex10
     # ex11
@@ -19,10 +20,7 @@ list(APPEND SRC
 foreach(FILE ${SRC})
     message(STATUS "Adding ${FILE}")
     add_executable(${FILE} "${FILE}.c")
+    target_link_libraries(${FILE} m)
 endforeach(FILE)
 
-target_link_libraries(ex1 m)
-target_link_libraries(ex2 m)
-target_link_libraries(ex3 m)
-target_link_libraries(ex4 m)
-target_link_libraries(ex5 m)
+add_subdirectory(ex9)

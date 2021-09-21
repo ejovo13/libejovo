@@ -1,19 +1,13 @@
 // Repeter Suppression des doublons avec le tableau genere en ex4.
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-#include <math.h>
+#include "ejovo_print.h"
+#include "ejovo_rand.h"
 
 #define N 50
 #define P 3
 
-int get_rand_int(int max) {
-// get random integer between 1 and max inclusive on both sides
-    double x = ((double) rand()) / RAND_MAX;
-    return (int) ceil(x * max);
-}
-
 int main() {
+
+    ex(5, "Refaire la suppressions de doublons avec le tableau du ex4");
 
     srand( time( NULL ) );
 
@@ -47,19 +41,13 @@ int main() {
         }
     }
 
-    printf("Original array: \n {");
-    for (int i = 0; i < N-1; i ++) {
-        printf("%d, ", T_og[i]);
-    }
+    printf("Original array: \n");
+    print_int_array(T_og, N);
 
-    printf("%d}\n\n", T[N-1]);
 
-    printf("Stripped array: \n {");
-    for (int i = 0; i < N-1; i ++) {
-        printf("%d, ", T[i]);
-    }
+    printf("Stripped array: \n");
+    print_int_array(T, N);
 
-    printf("%d}\n\n", T[N-1]);
 
     return 0;
 }
