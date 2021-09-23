@@ -21,7 +21,6 @@ int main() {
     DockingStation enemy_station = make_new_game(board);
 
     // TODO Create AI
-    // TODO Allow player to place their ships
     // TODO Add pretty introduction
     // TODO Add pretty end
     // TODO Add salvo game mode

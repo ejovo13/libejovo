@@ -207,6 +207,7 @@ bool validate_placement(int i, int j, char direction, uint8_t * board, int ship_
     // if any of the spots in that direction are occupied
     for(int n = 0; n < ship_length; n ++) {
 
+        // printf("Checking if %c%d is occupied\n", LETTERS[i], NUMBERS[j]);
         if( is_occupied(board[i*BOARD_SIZE + j]) ) {
             return false;
         }
@@ -257,6 +258,7 @@ void print_full_board(uint8_t * board) {
         printf("%c ", LETTERS[i]);
 
         for(int j = 0; j < BOARD_SIZE; j ++) {
+
 
             if ( is_hit(board[i*BOARD_SIZE + j] ) ) {
                 c = 'X';
