@@ -11,20 +11,22 @@
 #include "ejovo_rand.h"
 #include "battleship_cli.h"
 #include "battleship_board.h"
+#include "battleship_ai.h"
 
 
 int main() {
 
     // create board
-    uint8_t board[10][10] = {0};
 
-    DockingStation enemy_station = make_new_game(board);
+
+    DockingStation enemy_station = make_new_game(BOARD_SIZE);
+    DockingStation player_stations = make_new_game(BOARD_SIZE);
 
     // TODO Create AI
     // TODO Add pretty introduction
     // TODO Add pretty end
     // TODO Add salvo game mode
-    // TODO improve input validationd
+    // TODO improve input validationd - DIRECTIONS
 
 
     // place_carrier(5, 5, 'N', board);
@@ -35,9 +37,5 @@ int main() {
 
     play_game(&enemy_station);
 
-    // print_full_board(board);
-
-
-    // printf("Selected board[%d][%d]\n", i, j);
     return 0;
 }

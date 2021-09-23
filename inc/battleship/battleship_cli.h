@@ -4,7 +4,9 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <stdbool.h>
+#include <stdint.h>
 #include "battleship_board.h"
+#include <stdio_ext.h>
 
 // sleep for __s seconds
 void dsleep(double __s) {
@@ -182,8 +184,10 @@ int input_valid_directions(char * valid_directions, int num_valid_directions) {
 
     printf("Please choose a direction!!\n");
 
-    fflush(stdin);
-    int scanf_ret = scanf("\n%c", &input_char); // ASK ABOUT THIS
+    __fpurge(stdin);
+    int scanf_ret = scanf("%c", &input_char); // ASK ABOUT THIS
+
+    printf("La carecter entre: %c", input_char);
 
     // validate scanf ret
     for (int i = 0; i < num_valid_directions; i ++) {
@@ -198,7 +202,7 @@ int input_valid_directions(char * valid_directions, int num_valid_directions) {
     }
 }
 
-char * get_valid_directions(uint8_t * board, int irow, int jcol, int ship_length, int * num_valid_directions) {
+char * get_valid_directions(Board board, int irow, int jcol, int ship_length, int * num_valid_directions) {
 // implement this please
 // When given the size of a ship, and an index irow, jcol, and the address of a var to store the number
 // of valid directions, return a character pointer that contains the valid directions
