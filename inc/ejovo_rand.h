@@ -1,3 +1,6 @@
+#ifndef EJOVO_RAND
+#define EJOVO_RAND
+
 #include <stdlib.h>
 #include <math.h>
 #include <time.h>
@@ -19,3 +22,5 @@ void fill_rand_array(int * arr, int n, int max) {
 
 
 }
+
+#endif

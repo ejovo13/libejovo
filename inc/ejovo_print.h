@@ -1,3 +1,6 @@
+#ifndef EJOVO_PRINT
+#define EJOVO_PRINT
+
 // Provide a few functions to print the description of an exercise
 #include <stdio.h>
 
@@ -30,3 +33,5 @@ void print_int_array(int * __arr, int __n) {
     printf("%d}\n\n", __arr[__n-1]);
 
 }
+
+#endif
