@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 typedef uint8_t * Board;
 
@@ -48,7 +49,7 @@ DockingStation make_new_game(int size) {
 
     DockingStation d;
 
-    Board board = malloc( sizeof(uint8_t) * (size * size) );
+    Board board = (Board) malloc( sizeof(uint8_t) * (size * size) );
 
     // initialize board
     for (int i = 0; i < size; i ++) {

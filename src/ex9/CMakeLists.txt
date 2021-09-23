@@ -6,3 +6,4 @@ message("Trying to include directory ${CMAKE_SOURCE_DIR}/inc/battleship")
 
 target_include_directories(ex9 PUBLIC "${CMAKE_SOURCE_DIR}/inc/battleship")
 target_include_directories(ex9 PUBLIC "${CMAKE_SOURCE_DIR}/inc")
+target_compile_options(ex9 PUBLIC -Wall)

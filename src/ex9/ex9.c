@@ -26,7 +26,6 @@ int main() {
     // TODO Add pretty introduction
     // TODO Add pretty end
     // TODO Add salvo game mode
-    // TODO improve input validationd - DIRECTIONS
 
 
     // place_carrier(5, 5, 'N', board);
