@@ -28,6 +28,7 @@ int index_letters(char c) {
 }
 
 uint32_t get_row_index() {
+// Get row selection from the human player
 
     bool is_valid_input = false;
 
@@ -66,6 +67,7 @@ uint32_t get_row_index() {
 }
 
 uint32_t get_col_index() {
+// get column index from the human player
 
     bool is_valid_input = false;
 
@@ -97,8 +99,8 @@ uint32_t get_col_index() {
 void player_turn(DockingStation * ds) {
 // Prompt the user for a location in the form of 'A8' and process that information
 
-    uint8_t i = 0;
-    uint8_t j = 0;
+    uint32_t i = 0;
+    uint32_t j = 0;
     uint8_t value = 0;
     bool turn_over = false;
 
@@ -167,6 +169,27 @@ void player_turn(DockingStation * ds) {
 
         turn_over = true;
     }
+}
+
+char * get_valid_directions() {
+// implement this please
+}
+
+void get_player_placement(DockingStation * ds) {
+// Receive and validate player placement of all 5 ships
+
+    printf("Please select where you would like to place your ships!\n");
+
+    printf("Please select the starting coordinate to place your battleship: ");
+
+    uint32_t i = get_row_index();
+    uint32_t j = get_row_index();
+
+
+
+
+
+
 }
 
 void enemy_turn() {

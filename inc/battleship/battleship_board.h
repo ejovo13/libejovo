@@ -22,6 +22,7 @@ const int DESTROYER_LENGTH = 2;
 
 const char LETTERS[10] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'};
 const int NUMBERS[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+const char DIRECTIONS[4] = {'N', 'E', 'S', 'W'};
 
 typedef struct DockingStation { // Docking station contains information about the board, how many lives are left
 
@@ -180,6 +181,52 @@ void place_submarine(int i, int j, char direction, uint8_t * board) {
 
 void place_destroyer(int i, int j, char direction, uint8_t * board) {
     place_ship(i, j, direction, board, DESTROYER, DESTROYER_LENGTH);
+}
+
+bool validate_placement(int i, int j, char direction, uint8_t * board, uint8_t ship_type, int ship_length) {
+
+    int i_inc = 0;
+    int j_inc = 0;
+
+    set_direction(&i_inc, &j_inc, direction);
+
+    // if any of the indexes would go out of bounds
+    if (i + (ship_length * i_inc) > 9 || i + (ship_length * i_inc) < 0 || j + (ship_length * j_inc) > 9 || j + (ship_length * j_inc) < 0) {
+        return false;
+    }
+
+    // if any of the spots in that direction are occupied
+    for(int n = 0; n < ship_length; n ++) {
+
+        if( is_occupied(board[i*10 + j]) ) {
+            return false;
+        }
+        i += i_inc;
+        j += j_inc;
+    }
+
+    // If none of the previous conditions are met, return true;
+    return true;
+}
+
+bool validate_carrier(int i, int j, char direction, uint8_t * board) {
+    return validate_placement(i, j, direction, board, CARRIER, CARRIER_LENGTH);
+}
+
+bool validate_battleship(int i, int j, char direction, uint8_t * board) {
+    return validate_placement(i, j, direction, board, BATTLESHIP, BATTLESHIP_LENGTH);
+}
+
+bool validate_cruiser(int i, int j, char direction, uint8_t * board) {
+    return validate_placement(i, j, direction, board, CRUISER, CRUISER_LENGTH);
+}
+
+bool validate_submarine(int i, int j, char direction, uint8_t * board) {
+    return validate_placement(i, j, direction, board, SUBMARINE, SUBMARINE_LENGTH);
+}
+
+bool validate_destroyer(int i, int j, char direction, uint8_t * board) {
+    return validate_placement(i, j, direction, board, DESTROYER, DESTROYER_LENGTH);
 }
 
 
