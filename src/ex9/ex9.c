@@ -28,11 +28,11 @@ int main() {
     // TODO improve input validationd
 
 
-    place_carrier(5, 5, 'N', board);
-    place_battleship(2, 2, 'S', board);
-    place_cruiser(9, 9, 'W', board);
-    place_submarine(0, 2, 'E', board);
-    place_destroyer(7, 8, 'E', board);
+    // place_carrier(5, 5, 'N', board);
+    // place_battleship(2, 2, 'S', board);
+    // place_cruiser(9, 9, 'W', board);
+    // place_submarine(0, 2, 'E', board);
+    // place_destroyer(7, 8, 'E', board);
 
     play_game(&enemy_station);
 

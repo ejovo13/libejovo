@@ -14,6 +14,9 @@ const uint8_t ATTEMPTED =   0b00100000; // did we already try and shoot here?
 const uint8_t MISS =        0b01000000;
 const uint8_t HIT =         0b10000000;
 
+const int NUM_SHIPS = 5;
+const int BOARD_SIZE = 10;
+
 const int CARRIER_LENGTH = 5;
 const int BATTLESHIP_LENGTH = 4;
 const int CRUISER_LENGTH = 3;
@@ -23,6 +26,10 @@ const int DESTROYER_LENGTH = 2;
 const char LETTERS[10] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'};
 const int NUMBERS[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 const char DIRECTIONS[4] = {'N', 'E', 'S', 'W'};
+const uint8_t SHIP_TYPES[5] = {CARRIER, BATTLESHIP, CRUISER, SUBMARINE, DESTROYER};
+const int SHIP_LENGTHS[5] = {CARRIER_LENGTH, BATTLESHIP_LENGTH, CRUISER_LENGTH, SUBMARINE_LENGTH, DESTROYER_LENGTH};
+const char SHIP_LETTERS[5] = {'C', 'B', 'R', 'S', 'D'};
+const char SHIP_FULL_NAMES[5][15] = {"CARRIER", "BATTLESHIP", "CRUISER", "SUBMARINE", "DESTROYER"};
 
 typedef struct DockingStation { // Docking station contains information about the board, how many lives are left
 
@@ -156,7 +163,7 @@ void place_ship(int i, int j, char direction, uint8_t * board, uint8_t ship_type
 
     for(int n = 0; n < ship_length; n ++) {
 
-        board[i*10 + j] += ship_type;
+        board[i*BOARD_SIZE + j] += ship_type;
         i += i_inc;
         j += j_inc;
 
@@ -183,7 +190,9 @@ void place_destroyer(int i, int j, char direction, uint8_t * board) {
     place_ship(i, j, direction, board, DESTROYER, DESTROYER_LENGTH);
 }
 
-bool validate_placement(int i, int j, char direction, uint8_t * board, uint8_t ship_type, int ship_length) {
+bool validate_placement(int i, int j, char direction, uint8_t * board, int ship_length) {
+
+    // printf("VALIDATING_PLACEMENT of i = %d, j = %d, dir = %c, len = %d\n", i, j, direction, ship_length);
 
     int i_inc = 0;
     int j_inc = 0;
@@ -191,14 +200,14 @@ bool validate_placement(int i, int j, char direction, uint8_t * board, uint8_t s
     set_direction(&i_inc, &j_inc, direction);
 
     // if any of the indexes would go out of bounds
-    if (i + (ship_length * i_inc) > 9 || i + (ship_length * i_inc) < 0 || j + (ship_length * j_inc) > 9 || j + (ship_length * j_inc) < 0) {
+    if (i + (ship_length - 1) * i_inc > (BOARD_SIZE - 1) || i + (ship_length - 1) * i_inc < 0 || j + (ship_length - 1) * j_inc > (BOARD_SIZE - 1) || j + (ship_length - 1) * j_inc < 0) {
         return false;
     }
 
     // if any of the spots in that direction are occupied
     for(int n = 0; n < ship_length; n ++) {
 
-        if( is_occupied(board[i*10 + j]) ) {
+        if( is_occupied(board[i*BOARD_SIZE + j]) ) {
             return false;
         }
         i += i_inc;
@@ -209,25 +218,25 @@ bool validate_placement(int i, int j, char direction, uint8_t * board, uint8_t s
     return true;
 }
 
-bool validate_carrier(int i, int j, char direction, uint8_t * board) {
-    return validate_placement(i, j, direction, board, CARRIER, CARRIER_LENGTH);
-}
+// bool validate_carrier(int i, int j, char direction, uint8_t * board) {
+//     return validate_placement(i, j, direction, board, CARRIER, CARRIER_LENGTH);
+// }
 
-bool validate_battleship(int i, int j, char direction, uint8_t * board) {
-    return validate_placement(i, j, direction, board, BATTLESHIP, BATTLESHIP_LENGTH);
-}
+// bool validate_battleship(int i, int j, char direction, uint8_t * board) {
+//     return validate_placement(i, j, direction, board, BATTLESHIP, BATTLESHIP_LENGTH);
+// }
 
-bool validate_cruiser(int i, int j, char direction, uint8_t * board) {
-    return validate_placement(i, j, direction, board, CRUISER, CRUISER_LENGTH);
-}
+// bool validate_cruiser(int i, int j, char direction, uint8_t * board) {
+//     return validate_placement(i, j, direction, board, CRUISER, CRUISER_LENGTH);
+// }
 
-bool validate_submarine(int i, int j, char direction, uint8_t * board) {
-    return validate_placement(i, j, direction, board, SUBMARINE, SUBMARINE_LENGTH);
-}
+// bool validate_submarine(int i, int j, char direction, uint8_t * board) {
+//     return validate_placement(i, j, direction, board, SUBMARINE, SUBMARINE_LENGTH);
+// }
 
-bool validate_destroyer(int i, int j, char direction, uint8_t * board) {
-    return validate_placement(i, j, direction, board, DESTROYER, DESTROYER_LENGTH);
-}
+// bool validate_destroyer(int i, int j, char direction, uint8_t * board) {
+//     return validate_placement(i, j, direction, board, DESTROYER, DESTROYER_LENGTH);
+// }
 
 
 // print board
@@ -237,31 +246,31 @@ void print_full_board(uint8_t * board) {
 
     printf("  ");
 
-    for(int i = 0; i < 10; i++) {
+    for(int i = 0; i < BOARD_SIZE; i++) {
         printf("%d ", NUMBERS[i]);
     }
 
     printf("\n");
 
-    for(int i = 0; i < 10; i ++) {
+    for(int i = 0; i < BOARD_SIZE; i ++) {
 
         printf("%c ", LETTERS[i]);
 
-        for(int j = 0; j < 10; j ++) {
+        for(int j = 0; j < BOARD_SIZE; j ++) {
 
-            if ( is_hit(board[i*10 + j] ) ) {
+            if ( is_hit(board[i*BOARD_SIZE + j] ) ) {
                 c = 'X';
-            } else if ( is_carrier(board[i*10 + j]) ) {
+            } else if ( is_carrier(board[i*BOARD_SIZE + j]) ) {
                 c = 'C';
-            } else if ( is_battleship(board[i*10 + j]) ) {
+            } else if ( is_battleship(board[i*BOARD_SIZE + j]) ) {
                 c = 'B';
-            } else if ( is_cruiser(board[i*10 + j]) ) {
+            } else if ( is_cruiser(board[i*BOARD_SIZE + j]) ) {
                 c = 'R';
-            } else if ( is_submarine(board[i*10 + j]) ) {
+            } else if ( is_submarine(board[i*BOARD_SIZE + j]) ) {
                 c = 'S';
-            } else if ( is_destroyer(board[i*10 + j]) ) {
+            } else if ( is_destroyer(board[i*BOARD_SIZE + j]) ) {
                 c = 'D';
-            } else if ( is_miss( board[i*10 + j] ) ) {
+            } else if ( is_miss( board[i*BOARD_SIZE + j] ) ) {
                 c = '-';
             } else {
                 c = ' ';

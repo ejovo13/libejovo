@@ -27,7 +27,7 @@ int index_letters(char c) {
 
 }
 
-uint32_t get_row_index() {
+uint32_t input_row_index() {
 // Get row selection from the human player
 
     bool is_valid_input = false;
@@ -66,7 +66,7 @@ uint32_t get_row_index() {
     return index;
 }
 
-uint32_t get_col_index() {
+uint32_t input_col_index() {
 // get column index from the human player
 
     bool is_valid_input = false;
@@ -106,8 +106,8 @@ void player_turn(DockingStation * ds) {
 
     while(!turn_over) {
         // get guess
-        i = get_row_index();
-        j = get_col_index();
+        i = input_row_index();
+        j = input_col_index();
         value = ds->board[i*10 + j];
 
         if ( is_attempted(value) ) {
@@ -171,8 +171,82 @@ void player_turn(DockingStation * ds) {
     }
 }
 
-char * get_valid_directions() {
+int input_valid_directions(char * valid_directions, int num_valid_directions) {
+// get a direction as input from the user and make sure that it appears in the list of valid_directions
+
+    char input_char = '0';
+    int scanf_ret = scanf("%c", &input_char);
+
+    // validate scanf ret
+    for (int i = 0; i < num_valid_directions; i ++) {
+        if ( input_char == valid_directions[i] ) {
+            return i;
+        }
+    }
+
+    if ( input_char == 'X' ) {
+        printf("Cancel placement\n");
+        return -1;
+    }
+}
+
+char * get_valid_directions(uint8_t * board, int irow, int jcol, int ship_length, int * num_valid_directions) {
 // implement this please
+// When given the size of a ship, and an index irow, jcol, and the address of a var to store the number
+// of valid directions, return a character pointer that contains the valid directions
+
+
+
+    *num_valid_directions = 0;
+    bool valid_directions_long[4] = {false};
+    char dummy = 'c';
+
+    printf("ENTERED GET_VALID_DIRECTIONS...\n");
+
+    // get the number of valid directions
+    for(int i = 0; i < 4; i ++) {
+
+        // printf("VALIDATING_PLACEMENT of: %c \n", DIRECTIONS[i]);
+
+        if ( validate_placement(irow, jcol, DIRECTIONS[i], board, ship_length) ) {
+
+            // printf("DIRECTION %c is valid!\n", DIRECTIONS[i]);
+            (*num_valid_directions) ++;
+            valid_directions_long[i] = true;
+
+        }
+    }
+
+    printf("Validated all directions!!\n");
+    printf("Num valid directions: %d\n", *num_valid_directions);
+
+    // malloc the characters
+    char * valid_directions = (char*) malloc( sizeof(dummy) * (*num_valid_directions) ); // allocate 'num_valid_directions' characters
+    if (valid_directions) {
+        printf("valid_directions initialized correctly?\n");
+    }
+
+    int j_valid_direction = 0; // index of valid direction to input
+    for(int i = 0; i < 4; i ++) {
+
+        // printf("valid_directions_long[%d]: %d\n", i, valid_directions_long[i]);
+
+        if ( valid_directions_long[i] ) {
+
+            printf("Storing direction: %c\n", DIRECTIONS[i]);
+            valid_directions[j_valid_direction] = DIRECTIONS[i];
+            j_valid_direction ++;
+        }
+    }
+
+    printf("Finished fetching valid directions!!\n");
+
+    printf("Address of valid_directions: %x\n", valid_directions);
+
+    printf("Character at valid_directions[0] = %c\n", valid_directions[0]);
+    printf("Character at valid_directions[1] = %c\n", valid_directions[1]);
+
+    return valid_directions;
 }
 
 void get_player_placement(DockingStation * ds) {
@@ -180,16 +254,32 @@ void get_player_placement(DockingStation * ds) {
 
     printf("Please select where you would like to place your ships!\n");
 
-    printf("Please select the starting coordinate to place your battleship: ");
+    uint32_t irow = 0;
+    uint32_t jcol = 0;
 
-    uint32_t i = get_row_index();
-    uint32_t j = get_row_index();
+    char * valid_directions;
+    int num_valid_directions = 0;
 
+    for (int i = 0; i < NUM_SHIPS; i ++) {
 
+        printf("Selecting ship type: %s\n", SHIP_FULL_NAMES[i]);
 
+        irow = input_row_index();
+        jcol = input_col_index();
 
+        valid_directions = get_valid_directions(ds->board, irow, jcol, SHIP_LENGTHS[i], &num_valid_directions);
+        // get_valid_directions(ds->board, irow, jcol, SHIP_LENGTHS[i], &num_valid_directions);
 
+        printf("Valid directions: ");
 
+        for (int j = 0; j < num_valid_directions; j ++) {
+
+            printf("'%c' ", valid_directions[j]);
+
+        }
+
+        char dir_selected = valid_directions[ input_valid_directions(valid_directions, num_valid_directions) ];
+    }
 }
 
 void enemy_turn() {
@@ -222,6 +312,12 @@ void step(DockingStation * ds) {
 }
 
 void play_game(DockingStation * ds) {
+
+    printf("WELCOME TO THE GAME \n\n");
+
+    print_full_board(ds->board);
+
+    get_player_placement(ds);
 
     while ( !is_game_over(*ds) ) {
 
