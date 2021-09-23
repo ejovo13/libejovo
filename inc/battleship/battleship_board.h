@@ -5,6 +5,8 @@
 #include <stdbool.h>
 #include <stdio.h>
 
+typedef uint8_t * Board;
+
 const uint8_t CARRIER =     0b00000001;
 const uint8_t BATTLESHIP =  0b00000010;
 const uint8_t CRUISER =     0b00000100;
@@ -33,7 +35,7 @@ const char SHIP_FULL_NAMES[5][15] = {"CARRIER", "BATTLESHIP", "CRUISER", "SUBMAR
 
 typedef struct DockingStation { // Docking station contains information about the board, how many lives are left
 
-    uint8_t * board;
+    Board board;
     uint8_t carrier_lives_left;
     uint8_t battleship_lives_left;
     uint8_t cruiser_lives_left;
@@ -42,9 +44,18 @@ typedef struct DockingStation { // Docking station contains information about th
 
 } DockingStation;
 
-DockingStation make_new_game(uint8_t * board) {
+DockingStation make_new_game(int size) {
 
     DockingStation d;
+
+    Board board = malloc( sizeof(uint8_t) * (size * size) );
+
+    // initialize board
+    for (int i = 0; i < size; i ++) {
+        for (int j = 0; j < size; j ++) {
+            board[i * size + j] = 0;
+        }
+    }
 
     d.board = board;
     d.carrier_lives_left = CARRIER_LENGTH;
@@ -151,7 +162,7 @@ void set_direction(int * i_ptr, int * j_ptr, char direction) {
 
 }
 
-void place_ship(int i, int j, char direction, uint8_t * board, uint8_t ship_type, int ship_length) {
+void place_ship(int i, int j, char direction, Board board, uint8_t ship_type, int ship_length) {
 
     int i_inc = 0;
     int j_inc = 0;
@@ -170,27 +181,27 @@ void place_ship(int i, int j, char direction, uint8_t * board, uint8_t ship_type
     }
 }
 
-void place_carrier(int i, int j, char direction, uint8_t * board) {
+void place_carrier(int i, int j, char direction, Board board) {
     place_ship(i, j, direction, board, CARRIER, CARRIER_LENGTH);
 }
 
-void place_battleship(int i, int j, char direction, uint8_t * board) {
+void place_battleship(int i, int j, char direction, Board board) {
     place_ship(i, j, direction, board, BATTLESHIP, BATTLESHIP_LENGTH);
 }
 
-void place_cruiser(int i, int j, char direction, uint8_t * board) {
+void place_cruiser(int i, int j, char direction, Board board) {
     place_ship(i, j, direction, board, CRUISER, CRUISER_LENGTH);
 }
 
-void place_submarine(int i, int j, char direction, uint8_t * board) {
+void place_submarine(int i, int j, char direction, Board board) {
     place_ship(i, j, direction, board, SUBMARINE, SUBMARINE_LENGTH);
 }
 
-void place_destroyer(int i, int j, char direction, uint8_t * board) {
+void place_destroyer(int i, int j, char direction, Board board) {
     place_ship(i, j, direction, board, DESTROYER, DESTROYER_LENGTH);
 }
 
-bool validate_placement(int i, int j, char direction, uint8_t * board, int ship_length) {
+bool validate_placement(int i, int j, char direction, Board board, int ship_length) {
 
     // printf("VALIDATING_PLACEMENT of i = %d, j = %d, dir = %c, len = %d\n", i, j, direction, ship_length);
 
@@ -241,7 +252,7 @@ bool validate_placement(int i, int j, char direction, uint8_t * board, int ship_
 
 
 // print board
-void print_full_board(uint8_t * board) {
+void print_full_board(Board board) {
 
     char c = '-';
 
