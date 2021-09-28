@@ -8,11 +8,17 @@
 #include "battleship_board.h"
 #include <stdio_ext.h>
 
+
+
 // sleep for __s seconds
 void dsleep(double __s) {
 
     usleep(1E6 * __s);
 
+}
+
+int clear_screen(void) {
+    return system("clear");
 }
 
 int index_letters(char c) {
@@ -78,18 +84,22 @@ uint32_t input_col_index() {
     // printf("Please enter the number of the col to select\n");
 
     int d = 0;
+    int ret = 0;
 
     while(!is_valid_input) {
 
-        int ret = scanf("%d", &d);
+        // __fpurge(stdin);
+        ret = scanf("%d", &d);
 
         if (ret != 1) {
             printf("input not recognized, please enter a valid integer\n");
+            __fpurge(stdin);
             continue;
         }
 
         if (d < 1 || d > 10) { // Then the input value is NOT in [1-10]
             printf("%d not contained in [1-10], please enter an integer in [1-10]\n", d);
+            __fpurge(stdin);
             continue;
         } else {
             is_valid_input = true;
@@ -286,6 +296,7 @@ void get_player_placement(DockingStation * ds) {
 
     for (int i = 0; i < NUM_SHIPS; i ++) {
 
+        clear_screen();
         print_full_board(ds->board);
         printf("Selecting ship type: %s\n", SHIP_FULL_NAMES[i]);
 
@@ -368,6 +379,12 @@ void play_game(DockingStation * ds) {
     // print_full_board(ds->board);
 
     get_player_placement(ds);
+
+    clear_screen();
+
+    printf("Awesome!! Now are you ready to get fucked up by the AI???\n\n");
+
+
 
     while ( !is_game_over(*ds) ) {
 

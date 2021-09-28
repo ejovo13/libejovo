@@ -298,7 +298,7 @@ void print_full_board(Board board) {
     printf("\n");
 }
 
-char get_location_char(Board * board, int i, int j) {
+char get_location_char(Board board, int i, int j) {
 
     char c = '-';
 
@@ -324,11 +324,25 @@ char get_location_char(Board * board, int i, int j) {
 
 }
 
+char get_location_char_enemy(Board board, int i, int j) {
+// only show hits and misses for the enemy
+    char c = '-';
+
+    if ( is_hit(board[i*BOARD_SIZE + j] ) ) {
+        c = 'X';
+    } else if ( is_miss(board[i*BOARD_SIZE + j]) ) {
+        c = '-';
+    } else {
+        c = ' ';
+    }
+    return c;
+}
+
 void print_docking_station(DockingStation * __left, DockingStation * __right) {
     // print your board to the left and to the right the enemy board
     char c = '-';
-    char * player_board = __left->board;
-    char * enemy_board = __right->board;
+    Board player_board = __left->board;
+    Board enemy_board = __right->board;
 
     printf("  ");
 
@@ -336,46 +350,35 @@ void print_docking_station(DockingStation * __left, DockingStation * __right) {
         printf("%d ", NUMBERS[i]);
     }
 
-    // printf("\n");
+    printf(" |  ");
 
-    for(int i = -1; i < BOARD_SIZE; i ++) {
-
-
-        if (i == -1) {
-            printf("  |  ");
-            for(int k = 0; k < BOARD_SIZE; k++) {
-                printf("%d ", NUMBERS[k]);
-            }
-            printf("\n");
-        } else {
-
-            printf("%c ", LETTERS[i]);
-            printf("  |  ");
-
-            for(int j = 0; j < BOARD_SIZE; j ++) {
-
-                c = get_location_char(player_board, i, j);
-                printf("%c ", c);
-            }
-
-            for(int j = 0; j < BOARD_SIZE; j ++) {
-
-                c = get_location_char(enemy_board, i, j);
-                printf("%c ", c);
-
-            }
-
-            printf("\n");
-        }
+    for(int k = 0; k < BOARD_SIZE; k++) {
+        printf("%d ", NUMBERS[k]);
     }
-
-
-
-
     printf("\n");
 
+    for(int i = 0; i < BOARD_SIZE; i ++) {
 
+        printf("%c ", LETTERS[i]);
 
+        // print the players perspective on the left side
+        for(int j = 0; j < BOARD_SIZE; j ++) {
+
+            c = get_location_char(__left->board, i, j);
+            printf("%c ", c);
+        }
+
+        printf("  |  ");
+        // Print the enemy screen to the right
+        for(int j = 0; j < BOARD_SIZE; j ++) {
+
+            c = get_location_char_enemy(__right->board, i, j);
+            printf("%c ", c);
+
+        }
+        printf("\n");
+    }
+    printf("\n");
 }
 
 #endif
