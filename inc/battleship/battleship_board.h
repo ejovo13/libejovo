@@ -271,7 +271,6 @@ void print_full_board(Board board) {
 
         for(int j = 0; j < BOARD_SIZE; j ++) {
 
-
             if ( is_hit(board[i*BOARD_SIZE + j] ) ) {
                 c = 'X';
             } else if ( is_carrier(board[i*BOARD_SIZE + j]) ) {
@@ -291,12 +290,91 @@ void print_full_board(Board board) {
             }
 
             printf("%c ", c);
-
         }
+
         printf("\n");
     }
 
     printf("\n");
+}
+
+char get_location_char(Board * board, int i, int j) {
+
+    char c = '-';
+
+    if ( is_hit(board[i*BOARD_SIZE + j] ) ) {
+        c = 'X';
+    } else if ( is_carrier(board[i*BOARD_SIZE + j]) ) {
+        c = 'C';
+    } else if ( is_battleship(board[i*BOARD_SIZE + j]) ) {
+        c = 'B';
+    } else if ( is_cruiser(board[i*BOARD_SIZE + j]) ) {
+        c = 'R';
+    } else if ( is_submarine(board[i*BOARD_SIZE + j]) ) {
+        c = 'S';
+    } else if ( is_destroyer(board[i*BOARD_SIZE + j]) ) {
+        c = 'D';
+    } else if ( is_miss( board[i*BOARD_SIZE + j] ) ) {
+        c = '-';
+    } else {
+        c = ' ';
+    }
+
+    return c;
+
+}
+
+void print_docking_station(DockingStation * __left, DockingStation * __right) {
+    // print your board to the left and to the right the enemy board
+    char c = '-';
+    char * player_board = __left->board;
+    char * enemy_board = __right->board;
+
+    printf("  ");
+
+    for(int i = 0; i < BOARD_SIZE; i++) {
+        printf("%d ", NUMBERS[i]);
+    }
+
+    // printf("\n");
+
+    for(int i = -1; i < BOARD_SIZE; i ++) {
+
+
+        if (i == -1) {
+            printf("  |  ");
+            for(int k = 0; k < BOARD_SIZE; k++) {
+                printf("%d ", NUMBERS[k]);
+            }
+            printf("\n");
+        } else {
+
+            printf("%c ", LETTERS[i]);
+            printf("  |  ");
+
+            for(int j = 0; j < BOARD_SIZE; j ++) {
+
+                c = get_location_char(player_board, i, j);
+                printf("%c ", c);
+            }
+
+            for(int j = 0; j < BOARD_SIZE; j ++) {
+
+                c = get_location_char(enemy_board, i, j);
+                printf("%c ", c);
+
+            }
+
+            printf("\n");
+        }
+    }
+
+
+
+
+    printf("\n");
+
+
 
 }
 

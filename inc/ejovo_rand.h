@@ -8,8 +8,8 @@
 int get_rand_int_range(int min, int max) {
 // get random integer in [min, max]
     int spread = (max - min) + 1;
-    double x = ((double) rand()) / RAND_MAX; // returns a value in [0, 1[
-    return (int) floor(x * spread) + (min) ; // floor(x * spread) returns a vlue in [0, spread[
+    double x = ((double) rand()) / RAND_MAX; // returns a value in [0, 1)
+    return (int) floor(x * spread) + (min) ; // floor(x * spread) returns a vlue in [0, spread)
 }
 
 int get_rand_int(int max) {

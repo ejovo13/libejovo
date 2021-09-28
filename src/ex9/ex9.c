@@ -20,7 +20,9 @@ int main() {
 
 
     DockingStation enemy_station = make_new_game(BOARD_SIZE);
-    DockingStation player_stations = make_new_game(BOARD_SIZE);
+    DockingStation player_station = make_new_game(BOARD_SIZE);
+
+    ai_place_ships(enemy_station.board);
 
     // TODO Create AI
     // TODO Add pretty introduction
@@ -34,7 +36,9 @@ int main() {
     // place_submarine(0, 2, 'E', board);
     // place_destroyer(7, 8, 'E', board);
 
-    play_game(&enemy_station);
+    print_docking_station(&player_station, &enemy_station);
+
+    play_game(&player_station);
 
     return 0;
 }
