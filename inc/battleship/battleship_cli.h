@@ -363,22 +363,22 @@ bool is_game_over(DockingStation ds) {
             ds.submarine_lives_left == 0 && ds.destroyer_lives_left == 0);
 }
 
-void step(DockingStation * ds) {
+void step(DockingStation * player_ds, DockingStation * enemy_ds) {
 
-    print_full_board(ds->board);
+    print_docking_station(player_ds, enemy_ds);
     printf("Please make a selection: ");
-    player_turn(ds);
+    player_turn(enemy_ds);
     enemy_turn();
 
 }
 
-void play_game(DockingStation * ds) {
+void play_game(DockingStation * player_ds, DockingStation * enemy_ds) {
 
     printf("WELCOME TO THE GAME \n\n");
 
     // print_full_board(ds->board);
 
-    get_player_placement(ds);
+    get_player_placement(player_ds);
 
     clear_screen();
 
@@ -386,9 +386,9 @@ void play_game(DockingStation * ds) {
 
 
 
-    while ( !is_game_over(*ds) ) {
+    while ( !is_game_over(*player_ds) ) {
 
-        step(ds);
+        step(player_ds, enemy_ds);
 
     }
 

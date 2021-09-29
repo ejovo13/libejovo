@@ -47,13 +47,17 @@ void ai_place_ships(Board board) {
 
     printf("[AI]\t placed all ships!\n\n");
 
+}
+
+// need a way to attack the players ships
+void ai_turn(Board board) {
+// start off by randomly attacking the enemy ships and seeing if i get a hit or not.
+
+
 
 
 
 }
-
-// need a way to attack the players ships
-
 
 
 

@@ -47,7 +47,7 @@ int main() {
 
     print_docking_station(&player_station, &enemy_station);
 
-    play_game(&player_station);
+    play_game(&player_station, &enemy_station);
 
     return 0;
 }

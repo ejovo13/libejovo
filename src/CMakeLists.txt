@@ -9,7 +9,7 @@ list(APPEND SRC
     ex7
     ex8
     # ex9
-    # ex10
+    ex10
     # ex11
     # ex12
     # ex13
