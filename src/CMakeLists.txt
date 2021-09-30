@@ -15,12 +15,14 @@ list(APPEND SRC
     # ex13
     # ex14
     # ex15
+    learn_pointers
 )
+
+add_subdirectory(ex9)
+add_subdirectory(ejovo)
 
 foreach(FILE ${SRC})
     message(STATUS "Adding ${FILE}")
     add_executable(${FILE} "${FILE}.c")
-    target_link_libraries(${FILE} m)
+    target_link_libraries(${FILE} m ejovo)
 endforeach(FILE)
-
-add_subdirectory(ex9)
