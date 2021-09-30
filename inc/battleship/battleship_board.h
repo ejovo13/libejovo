@@ -303,7 +303,7 @@ char get_location_char(Board board, int i, int j) {
     char c = '-';
 
     if ( is_hit(board[i*BOARD_SIZE + j] ) ) {
-        c = 'X';
+        c = 'x';
     } else if ( is_carrier(board[i*BOARD_SIZE + j]) ) {
         c = 'C';
     } else if ( is_battleship(board[i*BOARD_SIZE + j]) ) {
@@ -329,12 +329,23 @@ char get_location_char_enemy(Board board, int i, int j) {
     char c = '-';
 
     if ( is_hit(board[i*BOARD_SIZE + j] ) ) {
-        c = 'X';
-    } else if ( is_miss(board[i*BOARD_SIZE + j]) ) {
+        if ( is_carrier(board[i*BOARD_SIZE + j]) ) {
+            c = 'C';
+        } else if ( is_battleship(board[i*BOARD_SIZE + j]) ) {
+            c = 'B';
+        } else if ( is_cruiser(board[i*BOARD_SIZE + j]) ) {
+            c = 'R';
+        } else if ( is_submarine(board[i*BOARD_SIZE + j]) ) {
+            c = 'S';
+        } else if ( is_destroyer(board[i*BOARD_SIZE + j]) ) {
+            c = 'D';
+        }
+    } else if ( is_miss( board[i*BOARD_SIZE + j] ) ) {
         c = '-';
     } else {
         c = ' ';
     }
+
     return c;
 }
 

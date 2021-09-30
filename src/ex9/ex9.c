@@ -9,9 +9,7 @@
 
 #include "ejovo_print.h"
 #include "ejovo_rand.h"
-#include "battleship_cli.h"
-#include "battleship_board.h"
-#include "battleship_ai.h"
+#include "battleship_game.h"
 #include <time.h>
 
 
@@ -20,11 +18,12 @@ int main() {
     // create board
 
     srand( time (NULL) );
+    ejovo_seed();
 
     DockingStation enemy_station = make_new_game(BOARD_SIZE);
     DockingStation player_station = make_new_game(BOARD_SIZE);
 
-    ai_place_ships(enemy_station.board);
+    // ai_place_ships(enemy_station.board);
 
     // TODO Create AI
     // TODO Add pretty introduction
@@ -32,11 +31,11 @@ int main() {
     // TODO Add salvo game mode
 
 
-    // place_carrier(5, 5, 'N', board);
-    // place_battleship(2, 2, 'S', board);
-    // place_cruiser(9, 9, 'W', board);
-    // place_submarine(0, 2, 'E', board);
-    // place_destroyer(7, 8, 'E', board);
+    place_carrier(5, 5, 'N', player_station.board);
+    place_battleship(2, 2, 'S', player_station.board);
+    place_cruiser(9, 9, 'W', player_station.board);
+    place_submarine(0, 2, 'E', player_station.board);
+    place_destroyer(7, 8, 'E', player_station.board);
 
     // print_full_board(enemy_station.board);
 
