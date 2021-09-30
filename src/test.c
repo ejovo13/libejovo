@@ -17,14 +17,22 @@ int main() {
 
     xor_rng rng;
     seed_xoshiro256ss(&rng);
-    print_xoshiro256ss_state(&rng);
-    print_xoshiro256ss_state(&XOSHIRO_RNG);
+    seed_xoshiro256ss(&XOSHIRO_RNG);
+    // print_xoshiro256ss_state(&rng);
+    // print_xoshiro256ss_state(&XOSHIRO_RNG);
 
-    for(int i = 0; i < 15; i ++) {
-        printf("%d\n", unif(1, 10));
-        print_xoshiro256ss_state(&XOSHIRO_RNG);
+    int random;
+
+    printf("\n\nStarting xoshiro256** trials:\n\n");
+
+    for(int i = 0; i < 50; i ++) {
+        random = unif(1,10);
+        printf("%d  ", random);
+        // print_xoshiro256ss_state(&XOSHIRO_RNG);
 
     }
+
+    printf("\n");
 
 
 }

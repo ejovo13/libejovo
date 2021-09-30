@@ -1,4 +1,5 @@
 #include "ejovo_rand.h"
+#include <stdio.h>
 
 int get_rand_int_range(int min, int max) {
 // get random integer in [min, max]
@@ -40,7 +41,7 @@ ssize_t seed_xoshiro256ss(struct xoshiro256ss_state * state) {
 
 void print_xoshiro256ss_state(struct xoshiro256ss_state * state) {
 
-    printf("State of random generator: %8x, %8x, %8x, %8x\n", state->s[0], state->s[1], state->s[2], state->s[3]);
+    printf("State of random generator: %8lx, %8lx, %8lx, %8lx\n", state->s[0], state->s[1], state->s[2], state->s[3]);
 
 }
 
@@ -66,8 +67,8 @@ uint64_t xoshiro256ss(struct xoshiro256ss_state *state)
 int get_int_xoshiro(struct xoshiro256ss_state *state) {
 // interpret the first 64 bits of the bits as an integer. - this returns a uniform X ~ [0, 2147483647]
     int * iptr = NULL;
-    int bits = xoshiro256ss(state);
-    iptr = &bits;
+    uint64_t bits = xoshiro256ss(state);
+    iptr = (int *) &bits;
     return abs(iptr[1]);
 }
 
@@ -77,6 +78,12 @@ int unif(int a, int b) {
     // int = get_int_xoshiro()
     int spread = (b - a) + 1;
     double x = (double) get_int_xoshiro(&XOSHIRO_RNG) / RAND_MAX; // returns a value in [0, 1)
+
+    // printf("I'm in unif and xoshiro_rng state is:");
+    // print_xoshiro256ss_state(&XOSHIRO_RNG);
+
+    // printf("x = %lf", x);
+
     return (int) floor(x * spread) + (a) ; // floor(x * spread) returns a vlue in [0, spread)
 
 }
