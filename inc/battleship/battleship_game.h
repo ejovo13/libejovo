@@ -51,7 +51,7 @@ void play_game(DockingStation * player_ds, DockingStation * enemy_ds) {
 
 
 
-    // get_player_placement(player_ds);
+    get_player_placement(player_ds);
 
     clear_screen();
 

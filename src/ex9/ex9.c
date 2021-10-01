@@ -31,11 +31,11 @@ int main() {
     // TODO Add salvo game mode
 
 
-    place_carrier(5, 5, 'N', player_station.board);
-    place_battleship(2, 2, 'S', player_station.board);
-    place_cruiser(9, 9, 'W', player_station.board);
-    place_submarine(0, 2, 'E', player_station.board);
-    place_destroyer(7, 8, 'E', player_station.board);
+    // place_carrier(5, 5, 'N', player_station.board);
+    // place_battleship(2, 2, 'S', player_station.board);
+    // place_cruiser(9, 9, 'W', player_station.board);
+    // place_submarine(0, 2, 'E', player_station.board);
+    // place_destroyer(7, 8, 'E', player_station.board);
 
     // print_full_board(enemy_station.board);
 
