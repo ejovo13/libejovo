@@ -30,7 +30,7 @@ uint64_t rol64(uint64_t x, int k)
 	return (x << k) | (x >> (64 - k));
 }
 
-struct xoshiro256ss_state XOSHIRO_RNG = {NULL};
+struct xoshiro256ss_state XOSHIRO_RNG = {0, 0, 0, 0};
 
 
 ssize_t seed_xoshiro256ss(struct xoshiro256ss_state * state) {
