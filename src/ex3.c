@@ -40,7 +40,7 @@ int main() {
     size_t espaces_supprimes = 0;
     char * new_str = NULL;
 
-    char * old_str = "Su  p bi  tch  !";
+    char * old_str = "Su  p bi  tch  !\n asd \n ";
 
     new_str = supprime_espaces(old_str, &espaces_supprimes);
 
