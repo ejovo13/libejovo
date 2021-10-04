@@ -1,19 +1,19 @@
 #include "ejovo_string.h"
 
 // copy a NULL TERMINATED STRING into another one, without being given the length of the string
-char * cpy_str(char * input) {
-    size_t len = strlen(input);
-    printf("Size input: %ld\n", len);
+char * cpy_str(char * __input) {
+    size_t len = strlen(__input);
+    printf("Size __input: %ld\n", len);
     char * new_str = (char *) calloc(len + 1, sizeof(char));
-    strcpy(new_str, input);
+    strcpy(new_str, __input);
     return new_str;
 }
 
 // copy a NULL TERMINATED STRING into another one, specifiying ahead of time the length of the string to copy
-// We follow the convention established by string.h where str_len() returns the number of characters not including the null string;
-char * cpy_n_str(char * input, size_t n) {
+// We follow the convention established by string.h where strlen() returns the number of characters not including the null string;
+char * cpy_n_str(char * __input, size_t n) {
     char * new_str = (char *) calloc(n + 1, sizeof(char));
-    strcpy(new_str, input);
+    strcpy(new_str, __input);
     return new_str;
 }
 
@@ -76,3 +76,46 @@ char * supprime_espaces(const char * __input, size_t * __nb_esp_supp) {
 
     return new_str;
 }
+
+bool is_substr(const char * __s1, const char * __s2) {
+// How to determine if __s2 is entirely contained in __s1?
+
+    size_t i1 = 0; // index of string 1
+    size_t i2 = 0; // index of string 2
+    bool is_contained = false;
+    size_t s2_chars_in_s1 = 0;
+
+    while (__s1[i1] != '\0') { // While we haven't reached the null character, scan for string 2
+
+        printf("Comparing s1[%lu]: %c, s2[%lu]: %c\t", i1, __s1[i1], i2, __s2[i2]);
+
+        if (__s2[i2] == '\0') { // then we have finished scanning through s2, return whether or not s2 is contained
+            printf("Reached end of string2\n");
+            printf("s2_chars_in_s1 = %d\n", s2_chars_in_s1);
+            printf("i1: %lu, i2: %lu\n", i1, i2);
+            break;
+        }
+
+        if(__s1[i1] == __s2[i2]) { // While the current __s1 character is equal to the current
+
+            printf("Matched character %c\n", __s2[i2]);
+            s2_chars_in_s1 ++;
+            i2 ++;
+
+        } else {
+
+            printf("Unmatched character %c\n", __s2[i2]);
+            s2_chars_in_s1 = 0;
+            i2 = 0; // reset str2 index to it's initial position
+            // i1 --; // This is crazy, we want to go back in time
+        }
+
+        i1 ++;
+    }
+
+    return s2_chars_in_s1 == strlen(__s2);
+;
+
+
+}
+
