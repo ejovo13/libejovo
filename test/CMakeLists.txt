@@ -3,6 +3,7 @@ list(APPEND TESTS
     cpy_str
     reverse_str
     supprime_espaces
+    del_substr
 )
 
 list(APPEND TEST_LIBS

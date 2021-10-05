@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.11 FATAL_ERROR)
 
-project(TP2)
+project(TP3)
 enable_language(C)
 enable_testing(ON)
 
@@ -18,10 +18,10 @@ include_directories(${INC})
 add_subdirectory(${SRC})
 add_subdirectory(${TEST})
 
-add_custom_target( all_tests ALL
+add_custom_target( unit_tests ALL
                     DEPENDS ${TESTS})
 
 # Run tests after building the project
-add_custom_command(TARGET all_tests
+add_custom_command(TARGET unit_tests
                 COMMENT "Run tests"
                 POST_BUILD COMMAND ctest --output-on-failure)

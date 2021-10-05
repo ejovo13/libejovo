@@ -151,7 +151,48 @@ bool is_substr(const char * __s1, const char * __s2) {
     }
 
     return s2_chars_in_s1 == strlen(__s2);
-;
+}
+
+char * del_substr(const char * const __s1, const char * const __substr) {
+
+    // this sounds like a job for RECURSION!!!!!!!!!!
+    size_t len_substr = strlen(__substr);
+    size_t len_s1 = strlen(__s1);
+    char * reduced_str = __s1;
+
+    size_t first_index = 0; // First index of __s1 that matches __substr
+
+    // While the substr is contained in __s1, go ahead and remove it
+    if ( is_substr(__s1, __substr) ) {
+
+        // printf("Substring '%s' found in '%s'\n", __substr, __s1);
+        first_index = strcspn(__s1, __substr); // find the first index of __s1 that matches __substr
+        // printf("First index = %lu\n", first_index);
+        reduced_str = (char *) malloc(sizeof(char) * (len_s1 - len_substr + 1)); // Allocate a new string that is length of __s1 minus length of __substr
+
+        // fill the first part of the string
+        for (size_t i = 0; i < first_index; i++) {
+
+            reduced_str[i] = __s1[i];
+
+        }
+
+        // fill the second part of the string
+        for (size_t i = first_index; i <= len_s1 - len_substr; i ++) {
+
+            reduced_str[i] = __s1[i + len_substr];
+
+        }
+
+        // printf("Reduced string: %s\n", reduced_str);
+
+        reduced_str = del_substr(reduced_str, __substr);
+        return reduced_str;
+
+    } else {
+        // printf("Returning '%s'\n", __s1);
+        return __s1;
+    }
 
 
 }
