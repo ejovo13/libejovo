@@ -4,32 +4,31 @@
 int main() {
 
     char test_str[] = "Hello this is a test string";
+
+    // substrings
     char substr1[] = "this";
     char substr2[] = "is";
     char repeat[] = "HiHiHiHiHiHiHiHiHiHihi";
     char hello[] = "hello";
     char Hello[] = "Hello";
 
+    // expected test results
     char test1[] = "Hello  is a test string";
     char test2[] = "Hello th  a test string";
     char test3[] = "hi";
+    char test4[] = "HiHiHiHiHiHiHiHiHiHi";
+    char test_hello[] = "Hello this is a test string";
+    char test_Hello[] = " this is a test string";
 
-    printf("Test string: '%s' - '%s' = '%s'\n", test_str, hello, del_substr(test_str, hello));
-    printf("Test string: '%s' - '%s' = '%s'\n", test_str, Hello, del_substr(test_str, Hello));
 
+    assert(strcmp(test1, del_substr(test_str, substr1)) == 0); // Test removing 'this'
+    assert(strcmp(test2, del_substr(test_str, substr2)) == 0); // Test removing 'is' twice
+    assert(strcmp(test3, del_substr(repeat, "Hi")) == 0);  // Test a lot of repetition and case
+    assert(strcmp(test4, del_substr(repeat, "hi")) == 0);
 
-    printf("Test string: '%s' - '%s' = '%s'\n", test_str, substr1, del_substr(test_str, substr1));
-    printf("Test string: '%s' - '%s' = '%s'\n", test_str, substr2, del_substr(test_str, substr2));
-    printf("Test string: '%s' - '%s' = '%s'\n", repeat, "hi", del_substr(repeat, "hi"));
-
-    // Test removing 'this'
-    assert(strcmp(test1, del_substr(test_str, substr1)) == 0);
-    // Test removing 'is' twice
-    assert(strcmp(test2, del_substr(test_str, substr2)) == 0);
-    // Test removing the entire sub string
-    assert(strcmp("", del_substr(test_str, test_str)) == 0);
-    // Test a lot of repetition
-    assert(strcmp(test3, del_substr(repeat, "Hi")) == 0);
+    assert(strcmp(test_Hello, del_substr(test_str, Hello)) == 0);
+    assert(strcmp(test_hello, del_substr(test_str, hello)) == 0);
+    assert(strcmp("", del_substr(test_str, test_str)) == 0);  // Test removing the entire sub string
 
     return 0;
 }
