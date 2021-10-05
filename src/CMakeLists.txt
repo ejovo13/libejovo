@@ -1,4 +1,4 @@
-list(APPEND SRC
+list(APPEND SRC_FILES
     # test
     ex1
     ex2
@@ -21,8 +21,8 @@ list(APPEND SRC
 # add_subdirectory(ex9)
 add_subdirectory(ejovo)
 
-foreach(FILE ${SRC})
-    message(STATUS "Adding ${FILE}")
+foreach(FILE ${SRC_FILES})
+    message(STATUS "Adding executable ${FILE}")
     add_executable(${FILE} "${FILE}.c")
     target_link_libraries(${FILE} m ejovo)
 endforeach(FILE)

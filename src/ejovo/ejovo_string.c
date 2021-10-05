@@ -82,32 +82,39 @@ bool is_substr(const char * __s1, const char * __s2) {
 
     size_t i1 = 0; // index of string 1
     size_t i2 = 0; // index of string 2
-    bool is_contained = false;
     size_t s2_chars_in_s1 = 0;
 
     while (__s1[i1] != '\0') { // While we haven't reached the null character, scan for string 2
 
-        printf("Comparing s1[%lu]: %c, s2[%lu]: %c\t", i1, __s1[i1], i2, __s2[i2]);
+        // printf("Comparing s1[%lu]: %c, s2[%lu]: %c\t", i1, __s1[i1], i2, __s2[i2]);
 
         if (__s2[i2] == '\0') { // then we have finished scanning through s2, return whether or not s2 is contained
-            printf("Reached end of string2\n");
-            printf("s2_chars_in_s1 = %d\n", s2_chars_in_s1);
-            printf("i1: %lu, i2: %lu\n", i1, i2);
+            // printf("Reached end of string2\n");
+            // printf("s2_chars_in_s1 = %lu\n", s2_chars_in_s1);
+            // printf("i1: %lu, i2: %lu\n", i1, i2);
             break;
         }
 
         if(__s1[i1] == __s2[i2]) { // While the current __s1 character is equal to the current
 
-            printf("Matched character %c\n", __s2[i2]);
+            // printf("Matched character: %c\n", __s2[i2]);
             s2_chars_in_s1 ++;
             i2 ++;
 
         } else {
 
-            printf("Unmatched character %c\n", __s2[i2]);
-            s2_chars_in_s1 = 0;
-            i2 = 0; // reset str2 index to it's initial position
-            // i1 --; // This is crazy, we want to go back in time
+            // printf("Unmatched character: %c\n", __s2[i2]);
+            if(__s1[i1] == __s2[0]) {
+                // If this new unmatched character is also the same character of our substring, we want to match it
+                // printf("Matched character: %c\n", __s2[0]);
+                s2_chars_in_s1 = 1;
+                i2 = 1;
+            } else {
+
+                s2_chars_in_s1 = 0;
+                i2 = 0; // reset str2 index to it's initial position
+                // i1 --; // This is crazy, we want to go back in time
+            }
         }
 
         i1 ++;
