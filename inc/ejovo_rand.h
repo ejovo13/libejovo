@@ -20,8 +20,6 @@ int get_rand_int_range(int min, int max);
 // Get random x in [1, max]
 int get_rand_int(int max);
 
-void fill_rand_array(int * arr, int n, int max);
-
 // use more cryptographically secure functions to generate much better random numbers
 uint64_t rol64(uint64_t x, int k);
 

@@ -4,11 +4,11 @@
 int main() {
 
     char test_str[] = "Hello this is a test string";
+    char repeat[] = "HiHiHiHiHiHiHiHiHiHihi";
 
     // substrings
     char substr1[] = "this";
     char substr2[] = "is";
-    char repeat[] = "HiHiHiHiHiHiHiHiHiHihi";
     char hello[] = "hello";
     char Hello[] = "Hello";
 

@@ -13,18 +13,7 @@ int get_rand_int(int max) {
     return get_rand_int_range(1, max);
 }
 
-void fill_rand_array(int * arr, int n, int max) {
-// fill integer array whose length is n with elements in [1, max]
-
-}
-
-
-
 // use more cryptographically secure functions to generate much better random numbers
-
-//seed xoshiro generator by getting 256 random bytes from the getrandom system call.
-
-
 uint64_t rol64(uint64_t x, int k)
 {
 	return (x << k) | (x >> (64 - k));
@@ -32,12 +21,11 @@ uint64_t rol64(uint64_t x, int k)
 
 struct xoshiro256ss_state XOSHIRO_RNG = {0, 0, 0, 0};
 
-
+//seed xoshiro generator by getting 256 random bytes from the getrandom system call.
 ssize_t seed_xoshiro256ss(struct xoshiro256ss_state * state) {
     return getrandom(state, 32, 0);
 }
 
-// seed_xoshiro256ss(&EJOVO_RNG);
 
 void print_xoshiro256ss_state(struct xoshiro256ss_state * state) {
 
@@ -71,7 +59,6 @@ int get_int_xoshiro(struct xoshiro256ss_state *state) {
     iptr = (int *) &bits;
     return abs(iptr[1]);
 }
-
 
 int unif(int a, int b) {
 // return a random variable X ~ [a, b]
