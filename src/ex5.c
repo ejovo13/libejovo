@@ -10,7 +10,7 @@
 bool is_palindrome(const char * __string) {
 
     size_t n_spaces_deleted = 0;
-    char * __string_moins_espaces = supprime_espaces(__string, &n_spaces_deleted);
+    char * __string_moins_espaces = supprime_espaces_n(__string, &n_spaces_deleted);
     char * __string_reverse = reverse_string(__string_moins_espaces);
     int strcase_return = strcasecmp(__string_moins_espaces, __string_reverse);
     return strcase_return == 0;

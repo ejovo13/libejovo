@@ -17,11 +17,14 @@ char * cpy_n_str(char * __input, size_t __n);
 // take an input string and return a copy that has been reversed.
 char * reverse_string(const char * __string);
 
-// Tell me how long the string is (without null-terminating character)
+// Tell me how long the string is (without null-terminating character) and then reverse the string
 char * reverse_string_n(const char * __string, size_t __string_length);
 
-// Delete spaces from a string and return a new string who has no spaces
-char * supprime_espaces(const char * __input, size_t * __nb_esp_supp);
+// Delete spaces from a string and return a new string who has no spaces, also save the number of spaces removed
+char * supprime_espaces(const char * __input);
+
+// Delete spaces from a string and return a new string who has no spaces, also save the number of spaces removed
+char * supprime_espaces_n(const char * __input, size_t * __nb_esp_supp);
 
 // Determine whether or not s2 is a substring of s1
 bool is_substr(const char * __s1, const char * __s2);

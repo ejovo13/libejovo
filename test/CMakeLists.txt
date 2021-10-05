@@ -1,5 +1,8 @@
 list(APPEND TESTS
     is_substr
+    cpy_str
+    reverse_str
+    supprime_espaces
 )
 
 list(APPEND TEST_LIBS
@@ -11,8 +14,7 @@ list(APPEND TEST_INC
     ${INC}
 )
 
-set(CMAKE_RUNTIN)
-
+# set(TEST_BIN_DIR "${CMAKE_CURRENT_BINARY_DIR}" PARENT_SCOPE)
 
 macro(ejovo_add_test TESTNAME)
 

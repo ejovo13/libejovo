@@ -45,8 +45,38 @@ char * reverse_string_n(const char * __string, size_t __string_length) {
 
 }
 
-// Delete spaces from a string and return a new string who has no spaces
-char * supprime_espaces(const char * __input, size_t * __nb_esp_supp) {
+// Delete spaces from a string and return a new string who has no spaces, also save the number of spaces removed
+char * supprime_espaces(const char * __input) {
+
+    // return the number of spaces deleted,
+    size_t len = strlen(__input);
+
+    size_t num_spaces = 0;
+    // count number of spaces
+    for (size_t i = 0; i < len; i ++) {
+        if(__input[i] == ' ' || __input[i] == '\n' || __input[i] == '\t') { num_spaces ++; }
+    }
+
+    // initialize a new string whose length is len - num_spaces
+    size_t new_str_capacity = len - num_spaces + 1;
+    char * new_str = (char *) malloc(sizeof(char) * new_str_capacity);
+
+    // Fill new string
+    new_str[new_str_capacity-1] = '\0';
+
+    size_t i_new = 0; // index of new string
+    for (size_t i = 0; i < len; i ++) {
+        if(__input[i] != ' ' && __input[i] != '\n'&& __input[i] != '\t') {
+            new_str[i_new] = __input[i];
+            i_new ++;
+        }
+    }
+
+    return new_str;
+}
+
+// Delete spaces from a string and return a new string who has no spaces, also save the number of spaces removed
+char * supprime_espaces_n(const char * __input, size_t * __nb_esp_supp) {
 
     // return the number of spaces deleted,
     size_t len = strlen(__input);

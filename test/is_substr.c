@@ -31,6 +31,5 @@ int main() {
     assert(is_substr(test_str, "Hello my friends"));
     assert(is_substr(test_str, " strange characters"));
 
-
     return 0;
 }

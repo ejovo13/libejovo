@@ -17,3 +17,11 @@ include_directories(${INC})
 
 add_subdirectory(${SRC})
 add_subdirectory(${TEST})
+
+add_custom_target( all_tests ALL
+                    DEPENDS ${TESTS})
+
+# Run tests after building the project
+add_custom_command(TARGET all_tests
+                COMMENT "Run tests"
+                POST_BUILD COMMAND ctest --output-on-failure)

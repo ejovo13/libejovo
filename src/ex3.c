@@ -12,7 +12,7 @@ int main() {
     char * old_str = "Bon jo u\t r \n\n\tmon\t a  mi   !\n  \n ";
 
     // supprime_espaces definie en "ejovo_string.c"
-    new_str = supprime_espaces(old_str, &espaces_supprimes);
+    new_str = supprime_espaces_n(old_str, &espaces_supprimes);
 
     printf("Converted string: \n\n '%s'\n\n to:\n '%s'\n n_deleted_spaces: %ld\n", old_str, new_str, espaces_supprimes);
 
