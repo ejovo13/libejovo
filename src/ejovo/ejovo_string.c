@@ -159,6 +159,7 @@ char * del_substr(const char * const __s1, const char * const __substr) {
     size_t len_substr = strlen(__substr);
     size_t len_s1 = strlen(__s1);
     char * reduced_str = __s1;
+    char * substr_pos = NULL; // pointer to where the __substr appears in __s1
 
     size_t first_index = 0; // First index of __s1 that matches __substr
 
@@ -166,8 +167,9 @@ char * del_substr(const char * const __s1, const char * const __substr) {
     if ( is_substr(__s1, __substr) ) {
 
         // printf("Substring '%s' found in '%s'\n", __substr, __s1);
-        first_index = strcspn(__s1, __substr); // find the first index of __s1 that matches __substr
-        // printf("First index = %lu\n", first_index);
+        substr_pos = strstr(__s1, __substr); // strstr returns a pointer to the first instance of __substr in __s1
+        first_index = substr_pos - __s1;
+        printf("First index = %lu\n", first_index);
         reduced_str = (char *) malloc(sizeof(char) * (len_s1 - len_substr + 1)); // Allocate a new string that is length of __s1 minus length of __substr
 
         // fill the first part of the string
@@ -184,7 +186,7 @@ char * del_substr(const char * const __s1, const char * const __substr) {
 
         }
 
-        // printf("Reduced string: %s\n", reduced_str);
+        printf("Reduced string: %s\n", reduced_str);
 
         reduced_str = del_substr(reduced_str, __substr);
         return reduced_str;
