@@ -8,7 +8,6 @@
 #include <sys/random.h>
 #include <limits.h>
 
-
 typedef struct xoshiro256ss_state {
 	uint64_t s[4];
 } xor_rng;
@@ -22,8 +21,6 @@ int get_rand_int_range(int min, int max);
 int get_rand_int(int max);
 
 void fill_rand_array(int * arr, int n, int max);
-
-
 
 // use more cryptographically secure functions to generate much better random numbers
 uint64_t rol64(uint64_t x, int k);

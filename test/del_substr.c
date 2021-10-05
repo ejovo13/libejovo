@@ -20,7 +20,7 @@ int main() {
     char test_hello[] = "Hello this is a test string";
     char test_Hello[] = " this is a test string";
 
-
+    // Tests
     assert(strcmp(test1, del_substr(test_str, substr1)) == 0); // Test removing 'this'
     assert(strcmp(test2, del_substr(test_str, substr2)) == 0); // Test removing 'is' twice
     assert(strcmp(test3, del_substr(repeat, "Hi")) == 0);  // Test a lot of repetition and case

@@ -4,6 +4,7 @@ list(APPEND TESTS
     reverse_str
     supprime_espaces
     del_substr
+    parentheses
 )
 
 list(APPEND TEST_LIBS

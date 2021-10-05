@@ -169,7 +169,7 @@ char * del_substr(const char * const __s1, const char * const __substr) {
         // printf("Substring '%s' found in '%s'\n", __substr, __s1);
         substr_pos = strstr(__s1, __substr); // strstr returns a pointer to the first instance of __substr in __s1
         first_index = substr_pos - __s1;
-        printf("First index = %lu\n", first_index);
+        // printf("First index = %lu\n", first_index);
         reduced_str = (char *) malloc(sizeof(char) * (len_s1 - len_substr + 1)); // Allocate a new string that is length of __s1 minus length of __substr
 
         // fill the first part of the string
@@ -186,7 +186,7 @@ char * del_substr(const char * const __s1, const char * const __substr) {
 
         }
 
-        printf("Reduced string: %s\n", reduced_str);
+        // printf("Reduced string: %s\n", reduced_str);
 
         reduced_str = del_substr(reduced_str, __substr);
         return reduced_str;
@@ -195,7 +195,52 @@ char * del_substr(const char * const __s1, const char * const __substr) {
         // printf("Returning '%s'\n", __s1);
         return __s1;
     }
-
-
 }
 
+// ecrire une fonction qui prend une expression algebrique en entree et
+// renvoi un tableau de caracteres ne contenant que les parentheses
+char * extract_parentheses(const char * const __expr_alg) {
+
+    uint32_t num_parenthesis = 0;
+    size_t str_len = strlen(__expr_alg);
+    // First thing to do is count the number of parenthesis
+    for( size_t i = 0; i < str_len; i ++) {
+        if ( __expr_alg[i] == '(' || __expr_alg[i] == ')' ) {
+            num_parenthesis ++;
+        }
+    }
+
+    char * parenthesis = (char *) malloc(sizeof(char) * (num_parenthesis + 1));
+    parenthesis[num_parenthesis] = '\0';
+    size_t p_index = 0; // index of parenthesis string
+
+    for( size_t i = 0; i < str_len; i ++) {
+        if ( __expr_alg[i] == '(' || __expr_alg[i] == ')' ) {
+            parenthesis[p_index] = __expr_alg[i];
+            p_index ++;
+        }
+    }
+    return parenthesis;
+}
+
+bool est_bien_parenthesee(const char * const __expr) {
+
+    int status = 0; // status of parenthesis. +1 for '(' -1 for ')'
+                    // if the status drops below zero, return false
+                    // only return true if status == 0 at the end of reading the string
+
+    for(char * p = __expr; *p != '\0'; p ++) {
+
+        if ( *p == '(' ) {
+            status ++;
+        } else if ( *p == ')') {
+            status --;
+        }
+
+        if ( status < 0 ) {
+            return false;
+        }
+    }
+
+    return status == 0;
+}

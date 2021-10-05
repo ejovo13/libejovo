@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include "ejovo_string.h"
 #include <stdbool.h>
+#include <stdint.h>
 
 // copy a NULL TERMINATED STRING into another one, without being given the length of the string
 char * cpy_str(char * __input);
@@ -31,5 +32,12 @@ bool is_substr(const char * __s1, const char * __s2);
 
 // Delete the substring from a given string, no matter how many times it appears in the string
 char * del_substr(const char * const __s1, const char * const __substr);
+
+// ecrire une fonction qui prend une expression algebrique en entree et
+// renvoi un tableau de caracteres ne contenant que les parentheses
+char * extract_parentheses(const char * const __expr_alg);
+
+// Check if an expression has a proper number of parentheses
+bool est_bien_parenthesee(const char * const __expr);
 
 #endif
