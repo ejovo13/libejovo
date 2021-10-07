@@ -13,8 +13,100 @@ char * cpy_str(char * __input) {
 // We follow the convention established by string.h where strlen() returns the number of characters not including the null string;
 char * cpy_n_str(char * __input, size_t n) {
     char * new_str = (char *) calloc(n + 1, sizeof(char));
-    strcpy(new_str, __input);
+    for (size_t i = 0; i < n; i++) {
+        new_str[i] = __input[i];
+    }
     return new_str;
+}
+
+// Get a substr starting at position __start_index (INCLUSIVE) and ending at __end_index (INCLUSIVE) because fuck python
+/* RANT
+*
+*   Every mathematical programming language/toolbox (FORTRAN, MATLAB, even NUMPY) use the syntax
+*   of start:stop. Thus, I will not use Python's bullshit string slicing and have decided
+*   to include the __end_index in the substring
+*
+*   substr(__s1, 0, 1) returns a substring containing the characters at both 0 and 1
+*/
+// Doesn't check if the bounds are even legit, so make sure you are passing positive bounds and don't extend
+// byond the original string's length
+char * substr(const char * __s1, const size_t __start_index, const size_t __end_index) {
+
+    size_t size_char = sizeof(char);
+    size_t len_substr = __end_index - __start_index + 1;
+    size_t num_bytes = size_char * len_substr;
+
+    char * str = (char *) malloc(size_char * (len_substr + 1));
+
+    if(str) {
+        memcpy((void *) str, (void *) (__s1 + __start_index), size_char * (len_substr));
+        str[len_substr] = 0;
+    }
+
+    return str;
+
+}
+
+// This function attempts to replicate the python slice. Thus, __end_index_py is NOT INCLUDED in the resulting slice
+// Thus, slice(__s1, x, x) returns a string with length 0 (a character pointer to the null character)
+char * slice(const char * __s1, const int __start_index_py, const int __end_index_py) {
+
+    size_t size_char = sizeof(char);
+    size_t start_index = 0;
+    size_t end_index = 0;
+    size_t str_len = 0;
+
+    // Determine the appropriate bounds
+    if (__start_index_py < 0) {
+
+        str_len = strlen(__s1);
+        start_index = str_len - (size_t) abs(__start_index_py);
+
+        if (__end_index_py < 0) {
+
+            end_index = str_len - (size_t) abs(__end_index_py);
+
+        } else {
+            end_index = (size_t) __end_index_py;
+        }
+
+    } else  {
+
+        str_len = strlen(__s1);
+        start_index = (size_t) __start_index_py;
+
+        if (__end_index_py < 0) {
+
+            end_index = str_len - (size_t) abs(__end_index_py);
+
+        } else {
+            end_index = (size_t) __end_index_py;
+        }
+    }
+
+    size_t len_substr = 0;
+
+    if (end_index >= start_index) {
+        len_substr = end_index - start_index;
+    } else {
+        return NULL;
+    }
+
+    char * str = (char *) malloc(size_char * (len_substr + 1));
+
+    if (str) {
+
+        for (size_t i = start_index; i < end_index; i++) {
+            str[i - start_index] = __s1[i];
+        }
+    } else {
+        return NULL;
+    }
+
+    str[len_substr] = 0;
+
+    return str;
+
 }
 
 // take an input string and return a copy that has been reversed.
@@ -225,6 +317,10 @@ char * extract_parentheses(const char * const __expr_alg) {
 
 bool est_bien_parenthesee(const char * const __expr) {
 
+    if(strlen(__expr) < 2) {
+        return false;
+    }
+
     int status = 0; // status of parenthesis. +1 for '(' -1 for ')'
                     // if the status drops below zero, return false
                     // only return true if status == 0 at the end of reading the string
@@ -234,6 +330,32 @@ bool est_bien_parenthesee(const char * const __expr) {
         if ( *p == '(' ) {
             status ++;
         } else if ( *p == ')') {
+            status --;
+        }
+
+        if (status < 0) {
+            return false;
+        }
+    }
+
+    return status == 0;
+}
+
+bool est_bien_parenthesee_n(const char * const __expr, size_t __n) {
+
+    if (__n < 2) {
+        return false;
+    }
+
+    int status = 0; // status of parenthesis. +1 for '(' -1 for ')'
+                    // if the status drops below zero, return false
+                    // only return true if status == 0 at the end of reading the string
+
+    for (size_t i = 0; i < __n; i++) {
+
+        if ( __expr[i] == '(' ) {
+            status ++;
+        } else if ( __expr[i] == ')') {
             status --;
         }
 

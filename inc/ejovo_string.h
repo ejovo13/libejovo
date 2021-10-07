@@ -7,6 +7,7 @@
 #include "ejovo_string.h"
 #include <stdbool.h>
 #include <stdint.h>
+#include <math.h>
 
 // copy a NULL TERMINATED STRING into another one, without being given the length of the string
 char * cpy_str(char * __input);
@@ -14,6 +15,13 @@ char * cpy_str(char * __input);
 // copy a NULL TERMINATED STRING into another one, specifiying ahead of time the length of the string to copy
 // We follow the convention established by string.h where str_len() returns the number of characters not including the null string;
 char * cpy_n_str(char * __input, size_t __n);
+
+// Get a substr starting at position __start_index (INCLUSIVE) and ending at __end_index (EXCLUSIVE)
+char * substr(const char * __s1, const size_t __start_index, const size_t __end_index);
+
+// This function attempts to replicate the python slice. Thus, __end_index_py is NOT INCLUDED in the resulting slice
+// Thus, slice(__s1, x, x) returns a string with length 0 (a character pointer to the null character)
+char * slice(const char * __s1, const int __start_index_py, const int __end_index_py);
 
 // take an input string and return a copy that has been reversed.
 char * reverse_string(const char * __string);
@@ -39,5 +47,8 @@ char * extract_parentheses(const char * const __expr_alg);
 
 // Check if an expression has a proper number of parentheses
 bool est_bien_parenthesee(const char * const __expr);
+
+// Check if an expression has a proper number of parentheses, while passing the length of the string that you want to check.
+bool est_bien_parenthesee_n(const char * const __expr, size_t __n);
 
 #endif

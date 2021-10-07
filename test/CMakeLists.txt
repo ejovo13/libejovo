@@ -5,6 +5,7 @@ list(APPEND TESTS
     supprime_espaces
     del_substr
     parentheses
+    substr
 )
 
 list(APPEND TEST_LIBS
