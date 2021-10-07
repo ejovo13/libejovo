@@ -22,6 +22,6 @@ add_custom_target( unit_tests ALL
                     DEPENDS ${TESTS})
 
 # Run tests after building the project
-add_custom_command(TARGET unit_tests
-                COMMENT "Run tests"
-                POST_BUILD COMMAND ctest --output-on-failure)
+# add_custom_command(TARGET unit_tests
+#                 COMMENT "Run tests"
+#                 POST_BUILD COMMAND ctest --output-on-failure)
