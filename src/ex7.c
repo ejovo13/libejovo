@@ -1,7 +1,12 @@
 // Parentheses
 #include "ejovo_string.h"
 
-// Return the longest string that is bien parenthesee
+/**
+ * Find the longest string that is properly parenthesized
+ *
+ * @param __expr_alg Algebraic expression that may or may not be properly parenthesized
+ * @return Longest sequence of valid parentheses pairs
+ */
 char * plus_longue_expr(const char * const __expr_alg)
 {
 
