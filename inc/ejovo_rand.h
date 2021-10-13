@@ -6,6 +6,7 @@
 #include <time.h>
 #include <stdint.h>
 #include <sys/random.h>
+#include <sys/types.h>
 #include <limits.h>
 
 /**@file
