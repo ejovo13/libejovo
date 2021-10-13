@@ -1,7 +1,10 @@
 #ifndef EJOVO_PRINT
 #define EJOVO_PRINT
 
-// Provide a few functions to print the description of an exercise
+/**@file
+ * @brief Provide a few functions to print the description of an exercise
+ *
+ */
 #include <stdio.h>
 
 

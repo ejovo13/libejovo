@@ -8,18 +8,20 @@
 #include <stdlib.h>
 
 
-// Creer une fonction recursive
-void reverse(int n) {
+// Creer une fonction recursive pour afficher les entiers a l'inverse
+void reverse(long n) {
 
-    if ( n < 10 ) {
-        printf("%d", n);
-    } else {
-        
+    if (n < 0) { // Include negative sign if the value is negative
+        printf("-");
+        n = -n; // Use the absolute value of n for the rest of the digits
     }
 
-
-
-
+    if (n < 10) {
+        printf("%ld", n);
+    } else {
+        printf("%ld", n%10);
+        reverse( (n - (n % 10)) / 10 ); // for 123, print 3 then pass 12 to reverse to print 2, then pass 1 and print 1
+    }
 }
 
 
@@ -48,16 +50,9 @@ int main() {
 
     }
 
-
-
-    // printf("Num digits = %d\n", num_digits);
-
-
+    printf("Num digits = %d\n", num_digits);
 
     // Write the number to a string and then reverse it
-
-
-
     char num_forward[num_digits + 1];
     char num_reverse[num_digits + 1];
 
@@ -104,6 +99,9 @@ int main() {
 
     printf("reversed number: %s\n", num_reverse);
 
+    printf("new function reverse:\n");
+    reverse(user_input);
+    printf("\n");
 
     // if the original value is negative, remember to add the negative
 
