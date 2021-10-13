@@ -7,6 +7,22 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
+
+// Creer une fonction recursive
+void reverse(int n) {
+
+    if ( n < 10 ) {
+        printf("%d", n);
+    } else {
+        
+    }
+
+
+
+
+}
+
+
 int main() {
 
     long int user_input = 0;
