@@ -101,6 +101,13 @@ bool est_bien_parenthesee(const char * const __expr);
  */
 bool est_bien_parenthesee_n(const char * const __expr, size_t __n);
 
+/**
+ * Find the longest string that is properly parenthesized
+ *
+ * @param __expr_alg Algebraic expression that may or may not be properly parenthesized
+ * @return Longest sequence of valid parentheses pairs
+ */
+char * plus_longue_expr(const char * const __expr_alg);
 
 /**
  * Store the value of x as a decimal string

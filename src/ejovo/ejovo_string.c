@@ -367,6 +367,46 @@ bool est_bien_parenthesee_n(const char * const __expr, size_t __n) {
     return status == 0;
 }
 
+
+// Find the longest string that is properly parenthesized
+char * plus_longue_expr(const char * const __expr_alg)
+{
+
+    char * expr_reduced = extract_parentheses(__expr_alg);
+    char * longue_expr = NULL;
+    size_t str_len = strlen(expr_reduced);
+    char * sub_str = NULL;
+    // now that we have a copy, we can start changing the end points to test shorter string sections
+    bool expr_found = false;
+
+    size_t i = 0;
+    size_t j = 0;
+    // start with the longest string section (the whole string)
+    for (i = 0; i < str_len - 1; i++) {
+
+        for (j = 0; j < str_len - i - 1; j++) {// remove segments from the end
+
+            sub_str = substr(expr_reduced, i, str_len - j - 1);
+            if (est_bien_parenthesee(sub_str)) {
+                expr_found = true;
+                goto fuck_up;
+            }
+
+
+        }
+    }
+    fuck_up: // This label is called fuck up because I made a mistake and thought that the break statement will
+            // break you out of all loops. That's pretty stupid. Instead it only breaks you out of the inner loop
+            // and I should have known better.
+
+    if (expr_found) {
+        longue_expr = sub_str;
+    }
+
+    return longue_expr; // Will be null if expression was not found
+
+}
+
 // count the number of space, tab, or newline delimited words
 size_t count_words(const char * __string) {
 

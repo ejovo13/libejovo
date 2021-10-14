@@ -14,10 +14,16 @@ int main() {
     char full_str[] = "This is  full string";
     char sub_str[] = "is  ";
 
-    bool condition = is_substr(full_str, sub_str);
+    char full_str2[] = "Hello this is a full string";
+    char sub_str2[] = "is";
 
-    printf("Is substring: %d\n", condition);
+    printf("Full string: '%s'\n", full_str);
+    printf("substring:   '%s'\n", sub_str);
 
+    printf("full string - substr: '%s'\n", del_substr(full_str, sub_str));
 
+    printf("\nFull string: '%s'\n", full_str2);
+    printf("substring:   '%s'\n", sub_str2);
+    printf("full string - substr: '%s'\n", del_substr(full_str2, sub_str2));
     return 0;
 }

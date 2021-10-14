@@ -59,7 +59,6 @@ int somme_des_chiffres(uint32_t x) {
     int sum = 0;
     int this_digit = 0;
 
-    // printf("What's goot we in this bitch\n");
 
     for (int i = 0; i < num_digits; i ++) {
 
@@ -95,20 +94,9 @@ int main() {
     ejovo_seed();
     int i = unif(0, 5000);
 
-    // char * i_str = int_to_string(i);
-    // if(! i_str) {
-    //     printf("Null string, exiting with error code 1\n");
-    //     return 1;
-    // }
-
-    // printf("My number as string: %s\n", i_str);
-
     printf("extraitNombre(%d, 5, 3) = %02d\n", i, extrait_nombre(i, 5, 3));
     printf("somme_des_chiffres(%d) = %d\n", i, somme_des_chiffres(i));
     printf("est_coucable(%d) = %d", i, est_couicable(i));
-
-    // make_format_string(3, 16);
-
 
     return 0;
 }
