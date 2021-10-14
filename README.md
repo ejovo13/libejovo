@@ -5,7 +5,7 @@ This repo contains my solutions to the exercises presented in TP3. All of the ex
 
 ## SRC
 
-Contaions the programs that exhibit prper behavior as prescribed by the exercises.
+Contains the programs that exhibit behavior prescribed by the exercises.
 
 ## INC
 
@@ -13,7 +13,7 @@ Inc contains the super important header files `ejovo_*` that declare many of the
 
 ## TEST
 
-Tests can be run with `ctest` or `make test` while in the build directory.
+Tests can be run with `ctest` or `make test` while in the build directory. The tests verify that the functions declared in `ejovo_string` are working properly.
 
 # Exercise 1
 The function `reverse` recursively prints the last digit of a passed integer to stdout. If the number is negative the negative sign will only be printed once.
