@@ -15,6 +15,9 @@ Inc contains the super important header files `ejovo_*` that declare many of the
 
 Tests can be run with `ctest` or `make test` while in the build directory. The tests verify that the functions declared in `ejovo_string` are working properly.
 
+# Docs
+Documentation for all of the functions declared in the `ejovo` headers can be found [here](https://ejovo13.github.io/informatique-TP3/)
+
 # Exercise 1
 The function `reverse` recursively prints the last digit of a passed integer to stdout. If the number is negative the negative sign will only be printed once.
 
