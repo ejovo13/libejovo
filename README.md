@@ -3,6 +3,8 @@
 
 This repo contains my solutions to the exercises presented in TP3. All of the exercises can be made with CMake. Unfortunately, CMake will not successfully build on MacOs since `ejovo_rand.h` makes use of the `getrandom` function that is only defined on Linux systems. Hence, the build is passing for Ubuntu and builds just fine on my arch machine.
 
+# Build
+Build with cmake. The executable files will be output in the `bin` directory.
 ## SRC
 
 Contains the programs that exhibit behavior prescribed by the exercises.
