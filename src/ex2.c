@@ -2,6 +2,7 @@
 #include <math.h>
 #include "ejovo_print.h"
 #include "ejovo_rand.h"
+#include "ejovo_string.h"
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -12,54 +13,6 @@ int nb_chiffres(long x) {
 // nb_chiffres(100) returns 3
     return (int) log10((double) labs(x) ) + 1;
 }
-
-char * int_to_string(int x) {
-// Take an integer and return a null terminated string of that integer.
-// if the number is negative, take that into account and return a string that
-// includes the negative sign
-
-    int n_digits = nb_chiffres(x);
-    int str_length = 0;
-    char * num_str = NULL;
-
-    if ( x > 0 ) {
-
-        str_length = n_digits + 1;
-
-    } else {
-
-        str_length = n_digits + 2; // Allocate space for the digits, a negative sign, and a null-terminated string
-
-    }
-
-    num_str = (char *) malloc(sizeof(char) * (str_length));
-    // printf("Allocated %d digits\n", str_length);
-    num_str[str_length - 1] = '\0';
-
-    // printf("Recorded %d digits\n", n_digits);
-
-    sprintf(num_str, "%d", x);
-    // printf("Number saved as: %s\n", num_str);
-
-
-    return num_str;
-
-}
-
-// char * make_format_string(uint32_t num_digits, uint32_t value) {
-
-//     // make character string to pad left with 0's for any integer
-//     char * fmt = calloc(6, sizeof(char));
-//     fmt[0] = '%';
-//     fmt[1] = '0';
-//     sprintf(fmt + 2, "%02u", value);
-//     fmt[4] = 'd';
-//     fmt[5] = '\0';
-
-//     printf("Made format string:\n %s|\n", fmt);
-
-
-// }
 
 int extrait_nombre(uint32_t x, int n, int lg) {
     // Integer has to be positive

@@ -6,6 +6,7 @@ list(APPEND TESTS
     del_substr
     parentheses
     substr
+    words
 )
 
 list(APPEND TEST_LIBS

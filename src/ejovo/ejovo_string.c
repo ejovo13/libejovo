@@ -366,3 +366,66 @@ bool est_bien_parenthesee_n(const char * const __expr, size_t __n) {
 
     return status == 0;
 }
+
+// count the number of space, tab, or newline delimited words
+size_t count_words(const char * __string) {
+
+    // decompose a string that is separated by spaces
+    size_t len = strlen(__string); // we can avoid this
+
+    // count the words that exist in a string
+
+    // a word can be separated by any number of spaces or tabs
+
+    size_t n_words = 0;
+
+    while (*__string != '\0') {
+
+        if (__string[0] != ' ' && __string[0] != '\n' && __string[0] != '\t') { // If the current character is not a space
+            // and next character is a space of null character
+            if(__string[1] == ' ' || __string[1] == '\n' || __string[1] == '\t' || __string[1] == '\0') {
+                n_words ++;
+            }
+        }
+
+        __string++;
+
+    }
+
+    return n_words;
+}
+
+char * int_to_string(int __x) {
+// Take an integer and return a null terminated string of that integer.
+// if the number is negative, take that into account and return a string that
+// includes the negative sign
+
+    int n_digits = nb_chiffres_(__x);
+    int str_length = 0;
+    char * num_str = NULL;
+
+    if ( __x > 0 ) {
+
+        str_length = n_digits + 1;
+
+    } else {
+
+        str_length = n_digits + 2; // Allocate space for the digits, a negative sign, and a null-terminated string
+
+    }
+
+    num_str = (char *) malloc(sizeof(char) * (str_length));
+    num_str[str_length - 1] = '\0';
+
+    sprintf(num_str, "%d", __x);
+
+    return num_str;
+
+}
+
+static int nb_chiffres_(long x) {
+// Return the number of digits for an integer
+// nb_chiffres(-10) returns 2
+// nb_chiffres(100) returns 3
+    return (int) log10((double) labs(x) ) + 1;
+}

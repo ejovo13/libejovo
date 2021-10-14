@@ -101,4 +101,13 @@ bool est_bien_parenthesee(const char * const __expr);
  */
 bool est_bien_parenthesee_n(const char * const __expr, size_t __n);
 
+
+/**
+ * Store the value of x as a decimal string
+ */
+char * int_to_string(int x);
+
+// Internal procedure to count the number of digits that an integer has
+static int nb_chiffres_(long x);
+
 #endif
