@@ -77,9 +77,28 @@ int main(void) {
     printf("\n");
 
     Matrix * A_sub1 = Matrix_submat(A1, 0, 9, 0, 9); // get 10x10 block
+    Matrix * A_sub2 = Matrix_submat(A1, 13, 22, 5, 14);
     Matrix_print(A_sub1);
+    printf("\t+\n");
+    Matrix_print(A_sub2);
+    printf("\t=\n");
+    Matrix_print(Matrix_add(A_sub1, A_sub2));
 
+    print_line(80, '&');
 
+    Matrix * A_sub3 = Matrix_submat(A1, 0, 3, 3, 8);
+    Matrix * A_sub4 = Matrix_submat(A1, 12, 15, 6, 14);
+
+    Matrix_print(A_sub3);
+    Matrix_print(A_sub4);
+    Matrix_print(Matrix_ccat(A_sub3, A_sub4));
+
+    Matrix * A_sub5 = Matrix_submat(A1, 5, 8, 3, 8);
+    Matrix * A_sub6 = Matrix_submat(A1, 12, 15, 6, 11);
+
+    Matrix_print(A_sub5);
+    Matrix_print(A_sub6);
+    Matrix_print(Matrix_rcat(A_sub5, A_sub6));
 
 
 

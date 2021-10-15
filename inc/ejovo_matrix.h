@@ -93,3 +93,11 @@ Matrix * Matrix_rand(size_t __nrows, size_t __ncols);
 bool is_square(Matrix * __A);
 
 Matrix * Matrix_pow(Matrix * __A, size_t __power);
+
+// Copy the matrix __src into the submatrix of __dest prescribed by the start and end indices
+int Matrix_copy_elements(Matrix * __dest, size_t __istart, size_t __iend, size_t __jstart, size_t __jend, Matrix * __src);
+
+
+Matrix * Matrix_rcat(Matrix * __A, Matrix * __B);
+
+Matrix * Matrix_ccat(Matrix * __A, Matrix * __B);

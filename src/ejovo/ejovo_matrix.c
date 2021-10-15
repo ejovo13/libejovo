@@ -305,7 +305,6 @@ Matrix * Matrix_value(size_t __nrows, size_t __ncols, MATRIX_TYPE __value) {
     Matrix_fill(m, __value);
 
     return m;
-
 }
 
 // MUST INITIALIZE EJOVO_SEED TO GET RANDOM VALUES
@@ -361,5 +360,91 @@ Matrix * Matrix_pow(Matrix * __A, size_t __power) {
     }
 
     return m;
+
+}
+// Copy the matrix __src into the submatrix of __dest prescribed by the start and end indices
+int Matrix_copy_elements(Matrix * __dest, size_t __istart, size_t __iend, size_t __jstart, size_t __jend, Matrix * __src) {
+
+    // If the submatrix is not contained in __des
+    if (__iend < __istart || __jend < __jstart || __iend >= __dest->nrows || __jend >= __dest->ncols) {
+        perror("Selected submatrix is not contained within Parent Matrix\n");
+        return -1;
+    }
+
+    // If the __src is not the same size as the selected submatrix
+    if (__src->nrows != (__iend - __istart + 1) || __src->ncols != (__jend - __jstart + 1)) {
+        perror("Selected submatrix not the same size as the src matrix to copy\n");
+        return -2;
+    }
+
+    size_t irow = 0, jcol = 0; // indices for __src matrix
+    for (size_t i = __istart, irow = 0; i <= __iend; i++, irow++) {
+        for (size_t j = __jstart, jcol = 0; j <= __jend; j++, jcol++) {
+            Matrix_set(__dest, i, j, Matrix_at(__src, irow, jcol));
+        }
+    }
+
+    return 0;
+}
+
+
+Matrix * Matrix_rcat(Matrix * __A, Matrix * __B) {
+
+    if ( __A->ncols != __B->ncols) {
+        perror("Cannont row concatenate two incompatible matrices\n");
+        return NULL;
+    } else {
+        Matrix * Mcat = Matrix_new(__A->nrows + __B->nrows, __A->ncols);
+        int status1 = Matrix_copy_elements(Mcat, 0, __A->nrows - 1, 0, __A->ncols - 1, __A);
+        int status2 = Matrix_copy_elements(Mcat, __A->nrows, __A->nrows + __B->nrows - 1, 0, __A->ncols - 1, __B);
+
+        if (status1 < 0 || status2 < 0) {
+            return NULL;
+        } else {
+            return Mcat;
+        }
+    }
+}
+
+
+Matrix * Matrix_ccat(Matrix * __A, Matrix * __B) {
+
+    if ( __A->nrows != __B->nrows) {
+        perror("Cannont col concatenate two incompatible matrices\n");
+        return NULL;
+    } else {
+        Matrix * Mcat = Matrix_new(__A->nrows, __A->ncols + __B->ncols);
+        int status1 = Matrix_copy_elements(Mcat, 0, __A->nrows - 1, 0, __A->ncols - 1, __A);
+        int status2 = Matrix_copy_elements(Mcat, 0, __A->nrows - 1, __A->ncols, __A->ncols + __B->ncols - 1, __B);
+
+        if (status1 < 0 || status2 < 0) {
+            return NULL;
+        } else {
+            return Mcat;
+        }
+    }
+}
+
+
+Matrix * Matrix_minor(Matrix * __A, size_t __irow, size_t __icol) {
+
+    assert(Matrix_is_square(__A));
+
+    // Split matrix into 4 corners
+
+
+
+
+
+
+
+
+}
+
+
+// recursive algorithm to compute the determinant of a matrix
+double Matrix_det(Matrix * __A) {
+
+
 
 }
