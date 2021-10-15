@@ -7,8 +7,9 @@
 #include <stdbool.h>
 #include <assert.h>
 
+#ifndef MATRIX_TYPE
 #define MATRIX_TYPE int
-
+#endif
 typedef struct mat_t {
     MATRIX_TYPE * data;
     size_t nrows;
@@ -154,10 +155,34 @@ bool Matrix_comp_mult(Matrix * __A, Matrix * __B) {
     return (__A->ncols == __B->nrows);
 }
 
-// // copy the contents of matrix __src into __dest
-// bool matcpy(Matrix * __dest, Matrix * __src) {
-//     return true;
-// }
+// Copy the bytes
+// this is a utility function and should not be used by the end user
+static bool matcpy(Matrix * __dest, Matrix * __src) {
+
+    // Copy the bytes of __src->data into __dest->data
+    memcpy(__dest->data, __src->data, sizeof(MATRIX_TYPE)*(__src->nrows * __src->nrows));
+    __dest->ncols = __src->ncols;
+    __dest->nrows = __src->nrows;
+    if(__dest && __src && __dest->data) { // if all the pointers are not null, return true
+        return  true;
+    } else {
+        return false;
+    }
+}
+
+
+// copy the contents of matrix __src into __dest
+Matrix * matclone(Matrix * __src) {
+
+    Matrix * clone = NULL;
+
+    clone = Matrix_new(__src->ncols, __src->nrows);
+    if (clone) {
+        matcpy(clone, __src);
+    }
+
+    return clone;
+}
 
 Matrix * matmul(Matrix * __A, Matrix * __B) {
 
@@ -182,6 +207,9 @@ Matrix * matmul(Matrix * __A, Matrix * __B) {
 
     return product;
 }
+Matrix * Matrix_multiply(Matrix * __A, Matrix * __B) {
+    return matmul(__A, __B);
+}
 
 // IDEA!! MAKE THESE VARIADIC FUNCTIONS!!!
 Matrix * matadd(Matrix * __A, Matrix * __B) {
@@ -202,6 +230,10 @@ Matrix * matadd(Matrix * __A, Matrix * __B) {
     }
 
     return sum;
+}
+
+Matrix * Matrix_add(Matrix * __A, Matrix * __B) {
+    return matadd(__A, __B);
 }
 
 // Extract submatrix __A(__istart:__iend, __jstart:__jend)
@@ -236,7 +268,10 @@ Matrix * submat(Matrix * __A, size_t __istart, size_t __iend, size_t __jstart, s
     return sub;
 }
 
-
+// Alternative spelling for object-oriented approach.
+Matrix * Matrix_submat(Matrix * __A, size_t __istart, size_t __iend, size_t __jstart, size_t __jend) {
+    return submat(__A, __istart, __iend, __jstart, __jend);
+}
 
 
 int main(void) {
