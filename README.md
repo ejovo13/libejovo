@@ -5,6 +5,15 @@ This repo contains my solutions to the exercises presented in TP3. All of the ex
 
 # Build
 Build with cmake. The executable files will be output in the `bin` directory.
+
+It is recommended to perform an out-of-source build.
+```Bash
+mkdir build && cd build
+cmake ../  # Generate configuration and makefiles
+cmake --build ./ # Build the project according to the configuration
+ctest --output-on-failure
+```
+
 ## SRC
 
 Contains the programs that exhibit behavior prescribed by the exercises.
