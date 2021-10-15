@@ -428,17 +428,84 @@ Matrix * Matrix_ccat(Matrix * __A, Matrix * __B) {
 
 Matrix * Matrix_minor(Matrix * __A, size_t __irow, size_t __icol) {
 
-    assert(Matrix_is_square(__A));
+    // assert(Matrix_is_square(__A));
 
     // Split matrix into 4 corners
+    printf("nrows: %lu, ncols: %lu\n", __A->nrows, __A->ncols);
 
+    Matrix * upper_left = NULL;
+    Matrix * upper_right = NULL;
+    Matrix * lower_left = NULL;
+    Matrix * lower_right = NULL;
+    Matrix * upper_half = NULL;
+    Matrix * lower_half = NULL;
 
+    if (__irow == 0) {
 
+    // then we only use lower left and lower right
 
+        if (__icol == 0) {
+            // then we only use lower right!!
+            lower_right = Matrix_submat(__A, 1, __A->nrows - 1, 1, __A->ncols - 1);
+            return lower_right;
+        } else if (__icol == __A->ncols-1) {
+            // then we only use lower left!!
+            lower_left = Matrix_submat(__A, 1, __A->nrows - 1, 0, __A->ncols - 2);
+            return  lower_left;
+        } else {
+            lower_left = Matrix_submat(__A, 1, __A->nrows - 1, 0, __icol - 1);
+            lower_right = Matrix_submat(__A, 1, __A->nrows - 1, __icol + 1, __A->ncols - 1);
+            return Matrix_ccat(lower_left, lower_right);
+        }
 
+    } else if (__irow == __A->nrows - 1) {
+    // irow is the last row so we only use the upper left and upper right sections
+        // printf("final row selected\n");
 
+        if (__icol == 0) {
+            // then we only use upper right!!
+            upper_right = Matrix_submat(__A, 0, __A->nrows - 2, 1, __A->ncols - 1);
+            return upper_right;
+        } else if (__icol == __A->ncols - 1) {
+            // then we only use upper left!!
+            upper_left = Matrix_submat(__A, 0, __A->nrows - 2, 0, __A->ncols - 2);
+            // printf("Only using upper left!");
+            return upper_left;
+        } else {
+            upper_left= Matrix_submat(__A, 0, __A->nrows - 2, 0, __icol - 1);
+            upper_right = Matrix_submat(__A, 0, __A->nrows - 2, __icol + 1, __A->ncols - 1);
+            return Matrix_ccat(upper_left, upper_right);
+        }
 
+    } else {
+        // do whatever
+        if (__icol == 0) {
+            // use the upper right and lower right sections!
+            printf("Using upper right and lower right sections!\n");
+            upper_right = Matrix_submat(__A, 0, __irow-1, 1, __A->ncols - 1);
+            lower_right = Matrix_submat(__A, __irow + 1, __A->nrows - 1, 1, __A->ncols - 1);
+            return Matrix_rcat(upper_right, lower_right);
+        } else if (__icol == __A->ncols - 1) {
+            // use the upper left and lower left sections!
+            printf("using upper_left and lower_left\n");
+            upper_left = Matrix_submat(__A, 0, __irow-1, 0, __A->ncols - 2);
+            lower_left = Matrix_submat(__A, __irow + 1, __A->nrows - 1, 0, __A->ncols - 2);
+            return Matrix_rcat(upper_left, lower_left);
+        } else {
+            // use all 4 sections!!!
 
+            upper_left = Matrix_submat(__A, 0, __irow - 1, 0, __icol - 1);
+            upper_right = Matrix_submat(__A, 0, __irow - 1, __icol + 1, __A->ncols - 1);
+            lower_left = Matrix_submat(__A, __irow + 1, __A->nrows - 1, 0, __icol - 1);
+            lower_right = Matrix_submat(__A, __irow + 1, __A->nrows - 1, __icol + 1, __A->ncols - 1);
+
+            upper_half = Matrix_ccat(upper_left, upper_right);
+            lower_half = Matrix_ccat(lower_left, lower_right);
+
+            return Matrix_rcat(upper_half, lower_half);
+
+        }
+    }
 }
 
 

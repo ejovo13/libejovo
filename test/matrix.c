@@ -100,6 +100,43 @@ int main(void) {
     Matrix_print(A_sub6);
     Matrix_print(Matrix_rcat(A_sub5, A_sub6));
 
+    Matrix * A_sub0 = Matrix_submat(A1, 0, 0, 0, 0);
+    Matrix_print(A_sub0);
+
+    print_line(80, '#');
+
+    Matrix * toy = Matrix_submat(A1, 4, 8, 8, 10); // 5 x 3 matrix
+    Matrix_print(toy);
+
+    // Matrix * toy_m00 = Matrix_minor(toy, 0, 0);
+    // Matrix_print(toy_m00);
+
+    // Matrix * toy_m42 = Matrix_minor(toy, 4, 2);
+    // Matrix_print(toy_m42);
+
+    // Matrix * toy_m40 = Matrix_minor(toy, 4, 0);
+    // Matrix_print(toy_m40);
+
+    // Matrix * toy_m02 = Matrix_minor(toy, 0, 2);
+    // Matrix_print(toy_m02);
+
+    // Matrix * toy_m10 = Matrix_minor(toy, 1, 0);
+    // Matrix_print(toy_m10);
+
+    // Matrix * toy_m30 = Matrix_minor(toy, 3, 0);
+    // Matrix_print(toy_m30);
+
+    Matrix * toy_m01 = Matrix_minor(toy, 0, 1);
+    Matrix_print(toy_m01);
+
+    Matrix * toy_m41 = Matrix_minor(toy, 4, 1);
+    Matrix_print(toy_m41);
+
+    Matrix * toy_m31 = Matrix_minor(toy, 3, 1);
+    Matrix_print(toy_m31);
+
+
+
 
 
 

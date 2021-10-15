@@ -101,3 +101,5 @@ int Matrix_copy_elements(Matrix * __dest, size_t __istart, size_t __iend, size_t
 Matrix * Matrix_rcat(Matrix * __A, Matrix * __B);
 
 Matrix * Matrix_ccat(Matrix * __A, Matrix * __B);
+
+Matrix * Matrix_minor(Matrix * __A, size_t __irow, size_t __icol);
