@@ -1,4 +1,4 @@
-add_library(ejovo ejovo_print.c ejovo_rand.c ejovo_string.c ejovo_input.c)
+add_library(ejovo ejovo_print.c ejovo_rand.c ejovo_string.c ejovo_input.c ejovo_matrix.c)
 
 target_link_libraries(ejovo m)
 target_include_directories(ejovo PUBLIC "${CMAKE_SOURCE_DIR}/inc")

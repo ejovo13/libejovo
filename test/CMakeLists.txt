@@ -7,6 +7,7 @@ list(APPEND TESTS
     parentheses
     substr
     words
+    matrix
 )
 
 list(APPEND TEST_LIBS
