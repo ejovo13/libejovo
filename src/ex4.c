@@ -7,6 +7,8 @@ typedef MatrixElement * Matrix;
 
 
 #include "ejovo_input.h"
+#include <stdlib.h>
+
 
 void set_row_col(MatrixElement * __e1, MatrixElement * __e2) {
 
