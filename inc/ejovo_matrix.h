@@ -6,7 +6,7 @@
 #include "ejovo_rand.h"
 
 #ifndef MATRIX_TYPE
-#define MATRIX_TYPE int
+#define MATRIX_TYPE long
 #endif
 typedef struct mat_t {
     MATRIX_TYPE * data;
@@ -103,3 +103,5 @@ Matrix * Matrix_rcat(Matrix * __A, Matrix * __B);
 Matrix * Matrix_ccat(Matrix * __A, Matrix * __B);
 
 Matrix * Matrix_minor(Matrix * __A, size_t __irow, size_t __icol);
+// recursive algorithm to compute the determinant of a matrix
+double Matrix_det(Matrix * __A);

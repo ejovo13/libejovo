@@ -135,7 +135,12 @@ int main(void) {
     Matrix * toy_m31 = Matrix_minor(toy, 3, 1);
     Matrix_print(toy_m31);
 
+    print_line(80, "+");
+    printf("\n Here starts the determinant tests\n");
 
+    Matrix * D = Matrix_random(4, 4, 0, 3);
+    Matrix_print(D);
+    printf("Det(D): %lf\n", Matrix_det(D));
 
 
 

@@ -431,7 +431,7 @@ Matrix * Matrix_minor(Matrix * __A, size_t __irow, size_t __icol) {
     // assert(Matrix_is_square(__A));
 
     // Split matrix into 4 corners
-    printf("nrows: %lu, ncols: %lu\n", __A->nrows, __A->ncols);
+    // printf("nrows: %lu, ncols: %lu\n", __A->nrows, __A->ncols);
 
     Matrix * upper_left = NULL;
     Matrix * upper_right = NULL;
@@ -481,13 +481,13 @@ Matrix * Matrix_minor(Matrix * __A, size_t __irow, size_t __icol) {
         // do whatever
         if (__icol == 0) {
             // use the upper right and lower right sections!
-            printf("Using upper right and lower right sections!\n");
+            // printf("Using upper right and lower right sections!\n");
             upper_right = Matrix_submat(__A, 0, __irow-1, 1, __A->ncols - 1);
             lower_right = Matrix_submat(__A, __irow + 1, __A->nrows - 1, 1, __A->ncols - 1);
             return Matrix_rcat(upper_right, lower_right);
         } else if (__icol == __A->ncols - 1) {
             // use the upper left and lower left sections!
-            printf("using upper_left and lower_left\n");
+            // printf("using upper_left and lower_left\n");
             upper_left = Matrix_submat(__A, 0, __irow-1, 0, __A->ncols - 2);
             lower_left = Matrix_submat(__A, __irow + 1, __A->nrows - 1, 0, __A->ncols - 2);
             return Matrix_rcat(upper_left, lower_left);
@@ -509,9 +509,28 @@ Matrix * Matrix_minor(Matrix * __A, size_t __irow, size_t __icol) {
 }
 
 
+
+
 // recursive algorithm to compute the determinant of a matrix
 double Matrix_det(Matrix * __A) {
 
+    assert(Matrix_is_square(__A));
+
+    double local_det = 0;
+
+    if (__A->ncols == 1 && __A->nrows == 1) {
+        return Matrix_at(__A, 0, 0);
+    } else {
+
+        size_t i = 0;
+        for (size_t j = 0; j < __A->ncols; j++) {
+            double cofactor = pow(-1.0, i + j)*Matrix_det(Matrix_minor(__A, i, j));
+            // printf("Cofactor: %lf, i: %lu, j: %lu\n", cofactor, i, j);
+            local_det += cofactor * Matrix_at(__A, i, j);
+        }
+    }
+
+    return local_det;
 
 
 }
