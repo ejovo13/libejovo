@@ -1,5 +1,4 @@
 #include "ejovo_rand.h"
-#include <stdio.h>
 
 int get_rand_int_range(int min, int max) {
 // get random integer in [min, max]
@@ -21,10 +20,34 @@ uint64_t rol64(uint64_t x, int k)
 
 struct xoshiro256ss_state XOSHIRO_RNG = {0, 0, 0, 0};
 
-//seed xoshiro generator by getting 256 random bytes from the getrandom system call.
-ssize_t seed_xoshiro256ss(struct xoshiro256ss_state * state) {
-    return getrandom(state, 32, 0);
+//seed xoshiro generator by getting 256 random bits from the getrandom system call.
+void seed_xoshiro256ss(struct xoshiro256ss_state * state) {
+    // if on linux, seed the 256 bits with a system call of getrandom
+    #ifdef __linux
+        getrandom(state, 32, 0);
+    #else
+
+        uint32_t * data = malloc(32); // allocate 32 bytes of memory, where each uint32_t is 4 bytes, so 8 uint32_t's
+        uint32_t temp = 0;
+        for (uint32_t i = 0; i < 8; i++) {
+
+            temp = get_rand_int_range(INT_MIN, INT_MAX);
+            data[i] = temp;
+
+        }
+
+        uint64_t state_data = (uint64_t *) data; // still 32 bytes, but now in 4 8 byte chunks
+        state->s[0] = data[0];
+        state->s[1] = data[1];
+        state->s[2] = data[2];
+        state->s[3] = data[3];
+
+    #endif
+    // else, use the generic rand function to get 32 bits of data 8 times
+
 }
+
+// if I want this shit to work on macos, I need to user a different function than get random.
 
 
 void print_xoshiro256ss_state(struct xoshiro256ss_state * state) {

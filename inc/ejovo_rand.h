@@ -8,6 +8,7 @@
 #include <sys/random.h>
 #include <sys/types.h>
 #include <limits.h>
+#include <stdio.h>
 
 /**@file
  * @brief Utilities for non-naive random number generation in C
@@ -75,7 +76,7 @@ uint64_t rol64(uint64_t x, int k);
  * Seed xoshiro generator by getting 256 random bytes from the getrandom system call.
  *
  */
-ssize_t seed_xoshiro256ss(struct xoshiro256ss_state * state);
+void seed_xoshiro256ss(struct xoshiro256ss_state * state);
 
 /**
  * Print the 256 bits of state for an xoshiro256ss_state structure
