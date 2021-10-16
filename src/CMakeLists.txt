@@ -22,9 +22,9 @@ list(APPEND SRC_LIBS
     ejovo
 )
 
-if (NOT WIN32)
-    list(APPEND SRC_LIBS m)
-endif()
+# if (NOT WIN32)
+#     list(APPEND SRC_LIBS m)
+# endif()
 
 # add_subdirectory(ex9)
 add_subdirectory(ejovo)

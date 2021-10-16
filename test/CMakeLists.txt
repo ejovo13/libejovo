@@ -14,9 +14,9 @@ list(APPEND TEST_LIBS
     ejovo
 )
 
-if (NOT WIN32)
-    list(APPEND TEST_LIBS m)
-endif()
+# if (NOT WIN32)
+#     list(APPEND TEST_LIBS m)
+# endif()
 
 list(APPEND TEST_INC
     ${INC}
