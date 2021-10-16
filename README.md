@@ -2,6 +2,7 @@
 ***
 ![Ubuntu](https://github.com/ejovo13/informatique-TP4/actions/workflows/Ubuntu.yml/badge.svg)
 ![MacOs](https://github.com/ejovo13/informatique-TP4/actions/workflows/Mac.yml/badge.svg)
+![Windows](https://github.com/ejovo13/informatique-TP4/actions/workflows/Windows.yml/badge.svg)
 
 This repo contains my solutions to the exercises presented in TP4. All of the exercises can be made with CMake. Unfortunately, CMake will not successfully build on MacOs since `ejovo_rand.h` makes use of the `getrandom` function that is only defined on Linux systems. Hence, the build is passing for Ubuntu and builds just fine on my arch machine.
 

@@ -12,8 +12,11 @@ list(APPEND TESTS
 
 list(APPEND TEST_LIBS
     ejovo
-    m
 )
+
+if (NOT WIN32)
+    list(APPEND TEST_LIBS m)
+endif()
 
 list(APPEND TEST_INC
     ${INC}
