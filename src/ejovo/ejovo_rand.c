@@ -36,11 +36,12 @@ void seed_xoshiro256ss(struct xoshiro256ss_state * state) {
 
         }
 
-        uint64_t state_data = (uint64_t *) data; // still 32 bytes, but now in 4 8 byte chunks
-        state->s[0] = data[0];
-        state->s[1] = data[1];
-        state->s[2] = data[2];
-        state->s[3] = data[3];
+        uint64_t * state_data = (uint64_t *) data; // still 32 bytes, but now in 4 8 byte chunks
+        state->s[0] = state_data[0];
+        state->s[1] = state_data[1];
+        state->s[2] = state_data[2];
+        state->s[3] = state_data[3];
+
 
     #endif
     // else, use the generic rand function to get 32 bits of data 8 times
