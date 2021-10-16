@@ -9,6 +9,7 @@
 #include <sys/types.h>
 #include <limits.h>
 #include <stdio.h>
+#include <string.h>
 
 /**@file
  * @brief Utilities for non-naive random number generation in C
