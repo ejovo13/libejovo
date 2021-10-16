@@ -23,7 +23,7 @@
 
 
 /**
- * Contain the 256 bits of state needed for xoshiro random number generation
+ *  @brief Structure to contain the 256 bits of state needed for xoshiro random number generation
  *
  *  The xorshiro algorithm is a class of `xorshift` algorithms that encorporates
  *  bit rotations and linear shifts combined with xor bit operations to create
