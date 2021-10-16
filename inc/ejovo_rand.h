@@ -5,8 +5,10 @@
 #include <math.h>
 #include <time.h>
 #include <stdint.h>
-#include <sys/random.h>
-#include <sys/types.h>
+#ifdef linux
+    #include <sys/random.h>
+    #include <sys/types.h>
+#endif
 #include <limits.h>
 #include <stdio.h>
 #include <string.h>
