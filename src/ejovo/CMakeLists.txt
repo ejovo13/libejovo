@@ -2,7 +2,7 @@ add_library(ejovo ejovo_print.c ejovo_rand.c ejovo_string.c ejovo_input.c ejovo_
 if (NOT WIN32)
     target_link_libraries(ejovo m)
 endif()
-target_include_directories(ejovo PUBLIC "${CMAKE_SOURCE_DIR}/inc")
+target_include_directories(ejovo PRIVATE "${CMAKE_SOURCE_DIR}/inc")
 
 # message("Trying to include directory ${CMAKE_SOURCE_DIR}/inc/battleship")
 
