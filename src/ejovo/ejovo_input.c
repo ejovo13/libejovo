@@ -17,7 +17,7 @@ int get_int(void) {
         int num_values = scanf("%d", &input); // something went wrong
         if (num_values != 1) {
             printf("\nImproper number of values read, please try again\n");
-            __fpurge(stdin);
+            fflush(stdin);
             continue;
         } else {
             input_validated = true;

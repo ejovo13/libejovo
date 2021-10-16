@@ -6,6 +6,7 @@
 //
 // and will get an appropriate type from the user
 #include <stdbool.h>
-#include <stdio_ext.h>
+// #include <stdio_ext.h>
+#include <stdio.h>
 
 int get_int(void);
