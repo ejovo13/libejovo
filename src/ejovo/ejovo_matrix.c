@@ -363,7 +363,7 @@ Matrix * Matrix_pow(Matrix * __A, size_t __power) {
 
 }
 // Copy the matrix __src into the submatrix of __dest prescribed by the start and end indices
-int Matrix_copy_elements(Matrix * __dest, size_t __istart, size_t __iend, size_t __jstart, size_t __jend, Matrix * __src) {
+int matcpyele(Matrix * __dest, size_t __istart, size_t __iend, size_t __jstart, size_t __jend, Matrix * __src) {
 
     // If the submatrix is not contained in __des
     if (__iend < __istart || __jend < __jstart || __iend >= __dest->nrows || __jend >= __dest->ncols) {
@@ -395,8 +395,8 @@ Matrix * Matrix_rcat(Matrix * __A, Matrix * __B) {
         return NULL;
     } else {
         Matrix * Mcat = Matrix_new(__A->nrows + __B->nrows, __A->ncols);
-        int status1 = Matrix_copy_elements(Mcat, 0, __A->nrows - 1, 0, __A->ncols - 1, __A);
-        int status2 = Matrix_copy_elements(Mcat, __A->nrows, __A->nrows + __B->nrows - 1, 0, __A->ncols - 1, __B);
+        int status1 = matcpyele(Mcat, 0, __A->nrows - 1, 0, __A->ncols - 1, __A);
+        int status2 = matcpyele(Mcat, __A->nrows, __A->nrows + __B->nrows - 1, 0, __A->ncols - 1, __B);
 
         if (status1 < 0 || status2 < 0) {
             return NULL;
@@ -414,8 +414,8 @@ Matrix * Matrix_ccat(Matrix * __A, Matrix * __B) {
         return NULL;
     } else {
         Matrix * Mcat = Matrix_new(__A->nrows, __A->ncols + __B->ncols);
-        int status1 = Matrix_copy_elements(Mcat, 0, __A->nrows - 1, 0, __A->ncols - 1, __A);
-        int status2 = Matrix_copy_elements(Mcat, 0, __A->nrows - 1, __A->ncols, __A->ncols + __B->ncols - 1, __B);
+        int status1 = matcpyele(Mcat, 0, __A->nrows - 1, 0, __A->ncols - 1, __A);
+        int status2 = matcpyele(Mcat, 0, __A->nrows - 1, __A->ncols, __A->ncols + __B->ncols - 1, __B);
 
         if (status1 < 0 || status2 < 0) {
             return NULL;

@@ -104,9 +104,17 @@ MATRIX_TYPE col_dot_row(Matrix * __A, Matrix * __B, size_t __irow, size_t __icol
 bool matcmp(Matrix * __A, Matrix * __B);
 
 // Are __A and __B compatible for addition?
+/** @private
+ *
+ *  Low level function that tests if __A is compatible to add with __B. That is, are __A and __B the same size?
+ */
 bool Matrix_comp_add(Matrix * __A, Matrix * __B);
 
 // Are __A and __B compatible for addition?
+/** @private
+ *
+ *  Low level function that tests if __A is compatible to multiply by __B.
+ */
 bool Matrix_comp_mult(Matrix * __A, Matrix * __B);
 
 // Copy the bytes
@@ -210,8 +218,15 @@ bool Matrix_is_square(Matrix * __A);
  */
 Matrix * Matrix_pow(Matrix * __A, size_t __power);
 
-// Copy the matrix __src into the submatrix of __dest prescribed by the start and end indices
-int Matrix_copy_elements(Matrix * __dest, size_t __istart, size_t __iend, size_t __jstart, size_t __jend, Matrix * __src);
+/** @private
+ *
+ *  @brief Matrix copy elements
+ *
+ * Copy the matrix __src into the submatrix of __dest prescribed by the start and end indices
+ *
+ *  This is a low lever helper function that shouldn't need to be called by the high level Matrix API.
+ */
+int matcpyele(Matrix * __dest, size_t __istart, size_t __iend, size_t __jstart, size_t __jend, Matrix * __src);
 
 /**
  * Stack two matrices on top of each other
