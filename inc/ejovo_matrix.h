@@ -33,7 +33,9 @@
  * For example, two matrices can be added to each other if and only if they are the same size; *
  */
 typedef struct mat_t {
-    MATRIX_TYPE * data;
+    MATRIX_TYPE *restrict data; // SUPER IMPORTANT!!! I am declaring that the underlying data
+                                // is only ever accessed by one pointer! In terms of Rust,
+                                // data is the only owner of the matrix elements
     size_t nrows;
     size_t ncols;
 } Matrix;
@@ -44,27 +46,27 @@ typedef struct mat_t {
  * Calls calloc under the surface. The allocated matrix can be freed using the function
  * `Matrix_free`.
  */
-Matrix * Matrix_new(int __nrows, int __ncols);
+extern Matrix * Matrix_new(int __nrows, int __ncols);
 
 /**
  * Free the memory associated with the matrix and then free the pointer itself
  *
  *
  */
-void Matrix_free(Matrix * __A);
+extern void Matrix_free(Matrix *__A);
 
 /**
  * Check if the values of __i and __j are within the bounds of __m
  *
  */
-bool Matrix_valid_bounds(Matrix * __m, size_t __i, size_t __j);
+extern bool Matrix_valid_bounds(const Matrix *__m, size_t __i, size_t __j);
 
 /**
  * Return the value of the element at __m(__i, __j) [zero indexed]
  *
  * Return -1 if bounds are not respected and prints an error to the screen
  */
-MATRIX_TYPE Matrix_at(Matrix * __m, size_t __i, size_t __j);
+extern MATRIX_TYPE Matrix_at(const Matrix *__m, size_t __i, size_t __j);
 
 /**
  * Set value of the element at __m(__i, __j) [zero indexed]
@@ -73,60 +75,60 @@ MATRIX_TYPE Matrix_at(Matrix * __m, size_t __i, size_t __j);
  *
  *
  */
-int Matrix_set(Matrix * __m, size_t __i, size_t __j, MATRIX_TYPE __value);
+extern int Matrix_set(Matrix *__m, size_t __i, size_t __j, MATRIX_TYPE __value);
 
 /**
  *  Return a pointer to the element at __m(__i, __j) [zero indexed]
  */
-MATRIX_TYPE * Matrix_access(Matrix * __m, size_t __i, size_t __j);
+extern MATRIX_TYPE * Matrix_access(const Matrix *__m, size_t __i, size_t __j);
 
 
 /**
  * Print a matrix to stdout
  */
-void Matrix_print(Matrix * __m);
+extern void Matrix_print(const Matrix *__m);
 
 /**
  * Print the size of a matrix to stdout
  */
-void Matrix_summary(Matrix * __m);
+extern void Matrix_summary(const Matrix *__m);
 
 
 // Take the inner product of the the __irow row of __A with the __icol col of __B
 // used as a subroutine called in matmul
 /** @private
  */
-MATRIX_TYPE col_dot_row(Matrix * __A, Matrix * __B, size_t __irow, size_t __icol);
+extern MATRIX_TYPE col_dot_row(const Matrix *__A, const Matrix *__B, size_t __irow, size_t __icol);
 
 // return true if __A and __B have the same size and all of the elements are identical
 /** @private
  */
-bool matcmp(Matrix * __A, Matrix * __B);
+extern bool matcmp(const Matrix *__A, const Matrix *__B);
 
 // Are __A and __B compatible for addition?
 /** @private
  *
  *  Low level function that tests if __A is compatible to add with __B. That is, are __A and __B the same size?
  */
-bool Matrix_comp_add(Matrix * __A, Matrix * __B);
+extern bool Matrix_comp_add(const Matrix *__A, const Matrix *__B);
 
 // Are __A and __B compatible for addition?
 /** @private
  *
  *  Low level function that tests if __A is compatible to multiply by __B.
  */
-bool Matrix_comp_mult(Matrix * __A, Matrix * __B);
+extern bool Matrix_comp_mult(const Matrix *__A, const Matrix *__B);
 
 // Copy the bytes
 // this is a utility function and should not be used by the end user
 /** @private
  */
-static bool matcpy(Matrix * __dest, Matrix * __src);
+// static bool matcpy(Matrix *restrict __dest, const Matrix *restrict __src);
 
 /** @private
  *  copy the contents of matrix __src into __dest
  */
-Matrix * matclone(Matrix * __src);
+extern Matrix * matclone(const Matrix *restrict __src);
 
 /**
  * Create a new Matrix from the contents of __src
@@ -135,12 +137,12 @@ Matrix * matclone(Matrix * __src);
  * This is a clone operation and thus new data is allocated for the returned Matrix.
  *
  */
-Matrix * Matrix_clone(Matrix * __src);
+extern Matrix * Matrix_clone(const Matrix *restrict __src);
 
 /** @private
  * Fortran named function to compute the multiplication of two matrices __A * __B
  */
-Matrix * matmul(Matrix * __A, Matrix * __B);
+Matrix * matmul(const Matrix *__A, const Matrix *__B);
 
 /**
  * Multiply two matrices __A*__B.

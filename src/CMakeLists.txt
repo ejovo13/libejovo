@@ -1,6 +1,6 @@
 list(APPEND SRC_FILES
     # test
-    # ex1
+    ex1
     ex2
     ex3
     ex4

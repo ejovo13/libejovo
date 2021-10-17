@@ -2,10 +2,10 @@
 
 Matrix * Matrix_new(int __nrows, int __ncols) {
 
-    Matrix * x = (Matrix *) malloc(sizeof(Matrix));
+    Matrix *x = (Matrix *) malloc(sizeof(Matrix));
 
     if ( __nrows > 0 && __ncols > 0) {
-        MATRIX_TYPE * data = (MATRIX_TYPE *) calloc(__nrows * __ncols, sizeof(MATRIX_TYPE));
+        MATRIX_TYPE *data = (MATRIX_TYPE *) calloc(__nrows * __ncols, sizeof(MATRIX_TYPE));
         x->data = data;
         if (data) { // if the data is allocated properly
             x->nrows = __nrows;
@@ -24,7 +24,7 @@ Matrix * Matrix_new(int __nrows, int __ncols) {
 }
 
 // Free the memory associated with the matrix and then free the pointer itself
-void Matrix_free(Matrix * __A) {
+void Matrix_free(Matrix *__A) {
     if (__A) {
         if (__A->data) {
             free(__A->data);
@@ -35,18 +35,18 @@ void Matrix_free(Matrix * __A) {
     }
 }
 
-bool Matrix_valid_bounds(Matrix * __m, size_t __i, size_t __j) {
+bool Matrix_valid_bounds(const Matrix *__m, size_t __i, size_t __j) {
     return (__i < __m->nrows && __j < __m->ncols);
 }
 
 
 // return the value of the element at __m(__i, __j) [zero indexed]
 // return -1 if bounds are not respected and prints an error to the screen
-MATRIX_TYPE Matrix_at(Matrix * __m, size_t __i, size_t __j) {
+MATRIX_TYPE Matrix_at(const Matrix *__m, size_t __i, size_t __j) {
 
     if (Matrix_valid_bounds(__m, __i, __j)) {
 
-        return __m->data[__i*__m->ncols + __j];
+        return __m->data[__i * __m->ncols + __j];
 
     } else {
         fprintf(stderr, "**WARNING** Trying to access array element out of bounds.\n");
@@ -69,7 +69,7 @@ int Matrix_set(Matrix * __m, size_t __i, size_t __j, MATRIX_TYPE __value) {
 }
 
 // return a pointer to the element at __m(__i, __j) [zero indexed]
-MATRIX_TYPE * Matrix_access(Matrix * __m, size_t __i, size_t __j) {
+MATRIX_TYPE * Matrix_access(const Matrix * __m, size_t __i, size_t __j) {
 
     if (Matrix_valid_bounds(__m, __i, __j)) {
         return __m->data + (__i*__m->ncols + __j);
@@ -80,7 +80,7 @@ MATRIX_TYPE * Matrix_access(Matrix * __m, size_t __i, size_t __j) {
 
 }
 
-void Matrix_print(Matrix * __m) {
+void Matrix_print(const Matrix *__m) {
 
     Matrix_summary(__m);
     for (size_t i = 0; i < __m->nrows; i++) {
@@ -93,14 +93,14 @@ void Matrix_print(Matrix * __m) {
     }
 }
 
-void Matrix_summary(Matrix * __m) {
+void Matrix_summary(const Matrix *__m) {
     printf("%lu x %lu matrix\n", __m->nrows, __m->ncols);
 }
 
 
 // Take the inner product of the the __irow row of __A with the __icol col of __B
 // used as a subroutine called in matmul
-MATRIX_TYPE col_dot_row(Matrix * __A, Matrix * __B, size_t __irow, size_t __icol) {
+MATRIX_TYPE col_dot_row(const Matrix *__A, const Matrix *__B, size_t __irow, size_t __icol) {
 
     // We are assuming that __A and __B are compatible matrices for matrix multiplication
     MATRIX_TYPE inner_product = 0;
@@ -114,7 +114,7 @@ MATRIX_TYPE col_dot_row(Matrix * __A, Matrix * __B, size_t __irow, size_t __icol
 }
 
 // return true if __A and __B have the same size and all of the elements are identical
-bool matcmp(Matrix * __A, Matrix * __B) {
+bool matcmp(const Matrix *__A, const Matrix *__B) {
 
     if ( __A->nrows != __B->nrows || __A->ncols != __B->ncols) {
         return false;
@@ -131,18 +131,18 @@ bool matcmp(Matrix * __A, Matrix * __B) {
 }
 
 // Are __A and __B compatible for addition?
-bool Matrix_comp_add(Matrix * __A, Matrix * __B) {
+bool Matrix_comp_add(const Matrix *__A, const Matrix *__B) {
     return (__A->nrows == __B->nrows && __A->ncols == __B->ncols);
 }
 
 // Are __A and __B compatible for addition?
-bool Matrix_comp_mult(Matrix * __A, Matrix * __B) {
+bool Matrix_comp_mult(const Matrix *__A, const Matrix *__B) {
     return (__A->ncols == __B->nrows);
 }
 
 // Copy the bytes
 // this is a utility function and should not be used by the end user
-static bool matcpy(Matrix * __dest, Matrix * __src) {
+static bool matcpy(Matrix *restrict __dest, const Matrix *restrict __src) {
 
     // Copy the bytes of __src->data into __dest->data
     memcpy(__dest->data, __src->data, sizeof(MATRIX_TYPE)*(__src->nrows * __src->nrows));
@@ -157,7 +157,7 @@ static bool matcpy(Matrix * __dest, Matrix * __src) {
 
 
 // copy the contents of matrix __src into __dest
-Matrix * matclone(Matrix * __src) {
+Matrix * matclone(const Matrix *restrict __src) {
 
     Matrix * clone = NULL;
 
@@ -168,11 +168,11 @@ Matrix * matclone(Matrix * __src) {
 
     return clone;
 }
-Matrix * Matrix_clone(Matrix * __src) {
+Matrix * Matrix_clone(const Matrix *restrict __src) {
     return matclone(__src);
 }
 
-Matrix * matmul(Matrix * __A, Matrix * __B) {
+Matrix * matmul(const Matrix *__A, const Matrix *__B) {
 
     // if compatible, multiply the matrices
 
@@ -195,6 +195,7 @@ Matrix * matmul(Matrix * __A, Matrix * __B) {
 
     return product;
 }
+
 Matrix * Matrix_multiply(Matrix * __A, Matrix * __B) {
     return matmul(__A, __B);
 }
