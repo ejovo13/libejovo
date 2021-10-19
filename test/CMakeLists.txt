@@ -8,6 +8,7 @@ list(APPEND TESTS
     substr
     words
     matrix
+    lab
 )
 
 list(APPEND TEST_LIBS

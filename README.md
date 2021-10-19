@@ -25,3 +25,12 @@ Documentation for all of the functions declared in the `ejovo` headers can be fo
 ---
 This TP4 includes a matrix framework that is declared in `/inc/ejovo_matrix.h`. Check out the wiki **here** for more information about how to use the `Matrix` structure and check out the **docs** for more details.
 
+# TO-DO LIST
+
+## Exercise 5
+- [ ] Add cooler Matrix operations
+
+## Exercise 6
+- [ ] Read maze in from a file
+- [ ] Navigate the maze
+

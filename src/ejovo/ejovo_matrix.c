@@ -534,3 +534,21 @@ double Matrix_det(Matrix * __A) {
 
 
 }
+
+Matrix *Matrix_from(const MATRIX_TYPE *__arr, size_t __nrows, size_t __ncols) {
+
+    // printf("ncols: %lu\n", __ncols);
+
+    // pass a fixed size array to copy as a Matrix
+    Matrix *m = Matrix_new(__nrows, __ncols);
+    for (size_t i = 0; i < __nrows; i++) {
+        for (size_t j = 0; j < __ncols; j++) {
+            Matrix_set(m, i, j, __arr[i*__ncols + j]);
+            // printf("Set M(%lu,%lu) to %d\n", i, j, __arr[i*__ncols + j]);
+
+        }
+    }
+
+    return m;
+
+}
