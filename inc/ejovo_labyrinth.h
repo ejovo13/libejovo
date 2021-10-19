@@ -54,6 +54,8 @@ void print_matrix_as_lab(Matrix *__m);
 
 Matrix *create_checkerboard(size_t __nrows, size_t __ncols);
 
+Matrix *create_maze(size_t __nrows, size_t __ncols);
+
 
 
 #endif

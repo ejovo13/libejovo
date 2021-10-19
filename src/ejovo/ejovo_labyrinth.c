@@ -141,7 +141,7 @@ Matrix *create_checkerboard(size_t __nrows, size_t __ncols) {
         return NULL;
     }
 
-    printf("Creating a checkerboard %lu x %lu\n", __nrows*3, __ncols*3);
+    // printf("Creating a checkerboard %lu x %lu\n", __nrows*3, __ncols*3);
 
     Matrix *m = Matrix_new(__nrows * 3, __ncols * 3);
 
@@ -151,7 +151,7 @@ Matrix *create_checkerboard(size_t __nrows, size_t __ncols) {
         for (size_t i = 0; i < __nrows; i++) {
             for (size_t j = 0; j < __ncols; j++) {
                 matcpyele(m, i*3, i*3 + 2, j*3, j*3 + 2, get_piece_matrix(get_rand_int_range(0, 10)));
-                printf("i = %lu, j = %lu\n", i, j);
+                // printf("i = %lu, j = %lu\n", i, j);
             }
         }
     } else {
@@ -161,6 +161,14 @@ Matrix *create_checkerboard(size_t __nrows, size_t __ncols) {
     return m;
 }
 
+Matrix *create_maze(size_t __nrows, size_t __ncols) {
+
+    // Set the border of the checkerboard
+
+
+
+
+}
 
 
 
