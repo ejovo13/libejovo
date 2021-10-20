@@ -524,7 +524,7 @@ double Matrix_det(Matrix * __A) {
 
         size_t i = 0;
         for (size_t j = 0; j < __A->ncols; j++) {
-            double cofactor = pow(-1.0, i + j)*Matrix_det(Matrix_minor(__A, i, j));
+            double cofactor = pow(-1.0, j)*Matrix_det(Matrix_minor(__A, i, j));
             // printf("Cofactor: %lf, i: %lu, j: %lu\n", cofactor, i, j);
             local_det += cofactor * Matrix_at(__A, i, j);
         }

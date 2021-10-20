@@ -135,7 +135,7 @@ void print_matrix_as_lab(Matrix *__m) {
     }
 }
 // Place a LabPiece at a given index of a matrix
-void place_piece(Matrix *__m, PIECE_TYPE *__t, size_t __i, size_t __j) {
+void place_piece(Matrix *__m, PIECE_TYPE __t, size_t __i, size_t __j) {
 
     matcpyele(__m, __i*3, __i*3 + 2, __j*3, __j*3 + 2, get_piece_matrix(__t));
 
@@ -194,14 +194,6 @@ void set_border_elements(Matrix *__m, size_t __jtop, size_t __jbot) {
     }
 }
 
-typedef enum directions_s {
-
-    RIGHT,
-    LEFT,
-    UP,
-    DOWN,
-
-} DIRECTION;
 
 bool open_right_t(PIECE_TYPE __t) {
 
