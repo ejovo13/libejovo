@@ -8,20 +8,21 @@
 
 #define MATRIX_TYPE long
 
-typedef enum piece_e {V_PIPE, // Vertical pipe
-              H_PIPE, // Horizontal pipe
-              TOPL_L, // Top left L shape
-              TOPR_L, // Top right L shape
-              BOTR_L, // Bottom right L shape
-              BOTL_L, // Bottom left L shape
-              CROSS,
-              TET_D, // Piece that looks like tetris, pointing down
-              TET_L,
-              TET_U,
-              TET_R,
-              ZERO, // all zeros
-              OTHER,
-              } PIECE_TYPE;
+typedef enum piece_e {
+    V_PIPE, // Vertical pipe
+    H_PIPE, // Horizontal pipe
+    TOPL_L, // Top left L shape
+    TOPR_L, // Top right L shape
+    BOTR_L, // Bottom right L shape
+    BOTL_L, // Bottom left L shape
+    CROSS,
+    TET_D, // Piece that looks like tetris, pointing down
+    TET_L,
+    TET_U,
+    TET_R,
+    ZERO, // all zeros
+    OTHER,
+} PIECE_TYPE;
 
 typedef struct labyrinth_piece_t {
 

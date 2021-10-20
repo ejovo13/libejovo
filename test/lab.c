@@ -28,6 +28,26 @@ int main() {
     print_matrix_as_lab(M);
     // Matrix_print(M);
 
+    printf("\n");
+    M = create_maze(1, 20);
+    print_matrix_as_lab(M);
+
+
+
+    // Matrix *M2 = Matrix_from(piece_array(0, 1, 1, 1, 0, 1, 1, 1, 0), 3, 3);
+
+    // for (int i = 0; i < 5; i++) {
+
+    //     printf("A^{%d}:\n", i);
+    //     Matrix_print(Matrix_pow(M2, i));
+
+    // }
+
+
+
+
+
+
 
     return 0;
 }
