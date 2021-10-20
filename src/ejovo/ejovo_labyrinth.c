@@ -569,6 +569,19 @@ Matrix *create_maze(size_t __nrows, size_t __ncols) {
 
 
 
+// When given a maze, determine if there is an open path from (1,1) to the bottom right corner
+bool chercher_chemin(Matrix *__maze, size_t __starti, size_t __startj) {
+
+
+
+
+
+
+
+}
+
+
+
 
 
 
