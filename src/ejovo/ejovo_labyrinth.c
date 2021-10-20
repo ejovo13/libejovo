@@ -1,7 +1,7 @@
 #include "ejovo_labyrinth.h"
 #include "stdbool.h"
 
-#define MATRIX_TYPE long
+#define MATRIX_TYPE int
 
 
 // Using this for a piece that is 3x3
@@ -28,7 +28,7 @@ long *piece_array(long __1, long __2, long __3, long __4, long __5, long __6, lo
 // Pass an enum value and get the 3 x 3 matrix that corresponds to this piece
 Matrix *get_piece_matrix(PIECE_TYPE __t) {
 
-    long *data = {0};
+    int *data = {0};
 
     switch (__t) {
 
@@ -125,8 +125,10 @@ void print_matrix_as_lab(Matrix *__m) {
     for (size_t i = 0; i < __m->nrows; i++) {
         for (size_t j = 0; j < __m->ncols; j++) {
 
-            if(Matrix_at(__m, i, j)) {
-                printf("@");
+            if(Matrix_at(__m, i, j) == 1) {
+                // printf("\u25AE");
+                printf("\u2588");
+                // printf("\u2B1B");
             } else {
                 printf(" ");
             }
@@ -327,22 +329,241 @@ void create_path(Matrix *__m, size_t __start_j, size_t __end_j) {
     }
 }
 
+enum cell_status {
+
+    VISITED = -1,
+
+};
+
+bool cell_has_unvisited_neighbors(Matrix *__maze, size_t __celli, size_t __cellj) {
+
+    if (Matrix_valid_bounds(__maze, __celli + 2, __cellj) ) {
+        if (Matrix_at(__maze, __celli + 2, __cellj) != -1) return true;
+    }
+
+    if (Matrix_valid_bounds(__maze, __celli - 2, __cellj) ) {
+        if (Matrix_at(__maze, __celli - 2, __cellj) != -1) return true;
+    }
+
+    if (Matrix_valid_bounds(__maze, __celli, __cellj - 2) ) {
+        if (Matrix_at(__maze, __celli, __cellj - 2) != -1) return true;
+    }
+
+    if (Matrix_valid_bounds(__maze, __celli, __cellj + 2) ) {
+        if (Matrix_at(__maze, __celli, __cellj + 2) != -1) return true;
+    }
+
+    return false;
+
+    // // true is __maze(i + 2, j + 2) || __maze(i + 2, j - 2) || ... is not equal to 1
+    // return (Matrix_at(__maze, __celli + 2, __cellj + 2) != -1 ||
+    //         Matrix_at(__maze, __celli - 2, __cellj + 2) != -1 ||
+    //         Matrix_at(__maze, __celli + 2, __cellj - 2) != -1 ||
+    //         Matrix_at(__maze, __celli - 2, __cellj - 2) != -1   );
+
+}
+
+void choose_next_cell(Matrix *__maze, size_t *__celli_ptr, size_t *__cellj_ptr) {
+
+    // set the __celli and __cellj value to the next cell that is available
+
+    // choose random value between 1 and 4
+
+    int rand_cell = 0;
+    bool right_checked = false;
+    bool left_checked = false;
+    bool down_checked = false;
+    bool up_checked = false;
+
+    while (!(right_checked && left_checked && down_checked && up_checked)) {
+
+        rand_cell = unif(1, 4);
+
+        switch (rand_cell) {
+
+            case 1:
+
+                if (Matrix_valid_bounds(__maze, *__celli_ptr + 2, *__cellj_ptr) ) {
+
+                    if (Matrix_at(__maze, *__celli_ptr + 2, *__cellj_ptr) != -1) {
+                        // open up the space between this cell and the next
+                        Matrix_set(__maze, *__celli_ptr + 1, *__cellj_ptr, 0);
+                        // then this cell is unvisited, set cell coordinates for the next cell
+                        *__celli_ptr += 2;
+                        return;
+                    }
+                }
+
+                right_checked = true;
+                break;
+
+            case 2:
+
+                if (Matrix_valid_bounds(__maze, *__celli_ptr - 2, *__cellj_ptr) ) {
+
+                    if (Matrix_at(__maze, *__celli_ptr - 2, *__cellj_ptr) != -1) {
+                        Matrix_set(__maze, *__celli_ptr - 1, *__cellj_ptr, 0);
+                        // then this cell is unvisited, set cell coordinates for the next cell
+                        *__celli_ptr -= 2;
+                        return;
+                    }
+
+                }
+
+                left_checked = true;
+                break;
 
 
+            case 3:
+
+                if (Matrix_valid_bounds(__maze, *__celli_ptr, *__cellj_ptr - 2) ) {
+
+                    if (Matrix_at(__maze, *__celli_ptr, *__cellj_ptr - 2) != -1) {
+                        Matrix_set(__maze, *__celli_ptr, *__cellj_ptr - 1, 0);
+                        // then this cell is unvisited, set cell coordinates for the next cell
+                        *__cellj_ptr -= 2;
+                        return;
+                    }
+                }
+
+                down_checked = true;
+                break;
+
+            case 4:
+
+                if (Matrix_valid_bounds(__maze, *__celli_ptr, *__cellj_ptr + 2) ) {
+
+                    if (Matrix_at(__maze, *__celli_ptr, *__cellj_ptr + 2) != -1) {
+                        Matrix_set(__maze, *__celli_ptr, *__cellj_ptr + 1, 0);
+                        // then this cell is unvisited, set cell coordinates for the next cell
+                        *__cellj_ptr += 2;
+                        return;
+                    }
+                }
+
+                up_checked = true;
+                break;
+
+        }
+
+        // printf("Can't choose cell\n");
+
+    }
+}
 
 
+Cell *Cell_new(size_t __i, size_t __j) {
+
+    Cell *cell = malloc(sizeof(Cell));
+
+    if(cell) {
+
+        cell->i = __i;
+        cell->j = __j;
+        cell->below = NULL;
+
+    }
+
+    return cell;
+
+}
+
+void CellStack_push(CellStack *__stack, Cell *__cell) {
+
+    if(__stack->top) {
+        __cell->below = __stack->top;
+    } else {
+        __cell->below = NULL;
+    }
+    __stack->top = __cell;
+
+}
+
+Cell *CellStack_pop(CellStack *__stack) {
+
+    if(__stack->top) {
+
+        Cell *cell = __stack->top;
+        __stack->top = __stack->top->below;
+        cell->below = NULL;
+
+    } else {
+        return NULL;
+    }
+
+}
+
+void generate_path(Matrix *__maze, CellStack *__stack, size_t __celli, size_t __cellj) {
+
+    // printf("Entered cell (%lu, %lu)\n", __celli, __cellj);
+
+    Matrix_set(__maze, __celli, __cellj, -1); // mark the cell as visitedj
+
+    size_t next_celli = __celli;
+    size_t next_cellj = __cellj;
+
+    while (cell_has_unvisited_neighbors(__maze, __celli, __cellj)) {
+
+        choose_next_cell(__maze, &next_celli, &next_cellj);
+        CellStack_push(__stack, Cell_new(next_celli, next_cellj));
+
+        // printf("Next i: %lu, next j: %lu\n", next_celli, next_cellj);
+        // printf("__celli = %lu, __cellj = %lu\n", __celli, __cellj);
+
+        if (!(next_celli == __stack->top->below->i && next_cellj == __stack->top->below->j)) {
+            generate_path(__maze, __stack, next_celli, next_cellj);
+        } else {
+
+            if (__stack->top) {
+                Cell *prev_cell = CellStack_pop(__stack);
+                generate_path(__maze, __stack, __stack->top->i, __stack->top->j);
+            }
+
+            break;
+        }
+
+        // printf("Cell hase unvisited neighbors\n");
+        // print_matrix_as_lab(__maze);
+
+    }
+
+
+    // else go back to the previous cell
+
+    // while (cell_has_unvisited_neighbors(__maze, __celli, __cellj)){
+    //     choose_next_cell(__maze, &next_celli, &next_cellj);
+    //     generate_path(__maze, next_celli, next_cellj);
+    // }
+
+
+}
 
 Matrix *create_maze(size_t __nrows, size_t __ncols) {
 
-    // Set the border of the checkerboard
+    // create cell stack
+    CellStack *stack = (CellStack *) malloc(sizeof(CellStack));
 
-    Matrix *M = create_checkerboard(__nrows, __ncols);
-    place_piece(M, CROSS, 0, 0);
-    create_path(M, 0, 0);
-    set_border_elements(M, 1, __ncols * 3 - 2);
-    return M;
+    // start searching from the point (1, 1);
+
+    Cell *cell = Cell_new(1, 1);
+    CellStack_push(stack, cell);
 
 
+    // Start by making a matrix that is composed of cells
+    Matrix *maze = Matrix_value(__nrows*2 + 1, __ncols*2 + 1, 1);
+    // Open up the cells
+    for (size_t i = 1; i < __nrows*2; i += 2) {
+        for (size_t j = 1; j < __ncols*2; j += 2) {
+
+            Matrix_set(maze, i, j, 0);
+
+        }
+    }
+
+    printf("Generating path...\n");
+    generate_path(maze, stack, 1, 1);
+
+    return maze;
 }
 
 

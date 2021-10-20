@@ -49,7 +49,7 @@ MATRIX_TYPE Matrix_at(Matrix * __m, size_t __i, size_t __j) {
         return __m->data[__i*__m->ncols + __j];
 
     } else {
-        fprintf(stderr, "**WARNING** Trying to access array element out of bounds.\n");
+        fprintf(stderr, "**WARNING** Trying to access array element out of bounds. (at)\n");
         return 0;
     }
 
@@ -63,7 +63,7 @@ int Matrix_set(Matrix * __m, size_t __i, size_t __j, MATRIX_TYPE __value) {
         __m->data[__i*__m->ncols + __j] = __value;
         return 0;
     } else {
-        fprintf(stderr, "**WARNING** Trying to access array element out of bounds.\n");
+        fprintf(stderr, "**WARNING** Trying to access array element out of bounds. (set)\n");
         return 1;
     }
 }
@@ -74,7 +74,7 @@ MATRIX_TYPE * Matrix_access(Matrix * __m, size_t __i, size_t __j) {
     if (Matrix_valid_bounds(__m, __i, __j)) {
         return __m->data + (__i*__m->ncols + __j);
     } else {
-        fprintf(stderr, "**WARNING** Trying to access array element out of bounds.\n");
+        fprintf(stderr, "**WARNING** Trying to access array element out of bounds. (access)\n");
         return NULL;
     }
 

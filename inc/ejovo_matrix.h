@@ -22,7 +22,7 @@
 
 // Type of the matrix that will be determined at compile time. Should be a numberic value like `float` or `int`
 #ifndef MATRIX_TYPE
-#define MATRIX_TYPE long
+#define MATRIX_TYPE int
 #endif
 
 /**

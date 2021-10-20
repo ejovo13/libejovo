@@ -1,4 +1,4 @@
-#define MATRIX_TYPE long
+#define MATRIX_TYPE int
 
 #include "ejovo_matrix.h"
 #include "ejovo_labyrinth.h"
