@@ -43,7 +43,13 @@ int main() {
 
     // }
 
+    // printf("======================\n\n");
+    // for (int i = 0; i < 15; i++) {
 
+    //     Matrix_print(get_piece_matrix(get_open_matrix(RIGHT)));
+
+
+    // }
 
 
 

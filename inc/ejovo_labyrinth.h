@@ -55,6 +55,35 @@ void print_matrix_as_lab(Matrix *__m);
 
 Matrix *create_checkerboard(size_t __nrows, size_t __ncols);
 
+typedef enum directions_s {
+
+    RIGHT,
+    LEFT,
+    UP,
+    DOWN,
+
+} DIRECTION;
+
+bool open_right_t(PIECE_TYPE __t);
+
+bool open_left_t(PIECE_TYPE __t);
+
+bool open_up_t(PIECE_TYPE __t);
+
+bool open_down_t(PIECE_TYPE __t);
+
+// return true if the piece type is open in the direction
+bool is_piece_open(PIECE_TYPE __t, DIRECTION __d);
+
+// return the type of a random piece that is open to the d direction
+PIECE_TYPE get_open_piece_type(DIRECTION __d);
+
+// return the type of a random piece that is open to the d direction
+PIECE_TYPE get_open_piece_type_2(DIRECTION __d1, DIRECTION __d2);
+
+// Create a path through the matrix from the top to the bottom
+void create_path(Matrix *__m, size_t __start_j, size_t __end_j);
+
 Matrix *create_maze(size_t __nrows, size_t __ncols);
 
 
