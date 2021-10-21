@@ -1,4 +1,19 @@
-add_library(ejovo ejovo_print.c ejovo_rand.c ejovo_string.c ejovo_input.c ejovo_matrix.c ejovo_labyrinth.c)
+set (EJOVO_LIB
+
+    ejovo_print.c
+    ejovo_rand.c
+    ejovo_string.c
+    ejovo_input.c
+    ejovo_matrix.c
+    ejovo_labyrinth.c
+    ejovo_sort.c
+
+)
+
+
+
+
+add_library(ejovo ${EJOVO_LIB})
 if (NOT WIN32)
     target_link_libraries(ejovo m)
 endif()
