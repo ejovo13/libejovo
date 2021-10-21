@@ -1,9 +1,8 @@
 name: Ubuntu
 
-on:
-  push:
-    branches:
-      - master
+on: push
+    # branches:
+    #   - master
 
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
