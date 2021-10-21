@@ -23,6 +23,8 @@ list(APPEND TEST_INC
     ${INC}
 )
 
+# set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${BIN}/test)
+
 # set(TEST_BIN_DIR "${CMAKE_CURRENT_BINARY_DIR}" PARENT_SCOPE)
 
 macro(ejovo_add_test TESTNAME)
@@ -36,9 +38,10 @@ macro(ejovo_add_test TESTNAME)
     target_include_directories(${TEST_BIN} PUBLIC ${TEST_INC})
     set_target_properties(${TEST_BIN}
         PROPERTIES
-        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
+        # OUTPUT_NAME ${TESTNAME}
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     )
-    add_test(${TESTNAME} "test_${TESTNAME}")
+    add_test(${TESTNAME} test_${TESTNAME})
 
 endmacro()
 

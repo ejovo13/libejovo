@@ -1,27 +1,36 @@
-list(APPEND SRC
+set(TP2_SRC_FILES
+
     test
     ex1
     ex2
     ex3
     ex4
     ex5
-    # ex6
     ex7
     ex8
-    # ex9
     ex10
     ex11
-    # ex12
-    # ex13
-    # ex14
-    # ex15
     learn_pointers
+
 )
+
+set(TP2_SRC_LIBS
+
+    ejovo
+
+)
+
+if (NOT WIN32)
+    list(APPEND TP2_SRC_LIBS m)
+endif()
 
 add_subdirectory(ex9)
 
-foreach(FILE ${SRC})
-    message(STATUS "Adding ${FILE}")
-    add_executable(${FILE} "${FILE}.c")
-    target_link_libraries(${FILE} m ejovo)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${BIN}/TP2)
+
+foreach(FILE ${TP2_SRC_FILES})
+    message(STATUS "Adding TP2_${FILE}")
+    add_executable("TP2_${FILE}" "${FILE}.c")
+    target_link_libraries("TP2_${FILE}" ${TP2_SRC_LIBS})
+    set_target_properties("TP2_${FILE}" PROPERTIES OUTPUT_NAME ${FILE})
 endforeach(FILE)

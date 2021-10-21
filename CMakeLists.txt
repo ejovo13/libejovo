@@ -4,15 +4,18 @@ project(TP_ALL)
 enable_language(C)
 enable_testing(ON)
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
-
 set(INC ${CMAKE_SOURCE_DIR}/inc)
 set(SRC ${CMAKE_SOURCE_DIR}/src)
 set(TEST ${CMAKE_SOURCE_DIR}/test)
+set(BIN ${CMAKE_SOURCE_DIR}/bin)
+
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${BIN})
 
 add_compile_options(-Wall)
 
-file(MAKE_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+file(MAKE_DIRECTORY ${BIN})
+# file(MAKE_DIRECTORY ${})
+
 include_directories(${INC})
 
 add_subdirectory(${SRC})
