@@ -24,8 +24,8 @@ void print_int_array(int * __arr, int __n) {
 // print array '__arr' of '__n' integers
     printf("{");
     for (int i = 0; i < __n-1; i ++) {
-        printf("%d, ", __arr[i]);
+        printf("%3d, ", __arr[i]);
     }
-    printf("%d}\n\n", __arr[__n-1]);
+    printf("%3d}\n", __arr[__n-1]);
 
 }

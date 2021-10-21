@@ -1,8 +1,10 @@
 /**
 \mainpage
 
-Helper functions to complete the exercises for TP3
+Helper functions to complete the exercises for all TPS
 
 Check out the files section to see the complete documentation.
+
+The most recent addition to the `ejovo` library consists of the `ejovo_matrix.h` file which contains an entire matrix framework permitting the use of an abstracted API.
 
 */
