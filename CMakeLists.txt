@@ -15,8 +15,8 @@ add_compile_options(
 
     # -Wall
     # -Werror
-    -Wimplicit
-    -Wno-incompatible-pointer-types-discards-qualifiers
+    # -Wimplicit
+    # -Wno-incompatible-pointer-types-discards-qualifiers
 
 )
 
