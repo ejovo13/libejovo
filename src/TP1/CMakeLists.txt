@@ -1,4 +1,4 @@
-list(APPEND SRC
+set(TP1_SRC_FILES
     # autre
     # encore_une_autre
     increment
@@ -17,12 +17,12 @@ list(APPEND SRC
     ex15
 )
 
-list(APPEND LIB
+set(TP1_LIB
     autre
     encore_une_autre
 )
 
-foreach(FILE ${SRC})
+foreach(FILE ${TP1_SRC_FILES})
     message(STATUS "Adding ${FILE}")
     add_executable(${FILE} "${FILE}.c")
 endforeach(FILE)
