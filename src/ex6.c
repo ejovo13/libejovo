@@ -1,16 +1,22 @@
-#include "ejovo_matrix.h"
+// tri par insertion
+#include "ejovo_sort.h"
+#include "ejovo_print.h"
 
-// La fonction Matrix_det est defini en ejovo_matrix.c
+
 
 int main() {
 
-
     ejovo_seed();
-    Matrix *A = Matrix_random(3, 3, 0, 5);
-    Matrix_print(A);
 
-    printf("Det(A): %lf\n", Matrix_det(A));
+    int tab[100] = {0};
 
+    init_tab(100, tab, 100);
+    print_int_array(tab, 100);
+
+    printf("Sorting by insertion...\n");
+    tri_insertion(tab, 100); // defined in ejovo_sort.c
+
+    print_int_array(tab, 100);
 
     return 0;
 }

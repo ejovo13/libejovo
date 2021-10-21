@@ -1,26 +1,21 @@
-// ecrire une fonction permettant de multiplier deux matrices. On n'oubliera pas de traiter les
-// cas d'erreur
+// tri a bulle
+#include "ejovo_print.h"
+#include "ejovo_sort.h"
 
-// Need to obviously implement a simple matrix class
-#include "ejovo_matrix.h"
 
 int main(void) {
 
     ejovo_seed();
 
-    Matrix *A = Matrix_random(3, 5, 0, 10);
-    Matrix *B = Matrix_random(5, 6, 0, 10);
+    int tab[100] = {0};
 
-    Matrix *AB = Matrix_multiply(A, B);
+    init_tab(100, tab, 100);
+    print_int_array(tab, 100);
 
-    printf("A |\n===\n");
-    Matrix_print(A);
+    printf("Sorting by tri_bull...\n");
+    tri_bulle(tab, 100); // defined in ejovo_sort.c
 
-    printf("B |\n===\n");
-    Matrix_print(B);
-
-    printf("\nA*B |\n=====\n");
-    Matrix_print(AB);
+    print_int_array(tab, 100);
 
 
     return 0;

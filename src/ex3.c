@@ -1,33 +1,28 @@
-// Ecrire le code C permettant de creer un tableau tab a deux dimension de 17 lignes
-// et 17 colonnes entiers en utilisant un pointeur et la fonction malloc. Liberer ensuite
-// la memoire allouee au tableau avec la fonction free.
+// Ecrire une fonction pour echanger des valeurs d'un tableau
 
 #include <stdlib.h>
 #include <stdio.h>
 #include "ejovo_print.h"
 
-#define NB_LIGNES 15 // number of rows
-#define NB_COLONNES 17 // number of columns
+void ech(int *__tab, int __i, int __j) {
+
+    int temp = __tab[__i];
+    __tab[__i] = __tab[__j];
+    __tab[__j] = temp;
+
+}
+
 
 int main(void) {
 
-    int * tab = (int *) malloc(sizeof(int) * (NB_LIGNES * NB_COLONNES));
+    int tab[2] = {1, 2};
 
-    if(tab) {
-        for (int i = 0; i < NB_LIGNES; i++) {
-            for (int j = 0; j < NB_COLONNES; j++) {
-                tab[i * NB_LIGNES + j] = i + j;
-            }
-        }
-    }
+    print_int_array(tab, 2);
 
-    printf("Integer array allocated with malloc: \n");
-    for (int i = 0; i < NB_LIGNES; i++) {
-        print_int_array(tab + i*NB_LIGNES, NB_COLONNES);
-    }
+    printf("Swapping values [0] and [1]...\n");
+    ech(tab, 0, 1);
 
-    free(tab);
-    printf("Memory freed with free\n");
+    print_int_array(tab, 2);
 
     return 0;
 

@@ -1,13 +1,20 @@
-// Ecrire une fonction incremente qui prend 3 parametres en entree (__a, __b, et __i) et qui
-// ajoute a __a et __b la valeur __i. Cette fonction retourne la valeur 1 si __i vaut 0, 0 sinon.
+// Ecrire une fonction affiche_tab
 
 #include <stdbool.h>
+#include <ejovo_print.h>
 
-bool incremente(int * __aptr, int * __bptr, int __i) {
 
-    *__aptr += __i;
-    *__bptr += __i;
 
-    return __i == 0;
+int main() {
 
+    int tab[] = {1, 2, 3, 25, 2345, 5467, 254, 6548, 245, 35647, 2345, 4567};
+
+    // print_int_array declared in `ejovo_print.h` and defined in `ejovo_print.c`
+    print_int_array(tab, 3);
+    print_int_array(tab, 5);
+    print_int_array(tab, 10);
+    print_int_array(tab, 12);
+
+
+    return 0;
 }

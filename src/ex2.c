@@ -1,30 +1,27 @@
-// Ecrire le code C permettant de creer un tableau tab de 17 entiers en utilisant un pointeur
-// et la fonction malloc. Liberer ensuite la memoire allouee au tableau avec la fonction free.
+// Ecrire une fonction init_tab
 
 #include <stdlib.h>
 #include <stdio.h>
 #include "ejovo_print.h"
+#include "ejovo_rand.h"
 
-#define SIZE_ARRAY 17 // size of the array of integers
+void init_tab(int __max, int *__tab, int __n) {
 
+    for (int i = 0; i < __n; i++) {
 
-int main(void) {
+        __tab[i] = unif(0, __max);
 
-    int * tab = (int *) malloc(sizeof(int) * (SIZE_ARRAY));
-
-    if(tab) {
-        for (int i = 0; i < SIZE_ARRAY; i++) {
-            tab[i] = i;
-        }
     }
+}
 
-    printf("Integer array allocated with malloc: \n");
-    print_int_array(tab, SIZE_ARRAY);
+int main() {
 
-    free(tab);
-    printf("Memory freed with free\n");
+    ejovo_seed(); // seed my random generator
+
+    int tab[100] = {0};
+
+    init_tab(50, tab, 50); // initialize the first 50 elements
+    print_int_array(tab, 100); // print the entire array
 
     return 0;
-
-
 }
