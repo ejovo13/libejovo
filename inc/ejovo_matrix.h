@@ -174,7 +174,7 @@ Matrix * Matrix_submat(Matrix * __A, size_t __istart, size_t __iend, size_t __js
 /**
  * Fill a Matrix __A with the value __value.
  */
-Matrix * Matrix_fill(Matrix * __A, MATRIX_TYPE __value);
+void Matrix_fill(Matrix * __A, MATRIX_TYPE __value);
 
 /**
  *  Instantiate new matrix with the value filled in at every element

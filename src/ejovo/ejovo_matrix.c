@@ -263,7 +263,7 @@ Matrix * Matrix_submat(Matrix * __A, size_t __istart, size_t __iend, size_t __js
 }
 
 // fill matrix with a single value
-Matrix * Matrix_fill(Matrix * __A, MATRIX_TYPE value) {
+void Matrix_fill(Matrix * __A, MATRIX_TYPE value) {
 
     for (size_t i = 0; i < __A->nrows; i++) {
         for (size_t j = 0; j < __A->ncols; j++) {

@@ -11,7 +11,13 @@ set(BIN ${CMAKE_SOURCE_DIR}/bin)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${BIN})
 
-add_compile_options(-Wall)
+add_compile_options(
+
+    -Werror
+    -Wimplicit
+    -Wno-incompatible-pointer-types-discards-qualifiers
+
+)
 
 file(MAKE_DIRECTORY ${BIN})
 # file(MAKE_DIRECTORY ${})

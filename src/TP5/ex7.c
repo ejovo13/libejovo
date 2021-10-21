@@ -63,7 +63,7 @@ int *tri_rapide(int *__tab, int __n, int __pivot_index, int *__n_inf_ptr, int *_
     int n_sup = 0;
     int n_eq = 0;
     bool is_homogeneous = false; // true if all elements are the same integer
-    printf("Called tri_rapide with n: %d\n");
+    printf("Called tri_rapide with n: %d\n", __n);
     print_int_array(__tab, __n);
 
     // count the number of inferior and superior elements
@@ -140,9 +140,9 @@ int *tri_rapide(int *__tab, int __n, int __pivot_index, int *__n_inf_ptr, int *_
             printf("Concatenated inf_arr and sup_arr:\n");
             return __tab;
         } else if (n_inf + n_eq > 0) {
-            return n_inf;
+            return inf_arr;
         } else if (n_sup > 0) {
-            return n_sup;
+            return sup_arr;
         } else {
             perror("you fucked up bro");
             return NULL;
@@ -151,7 +151,7 @@ int *tri_rapide(int *__tab, int __n, int __pivot_index, int *__n_inf_ptr, int *_
 
     } else { // if the array that we are dealing with is homogeneous, then return the array
 
-        printf("Returning tab: %x\n", __tab);
+        printf("Returning tab: %p\n", __tab);
         print_int_array(__tab, __n);
         return __tab;
 
@@ -178,7 +178,7 @@ int main() {
 
     int *sorted = tri_rapide(c, 5, 0, &dummy1, &dummy2, &dummy3);
     // print_int_array(sorted, 1);
-    printf("Sorted address: %x", sorted);
+    printf("Sorted address: %p", sorted);
 
 
     return 0;

@@ -24,4 +24,7 @@ int get_int(void) {
             return input;
         }
     }
+
+    return 0;
+
 }

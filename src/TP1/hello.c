@@ -10,8 +10,8 @@ int main() {
 //   printf("Long double = %Lf\n", long_double);
 //   printf("Long double = %f\n", my_double);
 
-  new_function();
-  new_2();
+// //   new_function();
+//   new_2();
   return 0;
 }
 

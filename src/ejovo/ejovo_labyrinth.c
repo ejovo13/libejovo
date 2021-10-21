@@ -1,13 +1,11 @@
 #include "ejovo_labyrinth.h"
 #include "stdbool.h"
 
-#define MATRIX_TYPE int
-
 
 // Using this for a piece that is 3x3
-long *piece_array(long __1, long __2, long __3, long __4, long __5, long __6, long __7, long __8, long __9) { // Don't even ask
+MATRIX_TYPE *piece_array(MATRIX_TYPE __1, MATRIX_TYPE __2, MATRIX_TYPE __3, MATRIX_TYPE __4, MATRIX_TYPE __5, MATRIX_TYPE __6, MATRIX_TYPE __7, MATRIX_TYPE __8, MATRIX_TYPE __9) { // Don't even ask
 
-    long *arr = (long *) malloc(sizeof(long) * 9);
+    MATRIX_TYPE *arr = (MATRIX_TYPE *) malloc(sizeof(MATRIX_TYPE) * 9);
 
     if(arr) {
 
@@ -28,7 +26,7 @@ long *piece_array(long __1, long __2, long __3, long __4, long __5, long __6, lo
 // Pass an enum value and get the 3 x 3 matrix that corresponds to this piece
 Matrix *get_piece_matrix(PIECE_TYPE __t) {
 
-    int *data = {0};
+    MATRIX_TYPE *data = {0};
 
     switch (__t) {
 
@@ -486,11 +484,11 @@ Cell *CellStack_pop(CellStack *__stack) {
         Cell *cell = __stack->top;
         __stack->top = __stack->top->below;
         cell->below = NULL;
+        return cell;
 
     } else {
         return NULL;
     }
-
 }
 
 void generate_path(Matrix *__maze, CellStack *__stack, size_t __celli, size_t __cellj) {
@@ -576,7 +574,7 @@ bool chercher_chemin(Matrix *__maze, size_t __starti, size_t __startj) {
 
 
 
-
+    return true;
 
 }
 

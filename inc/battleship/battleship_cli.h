@@ -220,6 +220,8 @@ int input_valid_directions(char * valid_directions, int num_valid_directions) {
         }
     }
 
+    return -1;
+
 }
 
 char * get_valid_directions(Board board, int irow, int jcol, int ship_length, int * num_valid_directions) {
