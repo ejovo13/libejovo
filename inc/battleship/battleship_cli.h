@@ -6,7 +6,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include "battleship_board.h"
-#include <stdio_ext.h>
+// #include <stdio_ext.h>
 
 
 
@@ -88,18 +88,18 @@ uint32_t input_col_index() {
 
     while(!is_valid_input) {
 
-        // __fpurge(stdin);
+        // fflush(stdin);
         ret = scanf("%d", &d);
 
         if (ret != 1) {
             printf("input not recognized, please enter a valid integer\n");
-            __fpurge(stdin);
+            fflush(stdin);
             continue;
         }
 
         if (d < 1 || d > 10) { // Then the input value is NOT in [1-10]
             printf("%d not contained in [1-10], please enter an integer in [1-10]\n", d);
-            __fpurge(stdin);
+            fflush(stdin);
             continue;
         } else {
             is_valid_input = true;
@@ -197,7 +197,7 @@ int input_valid_directions(char * valid_directions, int num_valid_directions) {
 
     while (!is_valid_input) {
 
-        __fpurge(stdin); // purge stdin of any extra \n or spaces
+        fflush(stdin); // purge stdin of any extra \n or spaces
         scanf("%c", &input_char); // ASK ABOUT THIS
 
         // printf("La carecter entre: %c", input_char);
