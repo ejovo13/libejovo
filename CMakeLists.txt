@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.11 FATAL_ERROR)
 
-project(TP1)
+project(Travaux_Pratiques)
 enable_testing(ON)
 enable_language(C)
 

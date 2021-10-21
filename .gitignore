@@ -1,6 +1,4 @@
 bin/*
 build/*
-*/CMakeFiles
-*/Makefile
-*/cmake_install.cmake
-*.pdf
+.vscode/
+.github/
