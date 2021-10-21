@@ -34,7 +34,6 @@ char * substr(const char * __s1, const size_t __start_index, const size_t __end_
 
     size_t size_char = sizeof(char);
     size_t len_substr = __end_index - __start_index + 1;
-    size_t num_bytes = size_char * len_substr;
 
     char * str = (char *) malloc(size_char * (len_substr + 1));
 
@@ -411,7 +410,6 @@ char * plus_longue_expr(const char * const __expr_alg)
 size_t count_words(const char * __string) {
 
     // decompose a string that is separated by spaces
-    size_t len = strlen(__string); // we can avoid this
 
     // count the words that exist in a string
 
@@ -433,6 +431,13 @@ size_t count_words(const char * __string) {
     }
 
     return n_words;
+}
+
+static int nb_chiffres_(long x) {
+// Return the number of digits for an integer
+// nb_chiffres(-10) returns 2
+// nb_chiffres(100) returns 3
+    return (int) log10((double) labs(x) ) + 1;
 }
 
 char * int_to_string(int __x) {
@@ -461,11 +466,4 @@ char * int_to_string(int __x) {
 
     return num_str;
 
-}
-
-static int nb_chiffres_(long x) {
-// Return the number of digits for an integer
-// nb_chiffres(-10) returns 2
-// nb_chiffres(100) returns 3
-    return (int) log10((double) labs(x) ) + 1;
 }

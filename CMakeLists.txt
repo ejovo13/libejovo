@@ -13,7 +13,8 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${BIN})
 
 add_compile_options(
 
-    -Werror
+    # -Wall
+    # -Werror
     -Wimplicit
     -Wno-incompatible-pointer-types-discards-qualifiers
 

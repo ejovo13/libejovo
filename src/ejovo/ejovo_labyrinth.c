@@ -513,7 +513,7 @@ void generate_path(Matrix *__maze, CellStack *__stack, size_t __celli, size_t __
         } else {
 
             if (__stack->top) {
-                Cell *prev_cell = CellStack_pop(__stack);
+                CellStack_pop(__stack);
                 generate_path(__maze, __stack, __stack->top->i, __stack->top->j);
             }
 

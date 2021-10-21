@@ -241,7 +241,6 @@ Matrix * submat(Matrix * __A, size_t __istart, size_t __iend, size_t __jstart, s
 
     size_t nrows = __iend - __istart + 1;
     size_t ncols = __jend - __jstart + 1;
-    size_t irow = 0, icol = 0;
 
     sub = Matrix_new(nrows, ncols);
 
@@ -378,7 +377,6 @@ int matcpyele(Matrix * __dest, size_t __istart, size_t __iend, size_t __jstart, 
         return -2;
     }
 
-    size_t irow = 0, jcol = 0; // indices for __src matrix
     for (size_t i = __istart, irow = 0; i <= __iend; i++, irow++) {
         for (size_t j = __jstart, jcol = 0; j <= __jend; j++, jcol++) {
             Matrix_set(__dest, i, j, Matrix_at(__src, irow, jcol));

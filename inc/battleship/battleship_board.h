@@ -352,8 +352,6 @@ char get_location_char_enemy(Board board, int i, int j) {
 void print_docking_station(DockingStation * __left, DockingStation * __right) {
     // print your board to the left and to the right the enemy board
     char c = '-';
-    Board player_board = __left->board;
-    Board enemy_board = __right->board;
 
     printf("  ");
 

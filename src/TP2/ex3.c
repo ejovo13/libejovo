@@ -27,7 +27,6 @@ int main() {
 
     printf("Filtering duplicate integers...\n\n");
 
-    int index = -1;
     int ncount = 0;
 
     // check every single integer from 1 to P

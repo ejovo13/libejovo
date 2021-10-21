@@ -4,16 +4,12 @@
 int PGCD(int a, int b) {
 // Euclid's algorithm to find the greates common divisor
 
-    int r = 0;
-
     do {
         // take the remainder of [bigger number] divided by [smaller number]
         if (a > b) {
             a = a % b;
-            // r = a;
         } else {
             b = b % a;
-            // r = b;
         }
     } while(a != 0 && b != 0);
 
