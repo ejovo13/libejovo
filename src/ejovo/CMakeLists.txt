@@ -7,6 +7,7 @@ set (EJOVO_LIB
     ejovo_matrix.c
     ejovo_labyrinth.c
     ejovo_sort.c
+
 )
 
 
