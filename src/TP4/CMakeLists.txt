@@ -21,7 +21,7 @@ if (NOT WIN32)
 endif()
 
 
-foreach(FILE ${SRC_FILES})
+foreach(FILE ${TP4_SRC_FILES})
     message(STATUS "Adding executable ${FILE}")
     add_executable(${FILE} "${FILE}.c")
     target_link_libraries(${FILE} ${TP4_SRC_LIBS})
