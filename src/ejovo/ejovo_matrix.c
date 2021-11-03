@@ -50,7 +50,12 @@ MATRIX_TYPE Matrix_at(const Matrix *__m, size_t __i, size_t __j) {
 
     } else {
         fprintf(stderr, "**WARNING** Trying to access array element out of bounds. (at)\n");
-        return 0;
+
+        // #if MATRIX_TYPE == Complex
+            // return Complex_zero();
+        // #else
+            return 0;
+        // #endif
     }
 
 }
@@ -102,14 +107,23 @@ void Matrix_summary(const Matrix *__m) {
 // used as a subroutine called in matmul
 MATRIX_TYPE col_dot_row(const Matrix *__A, const Matrix *__B, size_t __irow, size_t __icol) {
 
-    // We are assuming that __A and __B are compatible matrices for matrix multiplication
-    MATRIX_TYPE inner_product = 0;
+    // #if MATRIX_TYPE == Complex
 
-    for (size_t i = 0; i < __A->ncols; i++) {
-        inner_product += (Matrix_at(__A, __irow, i) * Matrix_at(__B, i, __icol));
-    }
+    //     MATRIX_TYPE inner_product = Complex_zero();
+    //     for (size_t i = 0; i < __A->ncols; i++) {
+    //         inner_product = Complex_add(inner_product, ())
+    //     }
 
-    return inner_product;
+    // #else
+        // We are assuming that __A and __B are compatible matrices for matrix multiplication
+        MATRIX_TYPE inner_product = 0;
+        for (size_t i = 0; i < __A->ncols; i++) {
+            inner_product += (Matrix_at(__A, __irow, i) * Matrix_at(__B, i, __icol));
+        }
+        return inner_product;
+    // #endif
+
+
 
 }
 

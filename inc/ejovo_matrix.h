@@ -6,6 +6,7 @@
 #include <stdbool.h>
 #include <assert.h>
 #include "ejovo_rand.h"
+#include "ejovo_comp.h"
 
 /** @file
  *
@@ -22,7 +23,7 @@
 
 // Type of the matrix that will be determined at compile time. Should be a numberic value like `float` or `int`
 #ifndef MATRIX_TYPE
-#define MATRIX_TYPE int
+#define MATRIX_TYPE double
 #endif
 
 /**

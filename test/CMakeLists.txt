@@ -9,6 +9,7 @@ list(APPEND TESTS
     words
     matrix
     lab
+    complex
 )
 
 list(APPEND TEST_LIBS
