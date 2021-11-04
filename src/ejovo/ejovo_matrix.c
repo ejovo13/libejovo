@@ -175,24 +175,10 @@ bool matcmp(const Matrix *__A, const Matrix *__B) {
     if ( __A->nrows != __B->nrows || __A->ncols != __B->ncols) {
         return false;
     }
-    return matcmp_loop(__A, __B);
+    return matcmp_bytes(__A, __B);
 }
 
-// check element by element, using a loop
-bool matcmp_loop(const Matrix *__A, const Matrix *__B) {
 
-    // check every element
-    for (size_t i = 0; i < __A->nrows; i++) {
-        for (size_t j = 0; j < __A->ncols; j++) {
-            if ( Matrix_at(__A, i, j) != Matrix_at(__B, i, j) ) {
-                return false;
-            }
-        }
-    }
-
-    return true;
-
-}
 
 // compare the bytes of the data using memcmp
 bool matcmp_bytes(const Matrix *__A, const Matrix *__B) {

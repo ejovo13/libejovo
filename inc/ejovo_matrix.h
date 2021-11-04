@@ -125,7 +125,6 @@ extern bool matcmp(const Matrix *__A, const Matrix *__B);
 
 extern bool matcmp_bytes(const Matrix *__A, const Matrix *__B);
 
-extern bool matcmp_loop(const Matrix *__A, const Matrix *__B);
 
 // Are __A and __B compatible for addition?
 /** @private

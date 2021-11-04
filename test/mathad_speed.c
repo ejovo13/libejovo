@@ -3,7 +3,7 @@
 #include <stdio.h>
 
 #define MAX_ITER 1E0
-#define N 7500
+#define N 500
 
 int main() {
 

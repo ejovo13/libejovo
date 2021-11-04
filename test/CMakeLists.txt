@@ -13,6 +13,7 @@ list(APPEND TESTS
     mathad_speed
     matcopy
     mathad_copy
+    matcmp_speed
 )
 
 list(APPEND TEST_LIBS
@@ -55,3 +56,5 @@ endforeach(T)
 
 target_compile_options(test_mathad_speed PUBLIC -pg -g)
 target_link_options(test_mathad_speed PUBLIC -pg -g)
+target_compile_options(test_matcmp_speed PUBLIC -pg -g)
+target_link_options(test_matcmp_speed PUBLIC -pg -g)
