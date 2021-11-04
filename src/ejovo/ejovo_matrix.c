@@ -1,6 +1,6 @@
 #include "ejovo_matrix.h"
 
-Matrix * Matrix_new(int __nrows, int __ncols) {
+Matrix * Matrix_new(const int __nrows, const int __ncols) {
 
     Matrix *x = (Matrix *) malloc(sizeof(Matrix));
 
@@ -54,10 +54,14 @@ MATRIX_TYPE Matrix_at(const Matrix *__m, size_t __i, size_t __j) {
         // #if MATRIX_TYPE == Complex
             // return Complex_zero();
         // #else
-            return 0;
+        return 0;
         // #endif
     }
+}
 
+// Return element at __m[__i][__j] without checking bounds
+MATRIX_TYPE matat(const Matrix *__m, size_t __i, size_t __j) {
+    return __m->data[__i * __m->ncols + __j];
 }
 
 // set value of the element at __m(__i, __j) [zero indexed]
@@ -73,8 +77,24 @@ int Matrix_set(Matrix * __m, size_t __i, size_t __j, MATRIX_TYPE __value) {
     }
 }
 
+// set value of the element at __m(__i, __j) without checking the indices
+void matset(Matrix *__m, size_t __i, size_t __j, MATRIX_TYPE __value) {
+    __m->data[__i * __m->ncols + __j] = __value;
+}
+
 // return a pointer to the element at __m(__i, __j) [zero indexed]
-MATRIX_TYPE * Matrix_access(const Matrix * __m, size_t __i, size_t __j) {
+MATRIX_TYPE *Matrix_access(const Matrix * __m, size_t __i, size_t __j) {
+    return matacc_check(__m, __i, __j);
+}
+
+// return a pointer to the element at __m(__i, __j) without checking the indices
+MATRIX_TYPE *matacc(const Matrix *__m, size_t __i, size_t __j) {
+    return __m->data + (__i * __m->ncols + __j);
+}
+
+// return a pointer to the element at __m(__i, __j) checking the indices
+// returns null if the bounds are not respected
+MATRIX_TYPE *matacc_check(const Matrix *__m, size_t __i, size_t __j) {
 
     if (Matrix_valid_bounds(__m, __i, __j)) {
         return __m->data + (__i*__m->ncols + __j);
@@ -82,6 +102,22 @@ MATRIX_TYPE * Matrix_access(const Matrix * __m, size_t __i, size_t __j) {
         fprintf(stderr, "**WARNING** Trying to access array element out of bounds. (access)\n");
         return NULL;
     }
+}
+
+void matprint(const Matrix *__m) {
+
+    Matrix_summary(__m);
+    for (size_t i = 0; i < __m->nrows; i++) {
+        printf("| ");
+        for (size_t j = 0; j < __m->ncols; j++) {
+            printf("%4.4lf ", matat(__m, i, j));
+        }
+
+        printf("|\n");
+
+    }
+
+
 
 }
 
@@ -91,7 +127,7 @@ void Matrix_print(const Matrix *__m) {
     for (size_t i = 0; i < __m->nrows; i++) {
         printf("| ");
         for (size_t j = 0; j < __m->ncols; j++) {
-            printf("%3d ", Matrix_at(__m, i, j));
+            printf("%4.4lf ", Matrix_at(__m, i, j));
         }
 
         printf("|\n");
@@ -105,7 +141,7 @@ void Matrix_summary(const Matrix *__m) {
 
 // Take the inner product of the the __irow row of __A with the __icol col of __B
 // used as a subroutine called in matmul
-MATRIX_TYPE col_dot_row(const Matrix *__A, const Matrix *__B, size_t __irow, size_t __icol) {
+MATRIX_TYPE matcdr_check(const Matrix *__A, const Matrix *__B, size_t __irow, size_t __icol) {
 
     // #if MATRIX_TYPE == Complex
 
@@ -122,9 +158,15 @@ MATRIX_TYPE col_dot_row(const Matrix *__A, const Matrix *__B, size_t __irow, siz
         }
         return inner_product;
     // #endif
+}
 
-
-
+// Compute the dot product without checking any indices
+MATRIX_TYPE matcdr(const Matrix *__A, const Matrix *__B, size_t __irow, size_t __icol) {
+        MATRIX_TYPE inner_product = 0;
+        for (size_t i = 0; i < __A->ncols; i++) {
+            inner_product += (matat(__A, __irow, i) * matat(__B, i, __icol));
+        }
+        return inner_product;
 }
 
 // return true if __A and __B have the same size and all of the elements are identical
@@ -133,6 +175,12 @@ bool matcmp(const Matrix *__A, const Matrix *__B) {
     if ( __A->nrows != __B->nrows || __A->ncols != __B->ncols) {
         return false;
     }
+    return matcmp_loop(__A, __B);
+}
+
+// check element by element, using a loop
+bool matcmp_loop(const Matrix *__A, const Matrix *__B) {
+
     // check every element
     for (size_t i = 0; i < __A->nrows; i++) {
         for (size_t j = 0; j < __A->ncols; j++) {
@@ -141,7 +189,17 @@ bool matcmp(const Matrix *__A, const Matrix *__B) {
             }
         }
     }
+
     return true;
+
+}
+
+// compare the bytes of the data using memcmp
+bool matcmp_bytes(const Matrix *__A, const Matrix *__B) {
+
+    return memcmp((void *) __A->data, (void *) __B->data, sizeof(MATRIX_TYPE) * (__A->nrows * __A->ncols)) == 0;
+
+
 }
 
 // Are __A and __B compatible for addition?
@@ -186,23 +244,15 @@ Matrix * Matrix_clone(const Matrix *restrict __src) {
     return matclone(__src);
 }
 
-Matrix * matmul(const Matrix *__A, const Matrix *__B) {
 
-    // if compatible, multiply the matrices
+Matrix *matmul(const Matrix *__A, const Matrix *__B) {
 
-    // else, return Null pointer
+    Matrix *product = Matrix_new(__A->nrows, __B->ncols);
 
-    Matrix * product = NULL;
-
-    if (Matrix_comp_mult(__A, __B)) {
-
-        product = Matrix_new(__A->nrows, __B->ncols);
-
-        if (product){
-            for (size_t i = 0; i < __A->nrows; i++) {
-                for (size_t j = 0; j < __B->ncols; j++) {
-                    Matrix_set(product, i, j, col_dot_row(__A, __B, i, j));
-                }
+    if (product){
+        for (size_t i = 0; i < __A->nrows; i++) {
+            for (size_t j = 0; j < __B->ncols; j++) {
+                matset(product, i, j, matcdr(__A, __B, i, j));
             }
         }
     }
@@ -210,33 +260,53 @@ Matrix * matmul(const Matrix *__A, const Matrix *__B) {
     return product;
 }
 
-Matrix * Matrix_multiply(Matrix * __A, Matrix * __B) {
-    return matmul(__A, __B);
+
+Matrix * Matrix_multiply(Matrix *__A, Matrix *__B) {
+
+    Matrix *prod = NULL;
+
+    if (Matrix_comp_mult(__A, __B)) {
+        prod = matmul(__A, __B);
+    } else {
+        perror("Trying to multiply incompatible matrices");
+    }
+
+    return prod;
 }
 
-// IDEA!! MAKE THESE VARIADIC FUNCTIONS!!!
-Matrix * matadd(Matrix * __A, Matrix * __B) {
 
-    Matrix * sum = NULL;
+// matadd modifies __A in place for more efficient additions when we don't need the original matrix
+void matadd(Matrix *__A, const Matrix *__B) {
+
+    MATRIX_TYPE *a = NULL;
+    MATRIX_TYPE *b = NULL;
+
+    for (size_t i = 0; i < __A->nrows; i++) {
+        for (size_t j = 0; j < __A->ncols; j++) {
+            a = matacc(__A, i, j);
+            b = matacc(__B, i, j);
+
+            *a += *b;
+        }
+    }
+}
+
+Matrix *Matrix_add(const Matrix *__A, const Matrix *__B) {
+
+    Matrix *sum = NULL;
 
     if (Matrix_comp_add(__A, __B)) {
 
-        sum = Matrix_new(__A->nrows, __B->ncols);
+        sum = matclone(__A); // clone the matrix and modify this new matrix in place
+        matadd(sum, __B);
 
-        if (sum) {
-            for (size_t i = 0; i < __A->nrows; i++) {
-                for (size_t j = 0; j < __A->ncols; j++) {
-                    Matrix_set(sum, i, j, Matrix_at(__A, i, j) + Matrix_at(__B, i, j));
-                }
-            }
-        }
+    } else {
+
+        perror("Trying to add two incompatible matrices");
+
     }
 
     return sum;
-}
-
-Matrix * Matrix_add(Matrix * __A, Matrix * __B) {
-    return matadd(__A, __B);
 }
 
 // Extract submatrix __A(__istart:__iend, __jstart:__jend)
@@ -258,12 +328,10 @@ Matrix * submat(Matrix * __A, size_t __istart, size_t __iend, size_t __jstart, s
 
     sub = Matrix_new(nrows, ncols);
 
-
     for (size_t i = __istart, irow = 0; i <= __iend; i++, irow++) {
-
         for (size_t j = __jstart, icol = 0; j <= __jend; j++, icol++) {
             // printf("Setting (%lu,%lu) to %d\n", irow, icol, Matrix_at(__A, i, j));
-            Matrix_set(sub, irow, icol, Matrix_at(__A, i, j));
+            matset(sub, irow, icol, matat(__A, i, j));
         }
     }
 
@@ -275,23 +343,31 @@ Matrix * Matrix_submat(Matrix * __A, size_t __istart, size_t __iend, size_t __js
     return submat(__A, __istart, __iend, __jstart, __jend);
 }
 
-// fill matrix with a single value
-void Matrix_fill(Matrix * __A, MATRIX_TYPE value) {
+void matfill(Matrix *__A, const MATRIX_TYPE __value) {
 
     for (size_t i = 0; i < __A->nrows; i++) {
         for (size_t j = 0; j < __A->ncols; j++) {
-
-            Matrix_set(__A, i, j, value);
-
+            matset(__A, i, j, __value);
         }
     }
 }
+
+// fill matrix with a single value
+void Matrix_fill(Matrix * __A, const MATRIX_TYPE value) {
+
+    for (size_t i = 0; i < __A->nrows; i++) {
+        for (size_t j = 0; j < __A->ncols; j++) {
+            Matrix_set(__A, i, j, value);
+        }
+    }
+}
+
 
 // matrix of all ones
 Matrix * Matrix_ones(size_t __nrows, size_t __ncols) {
 
     Matrix * m = Matrix_new(__nrows, __ncols);
-    Matrix_fill(m, 1);
+    matfill(m, 1);
 
     return m;
 
@@ -304,7 +380,7 @@ Matrix * Matrix_ij(size_t __nrows, size_t __ncols) {
     if(m) {
         for (size_t i = 0; i < __nrows; i++) {
             for (size_t j = 0; j < __ncols; j++) {
-                Matrix_set(m, i, j, i + j + 1);
+                matset(m, i, j, i + j + 1);
             }
         }
     }
@@ -316,7 +392,7 @@ Matrix * Matrix_ij(size_t __nrows, size_t __ncols) {
 Matrix * Matrix_value(size_t __nrows, size_t __ncols, MATRIX_TYPE __value) {
 
     Matrix * m = Matrix_new(__nrows, __ncols);
-    Matrix_fill(m, __value);
+    matfill(m, __value);
 
     return m;
 }
@@ -328,7 +404,7 @@ Matrix * Matrix_random(size_t __nrows, size_t __ncols, int __min, int __max) {
 
     for (size_t i = 0; i < __nrows; i++) {
         for (size_t j = 0; j < __ncols; j++) {
-            Matrix_set(m, i, j, unif(__min, __max));
+            matset(m, i, j, unif(__min, __max));
         }
     }
 
@@ -341,7 +417,7 @@ Matrix * Matrix_identity(size_t __n) {
     Matrix * m = Matrix_new(__n, __n);
 
     for (size_t i = 0; i < __n; i++) {
-        Matrix_set(m, i, i, 1);
+        matset(m, i, i, 1);
     }
 
     return m;
@@ -391,13 +467,22 @@ int matcpyele(Matrix * __dest, size_t __istart, size_t __iend, size_t __jstart, 
         return -2;
     }
 
+    matcpyele_unsafe(__dest, __istart, __iend, __jstart, __jend, __src);
+
+
+    return 0;
+}
+
+// Copy the elements of __src into the submatrix of __dest prescribed by the start and end indices WITHOUT CHECKING THE BOUNDS
+void matcpyele_unsafe(Matrix *__dest, size_t __istart, size_t __iend, size_t __jstart, size_t __jend, Matrix *__src) {
+
     for (size_t i = __istart, irow = 0; i <= __iend; i++, irow++) {
         for (size_t j = __jstart, jcol = 0; j <= __jend; j++, jcol++) {
             Matrix_set(__dest, i, j, Matrix_at(__src, irow, jcol));
         }
     }
+    // optimized for row-major access
 
-    return 0;
 }
 
 
@@ -532,20 +617,18 @@ double Matrix_det(Matrix * __A) {
     double local_det = 0;
 
     if (__A->ncols == 1 && __A->nrows == 1) {
-        return Matrix_at(__A, 0, 0);
+        return matat(__A, 0, 0);
     } else {
 
         size_t i = 0;
         for (size_t j = 0; j < __A->ncols; j++) {
             double cofactor = pow(-1.0, j)*Matrix_det(Matrix_minor(__A, i, j));
             // printf("Cofactor: %lf, i: %lu, j: %lu\n", cofactor, i, j);
-            local_det += cofactor * Matrix_at(__A, i, j);
+            local_det += cofactor * matat(__A, i, j);
         }
     }
 
     return local_det;
-
-
 }
 
 Matrix *Matrix_from(const MATRIX_TYPE *__arr, size_t __nrows, size_t __ncols) {
@@ -556,7 +639,7 @@ Matrix *Matrix_from(const MATRIX_TYPE *__arr, size_t __nrows, size_t __ncols) {
     Matrix *m = Matrix_new(__nrows, __ncols);
     for (size_t i = 0; i < __nrows; i++) {
         for (size_t j = 0; j < __ncols; j++) {
-            Matrix_set(m, i, j, __arr[i*__ncols + j]);
+            matset(m, i, j, __arr[i*__ncols + j]);
             // printf("Set M(%lu,%lu) to %d\n", i, j, __arr[i*__ncols + j]);
 
         }
@@ -564,4 +647,67 @@ Matrix *Matrix_from(const MATRIX_TYPE *__arr, size_t __nrows, size_t __ncols) {
 
     return m;
 
+}
+
+// Low level implementation of Hadamard multiplication, mutating __A in place
+void mathad(Matrix *__A, const Matrix *__B) {
+
+    MATRIX_TYPE *a = NULL;
+    MATRIX_TYPE *b = NULL;
+
+    // Iterate through the columns and rows of __A and multiply the elements by __B
+    for (size_t i = 0; i < __A->nrows; i++) {
+        for (size_t j = 0; j < __A->ncols; j++) {
+
+            a = matacc(__A, i, j);
+            b = matacc(__B, i, j);
+
+            *a *= *b;
+        }
+    }
+}
+
+// Call hadamard multiplication, checking the indices with each access.
+void mathad_check(Matrix *__A, const Matrix *__B) {
+
+    MATRIX_TYPE *a = NULL;
+    MATRIX_TYPE *b = NULL;
+
+    // Iterate through the columns and rows of __A and multiply the elements by __B
+    for (size_t i = 0; i < __A->nrows; i++) {
+        for (size_t j = 0; j < __A->ncols; j++) {
+
+            a = matacc_check(__A, i, j);
+            b = matacc_check(__B, i, j);
+
+            *a *= *b;
+        }
+    }
+}
+
+void Matrix_hadamard_at(Matrix *__A, const Matrix *__B) {
+
+    // Iterate through the columns and rows of __A and multiply the elements by __B
+    for (size_t i = 0; i < __A->nrows; i++) {
+        for (size_t j = 0; j < __A->ncols; j++) {
+            Matrix_set(__A, i, j, Matrix_at(__A, i, j) * Matrix_at(__B, i, j));
+        }
+    }
+}
+
+
+/**
+ * Compute the Hadamard product (element-wise multiplication) of two matrices
+ */
+Matrix *Matrix_hadamard(const Matrix *__A, const Matrix *__B) {
+    // Don't compute the product in place.
+    if (!Matrix_comp_add(__A, __B)) {
+        perror("Cannot take the hadamard product of two incompatible matrices!");
+    }
+    // verify that the matrices can be added
+
+    Matrix *C = Matrix_clone(__A);
+    mathad(C, __B);
+
+    return C;
 }

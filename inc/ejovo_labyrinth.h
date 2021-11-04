@@ -5,8 +5,9 @@
 #include "ejovo_matrix.h"
 
 // This file contains some functions to generate a labyrinth and then later how to solve the maze
-
+#ifndef MATRIX_TYPE
 #define MATRIX_TYPE int
+#endif
 
 typedef enum piece_e {
     V_PIPE, // Vertical pipe

@@ -6,7 +6,8 @@
 #include <stdbool.h>
 #include <assert.h>
 #include "ejovo_rand.h"
-#include "ejovo_comp.h"
+#include <string.h>
+// #include "ejovo_comp.h"
 
 /** @file
  *
@@ -47,7 +48,7 @@ typedef struct mat_t {
  * Calls calloc under the surface. The allocated matrix can be freed using the function
  * `Matrix_free`.
  */
-extern Matrix * Matrix_new(int __nrows, int __ncols);
+extern Matrix * Matrix_new(const int __nrows, const int __ncols);
 
 /**
  * Free the memory associated with the matrix and then free the pointer itself
@@ -70,6 +71,11 @@ extern bool Matrix_valid_bounds(const Matrix *__m, size_t __i, size_t __j);
 extern MATRIX_TYPE Matrix_at(const Matrix *__m, size_t __i, size_t __j);
 
 /**
+ * Return the value of the element at __m(__i, __j) without checking the indices
+ */
+extern MATRIX_TYPE matat(const Matrix *__m, size_t __i, size_t __j);
+
+/**
  * Set value of the element at __m(__i, __j) [zero indexed]
  *
  * Return 0 if the bounds were respected, -1 elsewise
@@ -78,16 +84,24 @@ extern MATRIX_TYPE Matrix_at(const Matrix *__m, size_t __i, size_t __j);
  */
 extern int Matrix_set(Matrix *__m, size_t __i, size_t __j, MATRIX_TYPE __value);
 
+// set value of the element at __m(__i, __j) without checking the indices
+extern void matset(Matrix *__m, size_t __i, size_t __j, MATRIX_TYPE __value);
+
 /**
  *  Return a pointer to the element at __m(__i, __j) [zero indexed]
  */
 extern MATRIX_TYPE * Matrix_access(const Matrix *__m, size_t __i, size_t __j);
 
+// return a pointer to the element at __m(__i, __j) without checking the indices
+extern MATRIX_TYPE *matacc(const Matrix *__m, size_t __i, size_t __j);
 
+extern MATRIX_TYPE *matacc_check(const Matrix *__m, size_t __i, size_t __j);
 /**
  * Print a matrix to stdout
  */
 extern void Matrix_print(const Matrix *__m);
+
+extern void matprint(const Matrix *__m);
 
 /**
  * Print the size of a matrix to stdout
@@ -101,10 +115,17 @@ extern void Matrix_summary(const Matrix *__m);
  */
 extern MATRIX_TYPE col_dot_row(const Matrix *__A, const Matrix *__B, size_t __irow, size_t __icol);
 
+// Compute the dot product without checking any indices MATrix Column Dot Row.
+extern MATRIX_TYPE matcdr(const Matrix *__A, const Matrix *__B, size_t __irow, size_t __icol);
+
 // return true if __A and __B have the same size and all of the elements are identical
 /** @private
  */
 extern bool matcmp(const Matrix *__A, const Matrix *__B);
+
+extern bool matcmp_bytes(const Matrix *__A, const Matrix *__B);
+
+extern bool matcmp_loop(const Matrix *__A, const Matrix *__B);
 
 // Are __A and __B compatible for addition?
 /** @private
@@ -143,7 +164,8 @@ extern Matrix * Matrix_clone(const Matrix *restrict __src);
 /** @private
  * Fortran named function to compute the multiplication of two matrices __A * __B
  */
-Matrix * matmul(const Matrix *__A, const Matrix *__B);
+extern Matrix * matmul(const Matrix *__A, const Matrix *__B);
+
 
 /**
  * Multiply two matrices __A*__B.
@@ -153,12 +175,12 @@ Matrix * Matrix_multiply(Matrix * __A, Matrix * __B);
 // IDEA!! MAKE THESE VARIADIC FUNCTIONS!!!
 /** @private
  */
-Matrix * matadd(Matrix * __A, Matrix * __B);
+void matadd(Matrix *__A, const Matrix *__B);
 
 /**
  * Add two matrices and store the sum in the return value
  */
-Matrix * Matrix_add(Matrix * __A, Matrix * __B);
+Matrix *Matrix_add(const Matrix *__A, const Matrix *__B);
 
 // Extract submatrix __A(__istart:__iend, __jstart:__jend)
 /** @private
@@ -175,7 +197,12 @@ Matrix * Matrix_submat(Matrix * __A, size_t __istart, size_t __iend, size_t __js
 /**
  * Fill a Matrix __A with the value __value.
  */
-void Matrix_fill(Matrix * __A, MATRIX_TYPE __value);
+void Matrix_fill(Matrix *__A, const MATRIX_TYPE __value);
+
+/**
+ * Fill the elements without checking bounds
+ */
+void matfill(Matrix *__A, const MATRIX_TYPE __value);
 
 /**
  *  Instantiate new matrix with the value filled in at every element
@@ -231,28 +258,46 @@ Matrix * Matrix_pow(Matrix * __A, size_t __power);
  */
 int matcpyele(Matrix * __dest, size_t __istart, size_t __iend, size_t __jstart, size_t __jend, Matrix * __src);
 
+
+// Copy the elements of __src into the submatrix of __dest prescribed by the start and end indices WITHOUT CHECKING THE BOUNDS
+void matcpyele_unsafe(Matrix *__dest, size_t __istart, size_t __iend, size_t __jstart, size_t __jend, Matrix *__src);
+
+
 /**
  * Stack two matrices on top of each other
  */
-Matrix * Matrix_rcat(Matrix * __A, Matrix * __B);
+extern Matrix * Matrix_rcat(Matrix * __A, Matrix * __B);
 
 /**
  * Smush two matrices together
  */
-Matrix * Matrix_ccat(Matrix * __A, Matrix * __B);
+extern Matrix * Matrix_ccat(Matrix * __A, Matrix * __B);
 
 /**
  * Find the minor of a matrix
  *
  * The minor of a Matrix is the Original Matrix __A with the `__irow` row removed and the `__icol` col.
  */
-Matrix * Matrix_minor(Matrix * __A, size_t __irow, size_t __icol);
+extern Matrix * Matrix_minor(Matrix * __A, size_t __irow, size_t __icol);
 
 
 /**
  * Recursive algorithm to compute the determinant of a matrix
  *
  */
-double Matrix_det(Matrix * __A);
+extern double Matrix_det(Matrix * __A);
+
+
+extern void mathad(Matrix *__A, const Matrix *__B);
+
+extern void mathad_check(Matrix *__A, const Matrix *__B);
+
+extern void Matrix_hadamard_at(Matrix *__A, const Matrix *__B);
+
+
+/**
+ * Compute the Hadamard product (element-wise multiplication) of two matrices
+ */
+extern Matrix *Matrix_hadamard(const Matrix *__A, const Matrix *__B);
 
 #endif
