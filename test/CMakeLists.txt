@@ -54,7 +54,9 @@ foreach(T ${TESTS})
     ejovo_add_test(${T})
 endforeach(T)
 
-target_compile_options(test_mathad_speed PUBLIC -pg -g)
-target_link_options(test_mathad_speed PUBLIC -pg -g)
-target_compile_options(test_matcmp_speed PUBLIC -pg -g)
-target_link_options(test_matcmp_speed PUBLIC -pg -g)
+# Flags for profiling on local machine
+
+# target_compile_options(test_mathad_speed PUBLIC -pg -g)
+# target_link_options(test_mathad_speed PUBLIC -pg -g)
+# target_compile_options(test_matcmp_speed PUBLIC -pg -g)
+# target_link_options(test_matcmp_speed PUBLIC -pg -g)

@@ -18,8 +18,9 @@ int main() {
     printf("Value entered: %ld\n", n);
     printf("Number of digits: %ld\n", num_digits);
 
-    char n_str[num_digits + 1];
-    // n_str[num_digits] = '\0';
+    // char n_str[num_digits + 1];
+    char *n_str = (char *) malloc(sizeof(char) * (num_digits + 1));
+    n_str[num_digits] = '\0';
 
     sprintf(n_str, "%ld", n);
 
