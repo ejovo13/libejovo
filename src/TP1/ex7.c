@@ -25,10 +25,12 @@ int main() {
 
     // find out the number of digits
 
-    int num_digits = log10((double) n) + 1;
+    const int num_digits = log10((double) n) + 1;
 
-    char n_str[num_digits + 1];
-    char n_rev[num_digits + 1];
+    char *n_str = (char *) malloc(sizeof(char) * (num_digits + 1));
+    char *n_rev = (char *) malloc(sizeof(char) * (num_digits - 1));
+
+    n_str[num_digits] = '\0';
     n_rev[num_digits] = '\0';
 
     sprintf(n_str, "%d", n);

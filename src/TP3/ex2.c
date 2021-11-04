@@ -22,7 +22,7 @@ int extrait_nombre(uint32_t x, int n, int lg) {
     char * x_str = int_to_string(x);
     int num_digits = nb_chiffres(x);
     int result = 0;
-    char sub_str[lg + 1];
+    char *sub_str = (char *) malloc(sizeof(char) * (lg + 1));
     sub_str[lg] = '\0';
 
 
