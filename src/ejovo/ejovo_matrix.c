@@ -198,8 +198,6 @@ bool matcmp_loop(const Matrix *__A, const Matrix *__B) {
 bool matcmp_bytes(const Matrix *__A, const Matrix *__B) {
 
     return memcmp((void *) __A->data, (void *) __B->data, sizeof(MATRIX_TYPE) * (__A->nrows * __A->ncols)) == 0;
-
-
 }
 
 // Are __A and __B compatible for addition?
@@ -685,17 +683,6 @@ void mathad_check(Matrix *__A, const Matrix *__B) {
     }
 }
 
-void Matrix_hadamard_at(Matrix *__A, const Matrix *__B) {
-
-    // Iterate through the columns and rows of __A and multiply the elements by __B
-    for (size_t i = 0; i < __A->nrows; i++) {
-        for (size_t j = 0; j < __A->ncols; j++) {
-            Matrix_set(__A, i, j, Matrix_at(__A, i, j) * Matrix_at(__B, i, j));
-        }
-    }
-}
-
-
 /**
  * Compute the Hadamard product (element-wise multiplication) of two matrices
  */
@@ -706,7 +693,7 @@ Matrix *Matrix_hadamard(const Matrix *__A, const Matrix *__B) {
     }
     // verify that the matrices can be added
 
-    Matrix *C = Matrix_clone(__A);
+    Matrix *C = matclone(__A);
     mathad(C, __B);
 
     return C;

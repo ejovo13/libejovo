@@ -292,9 +292,6 @@ extern void mathad(Matrix *__A, const Matrix *__B);
 
 extern void mathad_check(Matrix *__A, const Matrix *__B);
 
-extern void Matrix_hadamard_at(Matrix *__A, const Matrix *__B);
-
-
 /**
  * Compute the Hadamard product (element-wise multiplication) of two matrices
  */

@@ -26,8 +26,5 @@ int main() {
     assert(!matcmp_loop(m, m_copy));
     assert(!matcmp_bytes(m, m_copy));
 
-
-
-
     return 0;
 }

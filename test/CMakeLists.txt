@@ -12,6 +12,7 @@ list(APPEND TESTS
     complex
     mathad_speed
     matcopy
+    mathad_copy
 )
 
 list(APPEND TEST_LIBS
