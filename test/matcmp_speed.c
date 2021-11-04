@@ -19,8 +19,7 @@ int main() {
     for (size_t i = 0; i < MAX_ITER; i++) {
 
         result = matcmp(base, clone);
-        // result = matcmp_loop(base, clone);
-        // result = matcmp_bytes(base, clone);
+        result = matcmp_bytes(base, clone);
 
     }
 
