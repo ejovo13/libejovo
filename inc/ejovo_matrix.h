@@ -43,12 +43,34 @@ typedef struct mat_t {
 } Matrix;
 
 /**
+ * @private
+ * Allocate the space for a new matrix object, performing no checks
+ */
+extern Matrix *matalloc(size_t __nrows, size_t __ncols);
+
+/**
  * Create a new __nrows x __ncols Matrix filled with zeros
  *
  * Calls calloc under the surface. The allocated matrix can be freed using the function
  * `Matrix_free`.
  */
-extern Matrix * Matrix_new(const int __nrows, const int __ncols);
+extern Matrix *Matrix_new(int __nrows, int __ncols);
+
+extern Matrix *Matrix_move(MATRIX_TYPE **__arr_ptr, size_t __nrows, size_t __ncols);
+
+extern Matrix *Matrix_from(const MATRIX_TYPE *__arr, size_t __nrows, size_t __ncols);
+
+/**
+ * Create a column vector (A n x 1 matrix) from a given array
+ *
+ */
+extern Matrix *Matrix_colvec(const MATRIX_TYPE *__arr, size_t __nrows);
+
+/**
+ * Create a row vector (A 1 x m matrix) from a given array
+ *
+ */
+extern Matrix *Matrix_rowvec(const MATRIX_TYPE *__arr, size_t __ncols);
 
 /**
  * Free the memory associated with the matrix and then free the pointer itself
@@ -113,7 +135,7 @@ extern void Matrix_summary(const Matrix *__m);
 // used as a subroutine called in matmul
 /** @private
  */
-extern MATRIX_TYPE col_dot_row(const Matrix *__A, const Matrix *__B, size_t __irow, size_t __icol);
+extern MATRIX_TYPE matcdr_check(const Matrix *__A, const Matrix *__B, size_t __irow, size_t __icol);
 
 // Compute the dot product without checking any indices MATrix Column Dot Row.
 extern MATRIX_TYPE matcdr(const Matrix *__A, const Matrix *__B, size_t __irow, size_t __icol);
@@ -230,17 +252,19 @@ Matrix * Matrix_random(size_t __nrows, size_t __ncols, int __min, int __max);
  */
 Matrix * Matrix_rand(size_t __nrows, size_t __ncols);
 
-/** @private
- *
- */
-bool is_square(Matrix * __A);
+// /** @private
+//  *
+//  */
+// extern bool is_square(const Matrix *__A);
+
+extern size_t Matrix_size(const Matrix *__A);
 
 /**
  * Check if a Matrix is square
  *
  * A matrix is sqaure if the nrows is equal to ncols.
  */
-bool Matrix_is_square(Matrix * __A);
+extern bool Matrix_is_square(const Matrix *__A);
 
 /**
  * Compute the Power of a matrix
@@ -295,5 +319,50 @@ extern void mathad_check(Matrix *__A, const Matrix *__B);
  * Compute the Hadamard product (element-wise multiplication) of two matrices
  */
 extern Matrix *Matrix_hadamard(const Matrix *__A, const Matrix *__B);
+
+
+extern void matsetrow(Matrix *__A, size_t __i, size_t __j, const MATRIX_TYPE *__src, size_t __n);
+
+extern void matsetcol(Matrix *__A, size_t __i, size_t __j, const MATRIX_TYPE *__src, size_t __n);
+
+/**
+ * Get a new malloc row vecot (1 x m matrix) corresponding to row __i
+ */
+extern Matrix *Matrix_get_row(const Matrix *__A, size_t __i);
+
+/**
+ * Get a new malloc row vecot (1 x m matrix) corresponding to row __i
+ */
+extern Matrix *Matrix_get_col(const Matrix *__A, size_t __j);
+
+/**
+ * Get a new malloc row vecot (1 x m matrix) corresponding to row __i
+ */
+extern int Matrix_set_row(Matrix *__A, size_t __i, const Matrix *__row);
+
+/**
+ * Get a new malloc row vecot (1 x m matrix) corresponding to row __i
+ */
+extern int Matrix_set_col(Matrix *__A, size_t __j, const Matrix *__col);
+
+extern bool Matrix_is_row(const Matrix *__A);
+
+extern bool Matrix_is_col(const Matrix *__A);
+
+extern bool Matrix_is_vec(const Matrix *__A);
+
+// Return a newly allocated column vector without checking indices
+extern Matrix *matcol(const Matrix *__A, size_t __j);
+
+// Return a newly allocated column vector without checking indices
+extern Matrix *matrow(const Matrix *__A, size_t __i);
+
+extern Matrix *Matrix_K(size_t __n);
+
+extern Matrix *Matrix_C(size_t __n);
+
+extern Matrix *Matrix_T(size_t __n);
+
+extern Matrix *Matrix_B(size_t __n);
 
 #endif

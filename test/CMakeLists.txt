@@ -14,6 +14,9 @@ list(APPEND TESTS
     matcopy
     mathad_copy
     matcmp_speed
+    computational
+    matcopycol
+    all_mat
 )
 
 list(APPEND TEST_LIBS

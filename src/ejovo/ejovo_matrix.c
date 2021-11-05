@@ -1,27 +1,87 @@
 #include "ejovo_matrix.h"
 
-Matrix * Matrix_new(const int __nrows, const int __ncols) {
+// perform literally 0 checks, just allocate the space for a new matrix
+Matrix *matalloc(size_t __nrows, size_t __ncols) {
+
+    Matrix *x = (Matrix *) malloc(sizeof(Matrix));
+    MATRIX_TYPE *data = (MATRIX_TYPE *) malloc(sizeof(MATRIX_TYPE) * (__nrows * __ncols));
+    x->data = data;
+    x->nrows = __nrows;
+    x->ncols = __ncols;
+
+    return x;
+
+}
+
+Matrix * Matrix_new(int __nrows, int __ncols) {
 
     Matrix *x = (Matrix *) malloc(sizeof(Matrix));
 
-    if ( __nrows > 0 && __ncols > 0) {
-        MATRIX_TYPE *data = (MATRIX_TYPE *) calloc(__nrows * __ncols, sizeof(MATRIX_TYPE));
-        x->data = data;
-        if (data) { // if the data is allocated properly
-            x->nrows = __nrows;
-            x->ncols = __ncols;
+    if(x) {
+
+        if ( __nrows > 0 && __ncols > 0) {
+            MATRIX_TYPE *data = (MATRIX_TYPE *) calloc(__nrows * __ncols, sizeof(MATRIX_TYPE));
+            x->data = data;
+            if (data) { // if the data is allocated properly
+                x->nrows = __nrows;
+                x->ncols = __ncols;
+            } else {
+                x->nrows = 0;
+                x->ncols = 0;
+            }
         } else {
+            x->data = NULL;
             x->nrows = 0;
             x->ncols = 0;
         }
-    } else {
-        x->data = NULL;
-        x->nrows = 0;
-        x->ncols = 0;
-    }
 
-    return x;
+        return x;
+
+    } else {
+
+        return x;
+    }
 }
+
+// when given an ordinary array, construct a matrix from it, taking the prrevious memory.
+// MOVE should only be called with arrays that are allocated on the heap so that that is no
+// array jank that happens as a side effect.
+Matrix *Matrix_move(MATRIX_TYPE **__arr_ptr, size_t __nrows, size_t __ncols) {
+    Matrix *m = (Matrix *) malloc(sizeof(Matrix));
+    m->ncols = __ncols;
+    m->nrows = __nrows;
+    m->data = *__arr_ptr;
+
+    printf("Address of arr_ptr inside Matrix_move: %p\n", __arr_ptr);
+    printf("Address of m->data inside matrix: %p\n", m->data);
+
+    // Matrix_print(m);
+
+    *__arr_ptr = NULL;
+
+    printf("Address of arr inside Matrix_move: %p\n", *__arr_ptr);
+
+    return m;
+}
+
+// When given an array, clone the array (copy its memory)
+Matrix *Matrix_from(const MATRIX_TYPE *__arr, size_t __nrows, size_t __ncols) {
+
+    Matrix *m = matalloc(__nrows, __ncols);
+    memcpy(m->data, __arr, sizeof(MATRIX_TYPE) * (__nrows * __ncols));
+
+    return m;
+}
+
+// When creating vectors we can just go ahead and memcpy the data!
+Matrix *Matrix_colvec(const MATRIX_TYPE *__arr, size_t __nrows) {
+    return Matrix_from(__arr, __nrows, 1);
+}
+
+Matrix *Matrix_rowvec(const MATRIX_TYPE *__arr, size_t __ncols) {
+    return Matrix_from(__arr, 1, __ncols);
+}
+
 
 // Free the memory associated with the matrix and then free the pointer itself
 void Matrix_free(Matrix *__A) {
@@ -54,7 +114,7 @@ MATRIX_TYPE Matrix_at(const Matrix *__m, size_t __i, size_t __j) {
         // #if MATRIX_TYPE == Complex
             // return Complex_zero();
         // #else
-        return 0;
+        return -1;
         // #endif
     }
 }
@@ -177,8 +237,6 @@ bool matcmp(const Matrix *__A, const Matrix *__B) {
     }
     return matcmp_bytes(__A, __B);
 }
-
-
 
 // compare the bytes of the data using memcmp
 bool matcmp_bytes(const Matrix *__A, const Matrix *__B) {
@@ -412,7 +470,11 @@ Matrix * Matrix_rand(size_t __nrows, size_t __ncols) {
     return Matrix_random(__nrows, __ncols, 0, 100);
 }
 
-bool Matrix_is_square(Matrix * __A) {
+size_t Matrix_size(const Matrix *__A) {
+    return __A->nrows * __A->ncols;
+}
+
+bool Matrix_is_square(const Matrix *__A) {
     return __A->nrows == __A->ncols;
 }
 
@@ -615,24 +677,6 @@ double Matrix_det(Matrix * __A) {
     return local_det;
 }
 
-Matrix *Matrix_from(const MATRIX_TYPE *__arr, size_t __nrows, size_t __ncols) {
-
-    // printf("ncols: %lu\n", __ncols);
-
-    // pass a fixed size array to copy as a Matrix
-    Matrix *m = Matrix_new(__nrows, __ncols);
-    for (size_t i = 0; i < __nrows; i++) {
-        for (size_t j = 0; j < __ncols; j++) {
-            matset(m, i, j, __arr[i*__ncols + j]);
-            // printf("Set M(%lu,%lu) to %d\n", i, j, __arr[i*__ncols + j]);
-
-        }
-    }
-
-    return m;
-
-}
-
 // Low level implementation of Hadamard multiplication, mutating __A in place
 void mathad(Matrix *__A, const Matrix *__B) {
 
@@ -683,4 +727,168 @@ Matrix *Matrix_hadamard(const Matrix *__A, const Matrix *__B) {
     mathad(C, __B);
 
     return C;
+}
+
+
+// Set the first __n indices of row __i, starting at column __j
+void matsetrow(Matrix *__A, size_t __i, size_t __j, const MATRIX_TYPE *__src, size_t __n) {
+
+    MATRIX_TYPE *row_start = matacc(__A, __i, __j); // start of the row
+    memcpy((void *) row_start, (void *) __src, sizeof(MATRIX_TYPE) * __n);
+
+}
+
+void matsetcol(Matrix *__A, size_t __i, size_t __j, const MATRIX_TYPE *__src, size_t __n) {
+
+    MATRIX_TYPE *col_start = matacc(__A, __i, __j); // start of the col
+    for (size_t i = 0; i < __n; i++) {
+        *(col_start + (__A->nrows * i)) = __src[i];
+    }
+}
+
+// SETS THE iTH ROW OF __A USING A ROW VECTOR!!!! That is, a ONE by M matrix
+int Matrix_set_row(Matrix *__A, size_t __i, const Matrix *__row) {
+
+    // Check that the __row matrix is actually a row matrix and that the number of columns match
+    if (!Matrix_is_row(__row)) {
+        perror("Matrix is not a row vector");
+        return EXIT_FAILURE;
+    }
+    if (__row->ncols != __A->ncols) {
+        perror("Matrix does not have the same number of cols");
+        return EXIT_FAILURE;
+    }
+
+    matsetrow(__A, __i, 0, __row->data, __row->ncols);
+    return EXIT_SUCCESS;
+
+}
+
+// SETS THE iTH ROW OF __A USING A ROW VECTOR!!!! That is, a ONE by M matrix
+int Matrix_set_col(Matrix *__A, size_t __j, const Matrix *__col) {
+
+    // Check that the __row matrix is actually a row matrix and that the number of columns match
+    if (!Matrix_is_col(__col)) {
+        perror("Matrix is not a col vector");
+        return EXIT_FAILURE;
+    }
+    if (__col->nrows != __A->nrows) {
+        perror("Matrix does not have the same number of rows");
+        return EXIT_FAILURE;
+    }
+
+    matsetcol(__A, 0, __j, __col->data, __col->nrows);
+    return EXIT_SUCCESS;
+
+}
+
+// It is remarkably faster to extract a specific row since we are just memcpy a certain period of bytes!
+Matrix *Matrix_get_col(const Matrix *__A, size_t __j) {
+    // don't even check bounds or anything just copy that shit!
+    if (__j >= __A->ncols) {
+        perror("jth column doesnt exist, returning NULL pointer");
+        return NULL;
+    }
+    // so we want to copy __A->nrow elements.
+    Matrix *x = matalloc(__A->nrows, 1);
+    // iterate through the proper positions
+    for (size_t i = 0; i < __A->nrows; i++) {
+        matset(x, i, 0, matat(__A, i, __j));
+    }
+
+    return x;
+
+}
+
+// On the other hand, matrow is quite slow since we have to access the elements with a for loop.
+// As a design choice, I'd like to implement some sort of low level "row iterator" that will allow us
+// to iterate allong the row of a Matrix (to access it later) without actually performing a copy
+Matrix *Matrix_get_row(const Matrix *__A, size_t __i) {
+
+    if (__i >= __A->nrows) {
+        perror("ith row doesnt exist, returning NULL pointer");
+        return NULL;
+    }
+
+    printf("Trying to set row\n");
+    Matrix *row = matalloc(1, __A->ncols);
+    matsetrow(row, 0, 0, matacc(__A, __i, 0), __A->ncols);
+    return row;
+
+}
+
+// return true if __A has one row
+bool Matrix_is_row(const Matrix *__A) {
+    return __A->nrows == 1;
+}
+
+// return true if __A has one column
+bool Matrix_is_col(const Matrix *__A) {
+    return __A->ncols == 1;
+}
+
+bool Matrix_is_vec(const Matrix *__A) {
+    return Matrix_is_row(__A) || Matrix_is_col(__A);
+}
+
+
+// Tridiagonal K matrix
+Matrix *Matrix_K(size_t __n) {
+// assert that __n > 1
+    assert(__n > 1);
+
+    Matrix *mat = Matrix_new(__n, __n);
+    // set first row
+    matset(mat, 0, 0, 2);
+    matset(mat, 0, 1, -1);
+
+    // set middle rows
+    for (size_t i = 1; i < __n - 1; i++) {
+
+        matset(mat, i, i - 1, -1);
+        matset(mat, i, i, 2);
+        matset(mat, i, i + 1, -1);
+
+    }
+
+    // set final row
+    matset(mat, __n - 1, __n - 2, -1);
+    matset(mat, __n - 1, __n - 1, 2);
+
+    return mat;
+}
+
+// Circular matrix
+Matrix *Matrix_C(size_t __n) {
+
+    assert(__n > 1);
+
+    Matrix *mat = Matrix_K(__n);
+    matset(mat, 0, __n - 1, -1); // set the top right value
+    matset(mat, __n - 1, 0, -1); // set the bottom left value
+
+    return mat;
+
+}
+
+Matrix *Matrix_T(size_t __n) {
+
+    assert(__n > 1);
+
+    Matrix *mat = Matrix_K(__n);
+    matset(mat, 0, 0, 1);
+
+    return mat;
+
+}
+
+Matrix *Matrix_B(size_t __n) {
+
+    assert(__n > 1);
+
+    Matrix *mat = Matrix_T(__n);
+    matset(mat, __n - 1, __n - 1, 1);
+
+    return mat;
+
 }
