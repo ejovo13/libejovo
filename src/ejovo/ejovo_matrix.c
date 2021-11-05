@@ -259,7 +259,7 @@ bool Matrix_comp_mult(const Matrix *__A, const Matrix *__B) {
 static bool matcpy(Matrix *restrict __dest, const Matrix *restrict __src) {
 
     // Copy the bytes of __src->data into __dest->data
-    memcpy(__dest->data, __src->data, sizeof(MATRIX_TYPE)*(__src->nrows * __src->nrows));
+    memcpy(__dest->data, __src->data, sizeof(MATRIX_TYPE)*(__src->nrows * __src->ncols));
     __dest->ncols = __src->ncols;
     __dest->nrows = __src->nrows;
     if(__dest && __src && __dest->data) { // if all the pointers are not null, return true
@@ -275,7 +275,7 @@ Matrix * matclone(const Matrix *restrict __src) {
 
     Matrix * clone = NULL;
 
-    clone = Matrix_new(__src->ncols, __src->nrows);
+    clone = Matrix_new(__src->nrows, __src->ncols);
     if (clone) {
         matcpy(clone, __src);
     }
@@ -331,6 +331,38 @@ void matadd(Matrix *__A, const Matrix *__B) {
             *a += *b;
         }
     }
+}
+
+void add_each(MATRIX_TYPE *__a, MATRIX_TYPE *__b) {
+    (*__a) += (*__b);
+}
+
+void sub_each(MATRIX_TYPE *__a, MATRIX_TYPE *__b) {
+    (*__a) -= (*__b);
+}
+
+void mult_each(MATRIX_TYPE *__a, MATRIX_TYPE *__b) {
+    (*__a) *= (*__b);
+}
+
+void div_each(MATRIX_TYPE *__a, MATRIX_TYPE *__b) {
+    (*__a) /= (*__b);
+}
+
+void matadd_foreach(Matrix *__A, const Matrix *__B) {
+    Matrix_foreach_2(__A, __B, add_each);
+}
+
+void matsub_foreach(Matrix *__A, const Matrix *__B) {
+    Matrix_foreach_2(__A, __B, sub_each);
+}
+
+void matmult_foreach(Matrix *__A, const Matrix *__B) {
+    Matrix_foreach_2(__A, __B, mult_each);
+}
+
+void matdiv_foreach(Matrix *__A, const Matrix *__B) {
+    Matrix_foreach_2(__A, __B, div_each);
 }
 
 Matrix *Matrix_add(const Matrix *__A, const Matrix *__B) {
@@ -892,3 +924,213 @@ Matrix *Matrix_B(size_t __n) {
     return mat;
 
 }
+
+// NUMERICAL LINEAR ALGEBRA ROUTEINES!!!!!!
+
+// Subtract matrix __B from __A, modifying __A in place!
+void matsub(Matrix *__A, const Matrix *__B) {
+
+    MATRIX_TYPE *a = NULL;
+    MATRIX_TYPE *b = NULL;
+
+    for (size_t i = 0; i < __A->nrows; i++) {
+        for (size_t j = 0; j < __A->ncols; j++) {
+
+            a = matacc(__A, i, j);
+            b = matacc(__B, i, j);
+
+            *a -= *b;
+
+        }
+    }
+}
+
+Matrix *Matrix_subtract(const Matrix *__A, const Matrix *__B) {
+
+    Matrix *A = Matrix_clone(__A);
+    matsub(A, __B);
+    return A;
+
+}
+
+void Matrix_foreach(Matrix *__A, EDITOR __fnc) {
+
+    for (size_t i = 0; i < __A->nrows; i++) {
+        for (size_t j = 0; j < __A->ncols; j++) {
+            __fnc(matacc(__A, i, j));
+        }
+    }
+}
+
+void Matrix_foreach_2(Matrix *__A, Matrix *__B, EDITOR_2 __fnc) {
+
+    for (size_t i = 0; i < __A->nrows; i++) {
+        for (size_t j = 0; j < __A->ncols; j++) {
+            __fnc(matacc(__A, i, j), matacc(__B, i, j));
+        }
+    }
+}
+
+void Matrix_foreach_k(Matrix *__A, EDITOR_K __fnc, MATRIX_TYPE __k) {
+
+    for (size_t i = 0; i < __A->nrows; i++) {
+        for (size_t j = 0; j < __A->ncols; j++) {
+            __fnc(matacc(__A, i, j), __k);
+        }
+    }
+}
+
+void matmultscalar(Matrix *__A, const MATRIX_TYPE __k) {
+    Matrix_foreach_k(__A, multscalar, __k);
+}
+
+void mataddscalar(Matrix *__A, const MATRIX_TYPE __k) {
+    Matrix_foreach_k(__A, addscalar, __k);
+}
+
+void matdivscalar(Matrix *__A, const MATRIX_TYPE __k) {
+    Matrix_foreach_k(__A, divscalar, __k);
+}
+
+void matsubscalar(Matrix *__A, const MATRIX_TYPE __k) {
+    Matrix_foreach_k(__A, subscalar, __k);
+}
+
+// MY FIRST EDITOR_K
+void multscalar(MATRIX_TYPE *__el, MATRIX_TYPE __k) {
+    (*__el) *= __k;
+}
+
+void addscalar(MATRIX_TYPE *__el, MATRIX_TYPE __k) {
+    (*__el) += __k;
+}
+
+void divscalar(MATRIX_TYPE *__el, MATRIX_TYPE __k) {
+    (*__el) /= __k;
+}
+
+void subscalar(MATRIX_TYPE *__el, MATRIX_TYPE __k) {
+    (*__el) -= __k;
+}
+
+Matrix *Matrix_mult_scalar(const Matrix *__A, const MATRIX_TYPE __k) {
+    Matrix *A = Matrix_clone(__A);
+    matmultscalar(A, __k);
+    return A;
+}
+
+Matrix *Matrix_add_scalar(const Matrix *__A, const MATRIX_TYPE __k) {
+    Matrix *A = Matrix_clone(__A);
+    mataddscalar(A, __k);
+    return A;
+}
+
+Matrix *Matrix_sub_scalar(const Matrix *__A, const MATRIX_TYPE __k) {
+    Matrix *A = Matrix_clone(__A);
+    matsubscalar(A, __k);
+    return A;
+}
+
+Matrix *Matrix_div_scalar(const Matrix *__A, const MATRIX_TYPE __k) {
+    Matrix *A = Matrix_clone(__A);
+    matdivscalar(A, __k);
+    return A;
+}
+
+
+MATRIX_TYPE vecpnorm(const Matrix *__A) {
+
+
+
+
+
+}
+
+// Euclidean norm
+MATRIX_TYPE vecnorm(const Vector *__A) {
+
+    MATRIX_TYPE sum = 0;
+    MATRIX_TYPE *a = NULL;
+
+    for (size_t i = 0; i < __A->nrows; i++) {
+        for (size_t j = 0; j < __A->ncols; j++) {
+            a = matacc(__A, i, j);
+            sum += (*a) * (*a);
+        }
+    }
+
+    return sqrt(sum);
+}
+
+void vecnormalize(Vector *__u) {
+
+    MATRIX_TYPE norm = vecnorm(__u);
+    matdivscalar(__u, norm);
+}
+
+// Return the norm of a vector (checking bounds?)
+MATRIX_TYPE Vector_norm(const Vector *__u) {
+    return vecnorm(__u);
+}
+
+// return a normalized version of this vector
+Vector *Vector_normalize(const Vector *__u) {
+
+    Vector *v = Matrix_clone(__u);
+
+    vecnormalize(v);
+    return v;
+}
+
+// Return a column vector that contains the solutions
+// this column vector can be null if there are no solutions/infinitely many solutions
+Matrix *gausselim(Matrix *__A, const Matrix *__B) {
+
+
+
+
+
+
+
+
+}
+
+
+
+
+
+// The very first thing to implement (in my opinion) is a simple
+// Gaussian elimination
+
+// Next we can implement Householder transformations
+
+// We can also use the projection operator
+
+// Do I have scalar multiplication? I don't think so...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

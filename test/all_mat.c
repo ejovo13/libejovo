@@ -19,6 +19,8 @@ void t_Matrix_set_col();
 void t_Matrix_get_row();
 void t_Matrix_get_col();
 void t_Matrix_times_vec();
+void t_Matrix_scalar();
+void t_Matrix_matrix();
 
 int main() {
 
@@ -39,6 +41,9 @@ int main() {
     t_Matrix_get_row();
     t_Matrix_get_col();
     t_Matrix_times_vec();
+
+    t_Matrix_scalar();
+    t_Matrix_matrix();
 
     return 0;
 }
@@ -413,5 +418,35 @@ void t_Matrix_times_vec() {
     Matrix_print(row);
     Matrix_print(m1);
     Matrix_print(m3);
+
+}
+
+void t_Matrix_scalar() {
+
+    Matrix *m = Matrix_random(10, 20, 0, 5);
+    Matrix *m2 = Matrix_mult_scalar(m, 10);
+    Matrix *m3 = Matrix_add_scalar(m2, 50);
+    Matrix *m4 = Matrix_div_scalar(m3, 5);
+    Matrix *m5 = Matrix_sub_scalar(m4, 20);
+
+    Matrix_print(m);
+    Matrix_print(m2);
+    Matrix_print(m3);
+    Matrix_print(m4);
+    Matrix_print(m5);
+
+}
+
+void t_Matrix_matrix() {
+
+    Matrix *m = Matrix_random(5, 10, 0, 3);
+    Matrix *m1 = Matrix_random(5, 10, 0, 10);
+
+    Matrix_print(m);
+    Matrix_print(m1);
+
+    matmult_foreach(m, m1);
+
+    Matrix_print(m);
 
 }

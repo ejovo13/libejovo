@@ -42,6 +42,12 @@ typedef struct mat_t {
     size_t ncols;
 } Matrix;
 
+typedef Matrix Vector;
+typedef void (* EDITOR) (MATRIX_TYPE *); // A function that will modify the pointer foreach element
+typedef void (* EDITOR_2) (MATRIX_TYPE *, MATRIX_TYPE *); // A function that will modify the pointer foreach element
+typedef void (* EDITOR_K) (MATRIX_TYPE *, MATRIX_TYPE); // A function that will modify the pointer foreach element
+
+
 /**
  * @private
  * Allocate the space for a new matrix object, performing no checks
@@ -192,6 +198,22 @@ extern Matrix * matmul(const Matrix *__A, const Matrix *__B);
  * Multiply two matrices __A*__B.
  */
 Matrix * Matrix_multiply(Matrix * __A, Matrix * __B);
+
+void add_each(MATRIX_TYPE *__a, MATRIX_TYPE *__b);
+
+void sub_each(MATRIX_TYPE *__a, MATRIX_TYPE *__b);
+
+void mult_each(MATRIX_TYPE *__a, MATRIX_TYPE *__b);
+
+void div_each(MATRIX_TYPE *__a, MATRIX_TYPE *__b);
+
+void matadd_foreach(Matrix *__A, const Matrix *__B);
+
+void matsub_foreach(Matrix *__A, const Matrix *__B);
+
+void matmult_foreach(Matrix *__A, const Matrix *__B);
+
+void matdiv_foreach(Matrix *__A, const Matrix *__B);
 
 // IDEA!! MAKE THESE VARIADIC FUNCTIONS!!!
 /** @private
@@ -351,12 +373,6 @@ extern bool Matrix_is_col(const Matrix *__A);
 
 extern bool Matrix_is_vec(const Matrix *__A);
 
-// Return a newly allocated column vector without checking indices
-extern Matrix *matcol(const Matrix *__A, size_t __j);
-
-// Return a newly allocated column vector without checking indices
-extern Matrix *matrow(const Matrix *__A, size_t __i);
-
 extern Matrix *Matrix_K(size_t __n);
 
 extern Matrix *Matrix_C(size_t __n);
@@ -364,5 +380,60 @@ extern Matrix *Matrix_C(size_t __n);
 extern Matrix *Matrix_T(size_t __n);
 
 extern Matrix *Matrix_B(size_t __n);
+
+extern void matsub(Matrix *__A, const Matrix *__B);
+
+extern Matrix *Matrix_subtract(const Matrix *__A, const Matrix *__B);
+
+extern Matrix *Matrix_subtract(const Matrix *__A, const Matrix *__B);
+
+extern void Matrix_foreach(Matrix *__A, EDITOR __fnc);
+
+extern void Matrix_foreach_2(Matrix *__A, Matrix *__B, EDITOR_2 __fnc);
+
+extern void Matrix_foreach_k(Matrix *__A, EDITOR_K __fnc, MATRIX_TYPE __k);
+
+extern void matmultscalar(Matrix *__A, const MATRIX_TYPE __k);
+
+extern void mataddscalar(Matrix *__A, const MATRIX_TYPE __k);
+
+void matdivscalar(Matrix *__A, const MATRIX_TYPE __k);
+
+void matsubscalar(Matrix *__A, const MATRIX_TYPE __k);
+
+// MY FIRST EDITOR_K
+void multscalar(MATRIX_TYPE *__el, MATRIX_TYPE __k);
+
+void addscalar(MATRIX_TYPE *__el, MATRIX_TYPE __k);
+
+void divscalar(MATRIX_TYPE *__el, MATRIX_TYPE __k);
+
+void subscalar(MATRIX_TYPE *__el, MATRIX_TYPE __k);
+
+Matrix *Matrix_mult_scalar(const Matrix *__A, const MATRIX_TYPE __k);
+
+Matrix *Matrix_add_scalar(const Matrix *__A, const MATRIX_TYPE __k);
+
+Matrix *Matrix_sub_scalar(const Matrix *__A, const MATRIX_TYPE __k);
+
+Matrix *Matrix_div_scalar(const Matrix *__A, const MATRIX_TYPE __k);
+
+
+MATRIX_TYPE vecpnorm(const Matrix *__A);
+
+// Euclidean norm
+MATRIX_TYPE vecnorm(const Vector *__A);
+
+void vecnormalize(Vector *__u);
+
+// Return the norm of a vector (checking bounds?)
+MATRIX_TYPE Vector_norm(const Vector *__u);
+
+// return a normalized version of this vector
+Vector *Vector_normalize(const Vector *__u);
+
+// Return a column vector that contains the solutions
+// this column vector can be null if there are no solutions/infinitely many solutions
+Matrix *gausselim(Matrix *__A, const Matrix *__B);
 
 #endif
