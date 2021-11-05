@@ -11,14 +11,38 @@ set (EJOVO_LIB
 
 )
 
+set (EJOVO_LIB_HEADERS
+
+    ${INC}/ejovo_print.h
+    ${INC}/ejovo_rand.h
+    ${INC}/ejovo_string.h
+    ${INC}/ejovo_input.h
+    ${INC}/ejovo_matrix.h
+    ${INC}/ejovo_labyrinth.h
+    ${INC}/ejovo_sort.h
+    ${INC}/ejovo_comp.h
+
+)
 
 
 
-add_library(ejovo ${EJOVO_LIB})
+add_library(ejovo STATIC ${EJOVO_LIB})
 if (NOT WIN32)
     target_link_libraries(ejovo m)
 endif()
 target_include_directories(ejovo PRIVATE "${CMAKE_SOURCE_DIR}/inc")
+
+set_target_properties(ejovo PROPERTIES
+
+    PUBLIC_HEADER "${EJOVO_LIB_HEADERS}"
+
+)
+
+include(GNUInstallDirs)
+install(TARGETS ejovo
+    PUBLIC_HEADER
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/ejovo
+)
 
 # message("Trying to include directory ${CMAKE_SOURCE_DIR}/inc/battleship")
 

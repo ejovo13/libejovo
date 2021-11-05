@@ -240,7 +240,6 @@ bool matcmp(const Matrix *__A, const Matrix *__B) {
 
 // compare the bytes of the data using memcmp
 bool matcmp_bytes(const Matrix *__A, const Matrix *__B) {
-
     return memcmp((void *) __A->data, (void *) __B->data, sizeof(MATRIX_TYPE) * (__A->nrows * __A->ncols)) == 0;
 }
 
@@ -282,6 +281,7 @@ Matrix * matclone(const Matrix *restrict __src) {
 
     return clone;
 }
+
 Matrix * Matrix_clone(const Matrix *restrict __src) {
     return matclone(__src);
 }
@@ -302,7 +302,6 @@ Matrix *matmul(const Matrix *__A, const Matrix *__B) {
     return product;
 }
 
-
 Matrix * Matrix_multiply(Matrix *__A, Matrix *__B) {
 
     Matrix *prod = NULL;
@@ -315,7 +314,6 @@ Matrix * Matrix_multiply(Matrix *__A, Matrix *__B) {
 
     return prod;
 }
-
 
 // matadd modifies __A in place for more efficient additions when we don't need the original matrix
 void matadd(Matrix *__A, const Matrix *__B) {
@@ -1038,6 +1036,36 @@ Matrix *Matrix_div_scalar(const Matrix *__A, const MATRIX_TYPE __k) {
 }
 
 
+
+/**================================================================================================
+ *!                                         VECTOR DECLARATIONS
+ *================================================================================================**/
+
+// Default to making a column vector
+Vector *Vector_new(size_t __nrows) {
+    return Matrix_new(__nrows, 1);
+}
+
+Vector *Vector_rand(size_t __nrows) {
+    return Matrix_rand(__nrows, 1);
+}
+
+Vector *Vector_random(size_t __nrows, int __min, int __max) {
+    return Matrix_random(__nrows, 1, __min, __max);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 MATRIX_TYPE vecpnorm(const Matrix *__A) {
 
 
@@ -1082,6 +1110,54 @@ Vector *Vector_normalize(const Vector *__u) {
     return v;
 }
 
+// Take the dot product of __u and __v in place, storing the results in u!
+// we are also just assuming that __u and __v are column (OR ROW) vectors of the same size
+MATRIX_TYPE vecdot(const Vector *__u, const Vector *__v) {
+    MATRIX_TYPE dot = 0;
+    for (size_t i = 0; i < __u->nrows; i++) {
+        for (size_t j = 0; j < __u->ncols; j++) {
+            dot += (*matacc(__u, i, j)) * (*matacc(__v, i, j));
+        }
+    }
+    return dot;
+}
+
+MATRIX_TYPE Vector_inner(const Vector *__u, const Vector *__v) {
+    // perform the appropriate checks
+    if (!Matrix_comp_add) {
+        perror("Vectors are not compatible to take the inner product");
+        return -1;
+    }
+
+    return vecdot(__u, __v);
+
+}
+
+Vector *vecproject(const Vector *__v, const Vector *__u) {
+
+    MATRIX_TYPE u_v = vecdot(__u, __v);
+    MATRIX_TYPE u_u = vecdot(__u, __u);
+
+    return Matrix_mult_scalar(__u, u_v / u_u);
+
+}
+
+
+// Take vector __v and project it ONTO __u
+Vector *Vector_project_onto(const Vector *__v, const Vector *__u) {
+
+    if (!Matrix_comp_add) {
+        perror("Vectors are not compatible to project onto");
+        return NULL;
+    }
+    if (!Matrix_is_vec) {
+        perror("Operands must be row or column vectors");
+        return NULL;
+    }
+
+    return vecproject(__v, __u);
+}
+
 // Return a column vector that contains the solutions
 // this column vector can be null if there are no solutions/infinitely many solutions
 Matrix *gausselim(Matrix *__A, const Matrix *__B) {
@@ -1107,30 +1183,3 @@ Matrix *gausselim(Matrix *__A, const Matrix *__B) {
 // We can also use the projection operator
 
 // Do I have scalar multiplication? I don't think so...
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

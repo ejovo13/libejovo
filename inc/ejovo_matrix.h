@@ -436,4 +436,27 @@ Vector *Vector_normalize(const Vector *__u);
 // this column vector can be null if there are no solutions/infinitely many solutions
 Matrix *gausselim(Matrix *__A, const Matrix *__B);
 
+/**================================================================================================
+ *!                                        Vector declarations
+ *================================================================================================**/
+
+// Default to making a column vector
+Vector *Vector_new(size_t __nrows);
+
+Vector *Vector_rand(size_t __nrows);
+
+Vector *Vector_random(size_t __nrows, int __min, int __max);
+
+// Take the dot product of __u and __v in place, storing the results in u!
+// we are also just assuming that __u and __v are column (OR ROW) vectors of the same size
+MATRIX_TYPE vecdot(const Vector *__u, const Vector *__v);
+
+MATRIX_TYPE Vector_inner(const Vector *__u, const Vector *__v);
+
+Vector *vecproject(const Vector *__v, const Vector *__u);
+
+// Take vector __v and project it ONTO __u
+Vector *Vector_project_onto(const Vector *__v, const Vector *__u);
+
+
 #endif

@@ -21,6 +21,9 @@ void t_Matrix_get_col();
 void t_Matrix_times_vec();
 void t_Matrix_scalar();
 void t_Matrix_matrix();
+void t_vecnorm();
+void t_Vector_normalize();
+void t_Vector_inner();
 
 int main() {
 
@@ -44,6 +47,9 @@ int main() {
 
     t_Matrix_scalar();
     t_Matrix_matrix();
+    t_vecnorm();
+    t_Vector_normalize();
+    t_Vector_inner();
 
     return 0;
 }
@@ -448,5 +454,45 @@ void t_Matrix_matrix() {
     matmult_foreach(m, m1);
 
     Matrix_print(m);
+
+}
+
+void t_vecnorm() {
+
+    Matrix *m = Matrix_rand(8, 1);
+
+    Matrix_print(m);
+
+    vecnormalize(m);
+
+    Matrix_print(m);
+
+}
+
+void t_Vector_normalize() {
+
+    Matrix *m = Matrix_rand(12, 3);
+    Matrix *n = Vector_normalize(m);
+
+    Matrix_print(m);
+    Matrix_print(n);
+
+
+
+
+}
+
+void t_Vector_inner() {
+
+    Matrix *m = Matrix_random(5, 1, 0, 10);
+    Matrix *m2 = Matrix_random(5, 1, 0, 5);
+
+    Matrix_print(m);
+    Matrix_print(m2);
+
+    printf("inner product: %lf\n", Vector_inner(m, m2));
+
+
+
 
 }

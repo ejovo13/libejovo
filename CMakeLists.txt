@@ -8,8 +8,11 @@ set(INC ${CMAKE_SOURCE_DIR}/inc)
 set(SRC ${CMAKE_SOURCE_DIR}/src)
 set(TEST ${CMAKE_SOURCE_DIR}/test)
 set(BIN ${CMAKE_SOURCE_DIR}/bin)
+set(LIB ${CMAKE_SOURCE_DIR}/lib)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${BIN})
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${LIB})
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${LIB})
 
 add_compile_options(
 
@@ -21,6 +24,7 @@ add_compile_options(
 )
 
 file(MAKE_DIRECTORY ${BIN})
+file(MAKE_DIRECTORY ${LIB})
 # file(MAKE_DIRECTORY ${})
 
 include_directories(${INC})
