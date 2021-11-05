@@ -8,6 +8,11 @@
 - [ ] Provide more conversion functions between a Matrix and a normal c array
 - [ ] Finish Complete testing suite of Matrix.
 
+## Rand
+- [ ] Please for the love of god add floating-point functions
+
+# Future
+
 I might want to add a bitflag to each matrix to be able to keep track of whether or nor it is a transpose, if it's hermitian, symmetric, etc. etc.
 
 ## Long term project goals

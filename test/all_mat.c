@@ -24,6 +24,8 @@ void t_Matrix_matrix();
 void t_vecnorm();
 void t_Vector_normalize();
 void t_Vector_inner();
+void t_ColIter();
+void t_matnormcols();
 
 int main() {
 
@@ -50,6 +52,8 @@ int main() {
     t_vecnorm();
     t_Vector_normalize();
     t_Vector_inner();
+    t_ColIter();
+    t_matnormcols();
 
     return 0;
 }
@@ -494,5 +498,40 @@ void t_Vector_inner() {
 
 
 
+
+}
+
+void t_ColIter() {
+
+    Matrix *m = Matrix_rand(5, 10);
+
+    ColIter *c = Matrix_col_begin(m, 2); // initialize a new column iterator starting at the beginning of column 3
+    ColIter *end = Matrix_col_end(m, 2);
+
+    Matrix_print(m);
+
+    // printf("Element at start: %lf\n", *(c->ptr));
+    // printf("Element at end:   %lf\n", *(end->ptr));
+
+
+    do {
+        // do some thing
+        printf("Element at ColIter: %lf\n", *(c->ptr));
+        ColIter_next(c);
+    }
+    while (!ColIter_cmp(c, end));
+
+}
+
+void t_matnormcols() {
+
+    Matrix *m = Matrix_random(15, 10, 0, 51);
+
+    Matrix_print(m);
+
+    printf("Matrix_col_norm(m, 3): %lf\n", Matrix_col_norm(m, 3));
+
+    Matrix_normalize_cols(m);
+    Matrix_print(m);
 
 }

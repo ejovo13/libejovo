@@ -42,10 +42,27 @@ typedef struct mat_t {
     size_t ncols;
 } Matrix;
 
+// Iterate through a column, stopping when we've reached the final element
+typedef struct mat_col_iterator_t {
+    MATRIX_TYPE *ptr;
+    size_t ncols;
+} ColIter;
+
+// used to iterate through a row, although I suspect this will be used less than a column iterator
+typedef struct mat_row_iterator_t {
+    MATRIX_TYPE *ptr;
+    size_t nrows;
+} RowIter;
+
+
 typedef Matrix Vector;
 typedef void (* EDITOR) (MATRIX_TYPE *); // A function that will modify the pointer foreach element
 typedef void (* EDITOR_2) (MATRIX_TYPE *, MATRIX_TYPE *); // A function that will modify the pointer foreach element
 typedef void (* EDITOR_K) (MATRIX_TYPE *, MATRIX_TYPE); // A function that will modify the pointer foreach element
+
+
+
+
 
 
 /**
@@ -424,6 +441,16 @@ MATRIX_TYPE vecpnorm(const Matrix *__A);
 // Euclidean norm
 MATRIX_TYPE vecnorm(const Vector *__A);
 
+// Calculate the norm of a column using ColIter's
+MATRIX_TYPE colnorm(ColIter *__begin, const ColIter *__end);
+
+// Calculate the norm of a specific column
+MATRIX_TYPE Matrix_col_norm(const Matrix *__A, size_t __j);
+
+void matnormcol(ColIter *__begin, const ColIter *__end);
+
+void matnormcols(Matrix *__A);
+
 void vecnormalize(Vector *__u);
 
 // Return the norm of a vector (checking bounds?)
@@ -431,6 +458,10 @@ MATRIX_TYPE Vector_norm(const Vector *__u);
 
 // return a normalized version of this vector
 Vector *Vector_normalize(const Vector *__u);
+
+void Matrix_normalize_col(Matrix *__A, size_t __j);
+
+void Matrix_normalize_cols(Matrix *__A);
 
 // Return a column vector that contains the solutions
 // this column vector can be null if there are no solutions/infinitely many solutions
@@ -457,6 +488,32 @@ Vector *vecproject(const Vector *__v, const Vector *__u);
 
 // Take vector __v and project it ONTO __u
 Vector *Vector_project_onto(const Vector *__v, const Vector *__u);
+
+/**================================================================================================
+ *!                                        ColIter functions
+ *================================================================================================**/
+
+ColIter *ColIter_new(MATRIX_TYPE *__ptr, size_t __nrows);
+
+ColIter *ColIter_clone(const ColIter *__c);
+
+void ColIter_free(ColIter *__c);
+
+void ColIter_next(ColIter *__c);
+
+// Return true if the __lhs and __rhs point to the same element
+bool ColIter_cmp(const ColIter *__lhs, const ColIter *__rhs);
+
+ColIter *matcolpos(const Matrix *__A, size_t __i, size_t __j);
+
+
+// return a new Column Iterator that points to the final element in this column
+ColIter *Matrix_col_end(const Matrix *__A, size_t __j);
+
+ColIter *Matrix_col_begin(const Matrix *__A, size_t __j);
+
+MATRIX_TYPE ColIter_value(const ColIter *__c);
+
 
 
 #endif

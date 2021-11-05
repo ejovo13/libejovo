@@ -1055,17 +1055,6 @@ Vector *Vector_random(size_t __nrows, int __min, int __max) {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
 MATRIX_TYPE vecpnorm(const Matrix *__A) {
 
 
@@ -1090,11 +1079,71 @@ MATRIX_TYPE vecnorm(const Vector *__A) {
     return sqrt(sum);
 }
 
+// Calculate the norm of a column using ColIter's
+MATRIX_TYPE colnorm(ColIter *__begin, const ColIter *__end) {
+
+    MATRIX_TYPE sum = 0;
+
+    do {
+        sum += ColIter_value(__begin) * ColIter_value(__begin);
+        ColIter_next(__begin);
+    } while(!ColIter_cmp(__begin, __end));
+
+    return sqrt(sum);
+
+}
+
+// Calculate the norm of a specific column
+MATRIX_TYPE Matrix_col_norm(const Matrix *__A, size_t __j) {
+
+    if (__j < __A->ncols) {
+        return colnorm(Matrix_col_begin(__A, __j), Matrix_col_end(__A, __j));
+    } else {
+        perror("Col requested exceeds bounds");
+        return -1;
+    }
+}
+
+void matnormcol(ColIter *__begin, const ColIter *__end) {
+
+    ColIter *c = ColIter_clone(__begin);
+    MATRIX_TYPE norm = colnorm(__begin, __end);
+
+    // now that we have calculated the norm, divide the columns values by the norm
+
+    while (!ColIter_cmp(c, __end)) {
+        *(c->ptr) /= norm;
+        ColIter_next(c);
+    }
+    // *(c->ptr) /= norm;
+}
+
+void matnormcols(Matrix *__A) {
+    for (size_t j = 0; j < __A->ncols; j++) {
+        matnormcol(Matrix_col_begin(__A, j), Matrix_col_end(__A, j));
+    }
+}
+
 void vecnormalize(Vector *__u) {
 
     MATRIX_TYPE norm = vecnorm(__u);
     matdivscalar(__u, norm);
 }
+
+void Matrix_normalize_col(Matrix *__A, size_t __j) {
+
+    if (__j < __A->ncols) {
+        matnormcol(Matrix_col_begin(__A, __j), Matrix_col_end(__A, __j));
+    } else {
+        printf("selected column is out of bounds");
+        return;
+    }
+}
+
+void Matrix_normalize_cols(Matrix *__A) {
+    matnormcols(__A);
+}
+
 
 // Return the norm of a vector (checking bounds?)
 MATRIX_TYPE Vector_norm(const Vector *__u) {
@@ -1158,6 +1207,8 @@ Vector *Vector_project_onto(const Vector *__v, const Vector *__u) {
     return vecproject(__v, __u);
 }
 
+
+
 // Return a column vector that contains the solutions
 // this column vector can be null if there are no solutions/infinitely many solutions
 Matrix *gausselim(Matrix *__A, const Matrix *__B) {
@@ -1171,8 +1222,74 @@ Matrix *gausselim(Matrix *__A, const Matrix *__B) {
 
 }
 
+/**================================================================================================
+ *                                         Iterator functions
+ *================================================================================================**/
+ColIter *ColIter_new(MATRIX_TYPE *__ptr, size_t __ncols) {
+
+    ColIter *c = (ColIter *) malloc(sizeof(ColIter));
+
+    if (c) {
+        c->ptr = __ptr;
+        c->ncols = __ncols;
+    }
+    return c;
+}
+
+ColIter *ColIter_clone(const ColIter *__c) {
+    return ColIter_new(__c->ptr, __c->ncols);
+}
+
+void ColIter_free(ColIter *__c) {
+
+    if (__c) {
+
+        if (__c->ptr) {
+            free(__c->ptr);
+        }
+        free(__c);
+    }
+}
+
+void ColIter_next(ColIter *__c) {
+    __c->ptr += __c->ncols;
+}
+
+// Return true if the __lhs and __rhs point to the same element
+bool ColIter_cmp(const ColIter *__lhs, const ColIter *__rhs) {
+    return __lhs->ptr == __rhs->ptr;
+}
+
+ColIter *matcolpos(const Matrix *__A, size_t __i, size_t __j) {
+    return ColIter_new(matacc(__A, __i, __j), __A->ncols);
+}
 
 
+// return a new Column Iterator that points to the final element in this column
+ColIter *Matrix_col_end(const Matrix *__A, size_t __j) {
+
+    if (__j < __A->ncols) {
+        return matcolpos(__A, __A->nrows, __j);
+    } else {
+        perror("Matrix does not have that many columns");
+        return NULL;
+    }
+
+}
+
+ColIter *Matrix_col_begin(const Matrix *__A, size_t __j) {
+
+    if (__j < __A->ncols) {
+        return matcolpos(__A, 0, __j);
+    } else {
+        perror("Matrix does not have that many columns");
+        return NULL;
+    }
+}
+
+MATRIX_TYPE ColIter_value(const ColIter *__c) {
+    return *(__c->ptr);
+}
 
 
 // The very first thing to implement (in my opinion) is a simple
