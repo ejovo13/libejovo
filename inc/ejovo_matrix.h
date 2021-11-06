@@ -61,13 +61,14 @@ typedef void (* EDITOR_2) (MATRIX_TYPE *, MATRIX_TYPE *); // A function that wil
 typedef void (* EDITOR_K) (MATRIX_TYPE *, MATRIX_TYPE); // A function that will modify the pointer foreach element
 
 
-
-
-
-
+/**================================================================================================
+ *!                                        Constructors
+ *================================================================================================**/
 /**
  * @private
  * Allocate the space for a new matrix object, performing no checks
+ *
+ * @return a new malloc'ed matrix
  */
 extern Matrix *matalloc(size_t __nrows, size_t __ncols);
 
@@ -76,11 +77,25 @@ extern Matrix *matalloc(size_t __nrows, size_t __ncols);
  *
  * Calls calloc under the surface. The allocated matrix can be freed using the function
  * `Matrix_free`.
+ *
+ * @return a new malloc'ed matrix
  */
 extern Matrix *Matrix_new(int __nrows, int __ncols);
 
+/**
+ * Take ownership of the data pointed to by `*__arr_ptr` and nullify it afterwards
+ *
+ * After data has been moved, it is no longer safe to access. This method of creating
+ * a new Matrix is highly discouraged but is provided for special cases
+ */
 extern Matrix *Matrix_move(MATRIX_TYPE **__arr_ptr, size_t __nrows, size_t __ncols);
 
+/**
+ * Create a new matrix from an array of `MATRIX_TYPE`s.
+ *
+ * Specify the number of rows and columns and create a new malloc'ed Matrix. This method
+ * will CLONE the array pointed to by __arr.
+ */
 extern Matrix *Matrix_from(const MATRIX_TYPE *__arr, size_t __nrows, size_t __ncols);
 
 /**
@@ -214,82 +229,82 @@ extern Matrix * matmul(const Matrix *__A, const Matrix *__B);
 /**
  * Multiply two matrices __A*__B.
  */
-Matrix * Matrix_multiply(Matrix * __A, Matrix * __B);
+extern Matrix * Matrix_multiply(Matrix * __A, Matrix * __B);
 
-void add_each(MATRIX_TYPE *__a, MATRIX_TYPE *__b);
+extern void add_each(MATRIX_TYPE *__a, MATRIX_TYPE *__b);
 
-void sub_each(MATRIX_TYPE *__a, MATRIX_TYPE *__b);
+extern void sub_each(MATRIX_TYPE *__a, MATRIX_TYPE *__b);
 
-void mult_each(MATRIX_TYPE *__a, MATRIX_TYPE *__b);
+extern void mult_each(MATRIX_TYPE *__a, MATRIX_TYPE *__b);
 
-void div_each(MATRIX_TYPE *__a, MATRIX_TYPE *__b);
+extern void div_each(MATRIX_TYPE *__a, MATRIX_TYPE *__b);
 
-void matadd_foreach(Matrix *__A, const Matrix *__B);
+extern void matadd_foreach(Matrix *__A, const Matrix *__B);
 
-void matsub_foreach(Matrix *__A, const Matrix *__B);
+extern void matsub_foreach(Matrix *__A, const Matrix *__B);
 
-void matmult_foreach(Matrix *__A, const Matrix *__B);
+extern void matmult_foreach(Matrix *__A, const Matrix *__B);
 
-void matdiv_foreach(Matrix *__A, const Matrix *__B);
+extern void matdiv_foreach(Matrix *__A, const Matrix *__B);
 
 // IDEA!! MAKE THESE VARIADIC FUNCTIONS!!!
 /** @private
  */
-void matadd(Matrix *__A, const Matrix *__B);
+extern void matadd(Matrix *__A, const Matrix *__B);
 
 /**
  * Add two matrices and store the sum in the return value
  */
-Matrix *Matrix_add(const Matrix *__A, const Matrix *__B);
+extern Matrix *Matrix_add(const Matrix *__A, const Matrix *__B);
 
 // Extract submatrix __A(__istart:__iend, __jstart:__jend)
 /** @private
  */
-Matrix * submat(Matrix * __A, size_t __istart, size_t __iend, size_t __jstart, size_t __jend);
+extern Matrix * submat(Matrix * __A, size_t __istart, size_t __iend, size_t __jstart, size_t __jend);
 
 // Alternative spelling for object-oriented approach.
 /**
  * Extract a submatrix of __A: A(__istart:__iend, __jstart:__jend) using 0 based indices
  *
  */
-Matrix * Matrix_submat(Matrix * __A, size_t __istart, size_t __iend, size_t __jstart, size_t __jend);
+extern Matrix * Matrix_submat(Matrix * __A, size_t __istart, size_t __iend, size_t __jstart, size_t __jend);
 
 /**
  * Fill a Matrix __A with the value __value.
  */
-void Matrix_fill(Matrix *__A, const MATRIX_TYPE __value);
+extern void Matrix_fill(Matrix *__A, const MATRIX_TYPE __value);
 
 /**
  * Fill the elements without checking bounds
  */
-void matfill(Matrix *__A, const MATRIX_TYPE __value);
+extern void matfill(Matrix *__A, const MATRIX_TYPE __value);
 
 /**
  *  Instantiate new matrix with the value filled in at every element
  */
-Matrix * Matrix_value(size_t __nrows, size_t __ncols, MATRIX_TYPE __value);
+extern Matrix * Matrix_value(size_t __nrows, size_t __ncols, MATRIX_TYPE __value);
 
 // Return specific matrix types
 /**
  * Return a matrix of all 1's
  */
-Matrix * Matrix_ones(size_t __nrows, size_t __ncols);
+extern Matrix * Matrix_ones(size_t __nrows, size_t __ncols);
 
 /**
  *  Matrix whose elements are i + j (starting with i,j = 1)
  */
-Matrix * Matrix_ij(size_t __nrows, size_t __ncols);
+extern Matrix * Matrix_ij(size_t __nrows, size_t __ncols);
 
 /**
  *  Fill a `__nrows` by `__ncols` Matrix with a uniform random variable ~ [`__min`, `__max`]
  *
  */
-Matrix * Matrix_random(size_t __nrows, size_t __ncols, int __min, int __max);
+extern Matrix * Matrix_random(size_t __nrows, size_t __ncols, int __min, int __max);
 
 /**
  * Fill a `__nrows` by `__ncols` Matrix with a uniform random variable ~ [0, 100]
  */
-Matrix * Matrix_rand(size_t __nrows, size_t __ncols);
+extern Matrix * Matrix_rand(size_t __nrows, size_t __ncols);
 
 // /** @private
 //  *
@@ -308,7 +323,7 @@ extern bool Matrix_is_square(const Matrix *__A);
 /**
  * Compute the Power of a matrix
  */
-Matrix * Matrix_pow(Matrix * __A, size_t __power);
+extern Matrix * Matrix_pow(Matrix * __A, size_t __power);
 
 /** @private
  *
@@ -318,11 +333,11 @@ Matrix * Matrix_pow(Matrix * __A, size_t __power);
  *
  *  This is a low lever helper function that shouldn't need to be called by the high level Matrix API.
  */
-int matcpyele(Matrix * __dest, size_t __istart, size_t __iend, size_t __jstart, size_t __jend, Matrix * __src);
+extern int matcpyele(Matrix * __dest, size_t __istart, size_t __iend, size_t __jstart, size_t __jend, Matrix * __src);
 
 
 // Copy the elements of __src into the submatrix of __dest prescribed by the start and end indices WITHOUT CHECKING THE BOUNDS
-void matcpyele_unsafe(Matrix *__dest, size_t __istart, size_t __iend, size_t __jstart, size_t __jend, Matrix *__src);
+extern void matcpyele_unsafe(Matrix *__dest, size_t __istart, size_t __iend, size_t __jstart, size_t __jend, Matrix *__src);
 
 
 /**
@@ -414,105 +429,105 @@ extern void matmultscalar(Matrix *__A, const MATRIX_TYPE __k);
 
 extern void mataddscalar(Matrix *__A, const MATRIX_TYPE __k);
 
-void matdivscalar(Matrix *__A, const MATRIX_TYPE __k);
+extern void matdivscalar(Matrix *__A, const MATRIX_TYPE __k);
 
-void matsubscalar(Matrix *__A, const MATRIX_TYPE __k);
+extern void matsubscalar(Matrix *__A, const MATRIX_TYPE __k);
 
 // MY FIRST EDITOR_K
-void multscalar(MATRIX_TYPE *__el, MATRIX_TYPE __k);
+extern void multscalar(MATRIX_TYPE *__el, MATRIX_TYPE __k);
 
-void addscalar(MATRIX_TYPE *__el, MATRIX_TYPE __k);
+extern void addscalar(MATRIX_TYPE *__el, MATRIX_TYPE __k);
 
-void divscalar(MATRIX_TYPE *__el, MATRIX_TYPE __k);
+extern void divscalar(MATRIX_TYPE *__el, MATRIX_TYPE __k);
 
-void subscalar(MATRIX_TYPE *__el, MATRIX_TYPE __k);
+extern void subscalar(MATRIX_TYPE *__el, MATRIX_TYPE __k);
 
-Matrix *Matrix_mult_scalar(const Matrix *__A, const MATRIX_TYPE __k);
+extern Matrix *Matrix_mult_scalar(const Matrix *__A, const MATRIX_TYPE __k);
 
-Matrix *Matrix_add_scalar(const Matrix *__A, const MATRIX_TYPE __k);
+extern Matrix *Matrix_add_scalar(const Matrix *__A, const MATRIX_TYPE __k);
 
-Matrix *Matrix_sub_scalar(const Matrix *__A, const MATRIX_TYPE __k);
+extern Matrix *Matrix_sub_scalar(const Matrix *__A, const MATRIX_TYPE __k);
 
-Matrix *Matrix_div_scalar(const Matrix *__A, const MATRIX_TYPE __k);
+extern Matrix *Matrix_div_scalar(const Matrix *__A, const MATRIX_TYPE __k);
 
 
-MATRIX_TYPE vecpnorm(const Matrix *__A);
+extern MATRIX_TYPE vecpnorm(const Matrix *__A);
 
 // Euclidean norm
-MATRIX_TYPE vecnorm(const Vector *__A);
+extern MATRIX_TYPE vecnorm(const Vector *__A);
 
 // Calculate the norm of a column using ColIter's
-MATRIX_TYPE colnorm(ColIter *__begin, const ColIter *__end);
+extern MATRIX_TYPE colnorm(ColIter *__begin, const ColIter *__end);
 
 // Calculate the norm of a specific column
-MATRIX_TYPE Matrix_col_norm(const Matrix *__A, size_t __j);
+extern MATRIX_TYPE Matrix_col_norm(const Matrix *__A, size_t __j);
 
-void matnormcol(ColIter *__begin, const ColIter *__end);
+extern void matnormcol(ColIter *__begin, const ColIter *__end);
 
-void matnormcols(Matrix *__A);
+extern void matnormcols(Matrix *__A);
 
-void vecnormalize(Vector *__u);
+extern void vecnormalize(Vector *__u);
 
 // Return the norm of a vector (checking bounds?)
-MATRIX_TYPE Vector_norm(const Vector *__u);
+extern MATRIX_TYPE Vector_norm(const Vector *__u);
 
 // return a normalized version of this vector
-Vector *Vector_normalize(const Vector *__u);
+extern Vector *Vector_normalize(const Vector *__u);
 
-void Matrix_normalize_col(Matrix *__A, size_t __j);
+extern void Matrix_normalize_col(Matrix *__A, size_t __j);
 
-void Matrix_normalize_cols(Matrix *__A);
+extern void Matrix_normalize_cols(Matrix *__A);
 
 // Return a column vector that contains the solutions
 // this column vector can be null if there are no solutions/infinitely many solutions
-Matrix *gausselim(Matrix *__A, const Matrix *__B);
+extern Matrix *gausselim(Matrix *__A, const Matrix *__B);
 
 /**================================================================================================
  *!                                        Vector declarations
  *================================================================================================**/
 
 // Default to making a column vector
-Vector *Vector_new(size_t __nrows);
+extern Vector *Vector_new(size_t __nrows);
 
-Vector *Vector_rand(size_t __nrows);
+extern Vector *Vector_rand(size_t __nrows);
 
-Vector *Vector_random(size_t __nrows, int __min, int __max);
+extern Vector *Vector_random(size_t __nrows, int __min, int __max);
 
 // Take the dot product of __u and __v in place, storing the results in u!
 // we are also just assuming that __u and __v are column (OR ROW) vectors of the same size
-MATRIX_TYPE vecdot(const Vector *__u, const Vector *__v);
+extern MATRIX_TYPE vecdot(const Vector *__u, const Vector *__v);
 
-MATRIX_TYPE Vector_inner(const Vector *__u, const Vector *__v);
+extern MATRIX_TYPE Vector_inner(const Vector *__u, const Vector *__v);
 
-Vector *vecproject(const Vector *__v, const Vector *__u);
+extern Vector *vecproject(const Vector *__v, const Vector *__u);
 
 // Take vector __v and project it ONTO __u
-Vector *Vector_project_onto(const Vector *__v, const Vector *__u);
+extern Vector *Vector_project_onto(const Vector *__v, const Vector *__u);
 
 /**================================================================================================
  *!                                        ColIter functions
  *================================================================================================**/
 
-ColIter *ColIter_new(MATRIX_TYPE *__ptr, size_t __nrows);
+extern ColIter *ColIter_new(MATRIX_TYPE *__ptr, size_t __nrows);
 
-ColIter *ColIter_clone(const ColIter *__c);
+extern ColIter *ColIter_clone(const ColIter *__c);
 
-void ColIter_free(ColIter *__c);
+extern void ColIter_free(ColIter *__c);
 
-void ColIter_next(ColIter *__c);
+extern void ColIter_next(ColIter *__c);
 
 // Return true if the __lhs and __rhs point to the same element
-bool ColIter_cmp(const ColIter *__lhs, const ColIter *__rhs);
+extern bool ColIter_cmp(const ColIter *__lhs, const ColIter *__rhs);
 
-ColIter *matcolpos(const Matrix *__A, size_t __i, size_t __j);
+extern ColIter *matcolpos(const Matrix *__A, size_t __i, size_t __j);
 
 
 // return a new Column Iterator that points to the final element in this column
-ColIter *Matrix_col_end(const Matrix *__A, size_t __j);
+extern ColIter *Matrix_col_end(const Matrix *__A, size_t __j);
 
-ColIter *Matrix_col_begin(const Matrix *__A, size_t __j);
+extern ColIter *Matrix_col_begin(const Matrix *__A, size_t __j);
 
-MATRIX_TYPE ColIter_value(const ColIter *__c);
+extern MATRIX_TYPE ColIter_value(const ColIter *__c);
 
 
 
