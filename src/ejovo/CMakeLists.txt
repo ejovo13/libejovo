@@ -4,7 +4,7 @@ set (EJOVO_LIB
     ejovo_rand.c
     ejovo_string.c
     ejovo_input.c
-    ejovo_matrix.c
+    # ejovo_matrix.c
     ejovo_labyrinth.c
     ejovo_sort.c
     ejovo_comp.c
@@ -24,9 +24,10 @@ set (EJOVO_LIB_HEADERS
 
 )
 
+add_subdirectory(matrix)
 
 
-add_library(ejovo STATIC ${EJOVO_LIB})
+add_library(ejovo STATIC ${EJOVO_LIB} $<TARGET_OBJECTS:ejovo_matrix>)
 if (NOT WIN32)
     target_link_libraries(ejovo m)
 endif()
