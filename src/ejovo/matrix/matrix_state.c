@@ -3,6 +3,9 @@
 
 #include "ejovo_matrix.h"
 
+bool Matrix_valid_bounds(const Matrix *__m, size_t __i, size_t __j) {
+    return (__i < __m->nrows && __j < __m->ncols);
+}
 
 // return true if __A and __B have the same size and all of the elements are identical
 bool matcmp(const Matrix *__A, const Matrix *__B) {

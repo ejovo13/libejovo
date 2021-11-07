@@ -98,75 +98,6 @@ void Matrix_free(Matrix *__A) {
     }
 }
 
-bool Matrix_valid_bounds(const Matrix *__m, size_t __i, size_t __j) {
-    return (__i < __m->nrows && __j < __m->ncols);
-}
-
-
-// return the value of the element at __m(__i, __j) [zero indexed]
-// return -1 if bounds are not respected and prints an error to the screen
-MATRIX_TYPE Matrix_at(const Matrix *__m, size_t __i, size_t __j) {
-
-    if (Matrix_valid_bounds(__m, __i, __j)) {
-
-        return __m->data[__i * __m->ncols + __j];
-
-    } else {
-        fprintf(stderr, "**WARNING** Trying to access array element out of bounds. (at)\n");
-
-        // #if MATRIX_TYPE == Complex
-            // return Complex_zero();
-        // #else
-        return -1;
-        // #endif
-    }
-}
-
-// Return element at __m[__i][__j] without checking bounds
-MATRIX_TYPE matat(const Matrix *__m, size_t __i, size_t __j) {
-    return __m->data[__i * __m->ncols + __j];
-}
-
-// set value of the element at __m(__i, __j) [zero indexed]
-// return 0 if the bounds were respected, -1 elsewise
-int Matrix_set(Matrix * __m, size_t __i, size_t __j, MATRIX_TYPE __value) {
-
-    if (Matrix_valid_bounds(__m, __i, __j)) {
-        __m->data[__i*__m->ncols + __j] = __value;
-        return 0;
-    } else {
-        fprintf(stderr, "**WARNING** Trying to access array element out of bounds. (set)\n");
-        return 1;
-    }
-}
-
-// set value of the element at __m(__i, __j) without checking the indices
-void matset(Matrix *__m, size_t __i, size_t __j, MATRIX_TYPE __value) {
-    __m->data[__i * __m->ncols + __j] = __value;
-}
-
-// return a pointer to the element at __m(__i, __j) [zero indexed]
-MATRIX_TYPE *Matrix_access(const Matrix * __m, size_t __i, size_t __j) {
-    return matacc_check(__m, __i, __j);
-}
-
-// return a pointer to the element at __m(__i, __j) without checking the indices
-MATRIX_TYPE *matacc(const Matrix *__m, size_t __i, size_t __j) {
-    return __m->data + (__i * __m->ncols + __j);
-}
-
-// return a pointer to the element at __m(__i, __j) checking the indices
-// returns null if the bounds are not respected
-MATRIX_TYPE *matacc_check(const Matrix *__m, size_t __i, size_t __j) {
-
-    if (Matrix_valid_bounds(__m, __i, __j)) {
-        return __m->data + (__i*__m->ncols + __j);
-    } else {
-        fprintf(stderr, "**WARNING** Trying to access array element out of bounds. (access)\n");
-        return NULL;
-    }
-}
-
 void matprint(const Matrix *__m) {
 
     Matrix_summary(__m);
@@ -213,7 +144,6 @@ static bool matcpy(Matrix *restrict __dest, const Matrix *restrict __src) {
     }
 }
 
-
 // copy the contents of matrix __src into __dest
 Matrix * matclone(const Matrix *restrict __src) {
 
@@ -240,7 +170,6 @@ Matrix * Matrix_ones(size_t __nrows, size_t __ncols) {
     return m;
 
 }
-
 
 Matrix * Matrix_ij(size_t __nrows, size_t __ncols) {
 
