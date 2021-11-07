@@ -2,6 +2,10 @@
 // looping through all of the columns of a matrix, in essence this file deals with iteration
 #include "ejovo_matrix.h"
 
+/**================================================================================================
+ *!                                        Single functions
+ *================================================================================================**/
+
 // series of functions used to add two elements that Matrix_access pointers are pointing to
 void add_each(MATRIX_TYPE *__a, MATRIX_TYPE *__b) {
     (*__a) += (*__b);
@@ -19,22 +23,27 @@ void div_each(MATRIX_TYPE *__a, MATRIX_TYPE *__b) {
     (*__a) /= (*__b);
 }
 
-// add a __B to __A, mutating __A in place, using a "foreach" construct
-void matadd_foreach(Matrix *__A, const Matrix *__B) {
-    Matrix_foreach_2(__A, __B, add_each);
+//* Matrix times scalar
+
+void multscalar(MATRIX_TYPE *__el, MATRIX_TYPE __k) {
+    (*__el) *= __k;
 }
 
-void matsub_foreach(Matrix *__A, const Matrix *__B) {
-    Matrix_foreach_2(__A, __B, sub_each);
+void addscalar(MATRIX_TYPE *__el, MATRIX_TYPE __k) {
+    (*__el) += __k;
 }
 
-void matmult_foreach(Matrix *__A, const Matrix *__B) {
-    Matrix_foreach_2(__A, __B, mult_each);
+void divscalar(MATRIX_TYPE *__el, MATRIX_TYPE __k) {
+    (*__el) /= __k;
 }
 
-void matdiv_foreach(Matrix *__A, const Matrix *__B) {
-    Matrix_foreach_2(__A, __B, div_each);
+void subscalar(MATRIX_TYPE *__el, MATRIX_TYPE __k) {
+    (*__el) -= __k;
 }
+
+/**================================================================================================
+ *!                                        Foreach loops
+ *================================================================================================**/
 
 void Matrix_foreach(Matrix *__A, EDITOR __fnc) {
 
@@ -63,6 +72,28 @@ void Matrix_foreach_k(Matrix *__A, EDITOR_K __fnc, MATRIX_TYPE __k) {
     }
 }
 
+/**================================================================================================
+ *!                                        Single function + foreach loop
+ *================================================================================================**/
+
+
+// add a __B to __A, mutating __A in place, using a "foreach" construct
+void matadd_foreach(Matrix *__A, const Matrix *__B) {
+    Matrix_foreach_2(__A, __B, add_each);
+}
+
+void matsub_foreach(Matrix *__A, const Matrix *__B) {
+    Matrix_foreach_2(__A, __B, sub_each);
+}
+
+void matmult_foreach(Matrix *__A, const Matrix *__B) {
+    Matrix_foreach_2(__A, __B, mult_each);
+}
+
+void matdiv_foreach(Matrix *__A, const Matrix *__B) {
+    Matrix_foreach_2(__A, __B, div_each);
+}
+
 void matmultscalar(Matrix *__A, const MATRIX_TYPE __k) {
     Matrix_foreach_k(__A, multscalar, __k);
 }
@@ -79,24 +110,9 @@ void matsubscalar(Matrix *__A, const MATRIX_TYPE __k) {
     Matrix_foreach_k(__A, subscalar, __k);
 }
 
-// MY FIRST EDITOR_K
-void multscalar(MATRIX_TYPE *__el, MATRIX_TYPE __k) {
-    (*__el) *= __k;
-}
 
-void addscalar(MATRIX_TYPE *__el, MATRIX_TYPE __k) {
-    (*__el) += __k;
-}
-
-void divscalar(MATRIX_TYPE *__el, MATRIX_TYPE __k) {
-    (*__el) /= __k;
-}
-
-void subscalar(MATRIX_TYPE *__el, MATRIX_TYPE __k) {
-    (*__el) -= __k;
-}
 /**================================================================================================
- *!                                        FOREACH style functions
+ *!                                       Matrix API foreach
  *================================================================================================**/
 
 Matrix *Matrix_mult_scalar(const Matrix *__A, const MATRIX_TYPE __k) {
@@ -167,18 +183,4 @@ void Matrix_mask_k(Matrix *__A, Mask __mask, EDITOR_K __operator, const MATRIX_T
             if (__mask(el)) __operator(el, __k); // if the __mask is true, do something to __el
         }
     }
-}
-
-/**
- * Set the element that a pointer is pointing to to __value
- */
-void setelement(MATRIX_TYPE *__el, const MATRIX_TYPE __value) {
-    *__el = __value;
-}
-
-/**
- * Set all of the elements who fulfill a mask equal to the value
- */
-void Matrix_set_mask(Matrix *__A, Mask __mask, const MATRIX_TYPE __value) {
-    Matrix_mask_k(__A, __mask, setelement, __value);
 }

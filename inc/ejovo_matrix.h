@@ -621,14 +621,9 @@ typedef bool (* Mask) (MATRIX_TYPE *); // A "Mask" is a pointer to a function th
  */
 extern void Matrix_mask(Matrix *__A, Mask __mask, EDITOR __operator);
 
-extern void Matrix_set_mask(Matrix *__A, Mask __mask, const MATRIX_TYPE __value);
+extern void Matrix_fill_mask(Matrix *__A, Mask __mask, const MATRIX_TYPE __value);
 
-
-
-
-
-
-
+extern Matrix *Matrix_identity(size_t __n);
 
 
 

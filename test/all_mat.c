@@ -31,6 +31,7 @@ void t_ColIter();
 void t_matnormcols();
 
 void t_Matrix_mask();
+void t_Matrix_pow();
 
 
 int main() {
@@ -64,6 +65,7 @@ int main() {
     t_matnormcols();
 
     t_Matrix_mask();
+    t_Matrix_pow();
 
 
 
@@ -575,9 +577,15 @@ void t_Matrix_mask() {
     Matrix *m = Matrix_rand(10, 10);
     Matrix_print(m);
 
-    Matrix_set_mask(m, gt_50, 0);
+    Matrix_fill_mask(m, gt_50, 0);
     Matrix_print(m);
 
     Matrix_free(m);
 
+}
+
+void t_Matrix_pow() {
+
+    Matrix *m = Matrix_identity(4);
+    Matrix_print(m);
 }
