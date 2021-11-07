@@ -19,6 +19,9 @@ void t_Matrix_set_col();
 void t_Matrix_get_row();
 void t_Matrix_get_col();
 void t_Matrix_times_vec();
+
+void t_Matrix_foreach();
+
 void t_Matrix_scalar();
 void t_Matrix_matrix();
 void t_vecnorm();
@@ -26,6 +29,9 @@ void t_Vector_normalize();
 void t_Vector_inner();
 void t_ColIter();
 void t_matnormcols();
+
+void t_Matrix_mask();
+
 
 int main() {
 
@@ -47,6 +53,8 @@ int main() {
     t_Matrix_get_col();
     t_Matrix_times_vec();
 
+    t_Matrix_foreach();
+
     t_Matrix_scalar();
     t_Matrix_matrix();
     t_vecnorm();
@@ -54,6 +62,10 @@ int main() {
     t_Vector_inner();
     t_ColIter();
     t_matnormcols();
+
+    t_Matrix_mask();
+
+
 
     return 0;
 }
@@ -221,7 +233,7 @@ void t_Matrix_valid_bounds() {
     printf("t_Matrix_valid_bounds passed\n");
 }
 
-// If out of bounds return 0
+// If out of bounds return -1
 void t_Matrix_at() {
 
     Matrix *m1 = Matrix_new(10, 10);
@@ -533,5 +545,39 @@ void t_matnormcols() {
 
     Matrix_normalize_cols(m);
     Matrix_print(m);
+
+}
+
+void times_3(MATRIX_TYPE *__a) {
+    *(__a) *= 3;
+}
+
+
+void t_Matrix_foreach() {
+
+    Matrix *m = Matrix_value(3, 3, 5);
+    Matrix_print(m);
+
+    Matrix_foreach(m, times_3);
+    Matrix_print(m);
+
+    Matrix_free(m);
+
+
+}
+
+bool gt_50(MATRIX_TYPE *__a) {
+    return *(__a) > 50;
+}
+
+void t_Matrix_mask() {
+
+    Matrix *m = Matrix_rand(10, 10);
+    Matrix_print(m);
+
+    Matrix_set_mask(m, gt_50, 0);
+    Matrix_print(m);
+
+    Matrix_free(m);
 
 }

@@ -43,6 +43,24 @@ typedef struct mat_t {
 } Matrix;
 
 // Iterate through a column, stopping when we've reached the final element
+/**
+ * @brief A C++ style iterator that iterates along a Matrix's column.
+ *
+ * A ColIter contains minimal information that allows it to access the proper memory locations
+ * in an iterative fashion that correspond to the column that was selected of a parent matrix.
+ *
+ * For example:
+ * ```C
+ * Matrix *m = Matrix_new(10, 10);
+ * ColIter *begin = Matrix_col_begin(m, 2) // Create the begining iterator that points
+ *                                         // to the first element in m's third column
+ * ColIter *end = Matrix_col_end(m, 5);
+ * ```
+ *
+ * We can use `ColIter`s to compute the norm of a column more effectively
+ * For example, the function `Matrix_col_norm` makes use of `ColIter`s
+ *
+ */
 typedef struct mat_col_iterator_t {
     MATRIX_TYPE *ptr;
     size_t ncols;
@@ -54,7 +72,14 @@ typedef struct mat_row_iterator_t {
     size_t nrows;
 } RowIter;
 
-
+/**
+ * A `Vector` is a `Matrix` that is either a column or row vector.
+ * This typedef is used to express intent in the code.
+ * For example, the function `Vector_new` will create a new
+ * col vector when only passing one parameter, the desired number of
+ * elements.
+ *
+ */
 typedef Matrix Vector;
 typedef void (* EDITOR) (MATRIX_TYPE *); // A function that will modify the pointer foreach element
 typedef void (* EDITOR_2) (MATRIX_TYPE *, MATRIX_TYPE *); // A function that will modify the pointer foreach element
@@ -99,13 +124,13 @@ extern Matrix *Matrix_move(MATRIX_TYPE **__arr_ptr, size_t __nrows, size_t __nco
 extern Matrix *Matrix_from(const MATRIX_TYPE *__arr, size_t __nrows, size_t __ncols);
 
 /**
- * Create a column vector (A n x 1 matrix) from a given array
+ * Create a column vector (A `n x 1` matrix) from a given array
  *
  */
 extern Matrix *Matrix_colvec(const MATRIX_TYPE *__arr, size_t __nrows);
 
 /**
- * Create a row vector (A 1 x m matrix) from a given array
+ * Create a row vector (A `1 x m` matrix) from a given array
  *
  */
 extern Matrix *Matrix_rowvec(const MATRIX_TYPE *__arr, size_t __ncols);
@@ -144,7 +169,15 @@ extern MATRIX_TYPE matat(const Matrix *__m, size_t __i, size_t __j);
  */
 extern int Matrix_set(Matrix *__m, size_t __i, size_t __j, MATRIX_TYPE __value);
 
-// set value of the element at __m(__i, __j) without checking the indices
+/**
+ * Set value of the element at __m(__i, __j) without checking the indices
+ *
+ * @warning This function is considered "unsafe" and should only be used when
+ * the programmer is sure that the elements being set are valid bounds.
+ * If you are not writing an algorithm where performance is super critical,
+ * consider using Matrix_set
+ *
+ */
 extern void matset(Matrix *__m, size_t __i, size_t __j, MATRIX_TYPE __value);
 
 /**
@@ -152,15 +185,23 @@ extern void matset(Matrix *__m, size_t __i, size_t __j, MATRIX_TYPE __value);
  */
 extern MATRIX_TYPE * Matrix_access(const Matrix *__m, size_t __i, size_t __j);
 
-// return a pointer to the element at __m(__i, __j) without checking the indices
+/**
+ *  Return a pointer to the element at __m(__i, __j) without checking the indices
+ */
 extern MATRIX_TYPE *matacc(const Matrix *__m, size_t __i, size_t __j);
 
+/** Return a pointer to the element at __m(__i, __j), checking that the indices are valid
+ */
 extern MATRIX_TYPE *matacc_check(const Matrix *__m, size_t __i, size_t __j);
+
 /**
  * Print a matrix to stdout
  */
 extern void Matrix_print(const Matrix *__m);
 
+/**
+ * Print a matrix to stdout without checking the bounds
+ */
 extern void matprint(const Matrix *__m);
 
 /**
@@ -175,7 +216,11 @@ extern void Matrix_summary(const Matrix *__m);
  */
 extern MATRIX_TYPE matcdr_check(const Matrix *__A, const Matrix *__B, size_t __irow, size_t __icol);
 
-// Compute the dot product without checking any indices MATrix Column Dot Row.
+/** @private
+ *  Compute the dot product without checking any indices MATrix Column Dot Row.
+ *
+ *  This function is a lower leverl function that should mainly be used behind the scenes
+ */
 extern MATRIX_TYPE matcdr(const Matrix *__A, const Matrix *__B, size_t __irow, size_t __icol);
 
 // return true if __A and __B have the same size and all of the elements are identical
@@ -183,6 +228,12 @@ extern MATRIX_TYPE matcdr(const Matrix *__A, const Matrix *__B, size_t __irow, s
  */
 extern bool matcmp(const Matrix *__A, const Matrix *__B);
 
+/** @private
+ *
+ *  Compare if two matrices are identical at the byte-level
+ *
+ * That is, is the data pointed to by __A->data the same as __B->data?
+ */
 extern bool matcmp_bytes(const Matrix *__A, const Matrix *__B);
 
 
@@ -229,26 +280,53 @@ extern Matrix * matmul(const Matrix *__A, const Matrix *__B);
 /**
  * Multiply two matrices __A*__B.
  */
-extern Matrix * Matrix_multiply(Matrix * __A, Matrix * __B);
+extern Matrix * Matrix_multiply(const Matrix * __A, const Matrix * __B);
 
+/**
+ *  Underlying function used in a foreach_2 function pointer approach to
+ * iterating through the elements of a matrix.
+ */
 extern void add_each(MATRIX_TYPE *__a, MATRIX_TYPE *__b);
 
+/**
+ * @private
+ */
 extern void sub_each(MATRIX_TYPE *__a, MATRIX_TYPE *__b);
 
+/**
+ * @private
+ */
 extern void mult_each(MATRIX_TYPE *__a, MATRIX_TYPE *__b);
 
+/**
+ * @private
+ */
 extern void div_each(MATRIX_TYPE *__a, MATRIX_TYPE *__b);
 
+/**
+ * @private
+ */
 extern void matadd_foreach(Matrix *__A, const Matrix *__B);
 
+/**
+ * @private
+ */
 extern void matsub_foreach(Matrix *__A, const Matrix *__B);
 
+/**
+ * @private
+ */
 extern void matmult_foreach(Matrix *__A, const Matrix *__B);
 
+/**
+ * @private
+ */
 extern void matdiv_foreach(Matrix *__A, const Matrix *__B);
 
 // IDEA!! MAKE THESE VARIADIC FUNCTIONS!!!
 /** @private
+ *
+ * low level function to mutate __A in place by adding __B
  */
 extern void matadd(Matrix *__A, const Matrix *__B);
 
@@ -528,6 +606,29 @@ extern ColIter *Matrix_col_end(const Matrix *__A, size_t __j);
 extern ColIter *Matrix_col_begin(const Matrix *__A, size_t __j);
 
 extern MATRIX_TYPE ColIter_value(const ColIter *__c);
+
+/**================================================================================================
+ *!                                        Matrix Mask functions
+ *================================================================================================**/
+// This mask API should allow me to set values according to a certain condition
+typedef bool (* Mask) (MATRIX_TYPE *); // A "Mask" is a pointer to a function that tests a condition
+                                       // based on the inputted element.
+                                       // Masks then can be used to only interact with data
+                                       // that fit a specific criterion
+
+/**
+ * Perform an operation on a matrix when a given mask evauates to true
+ */
+extern void Matrix_mask(Matrix *__A, Mask __mask, EDITOR __operator);
+
+extern void Matrix_set_mask(Matrix *__A, Mask __mask, const MATRIX_TYPE __value);
+
+
+
+
+
+
+
 
 
 

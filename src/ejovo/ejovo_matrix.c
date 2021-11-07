@@ -302,7 +302,7 @@ Matrix *matmul(const Matrix *__A, const Matrix *__B) {
     return product;
 }
 
-Matrix * Matrix_multiply(Matrix *__A, Matrix *__B) {
+Matrix * Matrix_multiply(const Matrix *__A, const Matrix *__B) {
 
     Matrix *prod = NULL;
 
@@ -331,6 +331,7 @@ void matadd(Matrix *__A, const Matrix *__B) {
     }
 }
 
+// series of functions used to add two elements that Matrix_access pointers are pointing to
 void add_each(MATRIX_TYPE *__a, MATRIX_TYPE *__b) {
     (*__a) += (*__b);
 }
@@ -347,6 +348,7 @@ void div_each(MATRIX_TYPE *__a, MATRIX_TYPE *__b) {
     (*__a) /= (*__b);
 }
 
+// add a __B to __A, mutating __A in place, using a "foreach" construct
 void matadd_foreach(Matrix *__A, const Matrix *__B) {
     Matrix_foreach_2(__A, __B, add_each);
 }
@@ -951,6 +953,52 @@ Matrix *Matrix_subtract(const Matrix *__A, const Matrix *__B) {
 
 }
 
+/**================================================================================================
+ *!                                        FOREACH style functions
+ *================================================================================================**/
+
+/**
+ * Perform an operation on a matrix when a given mask evaluates to true
+ */
+void Matrix_mask(Matrix *__A, Mask __mask, EDITOR __operator) {
+
+    MATRIX_TYPE *el = NULL;
+
+    for (size_t i = 0; i < __A->nrows; i++) {
+        for (size_t j = 0; j < __A->ncols; j++) {
+            el = matacc(__A, i, j); // access the ith, jth element
+            if (__mask(el)) __operator(el); // if the __mask is true, do something to __el
+        }
+    }
+}
+// __mask is only applied to matrix __A
+void Matrix_mask_2(Matrix *__A, Matrix *__B, Mask __mask, EDITOR_2 __operator) {
+
+    MATRIX_TYPE *a = NULL;
+    MATRIX_TYPE *b = NULL;
+
+    for (size_t i = 0; i < __A->nrows; i++) {
+        for (size_t j = 0; j < __A->ncols; j++) {
+            a = matacc(__A, i, j); // access the ith, jth element
+            b = matacc(__B, i, j); // access the ith, jth element
+            if (__mask(a)) __operator(a, b); // if the __mask is true, do something to __el
+        }
+    }
+}
+
+void Matrix_mask_k(Matrix *__A, Mask __mask, EDITOR_K __operator, const MATRIX_TYPE __k) {
+
+    MATRIX_TYPE *el = NULL;
+
+    for (size_t i = 0; i < __A->nrows; i++) {
+        for (size_t j = 0; j < __A->ncols; j++) {
+            el = matacc(__A, i, j); // access the ith, jth element
+            if (__mask(el)) __operator(el, __k); // if the __mask is true, do something to __el
+        }
+    }
+}
+
+
 void Matrix_foreach(Matrix *__A, EDITOR __fnc) {
 
     for (size_t i = 0; i < __A->nrows; i++) {
@@ -1300,3 +1348,24 @@ MATRIX_TYPE ColIter_value(const ColIter *__c) {
 // We can also use the projection operator
 
 // Do I have scalar multiplication? I don't think so...
+
+
+
+
+/**================================================================================================
+ *!                                        Matrix Mask functions
+ *================================================================================================**/
+
+/**
+ * Set the element that a pointer is pointing to to __value
+ */
+void setelement(MATRIX_TYPE *__el, const MATRIX_TYPE __value) {
+    *__el = __value;
+}
+
+/**
+ * Set all of the elements who fulfill a mask equal to the value
+ */
+void Matrix_set_mask(Matrix *__A, Mask __mask, const MATRIX_TYPE __value) {
+    Matrix_mask_k(__A, __mask, setelement, __value);
+}
