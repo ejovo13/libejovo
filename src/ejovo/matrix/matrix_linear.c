@@ -1,5 +1,65 @@
 #include "ejovo_matrix.h"
 
+/**================================================================================================
+ *!                                        Unary Matrix Operators
+ *================================================================================================**/
+
+Matrix * Matrix_pow(Matrix * __A, size_t __power) {
+
+    assert(Matrix_is_square(__A));
+    if ( __power == 0 ) {
+        return Matrix_identity(__A->nrows);
+    }
+
+    if ( __power == 1 ) {
+        return Matrix_clone(__A);
+    }
+
+    Matrix * m = Matrix_clone(__A);
+
+    for (size_t i = 2; i <= __power; i++) {
+        m = Matrix_multiply(__A, m);
+    }
+
+    return m;
+
+}
+
+
+// recursive algorithm to compute the determinant of a matrix
+double Matrix_det(Matrix * __A) {
+
+    assert(Matrix_is_square(__A));
+
+    double local_det = 0;
+
+    if (__A->ncols == 1 && __A->nrows == 1) {
+        return matat(__A, 0, 0);
+    } else {
+
+        size_t i = 0;
+        for (size_t j = 0; j < __A->ncols; j++) {
+            double cofactor = pow(-1.0, j)*Matrix_det(Matrix_minor(__A, i, j));
+            // printf("Cofactor: %lf, i: %lu, j: %lu\n", cofactor, i, j);
+            local_det += cofactor * matat(__A, i, j);
+        }
+    }
+
+    return local_det;
+}
+
+/**================================================================================================
+ *!                                        Matrix-Scalar Operators
+ *================================================================================================**/
+
+/**================================================================================================
+ *!                                        Matrix-Vector Operators
+ *================================================================================================**/
+
+/**================================================================================================
+ *!                                        Matrix-Matrix Operators
+ *================================================================================================**/
+
 // Take the inner product of the the __irow row of __A with the __icol col of __B
 // used as a subroutine called in matmul
 MATRIX_TYPE matcdr_check(const Matrix *__A, const Matrix *__B, size_t __irow, size_t __icol) {
@@ -29,7 +89,6 @@ MATRIX_TYPE matcdr(const Matrix *__A, const Matrix *__B, size_t __irow, size_t _
         }
         return inner_product;
 }
-
 
 Matrix *matmul(const Matrix *__A, const Matrix *__B) {
 
@@ -93,51 +152,6 @@ Matrix *Matrix_add(const Matrix *__A, const Matrix *__B) {
     return sum;
 }
 
-Matrix * Matrix_pow(Matrix * __A, size_t __power) {
-
-    assert(Matrix_is_square(__A));
-    if ( __power == 0 ) {
-        return Matrix_identity(__A->nrows);
-    }
-
-    if ( __power == 1 ) {
-        return Matrix_clone(__A);
-    }
-
-    Matrix * m = Matrix_clone(__A);
-
-    for (size_t i = 2; i <= __power; i++) {
-        m = Matrix_multiply(__A, m);
-    }
-
-    return m;
-
-}
-
-
-// recursive algorithm to compute the determinant of a matrix
-double Matrix_det(Matrix * __A) {
-
-    assert(Matrix_is_square(__A));
-
-    double local_det = 0;
-
-    if (__A->ncols == 1 && __A->nrows == 1) {
-        return matat(__A, 0, 0);
-    } else {
-
-        size_t i = 0;
-        for (size_t j = 0; j < __A->ncols; j++) {
-            double cofactor = pow(-1.0, j)*Matrix_det(Matrix_minor(__A, i, j));
-            // printf("Cofactor: %lf, i: %lu, j: %lu\n", cofactor, i, j);
-            local_det += cofactor * matat(__A, i, j);
-        }
-    }
-
-    return local_det;
-}
-
-// Low level implementation of Hadamard multiplication, mutating __A in place
 void mathad(Matrix *__A, const Matrix *__B) {
 
     MATRIX_TYPE *a = NULL;
@@ -217,6 +231,10 @@ Matrix *Matrix_subtract(const Matrix *__A, const Matrix *__B) {
 
 }
 
+/**================================================================================================
+ *!                                        Normalizations
+ *================================================================================================**/
+
 // Calculate the norm of a column using ColIter's
 MATRIX_TYPE colnorm(ColIter *__begin, const ColIter *__end) {
 
@@ -262,8 +280,6 @@ void matnormcols(Matrix *__A) {
     }
 }
 
-
-
 void Matrix_normalize_col(Matrix *__A, size_t __j) {
 
     if (__j < __A->ncols) {
@@ -277,6 +293,14 @@ void Matrix_normalize_col(Matrix *__A, size_t __j) {
 void Matrix_normalize_cols(Matrix *__A) {
     matnormcols(__A);
 }
+
+/**================================================================================================
+ *!                                        Decomposition Algorithms
+ *================================================================================================**/
+
+/**================================================================================================
+ *!                                        General Algorithms
+ *================================================================================================**/
 
 // Return a column vector that contains the solutions
 // this column vector can be null if there are no solutions/infinitely many solutions

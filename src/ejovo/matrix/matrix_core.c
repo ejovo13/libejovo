@@ -3,6 +3,10 @@
 
 #include "ejovo_matrix.h"
 
+/**================================================================================================
+ *!                                        Memory and Allocation
+ *================================================================================================**/
+
 // perform literally 0 checks, just allocate the space for a new matrix
 Matrix *matalloc(size_t __nrows, size_t __ncols) {
 
@@ -13,8 +17,51 @@ Matrix *matalloc(size_t __nrows, size_t __ncols) {
     x->ncols = __ncols;
 
     return x;
-
 }
+
+void matfree(Matrix *__A) {
+    free(__A->data);
+    free(__A);
+}
+
+// Free the memory associated with the matrix and then free the pointer itself
+void Matrix_free(Matrix *__A) {
+    if (__A) {
+        matfree(__A);
+    }
+}
+
+// Copy the bytes
+// this is a utility function and should not be used by the end user
+static bool matcpy(Matrix *restrict __dest, const Matrix *restrict __src) {
+
+    // Copy the bytes of __src->data into __dest->data
+    memcpy(__dest->data, __src->data, sizeof(MATRIX_TYPE)*(__src->nrows * __src->ncols));
+    __dest->ncols = __src->ncols;
+    __dest->nrows = __src->nrows;
+    if(__dest && __src && __dest->data) { // if all the pointers are not null, return true
+        return  true;
+    } else {
+        return false;
+    }
+}
+
+// copy the contents of matrix __src into __dest
+Matrix * matclone(const Matrix *restrict __src) {
+
+    Matrix * clone = NULL;
+
+    clone = Matrix_new(__src->nrows, __src->ncols);
+    if (clone) {
+        matcpy(clone, __src);
+    }
+
+    return clone;
+}
+
+/**================================================================================================
+ *!                                        Matrix Constructors
+ *================================================================================================**/
 
 Matrix * Matrix_new(int __nrows, int __ncols) {
 
@@ -85,78 +132,6 @@ Matrix *Matrix_rowvec(const MATRIX_TYPE *__arr, size_t __ncols) {
     return Matrix_from(__arr, 1, __ncols);
 }
 
-
-// Free the memory associated with the matrix and then free the pointer itself
-void Matrix_free(Matrix *__A) {
-    if (__A) {
-        if (__A->data) {
-            free(__A->data);
-        }
-        __A->ncols = 0;
-        __A->nrows = 0;
-        free(__A);
-    }
-}
-
-void matprint(const Matrix *__m) {
-
-    Matrix_summary(__m);
-    for (size_t i = 0; i < __m->nrows; i++) {
-        printf("| ");
-        for (size_t j = 0; j < __m->ncols; j++) {
-            printf("%4.4lf ", matat(__m, i, j));
-        }
-
-        printf("|\n");
-
-    }
-}
-
-void Matrix_print(const Matrix *__m) {
-
-    Matrix_summary(__m);
-    for (size_t i = 0; i < __m->nrows; i++) {
-        printf("| ");
-        for (size_t j = 0; j < __m->ncols; j++) {
-            printf("%4.4lf ", Matrix_at(__m, i, j));
-        }
-
-        printf("|\n");
-    }
-}
-
-void Matrix_summary(const Matrix *__m) {
-    printf("%lu x %lu matrix\n", __m->nrows, __m->ncols);
-}
-
-// Copy the bytes
-// this is a utility function and should not be used by the end user
-static bool matcpy(Matrix *restrict __dest, const Matrix *restrict __src) {
-
-    // Copy the bytes of __src->data into __dest->data
-    memcpy(__dest->data, __src->data, sizeof(MATRIX_TYPE)*(__src->nrows * __src->ncols));
-    __dest->ncols = __src->ncols;
-    __dest->nrows = __src->nrows;
-    if(__dest && __src && __dest->data) { // if all the pointers are not null, return true
-        return  true;
-    } else {
-        return false;
-    }
-}
-
-// copy the contents of matrix __src into __dest
-Matrix * matclone(const Matrix *restrict __src) {
-
-    Matrix * clone = NULL;
-
-    clone = Matrix_new(__src->nrows, __src->ncols);
-    if (clone) {
-        matcpy(clone, __src);
-    }
-
-    return clone;
-}
-
 Matrix * Matrix_clone(const Matrix *restrict __src) {
     return matclone(__src);
 }
@@ -223,4 +198,38 @@ Matrix * Matrix_identity(size_t __n) {
 
     return m;
 
+}
+
+/**================================================================================================
+ *!                                        Miscellaneous
+ *================================================================================================**/
+void matprint(const Matrix *__m) {
+
+    Matrix_summary(__m);
+    for (size_t i = 0; i < __m->nrows; i++) {
+        printf("| ");
+        for (size_t j = 0; j < __m->ncols; j++) {
+            printf("%4.4lf ", matat(__m, i, j));
+        }
+
+        printf("|\n");
+
+    }
+}
+
+void Matrix_print(const Matrix *__m) {
+
+    Matrix_summary(__m);
+    for (size_t i = 0; i < __m->nrows; i++) {
+        printf("| ");
+        for (size_t j = 0; j < __m->ncols; j++) {
+            printf("%4.4lf ", Matrix_at(__m, i, j));
+        }
+
+        printf("|\n");
+    }
+}
+
+void Matrix_summary(const Matrix *__m) {
+    printf("%lu x %lu matrix\n", __m->nrows, __m->ncols);
 }
