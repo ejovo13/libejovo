@@ -320,8 +320,21 @@ Matrix *matlu_nopivot(Matrix *__A) {
 
     for (size_t d = 0; d < dim_small; d++) {
 
-        // Now I want to iterate along the columns of __A
+        // Now I want to iterate along down the column of __A(d, d);
 
+        MATRIX_TYPE pivot_value = matat(__A, d, d);
+
+        for (size_t i = d + 1; i < __A->nrows; i++) {
+
+            // for each row, the first thing I need to do is compute the scalar multiple,
+            // which will always be the first element divided by the pivot
+
+
+
+
+
+
+        }
 
 
 
