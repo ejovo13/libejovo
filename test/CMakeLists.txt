@@ -53,6 +53,10 @@ macro(ejovo_add_test TESTNAME)
 
 endmacro()
 
+add_subdirectory(matrix)
+
+
+
 foreach(T ${TESTS})
     ejovo_add_test(${T})
 endforeach(T)

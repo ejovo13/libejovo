@@ -63,13 +63,13 @@ typedef struct mat_t {
  */
 typedef struct mat_col_iterator_t {
     MATRIX_TYPE *ptr;
-    size_t ncols;
+    size_t ncols; //! This needs to be renamed to "diff" or something like that
 } ColIter;
 
 // used to iterate through a row, although I suspect this will be used less than a column iterator
 typedef struct mat_row_iterator_t {
     MATRIX_TYPE *ptr;
-    size_t nrows;
+    size_t ptr_diff; // pointer difference between elements in the same row
 } RowIter;
 
 /**
@@ -529,7 +529,7 @@ extern Matrix *Matrix_sub_scalar(const Matrix *__A, const MATRIX_TYPE __k);
 extern Matrix *Matrix_div_scalar(const Matrix *__A, const MATRIX_TYPE __k);
 
 
-extern MATRIX_TYPE vecpnorm(const Matrix *__A);
+extern MATRIX_TYPE vecpnorm(const Vector *__u, const int __p);
 
 // Euclidean norm
 extern MATRIX_TYPE vecnorm(const Vector *__A);
@@ -625,6 +625,122 @@ extern void Matrix_fill_mask(Matrix *__A, Mask __mask, const MATRIX_TYPE __value
 
 extern Matrix *Matrix_identity(size_t __n);
 
+extern MATRIX_TYPE Matrix_frobenius(const Matrix *__A);
 
+extern MATRIX_TYPE Vector_pnorm(const Vector *__u, const size_t __p);
+
+extern void setelement(MATRIX_TYPE *__el, const MATRIX_TYPE __value);
+
+extern MATRIX_TYPE matsum(const Matrix *__A);
+
+extern MATRIX_TYPE matmin(const Matrix *__A);
+
+extern MATRIX_TYPE matmax(const Matrix *__A);
+
+// extern MATRIX_TYPE ColIter_norm(ColIter *__c);
+
+extern void matswap(MATRIX_TYPE *__a, MATRIX_TYPE *__b);
+
+/**================================================================================================
+ *!                                        Matrix Decompositions
+ *================================================================================================**/
+
+typedef struct lu_t {
+    Matrix *L;
+    Matrix *U;
+} LU;
+
+typedef struct lup_t {
+    Matrix *L;
+    Matrix *U;
+    Vector *P;
+} LUP;
+
+typedef struct ldu_t {
+    Matrix *L;
+    Matrix *D; // I need to encode a new matrix structure that is a diagonal
+    Vector *U;
+} LDU;
+
+/**================================================================================================
+ *!                                        matrix_state.c
+ *================================================================================================**/
+
+extern size_t Matrix_rect_limit(const Matrix *__A);
+
+
+
+/**================================================================================================
+ *!                                        matrix_linear.c
+ *================================================================================================**/
+
+/**
+ * @brief Compute the LU decomposition of __A
+ *
+ * @param __A This low level routine modifies __A in place to yield the Upper triangular matrix U
+ * @return Matrix*
+ */
+extern Matrix *matlu_nopivot(Matrix *__A);
+
+/**================================================================================================
+ *!                                        matrix_iter.c
+ *================================================================================================**/
+
+extern RowIter *RowIter_new(MATRIX_TYPE *__ptr, size_t __ptr_diff);
+
+extern RowIter *RowIter_clone(const RowIter *__c);
+
+extern void RowIter_free(RowIter *__c);
+
+extern inline void RowIter_next(RowIter *__c);
+
+// Return true if the __lhs and __rhs point to the same element
+extern inline bool RowIter_cmp(const RowIter *__lhs, const RowIter *__rhs);
+
+extern inline RowIter *matrowpos(const Matrix *__A, size_t __i, size_t __j);
+
+// return a new Column Iterator that points to the final element in this column
+extern RowIter *Matrix_row_end(const Matrix *__A, size_t __j);
+
+extern RowIter *Matrix_row_begin(const Matrix *__A, size_t __j);
+
+extern inline MATRIX_TYPE RowIter_value(const RowIter *__c);
+
+// multiply the row of a matrix times the value __k
+extern void matsetrow_mult_k(Matrix *__A, RowIter *__r, const RowIter *__row_end, MATRIX_TYPE __k);
+
+// multiply the row of a matrix times the value __k
+extern void matsetrow_div_k(Matrix *__A, RowIter *__r, const RowIter *__row_end, MATRIX_TYPE __k);
+// multiply the row of a matrix times the value __k
+extern void matsetrow_add_k(Matrix *__A, RowIter *__r, const RowIter *__row_end, MATRIX_TYPE __k);
+
+// multiply the row of a matrix times the value __k
+extern void matsetrow_sub_k(Matrix *__A, RowIter *__r, const RowIter *__row_end, MATRIX_TYPE __k);
+
+extern int Matrix_mult_row_k(Matrix *__A, const size_t __i, const MATRIX_TYPE __k);
+
+extern int Matrix_div_row_k(Matrix *__A, const size_t __i, const MATRIX_TYPE __k);
+
+extern int Matrix_add_row_k(Matrix *__A, const size_t __i, const MATRIX_TYPE __k);
+
+extern int Matrix_sub_row_k(Matrix *__A, const size_t __i, const MATRIX_TYPE __k);
+
+extern void matsetcol_mult_k(Matrix *__A, ColIter *__c, const ColIter *__col_end, MATRIX_TYPE __k);
+
+// multiply the row of a matrix times the value __k
+extern void matsetcol_div_k(Matrix *__A, ColIter *__c, const ColIter *__col_end, MATRIX_TYPE __k);
+// multiply the col of a matrix times the value __k
+extern void matsetcol_add_k(Matrix *__A, ColIter *__c, const ColIter *__col_end, MATRIX_TYPE __k);
+
+// multiply the col of a matrix times the value __k
+extern void matsetcol_sub_k(Matrix *__A, ColIter *__c, const ColIter *__col_end, MATRIX_TYPE __k);
+
+extern int Matrix_mult_col_k(Matrix *__A, const size_t __i, const MATRIX_TYPE __k);
+
+extern int Matrix_div_col_k(Matrix *__A, const size_t __i, const MATRIX_TYPE __k);
+
+extern int Matrix_add_col_k(Matrix *__A, const size_t __i, const MATRIX_TYPE __k);
+
+extern int Matrix_sub_col_k(Matrix *__A, const size_t __i, const MATRIX_TYPE __k);
 
 #endif

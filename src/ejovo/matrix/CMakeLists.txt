@@ -8,6 +8,7 @@ set(EJOVO_MATRIX_SRC
     matrix_getset.c
     matrix_compute.c
     matrix_iter.c
+    matrix_special.c
 
 )
 

@@ -45,7 +45,7 @@ MATRIX_TYPE vecdot(const Vector *__u, const Vector *__v) {
 
 MATRIX_TYPE Vector_inner(const Vector *__u, const Vector *__v) {
     // perform the appropriate checks
-    if (!Matrix_comp_add) {
+    if (!Matrix_comp_add(__u, __v)) {
         perror("Vectors are not compatible to take the inner product");
         return -1;
     }
@@ -65,11 +65,11 @@ Vector *vecproject(const Vector *__v, const Vector *__u) {
 // Take vector __v and project it ONTO __u
 Vector *Vector_project_onto(const Vector *__v, const Vector *__u) {
 
-    if (!Matrix_comp_add) {
+    if (!Matrix_comp_add(__v, __u)) {
         perror("Vectors are not compatible to project onto");
         return NULL;
     }
-    if (!Matrix_is_vec) {
+    if (!Matrix_is_vec(__v) || !Matrix_is_vec(__u)) {
         perror("Operands must be row or column vectors");
         return NULL;
     }
@@ -82,12 +82,25 @@ Vector *Vector_project_onto(const Vector *__v, const Vector *__u) {
  *!                                        Normalization
  *================================================================================================**/
 
-MATRIX_TYPE vecpnorm(const Matrix *__A) {
+/**
+ * Compute the p-norm of a vector
+ *
+ * The p-norm of a matrix is defined to be the pth root ( sum of |a_ij|^p )
+ *
+ */
+MATRIX_TYPE vecpnorm(const Vector *__u, const int __p) {
 
+    MATRIX_TYPE sum = 0;
+    MATRIX_TYPE *a = NULL;
 
+    for (size_t i = 0; i < __u->nrows; i++) {
+        for (size_t j = 0; j < __u->ncols; j++) {
+            a = matacc(__u, i, j);
+            sum += pow(*a, __p);
+        }
+    }
 
-
-
+    return pow(sum, 1.0 / __p);
 }
 
 // Euclidean norm
@@ -117,6 +130,10 @@ MATRIX_TYPE Vector_norm(const Vector *__u) {
     return vecnorm(__u);
 }
 
+MATRIX_TYPE Vector_pnorm(const Vector *__u, const size_t __p) {
+    return vecpnorm(__u, __p);
+}
+
 // return a normalized version of this vector
 Vector *Vector_normalize(const Vector *__u) {
 
@@ -124,5 +141,13 @@ Vector *Vector_normalize(const Vector *__u) {
 
     vecnormalize(v);
     return v;
+}
+
+// Take a coliter and compute the pnorm
+MATRIX_TYPE ColIter_norm(ColIter *__c) {
+
+
+
+
 }
 

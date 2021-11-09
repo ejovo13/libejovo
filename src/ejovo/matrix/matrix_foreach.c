@@ -7,37 +7,38 @@
  *================================================================================================**/
 
 // series of functions used to add two elements that Matrix_access pointers are pointing to
-void add_each(MATRIX_TYPE *__a, MATRIX_TYPE *__b) {
+inline void add_each(MATRIX_TYPE *__a, MATRIX_TYPE *__b) {
     (*__a) += (*__b);
 }
 
-void sub_each(MATRIX_TYPE *__a, MATRIX_TYPE *__b) {
+// I'm going to want to use this for computing the LU decomposition
+inline void sub_each(MATRIX_TYPE *__a, MATRIX_TYPE *__b) {
     (*__a) -= (*__b);
 }
 
-void mult_each(MATRIX_TYPE *__a, MATRIX_TYPE *__b) {
+inline void mult_each(MATRIX_TYPE *__a, MATRIX_TYPE *__b) {
     (*__a) *= (*__b);
 }
 
-void div_each(MATRIX_TYPE *__a, MATRIX_TYPE *__b) {
+inline void div_each(MATRIX_TYPE *__a, MATRIX_TYPE *__b) {
     (*__a) /= (*__b);
 }
 
 //* Matrix times scalar
 
-void multscalar(MATRIX_TYPE *__el, MATRIX_TYPE __k) {
+inline void multscalar(MATRIX_TYPE *__el, MATRIX_TYPE __k) {
     (*__el) *= __k;
 }
 
-void addscalar(MATRIX_TYPE *__el, MATRIX_TYPE __k) {
+inline void addscalar(MATRIX_TYPE *__el, MATRIX_TYPE __k) {
     (*__el) += __k;
 }
 
-void divscalar(MATRIX_TYPE *__el, MATRIX_TYPE __k) {
+inline void divscalar(MATRIX_TYPE *__el, MATRIX_TYPE __k) {
     (*__el) /= __k;
 }
 
-void subscalar(MATRIX_TYPE *__el, MATRIX_TYPE __k) {
+inline void subscalar(MATRIX_TYPE *__el, MATRIX_TYPE __k) {
     (*__el) -= __k;
 }
 
@@ -108,6 +109,45 @@ void matdivscalar(Matrix *__A, const MATRIX_TYPE __k) {
 
 void matsubscalar(Matrix *__A, const MATRIX_TYPE __k) {
     Matrix_foreach_k(__A, subscalar, __k);
+}
+
+MATRIX_TYPE matsum(const Matrix *__A) {
+
+    MATRIX_TYPE sum = 0;
+
+    for (size_t i = 0; i < __A->nrows; i++) {
+        for (size_t j = 0; j <__A->ncols; j++) {
+            sum += matat(__A, i, j);
+        }
+    }
+
+    return sum;
+}
+
+MATRIX_TYPE matmin(const Matrix *__A) {
+
+    MATRIX_TYPE min = matat(__A, 0, 0);
+
+    for (size_t i = 0; i < __A->nrows; i++) {
+        for (size_t j = 0; j < __A->ncols; j++) {
+            if (matat(__A, i, j) < min) min = matat(__A, i, j);
+        }
+    }
+
+    return min;
+}
+
+MATRIX_TYPE matmax(const Matrix *__A) {
+
+    MATRIX_TYPE max = matat(__A, 0, 0);
+
+    for (size_t i = 0; i < __A->nrows; i++) {
+        for (size_t j = 0; j < __A->ncols; j++) {
+            if (matat(__A, i, j) > max) max = matat(__A, i, j);
+        }
+    }
+
+    return max;
 }
 
 

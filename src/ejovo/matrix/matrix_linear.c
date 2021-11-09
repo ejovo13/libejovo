@@ -294,9 +294,53 @@ void Matrix_normalize_cols(Matrix *__A) {
     matnormcols(__A);
 }
 
+/**
+ * Return the Frobenius norm of a matrix, which is basically treating the matrix like a
+ * single column vector and taking the euclidean norm
+ */
+MATRIX_TYPE Matrix_frobenius(const Matrix *__A) {
+    return vecnorm(__A);
+}
+
 /**================================================================================================
  *!                                        Decomposition Algorithms
  *================================================================================================**/
+
+// compute the LU decomposition matrix without performing any pivots
+// So the returned matrix is actually The lower triangular and the __A gets modified in place to
+// produce the upper matrix
+Matrix *matlu_nopivot(Matrix *__A) {
+
+    // first step is to create an identity matrix that starts off being L
+    Matrix *L = Matrix_identity(__A->nrows); // TODO I need to add support for rectangular identity matrices
+
+    // Do a big for loop that is going to iterate through the diagonals of __A.
+    // In order to do so, we should determine the smallest value of nrows and ncols
+    const size_t dim_small = Matrix_rect_limit(__A); //  smallest dimension of __A;
+
+    for (size_t d = 0; d < dim_small; d++) {
+
+        // Now I want to iterate along the columns of __A
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+}
+
+
+
+
+
+
 
 /**================================================================================================
  *!                                        General Algorithms

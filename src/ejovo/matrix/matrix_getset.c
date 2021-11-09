@@ -26,7 +26,7 @@ MATRIX_TYPE Matrix_at(const Matrix *__m, size_t __i, size_t __j) {
 }
 
 // Return element at __m[__i][__j] without checking bounds
-MATRIX_TYPE matat(const Matrix *__m, size_t __i, size_t __j) {
+inline MATRIX_TYPE matat(const Matrix *__m, size_t __i, size_t __j) {
     return __m->data[__i * __m->ncols + __j];
 }
 
@@ -44,7 +44,7 @@ int Matrix_set(Matrix * __m, size_t __i, size_t __j, MATRIX_TYPE __value) {
 }
 
 // set value of the element at __m(__i, __j) without checking the indices
-void matset(Matrix *__m, size_t __i, size_t __j, MATRIX_TYPE __value) {
+inline void matset(Matrix *__m, size_t __i, size_t __j, MATRIX_TYPE __value) {
     __m->data[__i * __m->ncols + __j] = __value;
 }
 
@@ -54,7 +54,7 @@ MATRIX_TYPE *Matrix_access(const Matrix * __m, size_t __i, size_t __j) {
 }
 
 // return a pointer to the element at __m(__i, __j) without checking the indices
-MATRIX_TYPE *matacc(const Matrix *__m, size_t __i, size_t __j) {
+inline MATRIX_TYPE *matacc(const Matrix *__m, size_t __i, size_t __j) {
     return __m->data + (__i * __m->ncols + __j);
 }
 
@@ -72,8 +72,15 @@ MATRIX_TYPE *matacc_check(const Matrix *__m, size_t __i, size_t __j) {
 /**
  * Set the element that a pointer is pointing to to __value
  */
-void setelement(MATRIX_TYPE *__el, const MATRIX_TYPE __value) {
+inline void setelement(MATRIX_TYPE *__el, const MATRIX_TYPE __value) {
     *__el = __value;
+}
+
+// Swap __a and __b
+inline void matswap(MATRIX_TYPE *__a, MATRIX_TYPE *__b) {
+    MATRIX_TYPE temp = *__a;
+    *(__a) = *(__b);
+    *(__b) = temp;
 }
 
 /**================================================================================================
@@ -118,14 +125,14 @@ void matcpyele_unsafe(Matrix *__dest, size_t __istart, size_t __iend, size_t __j
  *================================================================================================**/
 
 // Set the first __n indices of row __i, starting at column __j
-void matsetrow(Matrix *__A, size_t __i, size_t __j, const MATRIX_TYPE *__src, size_t __n) {
+inline void matsetrow(Matrix *__A, size_t __i, size_t __j, const MATRIX_TYPE *__src, size_t __n) {
 
     MATRIX_TYPE *row_start = matacc(__A, __i, __j); // start of the row
     memcpy((void *) row_start, (void *) __src, sizeof(MATRIX_TYPE) * __n);
 
 }
 
-void matsetcol(Matrix *__A, size_t __i, size_t __j, const MATRIX_TYPE *__src, size_t __n) {
+inline void matsetcol(Matrix *__A, size_t __i, size_t __j, const MATRIX_TYPE *__src, size_t __n) {
 
     MATRIX_TYPE *col_start = matacc(__A, __i, __j); // start of the col
     for (size_t i = 0; i < __n; i++) {
@@ -133,20 +140,186 @@ void matsetcol(Matrix *__A, size_t __i, size_t __j, const MATRIX_TYPE *__src, si
     }
 }
 
-// SETS THE iTH ROW OF __A USING A ROW VECTOR!!!! That is, a ONE by M matrix
-int Matrix_set_row(Matrix *__A, size_t __i, const Matrix *__row) {
+// matsetrow_mult_k
+// matsetrow_div_k
+// matsetrow_sub_k
+// matsetrow_add_k
 
-    // Check that the __row matrix is actually a row matrix and that the number of columns match
-    if (!Matrix_is_row(__row)) {
+// multiply the row of a matrix times the value __k
+inline void matsetrow_mult_k(Matrix *__A, RowIter *__r, const RowIter *__row_end, MATRIX_TYPE __k) {
+
+    while(! RowIter_cmp(__r, __row_end)) { // while we haven't reached the end,
+        multscalar(__r->ptr, __k);
+        RowIter_next(__r);
+    }
+
+}
+
+// multiply the row of a matrix times the value __k
+inline void matsetrow_div_k(Matrix *__A, RowIter *__r, const RowIter *__row_end, MATRIX_TYPE __k) {
+
+    while(! RowIter_cmp(__r, __row_end)) { // while we haven't reached the end,
+        divscalar(__r->ptr, __k);
+        RowIter_next(__r);
+    }
+
+}
+// multiply the row of a matrix times the value __k
+inline void matsetrow_add_k(Matrix *__A, RowIter *__r, const RowIter *__row_end, MATRIX_TYPE __k) {
+
+    while(! RowIter_cmp(__r, __row_end)) { // while we haven't reached the end,
+        addscalar(__r->ptr, __k);
+        RowIter_next(__r);
+    }
+
+}
+
+// multiply the row of a matrix times the value __k
+inline void matsetrow_sub_k(Matrix *__A, RowIter *__r, const RowIter *__row_end, MATRIX_TYPE __k) {
+
+    while(! RowIter_cmp(__r, __row_end)) { // while we haven't reached the end,
+        subscalar(__r->ptr, __k);
+        RowIter_next(__r);
+    }
+
+}
+
+int Matrix_mult_row_k(Matrix *__A, const size_t __i, const MATRIX_TYPE __k) {
+
+    const RowIter *row_end = Matrix_row_end(__A, __i);
+    RowIter *row_begin = Matrix_row_begin(__A, __i);
+
+    matsetrow_mult_k(__A, row_begin, row_end, __k);
+    return EXIT_SUCCESS;
+
+}
+
+int Matrix_div_row_k(Matrix *__A, const size_t __i, const MATRIX_TYPE __k) {
+
+    const RowIter *row_end = Matrix_row_end(__A, __i);
+    RowIter *row_begin = Matrix_row_begin(__A, __i);
+
+    matsetrow_div_k(__A, row_begin, row_end, __k);
+    return EXIT_SUCCESS;
+
+}
+int Matrix_add_row_k(Matrix *__A, const size_t __i, const MATRIX_TYPE __k) {
+
+
+    const RowIter *row_end = Matrix_row_end(__A, __i);
+    RowIter *row_begin = Matrix_row_begin(__A, __i);
+
+    matsetrow_add_k(__A, row_begin, row_end, __k);
+    return EXIT_SUCCESS;
+
+}
+
+int Matrix_sub_row_k(Matrix *__A, const size_t __i, const MATRIX_TYPE __k) {
+
+    const RowIter *row_end = Matrix_row_end(__A, __i);
+    RowIter *row_begin = Matrix_row_begin(__A, __i);
+
+    matsetrow_sub_k(__A, row_begin, row_end, __k);
+    return EXIT_SUCCESS;
+
+}
+
+// editing columns now
+inline void matsetcol_mult_k(Matrix *__A, ColIter *__c, const ColIter *__col_end, MATRIX_TYPE __k) {
+
+    while(! ColIter_cmp(__c, __col_end)) { // while we haven't reached the end,
+        multscalar(__c->ptr, __k);
+        ColIter_next(__c);
+    }
+
+}
+
+// multiply the col of a matrix times the value __k
+inline void matsetcol_div_k(Matrix *__A, ColIter *__c, const ColIter *__col_end, MATRIX_TYPE __k) {
+
+    while(! ColIter_cmp(__c, __col_end)) { // while we haven't reached the end,
+        divscalar(__c->ptr, __k);
+        ColIter_next(__c);
+    }
+
+}
+// multiply the col of a matrix times the value __k
+inline void matsetcol_add_k(Matrix *__A, ColIter *__c, const ColIter *__col_end, MATRIX_TYPE __k) {
+
+    while(! ColIter_cmp(__c, __col_end)) { // while we haven't reached the end,
+        addscalar(__c->ptr, __k);
+        ColIter_next(__c);
+    }
+
+}
+
+// multiply the col of a matrix times the value __k
+inline void matsetcol_sub_k(Matrix *__A, ColIter *__c, const ColIter *__col_end, MATRIX_TYPE __k) {
+
+    while(! ColIter_cmp(__c, __col_end)) { // while we haven't reached the end,
+        subscalar(__c->ptr, __k);
+        ColIter_next(__c);
+    }
+
+}
+
+int Matrix_mult_col_k(Matrix *__A, const size_t __i, const MATRIX_TYPE __k) {
+
+    const ColIter *col_end = Matrix_col_end(__A, __i);
+    ColIter *col_begin = Matrix_col_begin(__A, __i);
+
+    matsetcol_mult_k(__A, col_begin, col_end, __k);
+    return EXIT_SUCCESS;
+
+}
+
+int Matrix_div_col_k(Matrix *__A, const size_t __i, const MATRIX_TYPE __k) {
+
+    const ColIter *col_end = Matrix_col_end(__A, __i);
+    ColIter *col_begin = Matrix_col_begin(__A, __i);
+
+    matsetcol_div_k(__A, col_begin, col_end, __k);
+    return EXIT_SUCCESS;
+
+}
+int Matrix_add_col_k(Matrix *__A, const size_t __i, const MATRIX_TYPE __k) {
+
+
+    const ColIter *col_end = Matrix_col_end(__A, __i);
+    ColIter *col_begin = Matrix_col_begin(__A, __i);
+
+    matsetcol_add_k(__A, col_begin, col_end, __k);
+    return EXIT_SUCCESS;
+
+}
+
+int Matrix_sub_col_k(Matrix *__A, const size_t __i, const MATRIX_TYPE __k) {
+
+    const ColIter *col_end = Matrix_col_end(__A, __i);
+    ColIter *col_begin = Matrix_col_begin(__A, __i);
+
+    matsetcol_sub_k(__A, col_begin, col_end, __k);
+    return EXIT_SUCCESS;
+
+}
+
+
+
+
+// SETS THE iTH ROW OF __A USING A ROW VECTOR!!!! That is, a ONE by M matrix
+int Matrix_set_row(Matrix *__A, size_t __i, const Matrix *__cow) {
+
+    // Check that the __cow matrix is actually a row matrix and that the number of columns match
+    if (!Matrix_is_row(__cow)) {
         perror("Matrix is not a row vector");
         return EXIT_FAILURE;
     }
-    if (__row->ncols != __A->ncols) {
+    if (__cow->ncols != __A->ncols) {
         perror("Matrix does not have the same number of cols");
         return EXIT_FAILURE;
     }
 
-    matsetrow(__A, __i, 0, __row->data, __row->ncols);
+    matsetrow(__A, __i, 0, __cow->data, __cow->ncols);
     return EXIT_SUCCESS;
 
 }
@@ -203,6 +376,15 @@ Matrix *Matrix_get_row(const Matrix *__A, size_t __i) {
     return row;
 
 }
+
+// I want to create a function that is going to multiply the row of a matrix, starting with it's row iterator.
+
+
+
+
+
+
+
 
 /**================================================================================================
  *!                                        Set/Get Submatrices
@@ -328,7 +510,7 @@ Matrix * Matrix_minor(Matrix * __A, size_t __irow, size_t __icol) {
  *!                                        Set/Get Matrices
  *================================================================================================**/
 
-void matfill(Matrix *__A, const MATRIX_TYPE __value) {
+inline void matfill(Matrix *__A, const MATRIX_TYPE __value) {
 
     for (size_t i = 0; i < __A->nrows; i++) {
         for (size_t j = 0; j < __A->ncols; j++) {
