@@ -135,6 +135,173 @@ inline void ColIter_div_iter(ColIter *__a, const ColIter *__b) {
     *(__a->ptr) /= *(__b->ptr);
 }
 
+/**================================================================================================
+ *!                                        ColIter basic utility routines - COLUMN
+ *================================================================================================**/
+
+// Set the elements of a row when given a row iterator and a value k
+inline void ColIter_col_set_k(ColIter *__cbegin, const ColIter *__cend, const MATRIX_TYPE __k) {
+
+    while (! ColIter_cmp(__cbegin, __cend)) {
+        ColIter_set(__cbegin, __k);
+        ColIter_next(__cbegin);
+    }
+}
+
+inline void ColIter_col_add_k(ColIter *__cbegin, const ColIter *__cend, const MATRIX_TYPE __k) {
+
+    while (! ColIter_cmp(__cbegin, __cend)) {
+        ColIter_add_k(__cbegin, __k);
+        ColIter_next(__cbegin);
+    }
+}
+
+inline void ColIter_col_sub_k(ColIter *__cbegin, const ColIter *__cend, const MATRIX_TYPE __k) {
+
+    while (! ColIter_cmp(__cbegin, __cend)) {
+        ColIter_sub_k(__cbegin, __k);
+        ColIter_next(__cbegin);
+    }
+}
+
+inline void ColIter_col_mult_k(ColIter *__cbegin, const ColIter *__cend, const MATRIX_TYPE __k) {
+
+    while (! ColIter_cmp(__cbegin, __cend)) {
+        ColIter_mult_k(__cbegin, __k);
+        ColIter_next(__cbegin);
+    }
+}
+
+inline void ColIter_col_div_k(ColIter *__cbegin, const ColIter *__cend, const MATRIX_TYPE __k) {
+
+    while (! ColIter_cmp(__cbegin, __cend)) {
+        ColIter_div_k(__cbegin, __k);
+        ColIter_next(__cbegin);
+    }
+}
+
+// Add to row __a the elements of row __b
+inline void ColIter_col_add_col(ColIter *__abegin, const ColIter *__aend, ColIter *__bbegin) {
+
+    while (! ColIter_cmp(__abegin, __aend)) {
+        ColIter_add_iter(__abegin, __bbegin);
+        ColIter_next(__abegin);
+        ColIter_next(__bbegin);
+    }
+}
+
+/**================================================================================================
+ *!                                        Experimental APPLY functions
+ *================================================================================================**/
+
+// Appy functions are a way to iterate a ColIter until we reach the "end" point
+
+
+inline void ColIter_apply(ColIter *__cbegin, const ColIter *__cend, ColIterFn __fn) {
+    while (! ColIter_cmp(__cbegin, __cend)) {
+        __fn(__cbegin);
+        ColIter_next(__cbegin);
+    }
+}
+
+inline void ColIter_apply_k(ColIter *__cbegin, const ColIter *__cend, const MATRIX_TYPE __k, ColIterFn_k __fn_k) {
+    while (! ColIter_cmp(__cbegin, __cend)) {
+        __fn_k(__cbegin, __k);
+        ColIter_next(__cbegin);
+    }
+}
+
+inline void ColIter_apply_ptr(ColIter *__cbegin, const ColIter *__cend, const MATRIX_TYPE *__ptr, ColIterFn_ptr __fn_ptr) {
+    while (! ColIter_cmp(__cbegin, __cend)) {
+        __fn_ptr(__cbegin, __ptr);
+        ColIter_next(__cbegin);
+    }
+}
+
+inline void ColIter_apply_iter(ColIter *__abegin, const ColIter *__aend, ColIter *__bbegin, ColIterFn_iter __fn_iter) {
+    while (! ColIter_cmp(__abegin, __aend)) {
+        __fn_iter(__abegin, __bbegin);
+        ColIter_next(__abegin);
+        ColIter_next(__bbegin);
+    }
+}
+
+/**================================================================================================
+ *!                                        Row manipulations using apply functions
+ *================================================================================================**/
+
+/**======================
+ *!    Scalar operations
+ *========================**/
+void ColIter_apply_set_k(ColIter *__cbegin, const ColIter *__cend, const MATRIX_TYPE __k) {
+    ColIter_apply_k(__cbegin, __cend, __k, ColIter_set);
+}
+
+void ColIter_apply_add_k(ColIter *__cbegin, const ColIter *__cend, const MATRIX_TYPE __k) {
+    ColIter_apply_k(__cbegin, __cend, __k, ColIter_add_k);
+}
+
+void ColIter_apply_sub_k(ColIter *__cbegin, const ColIter *__cend, const MATRIX_TYPE __k) {
+    ColIter_apply_k(__cbegin, __cend, __k, ColIter_sub_k);
+}
+
+void ColIter_apply_mult_k(ColIter *__cbegin, const ColIter *__cend, const MATRIX_TYPE __k) {
+    ColIter_apply_k(__cbegin, __cend, __k, ColIter_mult_k);
+}
+
+void ColIter_apply_div_k(ColIter *__cbegin, const ColIter *__cend, const MATRIX_TYPE __k) {
+    ColIter_apply_k(__cbegin, __cend, __k, ColIter_div_k);
+}
+
+/**======================
+ *!    Pointer operations
+ *========================**/
+
+void ColIter_apply_set_ptr(ColIter *__cbegin, const ColIter *__cend, const MATRIX_TYPE *__ptr) {
+    ColIter_apply_ptr(__cbegin, __cend, __ptr, ColIter_set_ptr);
+}
+
+void ColIter_apply_add_ptr(ColIter *__cbegin, const ColIter *__cend, const MATRIX_TYPE *__ptr) {
+    ColIter_apply_ptr(__cbegin, __cend, __ptr, ColIter_add_ptr);
+}
+
+void ColIter_apply_sub_ptr(ColIter *__cbegin, const ColIter *__cend, const MATRIX_TYPE *__ptr) {
+    ColIter_apply_ptr(__cbegin, __cend, __ptr, ColIter_sub_ptr);
+}
+
+void ColIter_apply_mult_ptr(ColIter *__cbegin, const ColIter *__cend, const MATRIX_TYPE *__ptr) {
+    ColIter_apply_ptr(__cbegin, __cend, __ptr, ColIter_mult_ptr);
+}
+
+void ColIter_apply_div_ptr(ColIter *__cbegin, const ColIter *__cend, const MATRIX_TYPE *__ptr) {
+    ColIter_apply_ptr(__cbegin, __cend, __ptr, ColIter_div_ptr);
+}
+
+/**======================
+ *!    Iterator operations
+ *========================**/
+
+void ColIter_apply_set_iter(ColIter *__abegin, const ColIter *__aend, ColIter *__bbegin) {
+    ColIter_apply_iter(__abegin, __aend, __bbegin, ColIter_set_iter);
+}
+
+void ColIter_apply_add_iter(ColIter *__abegin, const ColIter *__aend, ColIter *__bbegin) {
+    ColIter_apply_iter(__abegin, __aend, __bbegin, ColIter_add_iter);
+}
+
+void ColIter_apply_sub_iter(ColIter *__abegin, const ColIter *__aend, ColIter *__bbegin) {
+    ColIter_apply_iter(__abegin, __aend, __bbegin, ColIter_sub_iter);
+}
+
+void ColIter_apply_mult_iter(ColIter *__abegin, const ColIter *__aend, ColIter *__bbegin) {
+    ColIter_apply_iter(__abegin, __aend, __bbegin, ColIter_mult_iter);
+}
+
+void ColIter_apply_div_iter(ColIter *__abegin, const ColIter *__aend, ColIter *__bbegin) {
+    ColIter_apply_iter(__abegin, __aend, __bbegin, ColIter_div_iter);
+}
+
+
 
 
 

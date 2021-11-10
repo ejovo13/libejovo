@@ -793,10 +793,126 @@ extern void RowIter_row_div_k(RowIter *__rbegin, const RowIter *__rend, const MA
 // Add to row __a the elements of row __b
 extern void RowIter_row_add_row(RowIter *__abegin, const RowIter *__aend, RowIter *__bbegin);
 
+typedef void (* ColIterFn) (ColIter *);
+typedef void (* ColIterFn_k) (ColIter *, MATRIX_TYPE);
+typedef void (* ColIterFn_ptr) (ColIter *, const MATRIX_TYPE *);
+typedef void (* ColIterFn_iter) (ColIter *, ColIter *);
+
 typedef void (* RowIterFn) (RowIter *);
 typedef void (* RowIterFn_k) (RowIter *, MATRIX_TYPE);
 typedef void (* RowIterFn_ptr) (RowIter *, const MATRIX_TYPE *);
 typedef void (* RowIterFn_iter) (RowIter *, RowIter *);
+
+
+inline void ColIter_set(ColIter *__c, const MATRIX_TYPE __k);
+
+inline void ColIter_add_k(ColIter *__c, const MATRIX_TYPE __k);
+
+inline void ColIter_sub_k(ColIter *__c, const MATRIX_TYPE __k);
+
+inline void ColIter_mult_k(ColIter *__c, const MATRIX_TYPE __k);
+
+inline void ColIter_div_k(ColIter *__c, const MATRIX_TYPE __k);
+
+inline void ColIter_set_ptr(ColIter *__c, const MATRIX_TYPE *__ptr);
+
+inline void ColIter_add_ptr(ColIter *__c, const MATRIX_TYPE *__ptr);
+
+inline void ColIter_sub_ptr(ColIter *__c, const MATRIX_TYPE *__ptr);
+
+inline void ColIter_mult_ptr(ColIter *__c, const MATRIX_TYPE *__ptr);
+
+inline void ColIter_div_ptr(ColIter *__c, const MATRIX_TYPE *__ptr);
+
+inline void ColIter_set_iter(ColIter *__a, const ColIter *__b);
+
+inline void ColIter_add_iter(ColIter *__a, const ColIter *__b);
+
+inline void ColIter_sub_iter(ColIter *__a, const ColIter *__b);
+
+inline void ColIter_mult_iter(ColIter *__a, const ColIter *__b);
+
+inline void ColIter_div_iter(ColIter *__a, const ColIter *__b);
+
+/**================================================================================================
+ *!                                        ColIter basic utility routines - COLUMN
+ *================================================================================================**/
+
+// Set the elements of a row when given a row iterator and a value k
+inline void ColIter_col_set_k(ColIter *__cbegin, const ColIter *__cend, const MATRIX_TYPE __k);
+
+inline void ColIter_col_add_k(ColIter *__cbegin, const ColIter *__cend, const MATRIX_TYPE __k);
+
+inline void ColIter_col_sub_k(ColIter *__cbegin, const ColIter *__cend, const MATRIX_TYPE __k);
+
+inline void ColIter_col_mult_k(ColIter *__cbegin, const ColIter *__cend, const MATRIX_TYPE __k);
+
+inline void ColIter_col_div_k(ColIter *__cbegin, const ColIter *__cend, const MATRIX_TYPE __k);
+
+// Add to row __a the elements of row __b
+inline void ColIter_col_add_col(ColIter *__abegin, const ColIter *__aend, ColIter *__bbegin);
+
+/**================================================================================================
+ *!                                        Experimental APPLY functions
+ *================================================================================================**/
+
+// Appy functions are a way to iterate a ColIter until we reach the "end" point
+
+
+inline void ColIter_apply(ColIter *__cbegin, const ColIter *__cend, ColIterFn __fn);
+
+inline void ColIter_apply_k(ColIter *__cbegin, const ColIter *__cend, const MATRIX_TYPE __k, ColIterFn_k __fn_k);
+
+inline void ColIter_apply_ptr(ColIter *__cbegin, const ColIter *__cend, const MATRIX_TYPE *__ptr, ColIterFn_ptr __fn_ptr);
+
+inline void ColIter_apply_iter(ColIter *__abegin, const ColIter *__aend, ColIter *__bbegin, ColIterFn_iter __fn_iter);
+
+/**================================================================================================
+ *!                                        Row manipulations using apply functions
+ *================================================================================================**/
+
+/**======================
+ *!    Scalar operations
+ *========================**/
+void ColIter_apply_set_k(ColIter *__cbegin, const ColIter *__cend, const MATRIX_TYPE __k);
+
+void ColIter_apply_add_k(ColIter *__cbegin, const ColIter *__cend, const MATRIX_TYPE __k);
+
+void ColIter_apply_sub_k(ColIter *__cbegin, const ColIter *__cend, const MATRIX_TYPE __k);
+
+void ColIter_apply_mult_k(ColIter *__cbegin, const ColIter *__cend, const MATRIX_TYPE __k);
+
+void ColIter_apply_div_k(ColIter *__cbegin, const ColIter *__cend, const MATRIX_TYPE __k);
+
+/**======================
+ *!    Pointer operations
+ *========================**/
+
+void ColIter_apply_set_ptr(ColIter *__cbegin, const ColIter *__cend, const MATRIX_TYPE *__ptr);
+
+void ColIter_apply_add_ptr(ColIter *__cbegin, const ColIter *__cend, const MATRIX_TYPE *__ptr);
+
+void ColIter_apply_sub_ptr(ColIter *__cbegin, const ColIter *__cend, const MATRIX_TYPE *__ptr);
+
+void ColIter_apply_mult_ptr(ColIter *__cbegin, const ColIter *__cend, const MATRIX_TYPE *__ptr);
+
+void ColIter_apply_div_ptr(ColIter *__cbegin, const ColIter *__cend, const MATRIX_TYPE *__ptr);
+
+/**======================
+ *!    Iterator operations
+ *========================**/
+
+void ColIter_apply_set_iter(ColIter *__abegin, const ColIter *__aend, ColIter *__bbegin);
+
+void ColIter_apply_add_iter(ColIter *__abegin, const ColIter *__aend, ColIter *__bbegin);
+
+void ColIter_apply_sub_iter(ColIter *__abegin, const ColIter *__aend, ColIter *__bbegin);
+
+void ColIter_apply_mult_iter(ColIter *__abegin, const ColIter *__aend, ColIter *__bbegin);
+
+void ColIter_apply_div_iter(ColIter *__abegin, const ColIter *__aend, ColIter *__bbegin);
+
+
 
 /**================================================================================================
  *!                                        Experimental APPLY functions
