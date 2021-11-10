@@ -317,35 +317,37 @@ Matrix *matlu_nopivot(Matrix *__A) {
     // Do a big for loop that is going to iterate through the diagonals of __A.
     // In order to do so, we should determine the smallest value of nrows and ncols
     const size_t dim_small = Matrix_rect_limit(__A); //  smallest dimension of __A;
+    MATRIX_TYPE pivot_value = 0;
+    MATRIX_TYPE scaling_factor = 0;
 
     for (size_t d = 0; d < dim_small; d++) {
 
         // Now I want to iterate along down the column of __A(d, d);
 
-        MATRIX_TYPE pivot_value = matat(__A, d, d);
+        pivot_value = matat(__A, d, d);
 
         for (size_t i = d + 1; i < __A->nrows; i++) {
 
             // for each row, the first thing I need to do is compute the scalar multiple,
             // which will always be the first element divided by the pivot
 
-
-
-
-
+            scaling_factor = matat(__A, i, d) / pivot_value;
+            matset(L, i, d, scaling_factor);
+            matrowop_add_scaled(__A, i, d, -scaling_factor, d);
 
         }
-
-
-
-
     }
 
+    return L;
 
+}
 
+LU Matrix_lu(const Matrix *__A) {
 
-
-
+    Matrix *U = Matrix_clone(__A);
+    Matrix *L = matlu_nopivot(U);
+    LU lu = {L, U};
+    return lu;
 
 }
 

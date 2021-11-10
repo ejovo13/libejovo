@@ -683,6 +683,8 @@ extern size_t Matrix_rect_limit(const Matrix *__A);
  */
 extern Matrix *matlu_nopivot(Matrix *__A);
 
+extern LU Matrix_lu(const Matrix *__A);
+
 /**================================================================================================
  *!                                        matrix_iter.c
  *================================================================================================**/
@@ -769,6 +771,8 @@ extern void RowIter_set_iter(RowIter *__a, const RowIter *__b);
 
 extern void RowIter_add_iter(RowIter *__a, const RowIter *__b);
 
+extern void RowIter_add_iter_scaled(RowIter *__a, const RowIter *__b, const MATRIX_TYPE __k);
+
 extern void RowIter_sub_iter(RowIter *__a, const RowIter *__b);
 
 extern void RowIter_mult_iter(RowIter *__a, const RowIter *__b);
@@ -780,18 +784,18 @@ extern void RowIter_div_iter(RowIter *__a, const RowIter *__b);
  *================================================================================================**/
 
 // Set the elements of a row when given a row iterator and a value k
-extern void RowIter_row_set_k(RowIter *__rbegin, const RowIter *__rend, const MATRIX_TYPE __k);
+extern void RowIter_row_set_k(const RowIter *__rbegin, const RowIter *__rend, const MATRIX_TYPE __k);
 
-extern void RowIter_row_add_k(RowIter *__rbegin, const RowIter *__rend, const MATRIX_TYPE __k);
+extern void RowIter_row_add_k(const RowIter *__rbegin, const RowIter *__rend, const MATRIX_TYPE __k);
 
-extern void RowIter_row_sub_k(RowIter *__rbegin, const RowIter *__rend, const MATRIX_TYPE __k);
+extern void RowIter_row_sub_k(const RowIter *__rbegin, const RowIter *__rend, const MATRIX_TYPE __k);
 
-extern void RowIter_row_mult_k(RowIter *__rbegin, const RowIter *__rend, const MATRIX_TYPE __k);
+extern void RowIter_row_mult_k(const RowIter *__rbegin, const RowIter *__rend, const MATRIX_TYPE __k);
 
-extern void RowIter_row_div_k(RowIter *__rbegin, const RowIter *__rend, const MATRIX_TYPE __k);
+extern void RowIter_row_div_k(const RowIter *__rbegin, const RowIter *__rend, const MATRIX_TYPE __k);
 
 // Add to row __a the elements of row __b
-extern void RowIter_row_add_row(RowIter *__abegin, const RowIter *__aend, RowIter *__bbegin);
+extern void RowIter_row_add_row(const RowIter *__abegin, const RowIter *__aend, const RowIter *__bbegin);
 
 typedef void (* ColIterFn) (ColIter *);
 typedef void (* ColIterFn_k) (ColIter *, MATRIX_TYPE);
@@ -802,6 +806,7 @@ typedef void (* RowIterFn) (RowIter *);
 typedef void (* RowIterFn_k) (RowIter *, MATRIX_TYPE);
 typedef void (* RowIterFn_ptr) (RowIter *, const MATRIX_TYPE *);
 typedef void (* RowIterFn_iter) (RowIter *, RowIter *);
+typedef void (* RowIterFn_iter_k) (RowIter *, RowIter *, const MATRIX_TYPE);
 
 
 extern inline void ColIter_set(ColIter *__c, const MATRIX_TYPE __k);
@@ -916,13 +921,15 @@ extern void ColIter_apply_div_iter(ColIter *__abegin, const ColIter *__aend, Col
  *!                                        Experimental APPLY functions
  *================================================================================================**/
 
-extern void RowIter_apply(RowIter *__rbegin, const RowIter *__rend, RowIterFn __fn);
+extern void RowIter_apply(const RowIter *__rbegin, const RowIter *__rend, RowIterFn __fn);
 
-extern void RowIter_apply_k(RowIter *__rbegin, const RowIter *__rend, const MATRIX_TYPE __k, RowIterFn_k __fn_k);
+extern void RowIter_apply_k(const RowIter *__rbegin, const RowIter *__rend, const MATRIX_TYPE __k, RowIterFn_k __fn_k);
 
-extern void RowIter_apply_ptr(RowIter *__rbegin, const RowIter *__rend, const MATRIX_TYPE *__ptr, RowIterFn_ptr __fn_ptr);
+extern void RowIter_apply_ptr(const RowIter *__rbegin, const RowIter *__rend, const MATRIX_TYPE *__ptr, RowIterFn_ptr __fn_ptr);
 
-extern void RowIter_apply_iter(RowIter *__abegin, const RowIter *__aend, RowIter *__bbegin, RowIterFn_iter __fn_iter);
+extern void RowIter_apply_iter(const RowIter *__abegin, const RowIter *__aend, const RowIter *__bbegin, RowIterFn_iter __fn_iter);
+
+extern void RowIter_apply_iter_scaled(const RowIter *__abegin, const RowIter *__aend, const RowIter *__bbegin, const MATRIX_TYPE __k, RowIterFn_iter_k __fn_iter_k);
 
 /**================================================================================================
  *!                                        Row manipulations using apply functions
@@ -969,5 +976,27 @@ extern void RowIter_apply_mult_iter(RowIter *__abegin, const RowIter *__aend, Ro
 
 extern void RowIter_apply_div_iter(RowIter *__abegin, const RowIter *__aend, RowIter *__bbegin);
 
+
+// get row iterator without checking bounds
+extern inline RowIter *matrowbegin(const Matrix *__A, size_t __i);
+
+extern inline RowIter *matrowend(const Matrix *__A, size_t __i);
+
+// get row iterator without checking bounds
+extern inline ColIter *matcolbegin(const Matrix *__A, size_t __j);
+
+extern inline ColIter *matcolend(const Matrix *__A, size_t __j);
+
+
+extern void matrowop_add(Matrix *__A, const size_t __r1, const size_t __r2, const size_t __col_offset);
+
+extern void Matrix_rowop_add(Matrix *__A, const size_t __r1, const size_t __r2);
+
+extern void Matrix_rowop_add_offset(Matrix *__A, const size_t __r1, const size_t __r2, const size_t __col_offset);
+
+// matrix elementary row operation (add two rows)
+extern void matrowop_add_scaled(Matrix *__A, const size_t __r1, const size_t __r2, const MATRIX_TYPE __k, const size_t __col_offset);
+
+extern void Matrix_rowop_add_scaled(Matrix *__A, const size_t __r1, const size_t __r2, const MATRIX_TYPE __k);
 
 #endif

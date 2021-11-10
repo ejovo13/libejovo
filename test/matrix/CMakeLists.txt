@@ -3,6 +3,7 @@ set(MATRIX_TEST_SRC
     mat_vec
     mat_getset
     mat_iter
+    mat_lin
 
 
 

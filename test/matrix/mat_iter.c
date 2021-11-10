@@ -18,6 +18,7 @@ void t_ColIter_basic_utility_cols();
     - [ ] All row iterator operations
 
 */
+void t_Matrix_rowop(); // test matrix elementary row operations
 
 int main() {
 
@@ -26,7 +27,7 @@ int main() {
     t_ColIter_ctors();
     t_ColIter_basic_utility();
     t_ColIter_basic_utility_cols();
-
+    t_Matrix_rowop();
 
     // Matrix *m = Matrix_random(5, 5, 0, 10);
 
@@ -273,6 +274,7 @@ void t_ColIter_basic_utility_cols() {
     ColIter_col_mult_k(c1, c1_end, 3);
     ColIter_col_add_col(c3, c3_end, c0);
 
+    // assert that the operations were applied column-wise
     for (size_t i = 0; i < 10; i++) {
         assert(Matrix_at(m, i, 0) == 10 / 5);
         assert(Matrix_at(m, i, 1) == 5 * 3);
@@ -282,5 +284,25 @@ void t_ColIter_basic_utility_cols() {
 
     // Matrix_print(m);
     printf("Basic utility cols passed \n");
+
+}
+
+void t_Matrix_rowop() {
+
+    MATRIX_TYPE data[] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+
+    Matrix *m = Matrix_from(data, 3, 3);
+
+    // Matrix_print(m);
+    // Matrix_rowop_add(m, 0, 1);
+    // Matrix_print(m);
+    // Matrix_rowop_add_offset(m, 1, 2, 5);
+    // Matrix_print(m);
+    // Matrix_rowop_add_offset(m, 1, 2, 1);
+    // Matrix_print(m);
+    // Matrix_rowop_add_scaled(m, 2, 2, 3);
+    // Matrix_print(m);
+
+    printf("Matrix_rowop passed\n");
 
 }
