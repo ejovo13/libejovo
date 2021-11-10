@@ -227,7 +227,7 @@ inline void ColIter_apply_iter(ColIter *__abegin, const ColIter *__aend, ColIter
 }
 
 /**================================================================================================
- *!                                        Row manipulations using apply functions
+ *!                                        Col manipulations using apply functions
  *================================================================================================**/
 
 /**======================
