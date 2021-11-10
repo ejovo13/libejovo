@@ -8,9 +8,10 @@
 
 void t_ColIter_ctors();
 void t_ColIter_basic_utility();
+void t_ColIter_basic_utility_cols();
 /* TODO
 
-    - [ ] ColIter basic utility for columns
+    - [x] ColIter basic utility for columns (finish!!)
     - [ ] ColIter apply functions
     - [ ] ColIter column manipulations
 
@@ -24,6 +25,7 @@ int main() {
 
     t_ColIter_ctors();
     t_ColIter_basic_utility();
+    t_ColIter_basic_utility_cols();
 
 
     // Matrix *m = Matrix_random(5, 5, 0, 10);
@@ -244,5 +246,41 @@ void t_ColIter_basic_utility() {
     assert(Matrix_at(m, 2, 2) == 1);
 
     printf("Basic utility passed\n");
+
+}
+
+void t_ColIter_basic_utility_cols() {
+
+    Matrix *m = Matrix_new(10, 10);
+
+    ColIter *c0 = Matrix_col_begin(m, 0);
+    ColIter *c1 = Matrix_col_begin(m, 1);
+    ColIter *c2 = Matrix_col_begin(m, 2);
+    ColIter *c3 = Matrix_col_begin(m, 3);
+    ColIter *c4 = Matrix_col_begin(m, 4);
+    ColIter *c5 = Matrix_col_begin(m, 5);
+    const ColIter *c0_end = Matrix_col_end(m, 0);
+    const ColIter *c1_end = Matrix_col_end(m, 1);
+    const ColIter *c2_end = Matrix_col_end(m, 2);
+    const ColIter *c3_end = Matrix_col_end(m, 3);
+    const ColIter *c4_end = Matrix_col_end(m, 4);
+    const ColIter *c5_end = Matrix_col_end(m, 5);
+
+    ColIter_col_set_k(c0, c0_end, 10);
+    ColIter_col_add_k(c1, c1_end, 5);
+    ColIter_col_sub_k(c2, c2_end, 13);
+    ColIter_col_div_k(c0, c0_end, 5);
+    ColIter_col_mult_k(c1, c1_end, 3);
+    ColIter_col_add_col(c3, c3_end, c0);
+
+    for (size_t i = 0; i < 10; i++) {
+        assert(Matrix_at(m, i, 0) == 10 / 5);
+        assert(Matrix_at(m, i, 1) == 5 * 3);
+        assert(Matrix_at(m, i, 2) == -13);
+        assert(Matrix_at(m, i, 3) == Matrix_at(m, i, 0));
+    }
+
+    // Matrix_print(m);
+    printf("Basic utility cols passed \n");
 
 }
