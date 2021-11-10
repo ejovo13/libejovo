@@ -72,6 +72,7 @@ typedef struct mat_row_iterator_t {
     size_t ptr_diff; // pointer difference between elements in the same row
 } RowIter;
 
+
 /**
  * A `Vector` is a `Matrix` that is either a column or row vector.
  * This typedef is used to express intent in the code.
@@ -742,5 +743,117 @@ extern int Matrix_div_col_k(Matrix *__A, const size_t __i, const MATRIX_TYPE __k
 extern int Matrix_add_col_k(Matrix *__A, const size_t __i, const MATRIX_TYPE __k);
 
 extern int Matrix_sub_col_k(Matrix *__A, const size_t __i, const MATRIX_TYPE __k);
+
+
+extern void RowIter_set(RowIter *__r, const MATRIX_TYPE __k);
+
+extern void RowIter_add_k(RowIter *__r, const MATRIX_TYPE __k);
+
+extern void RowIter_sub_k(RowIter *__r, const MATRIX_TYPE __k);
+
+extern void RowIter_mult_k(RowIter *__r, const MATRIX_TYPE __k);
+
+extern void RowIter_div_k(RowIter *__r, const MATRIX_TYPE __k);
+
+extern void RowIter_set_ptr(RowIter *__r, const MATRIX_TYPE *__ptr);
+
+extern void RowIter_add_ptr(RowIter *__r, const MATRIX_TYPE *__ptr);
+
+extern void RowIter_sub_ptr(RowIter *__r, const MATRIX_TYPE *__ptr);
+
+extern void RowIter_mult_ptr(RowIter *__r, const MATRIX_TYPE *__ptr);
+
+extern void RowIter_div_ptr(RowIter *__r, const MATRIX_TYPE *__ptr);
+
+extern void RowIter_set_iter(RowIter *__a, const RowIter *__b);
+
+extern void RowIter_add_iter(RowIter *__a, const RowIter *__b);
+
+extern void RowIter_sub_iter(RowIter *__a, const RowIter *__b);
+
+extern void RowIter_mult_iter(RowIter *__a, const RowIter *__b);
+
+extern void RowIter_div_iter(RowIter *__a, const RowIter *__b);
+
+/**================================================================================================
+ *!                                        RowIter basic utility routines - ROW
+ *================================================================================================**/
+
+// Set the elements of a row when given a row iterator and a value k
+extern void RowIter_row_set_k(RowIter *__rbegin, const RowIter *__rend, const MATRIX_TYPE __k);
+
+extern void RowIter_row_add_k(RowIter *__rbegin, const RowIter *__rend, const MATRIX_TYPE __k);
+
+extern void RowIter_row_sub_k(RowIter *__rbegin, const RowIter *__rend, const MATRIX_TYPE __k);
+
+extern void RowIter_row_mult_k(RowIter *__rbegin, const RowIter *__rend, const MATRIX_TYPE __k);
+
+extern void RowIter_row_div_k(RowIter *__rbegin, const RowIter *__rend, const MATRIX_TYPE __k);
+
+// Add to row __a the elements of row __b
+extern void RowIter_row_add_row(RowIter *__abegin, const RowIter *__aend, RowIter *__bbegin);
+
+typedef void (* RowIterFn) (RowIter *);
+typedef void (* RowIterFn_k) (RowIter *, MATRIX_TYPE);
+typedef void (* RowIterFn_ptr) (RowIter *, const MATRIX_TYPE *);
+typedef void (* RowIterFn_iter) (RowIter *, RowIter *);
+
+/**================================================================================================
+ *!                                        Experimental APPLY functions
+ *================================================================================================**/
+
+extern void RowIter_apply(RowIter *__rbegin, const RowIter *__rend, RowIterFn __fn);
+
+extern void RowIter_apply_k(RowIter *__rbegin, const RowIter *__rend, const MATRIX_TYPE __k, RowIterFn_k __fn_k);
+
+extern void RowIter_apply_ptr(RowIter *__rbegin, const RowIter *__rend, const MATRIX_TYPE *__ptr, RowIterFn_ptr __fn_ptr);
+
+extern void RowIter_apply_iter(RowIter *__abegin, const RowIter *__aend, RowIter *__bbegin, RowIterFn_iter __fn_iter);
+
+/**================================================================================================
+ *!                                        Row manipulations using apply functions
+ *================================================================================================**/
+
+/**======================
+ *!    Scalar operations
+ *========================**/
+extern void RowIter_apply_set_k(RowIter *__rbegin, const RowIter *__rend, const MATRIX_TYPE __k);
+
+extern void RowIter_apply_add_k(RowIter *__rbegin, const RowIter *__rend, const MATRIX_TYPE __k);
+
+extern void RowIter_apply_sub_k(RowIter *__rbegin, const RowIter *__rend, const MATRIX_TYPE __k);
+
+extern void RowIter_apply_mult_k(RowIter *__rbegin, const RowIter *__rend, const MATRIX_TYPE __k);
+
+extern void RowIter_apply_div_k(RowIter *__rbegin, const RowIter *__rend, const MATRIX_TYPE __k);
+
+/**======================
+ *!    Pointer operations
+ *========================**/
+
+extern void RowIter_apply_set_ptr(RowIter *__rbegin, const RowIter *__rend, const MATRIX_TYPE *__ptr);
+
+extern void RowIter_apply_add_ptr(RowIter *__rbegin, const RowIter *__rend, const MATRIX_TYPE *__ptr);
+
+extern void RowIter_apply_sub_ptr(RowIter *__rbegin, const RowIter *__rend, const MATRIX_TYPE *__ptr);
+
+extern void RowIter_apply_mult_ptr(RowIter *__rbegin, const RowIter *__rend, const MATRIX_TYPE *__ptr);
+
+extern void RowIter_apply_div_ptr(RowIter *__rbegin, const RowIter *__rend, const MATRIX_TYPE *__ptr);
+
+/**======================
+ *!    Iterator operations
+ *========================**/
+
+extern void RowIter_apply_set_iter(RowIter *__abegin, const RowIter *__aend, RowIter *__bbegin);
+
+extern void RowIter_apply_add_iter(RowIter *__abegin, const RowIter *__aend, RowIter *__bbegin);
+
+extern void RowIter_apply_sub_iter(RowIter *__abegin, const RowIter *__aend, RowIter *__bbegin);
+
+extern void RowIter_apply_mult_iter(RowIter *__abegin, const RowIter *__aend, RowIter *__bbegin);
+
+extern void RowIter_apply_div_iter(RowIter *__abegin, const RowIter *__aend, RowIter *__bbegin);
+
 
 #endif

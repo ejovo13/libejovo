@@ -72,6 +72,76 @@ inline MATRIX_TYPE ColIter_value(const ColIter *__c) {
 }
 
 /**================================================================================================
+ *!                                        ColIter basic utility routines - SINGLE
+ *================================================================================================**/
+
+inline void ColIter_set(ColIter *__c, const MATRIX_TYPE __k) {
+    *(__c->ptr) = __k;
+}
+
+inline void ColIter_add_k(ColIter *__c, const MATRIX_TYPE __k) {
+    *(__c->ptr) += __k;
+}
+
+inline void ColIter_sub_k(ColIter *__c, const MATRIX_TYPE __k) {
+    *(__c->ptr) -= __k;
+}
+
+inline void ColIter_mult_k(ColIter *__c, const MATRIX_TYPE __k) {
+    *(__c->ptr) *= __k;
+}
+
+inline void ColIter_div_k(ColIter *__c, const MATRIX_TYPE __k) {
+    *(__c->ptr) /= __k;
+}
+
+inline void ColIter_set_ptr(ColIter *__c, const MATRIX_TYPE *__ptr) {
+    *(__c->ptr) = *__ptr;
+}
+
+inline void ColIter_add_ptr(ColIter *__c, const MATRIX_TYPE *__ptr) {
+    *(__c->ptr) += *__ptr;
+}
+
+inline void ColIter_sub_ptr(ColIter *__c, const MATRIX_TYPE *__ptr) {
+    *(__c->ptr) -= *__ptr;
+}
+
+inline void ColIter_mult_ptr(ColIter *__c, const MATRIX_TYPE *__ptr) {
+    *(__c->ptr) *= *__ptr;
+}
+
+inline void ColIter_div_ptr(ColIter *__c, const MATRIX_TYPE *__ptr) {
+    *(__c->ptr) /= *__ptr;
+}
+
+inline void ColIter_set_iter(ColIter *__a, const ColIter *__b) {
+    *(__a->ptr) = *(__b->ptr);
+}
+
+inline void ColIter_add_iter(ColIter *__a, const ColIter *__b) {
+    *(__a->ptr) += *(__b->ptr);
+}
+
+inline void ColIter_sub_iter(ColIter *__a, const ColIter *__b) {
+    *(__a->ptr) -= *(__b->ptr);
+}
+
+inline void ColIter_mult_iter(ColIter *__a, const ColIter *__b) {
+    *(__a->ptr) *= *(__b->ptr);
+}
+
+inline void ColIter_div_iter(ColIter *__a, const ColIter *__b) {
+    *(__a->ptr) /= *(__b->ptr);
+}
+
+
+
+
+
+
+
+/**================================================================================================
  *!                                        Row Iterators
  *================================================================================================**/
 RowIter *RowIter_new(MATRIX_TYPE *__ptr, size_t __ptr_diff) {
@@ -129,7 +199,7 @@ RowIter *Matrix_row_end(const Matrix *__A, size_t __i) {
 RowIter *Matrix_row_begin(const Matrix *__A, size_t __i) {
 
     if (__i < __A->ncols) {
-        return matrowpos(__A, 0, __i);
+        return matrowpos(__A, __i, 0);
     } else {
         perror("Matrix does not have that many rows");
         return NULL;
@@ -139,3 +209,240 @@ RowIter *Matrix_row_begin(const Matrix *__A, size_t __i) {
 inline MATRIX_TYPE RowIter_value(const RowIter *__c) {
     return *(__c->ptr);
 }
+
+/**================================================================================================
+ *!                                        RowIter basic utility routines - SINGLE
+ *================================================================================================**/
+
+inline void RowIter_set(RowIter *__r, const MATRIX_TYPE __k) {
+    *(__r->ptr) = __k;
+}
+
+inline void RowIter_add_k(RowIter *__r, const MATRIX_TYPE __k) {
+    *(__r->ptr) += __k;
+}
+
+inline void RowIter_sub_k(RowIter *__r, const MATRIX_TYPE __k) {
+    *(__r->ptr) -= __k;
+}
+
+inline void RowIter_mult_k(RowIter *__r, const MATRIX_TYPE __k) {
+    *(__r->ptr) *= __k;
+}
+
+inline void RowIter_div_k(RowIter *__r, const MATRIX_TYPE __k) {
+    *(__r->ptr) /= __k;
+}
+
+inline void RowIter_set_ptr(RowIter *__r, const MATRIX_TYPE *__ptr) {
+    *(__r->ptr) = *__ptr;
+}
+
+inline void RowIter_add_ptr(RowIter *__r, const MATRIX_TYPE *__ptr) {
+    *(__r->ptr) += *__ptr;
+}
+
+inline void RowIter_sub_ptr(RowIter *__r, const MATRIX_TYPE *__ptr) {
+    *(__r->ptr) -= *__ptr;
+}
+
+inline void RowIter_mult_ptr(RowIter *__r, const MATRIX_TYPE *__ptr) {
+    *(__r->ptr) *= *__ptr;
+}
+
+inline void RowIter_div_ptr(RowIter *__r, const MATRIX_TYPE *__ptr) {
+    *(__r->ptr) /= *__ptr;
+}
+
+inline void RowIter_set_iter(RowIter *__a, const RowIter *__b) {
+    *(__a->ptr) = *(__b->ptr);
+}
+
+inline void RowIter_add_iter(RowIter *__a, const RowIter *__b) {
+    *(__a->ptr) += *(__b->ptr);
+}
+
+inline void RowIter_sub_iter(RowIter *__a, const RowIter *__b) {
+    *(__a->ptr) -= *(__b->ptr);
+}
+
+inline void RowIter_mult_iter(RowIter *__a, const RowIter *__b) {
+    *(__a->ptr) *= *(__b->ptr);
+}
+
+inline void RowIter_div_iter(RowIter *__a, const RowIter *__b) {
+    *(__a->ptr) /= *(__b->ptr);
+}
+
+/**================================================================================================
+ *!                                        RowIter basic utility routines - ROW
+ *================================================================================================**/
+
+// Set the elements of a row when given a row iterator and a value k
+inline void RowIter_row_set_k(RowIter *__rbegin, const RowIter *__rend, const MATRIX_TYPE __k) {
+
+    while (! RowIter_cmp(__rbegin, __rend)) {
+        RowIter_set(__rbegin, __k);
+        RowIter_next(__rbegin);
+    }
+}
+
+inline void RowIter_row_add_k(RowIter *__rbegin, const RowIter *__rend, const MATRIX_TYPE __k) {
+
+    while (! RowIter_cmp(__rbegin, __rend)) {
+        RowIter_add_k(__rbegin, __k);
+        RowIter_next(__rbegin);
+    }
+}
+
+inline void RowIter_row_sub_k(RowIter *__rbegin, const RowIter *__rend, const MATRIX_TYPE __k) {
+
+    while (! RowIter_cmp(__rbegin, __rend)) {
+        RowIter_sub_k(__rbegin, __k);
+        RowIter_next(__rbegin);
+    }
+}
+
+inline void RowIter_row_mult_k(RowIter *__rbegin, const RowIter *__rend, const MATRIX_TYPE __k) {
+
+    while (! RowIter_cmp(__rbegin, __rend)) {
+        RowIter_mult_k(__rbegin, __k);
+        RowIter_next(__rbegin);
+    }
+}
+
+inline void RowIter_row_div_k(RowIter *__rbegin, const RowIter *__rend, const MATRIX_TYPE __k) {
+
+    while (! RowIter_cmp(__rbegin, __rend)) {
+        RowIter_div_k(__rbegin, __k);
+        RowIter_next(__rbegin);
+    }
+}
+
+// Add to row __a the elements of row __b
+inline void RowIter_row_add_row(RowIter *__abegin, const RowIter *__aend, RowIter *__bbegin) {
+
+    while (! RowIter_cmp(__abegin, __aend)) {
+        RowIter_add_iter(__abegin, __bbegin);
+        RowIter_next(__abegin);
+        RowIter_next(__bbegin);
+    }
+}
+
+
+/**================================================================================================
+ *!                                        Experimental APPLY functions
+ *================================================================================================**/
+
+// Appy functions are a way to iterate a ColIter until we reach the "end" point
+
+
+inline void RowIter_apply(RowIter *__rbegin, const RowIter *__rend, RowIterFn __fn) {
+    while (! RowIter_cmp(__rbegin, __rend)) {
+        __fn(__rbegin);
+        RowIter_next(__rbegin);
+    }
+}
+
+inline void RowIter_apply_k(RowIter *__rbegin, const RowIter *__rend, const MATRIX_TYPE __k, RowIterFn_k __fn_k) {
+    while (! RowIter_cmp(__rbegin, __rend)) {
+        __fn_k(__rbegin, __k);
+        RowIter_next(__rbegin);
+    }
+}
+
+inline void RowIter_apply_ptr(RowIter *__rbegin, const RowIter *__rend, const MATRIX_TYPE *__ptr, RowIterFn_ptr __fn_ptr) {
+    while (! RowIter_cmp(__rbegin, __rend)) {
+        __fn_ptr(__rbegin, __ptr);
+        RowIter_next(__rbegin);
+    }
+}
+
+inline void RowIter_apply_iter(RowIter *__abegin, const RowIter *__aend, RowIter *__bbegin, RowIterFn_iter __fn_iter) {
+    while (! RowIter_cmp(__abegin, __aend)) {
+        __fn_iter(__abegin, __bbegin);
+        RowIter_next(__abegin);
+        RowIter_next(__bbegin);
+    }
+}
+
+/**================================================================================================
+ *!                                        Row manipulations using apply functions
+ *================================================================================================**/
+
+/**======================
+ *!    Scalar operations
+ *========================**/
+void RowIter_apply_set_k(RowIter *__rbegin, const RowIter *__rend, const MATRIX_TYPE __k) {
+    RowIter_apply_k(__rbegin, __rend, __k, RowIter_set);
+}
+
+void RowIter_apply_add_k(RowIter *__rbegin, const RowIter *__rend, const MATRIX_TYPE __k) {
+    RowIter_apply_k(__rbegin, __rend, __k, RowIter_add_k);
+}
+
+void RowIter_apply_sub_k(RowIter *__rbegin, const RowIter *__rend, const MATRIX_TYPE __k) {
+    RowIter_apply_k(__rbegin, __rend, __k, RowIter_sub_k);
+}
+
+void RowIter_apply_mult_k(RowIter *__rbegin, const RowIter *__rend, const MATRIX_TYPE __k) {
+    RowIter_apply_k(__rbegin, __rend, __k, RowIter_mult_k);
+}
+
+void RowIter_apply_div_k(RowIter *__rbegin, const RowIter *__rend, const MATRIX_TYPE __k) {
+    RowIter_apply_k(__rbegin, __rend, __k, RowIter_div_k);
+}
+
+/**======================
+ *!    Pointer operations
+ *========================**/
+
+void RowIter_apply_set_ptr(RowIter *__rbegin, const RowIter *__rend, const MATRIX_TYPE *__ptr) {
+    RowIter_apply_ptr(__rbegin, __rend, __ptr, RowIter_set_ptr);
+}
+
+void RowIter_apply_add_ptr(RowIter *__rbegin, const RowIter *__rend, const MATRIX_TYPE *__ptr) {
+    RowIter_apply_ptr(__rbegin, __rend, __ptr, RowIter_add_ptr);
+}
+
+void RowIter_apply_sub_ptr(RowIter *__rbegin, const RowIter *__rend, const MATRIX_TYPE *__ptr) {
+    RowIter_apply_ptr(__rbegin, __rend, __ptr, RowIter_sub_ptr);
+}
+
+void RowIter_apply_mult_ptr(RowIter *__rbegin, const RowIter *__rend, const MATRIX_TYPE *__ptr) {
+    RowIter_apply_ptr(__rbegin, __rend, __ptr, RowIter_mult_ptr);
+}
+
+void RowIter_apply_div_ptr(RowIter *__rbegin, const RowIter *__rend, const MATRIX_TYPE *__ptr) {
+    RowIter_apply_ptr(__rbegin, __rend, __ptr, RowIter_div_ptr);
+}
+
+/**======================
+ *!    Iterator operations
+ *========================**/
+
+void RowIter_apply_set_iter(RowIter *__abegin, const RowIter *__aend, RowIter *__bbegin) {
+    RowIter_apply_iter(__abegin, __aend, __bbegin, RowIter_set_iter);
+}
+
+void RowIter_apply_add_iter(RowIter *__abegin, const RowIter *__aend, RowIter *__bbegin) {
+    RowIter_apply_iter(__abegin, __aend, __bbegin, RowIter_add_iter);
+}
+
+void RowIter_apply_sub_iter(RowIter *__abegin, const RowIter *__aend, RowIter *__bbegin) {
+    RowIter_apply_iter(__abegin, __aend, __bbegin, RowIter_sub_iter);
+}
+
+void RowIter_apply_mult_iter(RowIter *__abegin, const RowIter *__aend, RowIter *__bbegin) {
+    RowIter_apply_iter(__abegin, __aend, __bbegin, RowIter_mult_iter);
+}
+
+void RowIter_apply_div_iter(RowIter *__abegin, const RowIter *__aend, RowIter *__bbegin) {
+    RowIter_apply_iter(__abegin, __aend, __bbegin, RowIter_div_iter);
+}
+
+
+
+
+
+
