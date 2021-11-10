@@ -2,6 +2,11 @@
 
 #include "ejovo_matrix.h"
 
+// TODO I think it might be a good idea to actually
+//! implement the functions that use col iters
+//! should be passing copies of the colIter and NOT a pointer
+//! I don't really want to modify/ consume the iterator...
+
 /**================================================================================================
  *!                                        Column Iterators
  *================================================================================================**/
@@ -151,51 +156,64 @@ inline void ColIter_div_iter(ColIter *__a, const ColIter *__b) {
 // Set the elements of a row when given a row iterator and a value k
 inline void ColIter_col_set_k(ColIter *__cbegin, const ColIter *__cend, const MATRIX_TYPE __k) {
 
-    while (! ColIter_cmp(__cbegin, __cend)) {
-        ColIter_set(__cbegin, __k);
-        ColIter_next(__cbegin);
+    ColIter *cbegin = ColIter_clone(__cbegin);
+
+    while (! ColIter_cmp(cbegin, __cend)) {
+        ColIter_set(cbegin, __k);
+        ColIter_next(cbegin);
     }
 }
 
 inline void ColIter_col_add_k(ColIter *__cbegin, const ColIter *__cend, const MATRIX_TYPE __k) {
 
-    while (! ColIter_cmp(__cbegin, __cend)) {
-        ColIter_add_k(__cbegin, __k);
-        ColIter_next(__cbegin);
+    ColIter *cbegin = ColIter_clone(__cbegin);
+
+    while (! ColIter_cmp(cbegin, __cend)) {
+        ColIter_add_k(cbegin, __k);
+        ColIter_next(cbegin);
     }
 }
 
 inline void ColIter_col_sub_k(ColIter *__cbegin, const ColIter *__cend, const MATRIX_TYPE __k) {
 
-    while (! ColIter_cmp(__cbegin, __cend)) {
-        ColIter_sub_k(__cbegin, __k);
-        ColIter_next(__cbegin);
+    ColIter *cbegin = ColIter_clone(__cbegin);
+
+    while (! ColIter_cmp(cbegin, __cend)) {
+        ColIter_sub_k(cbegin, __k);
+        ColIter_next(cbegin);
     }
 }
 
 inline void ColIter_col_mult_k(ColIter *__cbegin, const ColIter *__cend, const MATRIX_TYPE __k) {
 
-    while (! ColIter_cmp(__cbegin, __cend)) {
-        ColIter_mult_k(__cbegin, __k);
-        ColIter_next(__cbegin);
+    ColIter *cbegin = ColIter_clone(__cbegin);
+
+    while (! ColIter_cmp(cbegin, __cend)) {
+        ColIter_mult_k(cbegin, __k);
+        ColIter_next(cbegin);
     }
 }
 
 inline void ColIter_col_div_k(ColIter *__cbegin, const ColIter *__cend, const MATRIX_TYPE __k) {
 
-    while (! ColIter_cmp(__cbegin, __cend)) {
-        ColIter_div_k(__cbegin, __k);
-        ColIter_next(__cbegin);
+    ColIter *cbegin = ColIter_clone(__cbegin);
+
+    while (! ColIter_cmp(cbegin, __cend)) {
+        ColIter_div_k(cbegin, __k);
+        ColIter_next(cbegin);
     }
 }
 
 // Add to row __a the elements of row __b
 inline void ColIter_col_add_col(ColIter *__abegin, const ColIter *__aend, ColIter *__bbegin) {
 
-    while (! ColIter_cmp(__abegin, __aend)) {
-        ColIter_add_iter(__abegin, __bbegin);
-        ColIter_next(__abegin);
-        ColIter_next(__bbegin);
+    ColIter *abegin = ColIter_clone(__abegin);
+    ColIter *bbegin = ColIter_clone(__bbegin);
+
+    while (! ColIter_cmp(abegin, __aend)) {
+        ColIter_add_iter(abegin, __bbegin);
+        ColIter_next(abegin);
+        ColIter_next(bbegin);
     }
 }
 
@@ -205,33 +223,45 @@ inline void ColIter_col_add_col(ColIter *__abegin, const ColIter *__aend, ColIte
 
 // Appy functions are a way to iterate a ColIter until we reach the "end" point
 
-
 inline void ColIter_apply(ColIter *__cbegin, const ColIter *__cend, ColIterFn __fn) {
-    while (! ColIter_cmp(__cbegin, __cend)) {
-        __fn(__cbegin);
-        ColIter_next(__cbegin);
+
+    ColIter *cbegin = ColIter_clone(__cbegin);
+
+    while (! ColIter_cmp(cbegin, __cend)) {
+        __fn(cbegin);
+        ColIter_next(cbegin);
     }
 }
 
 inline void ColIter_apply_k(ColIter *__cbegin, const ColIter *__cend, const MATRIX_TYPE __k, ColIterFn_k __fn_k) {
-    while (! ColIter_cmp(__cbegin, __cend)) {
-        __fn_k(__cbegin, __k);
-        ColIter_next(__cbegin);
+
+    ColIter *cbegin = ColIter_clone(__cbegin);
+
+    while (! ColIter_cmp(cbegin, __cend)) {
+        __fn_k(cbegin, __k);
+        ColIter_next(cbegin);
     }
 }
 
 inline void ColIter_apply_ptr(ColIter *__cbegin, const ColIter *__cend, const MATRIX_TYPE *__ptr, ColIterFn_ptr __fn_ptr) {
-    while (! ColIter_cmp(__cbegin, __cend)) {
-        __fn_ptr(__cbegin, __ptr);
-        ColIter_next(__cbegin);
+
+    ColIter *cbegin = ColIter_clone(__cbegin);
+
+    while (! ColIter_cmp(cbegin, __cend)) {
+        __fn_ptr(cbegin, __ptr);
+        ColIter_next(cbegin);
     }
 }
 
 inline void ColIter_apply_iter(ColIter *__abegin, const ColIter *__aend, ColIter *__bbegin, ColIterFn_iter __fn_iter) {
-    while (! ColIter_cmp(__abegin, __aend)) {
-        __fn_iter(__abegin, __bbegin);
-        ColIter_next(__abegin);
-        ColIter_next(__bbegin);
+
+    ColIter *abegin = ColIter_clone(__abegin);
+    ColIter *bbegin = ColIter_clone(__bbegin);
+
+    while (! ColIter_cmp(abegin, __aend)) {
+        __fn_iter(abegin, bbegin);
+        ColIter_next(abegin);
+        ColIter_next(bbegin);
     }
 }
 
@@ -309,13 +339,6 @@ void ColIter_apply_mult_iter(ColIter *__abegin, const ColIter *__aend, ColIter *
 void ColIter_apply_div_iter(ColIter *__abegin, const ColIter *__aend, ColIter *__bbegin) {
     ColIter_apply_iter(__abegin, __aend, __bbegin, ColIter_div_iter);
 }
-
-
-
-
-
-
-
 
 /**================================================================================================
  *!                                        Row Iterators
