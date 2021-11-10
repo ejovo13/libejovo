@@ -75,6 +75,9 @@ inline MATRIX_TYPE ColIter_value(const ColIter *__c) {
  *!                                        ColIter basic utility routines - SINGLE
  *================================================================================================**/
 
+/**======================
+ *!    Scalar operations
+ *========================**/
 inline void ColIter_set(ColIter *__c, const MATRIX_TYPE __k) {
     *(__c->ptr) = __k;
 }
@@ -95,6 +98,9 @@ inline void ColIter_div_k(ColIter *__c, const MATRIX_TYPE __k) {
     *(__c->ptr) /= __k;
 }
 
+/**======================
+ *!    Pointer operations
+ *========================**/
 inline void ColIter_set_ptr(ColIter *__c, const MATRIX_TYPE *__ptr) {
     *(__c->ptr) = *__ptr;
 }
@@ -115,6 +121,9 @@ inline void ColIter_div_ptr(ColIter *__c, const MATRIX_TYPE *__ptr) {
     *(__c->ptr) /= *__ptr;
 }
 
+/**======================
+ *!    Iterator functions
+ *========================**/
 inline void ColIter_set_iter(ColIter *__a, const ColIter *__b) {
     *(__a->ptr) = *(__b->ptr);
 }
@@ -326,6 +335,7 @@ RowIter *RowIter_clone(const RowIter *__c) {
     return RowIter_new(__c->ptr, __c->ptr_diff);
 }
 
+//! This function should actually never be called
 void RowIter_free(RowIter *__c) {
 
     if (__c) {
