@@ -7,10 +7,6 @@ int main() {
 
     List *clone = List_clone(list);
 
-    Node_print(Node_clone(list->head));
-
-    Node_print(clone->head);
-
     List_print(clone);
 
 

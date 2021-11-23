@@ -5,7 +5,7 @@ set(TP6_SRC_FILES
     # ex3
     # ex4
     ex5
-    # ex6
+    ex6
     # ex7
 
 )

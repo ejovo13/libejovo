@@ -62,6 +62,13 @@ List *List_new() {
 
 }
 
+// List *List_clone_node(const Node *__node) {
+//     List *list = List_new();
+//     list_append_node(Node_clone(__node));
+//     return list;
+// }
+
+// List *List_from_node()
 
 void List_append_node(List *__list, Node *__node) {
 
@@ -104,7 +111,7 @@ List *List_clone(const List *__list) {
     list->head = Node_clone(__list->head);
     list->tail = list->head;
 
-    Node *node = __list->head; // traverse the original list
+    Node *node = __list->head->next; // traverse the original list
 
     while (node) {
 
@@ -136,38 +143,48 @@ void List_prepend_new_node(List *__list, double __c, int __n) {
 // assume that the list is already sorted in ascending order
 void List_ordered_insert_n(List *__list, Node *__node) {
 
+    if (!__node) return; // If __node is null
+
     // if list->head is null, insert at the beginning
     if (!__list->head) {
+
         __list->head = __node;
         __list->tail = __node;
+
     } else {
 
         // iterate the list until we find a next element that is larger than __node->n
-        Node *n = __list->head;
+        Node *inode = __list->head;
 
-        while(n->next) {
+        while(inode->next) {
 
-            if (n->next->n > __node->n) {
+            if (inode->n == __node->n) { // duplicate value, add c1 and c2
 
-                // insert this node at n->next
-                Node *temp = n->next;
-                n->next = __node;
-                __node->next = temp;
-
-                // free(temp);
+                // printf("Adding equal power of n: %d\n", inode->n);
+                inode->c = __node->c + inode->c;
                 return;
 
-            } else if (n->next->n == __node->n) { // duplicate value, add c1 and c2
+            } else if (inode->next->n > __node->n) {
 
-                n->next->c = __node->c + n->next->c;
+                Node *temp = inode->next;
+                inode->next = __node;
+                __node->next = temp;
                 return;
 
             }
 
-            n = n->next;
+            inode = inode->next;
         }
 
-        n->next = __node; // If none of the values are greater than n->n, add __node to the end of the list
+        if (inode->n == __node->n) { // duplicate value, add c1 and c2
+
+            // printf("Adding equal power of n: %d\n", inode->n);
+            inode->c = __node->c + inode->c;
+            return;
+
+        }
+
+        inode->next = __node; // If none of the values are greater than n->n, add __node to the end of the list
         __node->next = NULL;
     }
 }
@@ -381,6 +398,100 @@ void modification_valeur(Node *node, int valeur) {
 
 typedef List Polynome;
 
+//  a: array of coefficients
+//  len: number of elements in the array
+Polynome *Polynome_new(const double *__a, size_t __len) {
+
+    Polynome *poly = List_new();
+
+    for (size_t i = 0; i < __len; i++) {
+        List_append_node(poly, Node_new(__a[i], i));
+    }
+
+    return poly;
+}
+
+// Create nth degree polynomial where all the coefficients are 0.
+Polynome *Polynome_zeros(size_t __n) {
+
+    Polynome *poly = List_new();
+
+    for (size_t i = 0; i <= __n; i++) {
+        List_append_node(poly, Node_new(0, i));
+    }
+
+    return poly;
+
+}
+
+Polynome *Polynome_ones(size_t __n) {
+    Polynome *poly = List_new();
+
+    for (size_t i = 0; i <= __n; i++) {
+        List_append_node(poly, Node_new(1, i));
+    }
+}
+
+/**========================================================================
+ *!                           Special types of polynomials
+ *========================================================================**/
+
+// PLEASE for the love of god do NOT exceed 25...
+long long int ejovo_fact(long long int __n) {
+
+    if (__n == 0) {
+        return 1;
+    } else {
+        return __n * ejovo_fact(__n - 1);
+    }
+
+}
+
+// return 1 - x + x^2/2 - x3/3!
+// Taylor expansion for the exponential function
+Polynome *Polynome_exp(size_t __n) {
+
+    Polynome *poly = List_new();
+
+    for (size_t i = 0; i <= __n; i++) {
+        List_append_new_node(poly, 1.0 / ejovo_fact(i), i);
+    }
+
+    return poly;
+}
+
+Polynome *Polynome_sin(size_t __n) {
+
+    Polynome *poly = List_new();
+
+    double sign = 1;
+
+
+    for (size_t i = 1; i < __n; i += 2) {
+        List_append_new_node(poly, sign / ejovo_fact(i), i);
+        sign *= -1;
+    }
+
+    return poly;
+
+}
+
+Polynome *Polynome_cos(size_t __n) {
+
+    Polynome *poly = List_new();
+
+    double sign = 1;
+
+
+    for (size_t i = 0; i < __n; i += 2) {
+        List_append_new_node(poly, sign / ejovo_fact(i), i);
+        sign *= -1;
+    }
+
+    return poly;
+
+}
+
 double Polynome_eval(const Polynome *__p, double __x) {
 
     double p_x = 0;
@@ -397,7 +508,123 @@ double Polynome_eval(const Polynome *__p, double __x) {
 
 }
 
+void Polynome_print(const Polynome *__p) {
 
+    int n = 0;
+
+    Node *node = __p->head;
+
+    if (node) {
+        printf("%lfx^%d + ", node->c, node->n);
+        n++;;
+        node = node->next;
+    }
+
+    while (node->next) {
+
+        printf("%lfx^%d + ", node->c, node->n);
+        n++;
+        node = node->next;
+    }
+
+    printf("%lfx^%d", node->c, node->n);
+
+    printf("\n");
+}
+
+// Low level routine that adds a polynomial
+// TODO I should really just learn variadic functions
+// we've already implemented the functionality in place. We are just going to take the right side and add it to the left side. After
+// this function is called, __lhs and __rhs will have the head and tail pointing to the same elements.
+void polysum(Polynome *__lhs, Polynome *__rhs) {
+
+    // iterate through __rhs and add to __lhs
+    Node *r = __rhs->head;
+
+    while (r) {
+
+        List_ordered_insert_n(__lhs, r); // The right hand list should now be in scrambles, let's modify it
+        r = r->next;
+    }
+
+    __rhs->head = __lhs->head;
+    __rhs->tail = __lhs->tail;
+
+}
+
+// First clone the elements of __rhs, and then add them to __lhs
+Polynome *Polynome_sum(const Polynome *__lhs, const Polynome *__rhs) {
+
+    List *lhs = List_clone(__lhs);
+    List *rhs = List_clone(__rhs);
+    polysum(lhs, rhs);
+    return lhs;
+
+}
+
+void polymult_k(Polynome *__lhs, double __k) {
+
+    Node *node = __lhs->head;
+
+    while (node) {
+
+        node->c *= __k;
+        node = node->next;
+    }
+}
+
+// Don't modify the original array
+Polynome *Polynome_mult_k(const Polynome *__lhs, double __k) {
+
+    List *lhs = List_clone(__lhs);
+    polymult_k(lhs, __k);
+    return lhs;
+
+}
+
+void polymult_monome(Polynome *__lhs, Node *__monome) {
+
+    Node *node = __lhs->head;
+
+    while (node) {
+
+        node->c *= __monome->c;
+        node->n += __monome->n;
+
+        node = node->next;
+    }
+}
+
+Polynome *Polynome_mult_monome(const Polynome *__lhs, const Node *__monome) {
+
+    Polynome *lhs = List_clone(__lhs);
+    polymult_monome(lhs, __monome);
+    return lhs;
+
+}
+
+// since we can multiply by a monome, now we can multiply by an entire polynomial. That's incredible. Then add up (distributive property) all of the polynomials!
+Polynome *polymultpoly(const Polynome *__lhs, const Polynome *__rhs) {
+
+    // I think that I have to duplicate this
+    Polynome *lhs = List_clone(__lhs);
+    polymult_k(lhs, 0); // effective set lhs to 0
+
+    Node *r = __rhs->head;
+
+    while (r) {
+
+        polysum(lhs, Polynome_mult_monome(__lhs, r));
+
+        r = r->next;
+    }
+
+    return lhs;
+}
+
+Polynome *Polynome_mult_poly(const Polynome *__lhs, const Polynome *__rhs) {
+    return polymultpoly(__lhs, __rhs);
+}
 
 
 
