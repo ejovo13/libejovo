@@ -4,6 +4,7 @@
 
 void t_matlu();
 void t_Matrix_lu();
+void t_jacobi();
 
 int main() {
 
@@ -53,18 +54,20 @@ void t_jacobi() {
     printf("=============Jacobi iteration===================\n");
 
     ejovo_seed();
-    Matrix *A = Matrix_tridiagonal(15);
+    // Matrix *A = Matrix_tridiagonal(15);
     // Matrix *A = Matrix_rand(3, 3);
 
     // wtf so my jacobi iteration works just fine when the b vector is the same....
 
-    // double data[] = {4, -1, 0, 1, 0, -1, 4, -1, 0, 1, 0, -1, 4, -1, 0, 1, 0, -1, 4, -1, 0, 1, 0, -1, 4}; // éléments de la matrice du livre, arrangé en ordre "row-major"
+    double data[] = {4, -1, 0, 1, 0, -1, 4, -1, 0, 1, 0, -1, 4, -1, 0, 1, 0, -1, 4, -1, 0, 1, 0, -1, 4}; // éléments de la matrice du livre, arrangé en ordre "row-major"
 
-    // Matrix *A = Matrix_from(data, 5, 5); // Créer une 5 x 5 matrice de data
+    Matrix *A = Matrix_from(data, 5, 5); // Créer une 5 x 5 matrice de data
     // Vector *b = Matrix_value(3, 1, 100); // creer b = [100, 100, 100, 100, 100]^T
-    Vector *b = Matrix_rand(15, 1); // creer b = [100, 100, 100, 100, 100]^T
+    // Vector *b = Matrix_rand(15, 1); // creer b = [100, 100, 100, 100, 100]^T
+    Vector *b = Matrix_rand(5, 1); // creer b = [100, 100, 100, 100, 100]^T
 
-    Vector *x = jacobi_iteration(A, b, Matrix_new(15, 1), 0.0001); // Tester l'algorithme avec x^0 = [0, 0, 0, 0, 0]^T, tolerance 0.0001
+    // Vector *x = jacobi_iteration(A, b, Matrix_new(15, 1), 0.0001); // Tester l'algorithme avec x^0 = [0, 0, 0, 0, 0]^T, tolerance 0.0001
+    Vector *x = jacobi_iteration(A, b, Matrix_new(5, 1), 0.0001); // Tester l'algorithme avec x^0 = [0, 0, 0, 0, 0]^T, tolerance 0.0001
 
     // Afficher a l'écran les résultats
     printf("A: ");
