@@ -20,7 +20,7 @@ Matrix *matalloc(size_t __nrows, size_t __ncols) {
 }
 
 void matfree(Matrix *__A) {
-    free(__A->data);
+    if(!__A->data) free(__A->data); // if data is null, don't call free on it!!!
     free(__A);
 }
 
@@ -58,6 +58,43 @@ Matrix * matclone(const Matrix *restrict __src) {
 
     return clone;
 }
+
+/**================================================================================================
+ *!                                        Assignment Operator
+ *================================================================================================**/
+// I'd like to make the statement A = Matrix_take(A, M); allow the matrix A to point to the data
+// of matrix M, and then to free the other matrix
+
+Matrix *Matrix_shallow_copy(const Matrix *__rhs) {
+
+    Matrix *__lhs = (Matrix *) malloc(sizeof(Matrix));
+
+    __lhs->data = __rhs->data;
+    __lhs->ncols = __rhs->ncols;
+    __lhs->nrows = __rhs->nrows;
+
+    return __lhs;
+
+}
+
+Matrix *Matrix_take(Matrix *__rhs) {
+
+    Matrix *__lhs = (Matrix *) malloc(sizeof(Matrix));
+
+    __lhs->data = __rhs->data;
+    __lhs->ncols = __rhs->ncols;
+    __lhs->nrows = __rhs->nrows;
+
+    __rhs->data = NULL;
+
+    Matrix_free(__rhs);
+    return __lhs;
+
+}
+
+
+
+
 
 /**================================================================================================
  *!                                        Matrix Constructors
@@ -161,6 +198,43 @@ Matrix * Matrix_ij(size_t __nrows, size_t __ncols) {
 
 }
 
+/**
+ * @brief Create a square diagonal matrix with random entries from 1 to 10
+ *
+ * @param __n
+ * @return Matrix*
+ */
+Matrix *Matrix_diagonal(size_t __n) {
+
+    Matrix *A = Matrix_new(__n, __n);
+    for (size_t i = 0; i < __n; i++) {
+        Matrix_set(A, i, i, unif(1, 10));
+    }
+
+    return A;
+
+}
+
+Matrix *Matrix_tridiagonal(size_t __n) {
+
+    Matrix *A = Matrix_new(__n, __n);
+
+    matset(A, 0, 0, unif(1, 10));
+    matset(A, 0, 1, unif(1, 10));
+
+    for (size_t i = 1; i < __n-1; i++) {
+        matset(A, i, i - 1, unif(1, 10));
+        matset(A, i, i, unif(1, 10));
+        matset(A, i, i + 1, unif(1, 10));
+    }
+
+    matset(A, __n-1, __n-2, unif(1, 10));
+    matset(A, __n-1, __n-1, unif(1, 10));
+
+    return A;
+
+}
+
 Matrix * Matrix_value(size_t __nrows, size_t __ncols, MATRIX_TYPE __value) {
 
     Matrix * m = Matrix_new(__nrows, __ncols);
@@ -185,7 +259,7 @@ Matrix * Matrix_random(size_t __nrows, size_t __ncols, int __min, int __max) {
 }
 
 Matrix * Matrix_rand(size_t __nrows, size_t __ncols) {
-    return Matrix_random(__nrows, __ncols, 0, 100);
+    return Matrix_random(__nrows, __ncols, 0, 10);
 }
 
 Matrix * Matrix_identity(size_t __n) {

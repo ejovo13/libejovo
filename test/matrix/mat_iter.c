@@ -19,6 +19,7 @@ void t_ColIter_basic_utility_cols();
 
 */
 void t_Matrix_rowop(); // test matrix elementary row operations
+void t_Iter_dot();
 
 int main() {
 
@@ -28,6 +29,7 @@ int main() {
     t_ColIter_basic_utility();
     t_ColIter_basic_utility_cols();
     t_Matrix_rowop();
+    t_Iter_dot();
 
     // Matrix *m = Matrix_random(5, 5, 0, 10);
 
@@ -304,5 +306,25 @@ void t_Matrix_rowop() {
     // Matrix_print(m);
 
     printf("Matrix_rowop passed\n");
+
+}
+
+void t_Iter_dot() {
+
+    ejovo_seed();
+
+    Matrix *m = Matrix_rand(5, 3);
+    Vector *v = Matrix_rand(3, 1);
+
+    double dot = Iter_dot(Matrix_row_begin(m, 2), Matrix_row_end(m, 2), Vector_col(v));
+
+    printf("Dot product of m row 3 and v is: %lf\n", dot);
+
+    Matrix_print(m);
+    Matrix_print(v);
+
+    Matrix_free(m);
+    Matrix_free(v);
+
 
 }

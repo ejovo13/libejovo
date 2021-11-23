@@ -20,6 +20,36 @@ Vector *Vector_random(size_t __nrows, int __min, int __max) {
 }
 
 /**================================================================================================
+ *!                                        State Functions
+ *================================================================================================**/
+size_t Vector_size(const Vector *__v) {
+    if (Matrix_is_col(__v)) return __v->nrows;
+    else return __v->ncols;
+}
+
+/**================================================================================================
+ *!                                        Vector iterator functions
+ *================================================================================================**/
+ColIter *Vector_col(const Vector *__v) {
+    return Matrix_col_begin(__v, 0);
+}
+
+RowIter *Vector_row(const Vector *__v) {
+    return Matrix_row_begin(__v, 0);
+}
+
+MATRIX_TYPE Vector_at(const Vector *__v, size_t __i) {
+    if (Matrix_is_col(__v)) return matat(__v, __i, 0);
+    else return matat(__v, 0, __i);
+}
+
+MATRIX_TYPE *Vector_access(const Vector *__v, size_t __i) {
+    if (Matrix_is_col(__v)) return matacc(__v, __i, 0);
+    else return matacc(__v, 0, __i);
+}
+
+
+/**================================================================================================
  *!                                        Unary Vector Operators
  *================================================================================================**/
 

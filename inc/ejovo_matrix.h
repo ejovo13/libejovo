@@ -35,7 +35,7 @@
  * For example, two matrices can be added to each other if and only if they are the same size; *
  */
 typedef struct mat_t {
-    MATRIX_TYPE *restrict data; // SUPER IMPORTANT!!! I am declaring that the underlying data
+    MATRIX_TYPE *data; // SUPER IMPORTANT!!! I am declaring that the underlying data
                                 // is only ever accessed by one pointer! In terms of Rust,
                                 // data is the only owner of the matrix elements
     size_t nrows;
@@ -97,6 +97,26 @@ typedef void (* EDITOR_K) (MATRIX_TYPE *, MATRIX_TYPE); // A function that will 
  * @return a new malloc'ed matrix
  */
 extern Matrix *matalloc(size_t __nrows, size_t __ncols);
+
+Matrix *Matrix_shallow_copy(const Matrix *__rhs);
+
+Matrix *Matrix_take(Matrix *__rhs);
+
+/**
+ * @brief Create a square diagonal matrix with random entries from 1 to 10
+ *
+ * @param __n
+ * @return Matrix*
+ */
+Matrix *Matrix_diagonal(size_t __n);
+
+/**
+* @brief Create a square tridiagonal matrix with random entries from 1 to 10
+ *
+ * @param __n
+ * @return Matrix*
+ */
+Matrix *Matrix_tridiagonal(size_t __n);
 
 /**
  * Create a new __nrows x __ncols Matrix filled with zeros
@@ -256,12 +276,12 @@ extern bool Matrix_comp_mult(const Matrix *__A, const Matrix *__B);
 // this is a utility function and should not be used by the end user
 /** @private
  */
-// static bool matcpy(Matrix *restrict __dest, const Matrix *restrict __src);
+// static bool matcpy(Matrix *__dest, const Matrix *__src);
 
 /** @private
  *  copy the contents of matrix __src into __dest
  */
-extern Matrix * matclone(const Matrix *restrict __src);
+extern Matrix * matclone(const Matrix *__src);
 
 /**
  * Create a new Matrix from the contents of __src
@@ -270,7 +290,7 @@ extern Matrix * matclone(const Matrix *restrict __src);
  * This is a clone operation and thus new data is allocated for the returned Matrix.
  *
  */
-extern Matrix * Matrix_clone(const Matrix *restrict __src);
+extern Matrix * Matrix_clone(const Matrix *__src);
 
 /** @private
  * Fortran named function to compute the multiplication of two matrices __A * __B
@@ -565,8 +585,17 @@ extern Matrix *gausselim(Matrix *__A, const Matrix *__B);
  *!                                        Vector declarations
  *================================================================================================**/
 
-// Default to making a column vector
+/**
+ * @brief Create a new column vector with size __nrows
+ *
+ * @param __nrows
+ * @return Vector*
+ */
 extern Vector *Vector_new(size_t __nrows);
+
+MATRIX_TYPE Vector_at(const Vector *__v, size_t __i);
+
+MATRIX_TYPE *Vector_access(const Vector *__v, size_t __i);
 
 extern Vector *Vector_rand(size_t __nrows);
 
@@ -674,6 +703,24 @@ extern size_t Matrix_rect_limit(const Matrix *__A);
 /**================================================================================================
  *!                                        matrix_linear.c
  *================================================================================================**/
+Matrix *Matrix_solve_lu(const Matrix *__A, const Vector *__b);
+
+
+/**========================================================================
+ *!                           Constructors
+ *========================================================================**/
+
+/**========================================================================
+ *!                           State Functions
+ *========================================================================**/
+
+/**
+ * @brief Return the size of a vector
+ *
+ * @param __v
+ * @return size_t
+ */
+size_t Vector_size(const Vector *__v);
 
 /**
  * @brief Compute the LU decomposition of __A
@@ -684,6 +731,25 @@ extern size_t Matrix_rect_limit(const Matrix *__A);
 extern Matrix *matlu_nopivot(Matrix *__A);
 
 extern LU Matrix_lu(const Matrix *__A);
+
+/**
+ * @brief Jacobi Iteration
+ *
+ * Jacobi iteration consists of solving for the diagonals (x_i) of each equation (the rows of A) when given
+ * the equation Ax = b to solve.
+ *
+ * @param __A an Invertible matrix
+ * @param __b a column or row Vector
+ * @param __x0 Initial guess of the solution
+ * @attention The parameter __b will be treated exclusively as a col vector to resolve the equation Ax = b,
+ * where x and b are column vectors
+ *
+ * @returns a newly allocated vector
+ *
+ */
+#define MAX_STEP_SIZE 10000
+
+Vector *jacobi_iteration(const Matrix *__A, const Vector *__b, const Vector *__x0, MATRIX_TYPE __crit);
 
 /**================================================================================================
  *!                                        matrix_iter.c
@@ -976,6 +1042,16 @@ extern void RowIter_apply_mult_iter(RowIter *__abegin, const RowIter *__aend, Ro
 
 extern void RowIter_apply_div_iter(RowIter *__abegin, const RowIter *__aend, RowIter *__bbegin);
 
+/**
+ * @brief Compute the dot product of a RowIter and a ColIter.
+ *
+ * This corresponds to the vector inner product < __u , __v >
+ *
+ * @param __r
+ * @param __c
+ * @return MATRIX_TYPE
+ */
+MATRIX_TYPE Iter_dot(const RowIter *__r, const RowIter *__rend, const ColIter *__c);
 
 // get row iterator without checking bounds
 extern inline RowIter *matrowbegin(const Matrix *__A, size_t __i);
@@ -998,5 +1074,12 @@ extern void Matrix_rowop_add_offset(Matrix *__A, const size_t __r1, const size_t
 extern void matrowop_add_scaled(Matrix *__A, const size_t __r1, const size_t __r2, const MATRIX_TYPE __k, const size_t __col_offset);
 
 extern void Matrix_rowop_add_scaled(Matrix *__A, const size_t __r1, const size_t __r2, const MATRIX_TYPE __k);
+
+// this shite needs to go....
+ColIter *Vector_col(const Vector *__v);
+
+RowIter *Vector_row(const Vector *__v);
+
+
 
 #endif

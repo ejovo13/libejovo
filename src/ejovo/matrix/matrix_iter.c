@@ -724,6 +724,28 @@ void RowIter_apply_add_iter_scaled(RowIter *__abegin, const RowIter *__aend, Row
     RowIter_apply_iter_scaled(__abegin, __aend, __bbegin, __k, RowIter_add_iter_scaled);
 }
 
+/**================================================================================================
+ *!                                        RowCol and ColIter
+ *================================================================================================**/
+
+MATRIX_TYPE Iter_dot(const RowIter *__r, const RowIter *__rend, const ColIter *__c) {
+
+    MATRIX_TYPE dot = 0;
+
+    while(!RowIter_cmp(__r, __rend)) {
+
+        dot += RowIter_value(__r) * ColIter_value(__c);
+        RowIter_next(__r);
+        RowIter_next(__c);
+
+    }
+
+    return dot;
+
+}
+
+
+
 
 
 /**=======================================================================================================================

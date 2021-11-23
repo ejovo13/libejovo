@@ -56,6 +56,10 @@ double Matrix_det(Matrix * __A) {
  *!                                        Matrix-Vector Operators
  *================================================================================================**/
 
+// Matrix dot vector (take the row of a matrix and multiply that by a vector)
+
+
+
 /**================================================================================================
  *!                                        Matrix-Matrix Operators
  *================================================================================================**/
@@ -351,6 +355,7 @@ LU Matrix_lu(const Matrix *__A) {
 
 }
 
+// I need a function that performs back_substitution and also forward_substitution
 
 
 
@@ -361,11 +366,94 @@ LU Matrix_lu(const Matrix *__A) {
  *!                                        General Algorithms
  *================================================================================================**/
 
+
+
+
+
+Matrix *Matrix_solve_lu(const Matrix *__A, const Vector *__b) {
+
+    // printf("Entered matrix_solve\n");
+    // Matrix_print(__A);
+    // Matrix_print(__b);
+
+    LU lu = Matrix_lu(__A);
+
+    // printf("L:\t");
+    // Matrix_print(lu.L);
+    // printf("U:\t");
+    // Matrix_print(lu.U);
+
+    // Not pivoting, if there are zeros on the pivot then I'm fucked
+
+    // I need to perform "back substitution"
+    // A = LU
+    // Ax = LUx = b
+    //
+    // first step sovle Ly = b, where y = Ux
+    // this is easy because L is LOWER triangular!
+
+    Vector *y = Vector_new(__A->nrows);
+    Vector *b = Matrix_clone(__b);
+    Vector *x = Vector_new(__A->nrows);
+
+    MATRIX_TYPE b_i = 0;
+
+    // traverse the lower matrix
+    for (int i = 0; i < lu.L->nrows; i++) {
+
+        // printf("i before loop: %d\n", i);
+        b_i = Matrix_at(__b, i, 0);
+        // printf("traversing L");
+
+        // traverse x_j
+        for (int j = 0; j < i; j++) {
+            // printf("i in loop: %d\n", i);
+
+            // printf("processing i: %d, j: %d, b_i: %lf, lu_i,j: %lf\n", i, j, b_i, Matrix_at(lu.L, i, j));
+            // printf("Inner L");
+            b_i -= Matrix_at(y, j, 0) * Matrix_at(lu.L, i, j);
+
+        }
+
+        Matrix_set(y, i, 0, b_i / Matrix_at(lu.L, i, i) );
+    }
+
+    // printf("L(y) = b ");
+    // Matrix_print(b);
+    // printf("y: ");
+    // Matrix_print(y);
+
+    // Now that we've solved for y, Solve Ux = y for x !
+
+    MATRIX_TYPE y_i = 0;
+    for (int i = lu.U->nrows - 1; i >= 0; i--) {
+
+        y_i = Matrix_at(y, i, 0);
+
+        for (int j = lu.U->nrows - 1; j > i; j--) {
+
+            // printf("Inner U");
+            y_i -= Matrix_at(lu.U, i, j) * Matrix_at(x, j, 0);
+
+        }
+
+        Matrix_set(x, i, 0, y_i / Matrix_at(lu.U, i, i) );
+
+    }
+
+    return x;
+
+}
+
+
+
+
 // Return a column vector that contains the solutions
 // this column vector can be null if there are no solutions/infinitely many solutions
 Matrix *gausselim(Matrix *__A, const Matrix *__B) {
 
-
+    // I think that gausselim performs LU decomposition in place while modifying the right hand side which is more
+    // efficient for a single operation but not more efficient if we are going to solve Ax = b multiple times
 
 
 
@@ -373,3 +461,89 @@ Matrix *gausselim(Matrix *__A, const Matrix *__B) {
 
 
 }
+
+/**================================================================================================
+ *!                                        Iterative Algorithms
+ *================================================================================================**/
+
+/**
+ * @brief Jacobi Iteration
+ *
+ * Jacobi iteration consists of solving for the diagonals (x_i) of each equation (the rows of A) when given
+ * the equation Ax = b to solve.
+ *
+ * @param __A an Invertible matrix
+ * @param __b a column or row Vector
+ * @param __x0 Initial guess of the solution
+ * @attention The parameter __b will be treated exclusively as a col vector to resolve the equation Ax = b,
+ * where x and b are column vectors
+ *
+ * @returns a newly allocated vector
+ *
+ */
+Vector *jacobi_iteration(const Matrix *__A, const Vector *__b, const Vector *__x0, MATRIX_TYPE __crit) {
+
+    // let's start out by implementing the algorithm for x_1
+    // I'll need a temporary x variable
+
+    Vector *xk = Matrix_clone(__x0);
+    Vector *res = Vector_new(Vector_size(__b));
+
+    MATRIX_TYPE res_i = 0;
+
+    size_t nsteps = 0;
+    bool all_res_pass = false;
+
+    // Since jacobi uses the older x_0, I actually don't want to mutate them in place.
+    // I want to create a second
+
+    printf("Initial guess: ");
+    Matrix_print(__x0);
+
+    while(nsteps < MAX_STEP_SIZE) {
+    // for (size_t s = 0; s < 3; s++) {
+        // For jacobi iteration we have an initial guess, we have a residual,
+        for (size_t i = 0; i < Vector_size(__b); i++) { // loop through the rows
+
+            // compute the residual
+            res_i = Vector_at(__b, i) - matcdr(__A, xk, i, 0);
+            res_i = res_i / matat(__A, i, i);
+
+            Matrix_set(res, i, 0, res_i);
+
+        }
+
+        // printf("res: ");
+        // Matrix_print(res);
+        matadd(xk, res); // perform x(k + 1) = x(k) + R/a, saving the contents in xk
+
+        // printf("k: %d, xk: ", nsteps + 1);
+        // Matrix_print(xk);
+
+
+        // if all the components of res are below the critical threshold __crit, stop iterating
+        all_res_pass = true;
+        for (size_t r = 0; r < Vector_size(res); r++) {
+            if ( fabs(Vector_at(res, r)) > __crit ) {
+                all_res_pass = false;
+            }
+        }
+
+        if (all_res_pass) {
+            printf("Breaking at %d steps\n", nsteps);
+            break;
+        }
+
+        nsteps ++;
+    }
+
+    if (nsteps >= MAX_STEP_SIZE) perror("Jacobi iteration reached MAX_STEP_SIZE");
+
+    printf("Jacobi iteration ran for %d steps\n", nsteps);
+
+    Matrix_free(res);
+
+    return xk;
+}
+
+
