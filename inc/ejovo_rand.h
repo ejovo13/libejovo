@@ -45,7 +45,7 @@ extern xor_rng XOSHIRO_RNG;
  *
  * @param min Minimum value (inclusive)
  * @param max Maximum value (inclusive)
- *
+
  * @return \f$X \in [min, max]\f$.
  */
 int get_rand_int_range(int min, int max);
@@ -108,6 +108,15 @@ int get_int_xoshiro(struct xoshiro256ss_state *state);
  *
  */
 int unif(int a, int b);
+
+/**
+ * @brief Return a uniform random variabl X ~ [a, b)
+ *
+ * @param a
+ * @param b
+ * @return double
+ */
+double unifd(double a, double b);
 
 
 /**

@@ -99,6 +99,16 @@ int unif(int a, int b) {
 
 }
 
+double unifd(double a, double b) {
+
+    double spread = (b - a);
+
+    double x = (double) get_int_xoshiro(&XOSHIRO_RNG) / RAND_MAX; // returns a value in [0, 1)
+
+    return x * spread + a;
+
+}
+
 void ejovo_seed() {
     seed_xoshiro256ss(&XOSHIRO_RNG);
 }
