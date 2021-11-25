@@ -68,7 +68,7 @@ int main() {
     // Prey_print(head);
 
 
-    head = Prey_init(50);
+    // head = Prey_init(50);
 
     // for (size_t i = 0; i < 10; i++) {
     //     head = Prey_remove(head);
@@ -79,28 +79,41 @@ int main() {
 
     // Prey_print(head);
 
-    Prey_act(head);
-    const int N_STEPS = 5000;
+    // Prey_act(head);
+    // const int N_STEPS = 5000;
 
     // Prey_print_all(head);
 
     // Prey_print(Prey_head(head));
 
-    for (size_t i = 0; i < N_STEPS; i++) {
+    // for (size_t i = 0; i < N_STEPS; i++) {
 
-        // Prey_print_all(head);
-        head = Prey_act_all(head);
-        printf("%5d | Count: %lu\n", i, Prey_count(head));
-        printf("==========================\n");
-        if (!head) break;
+    //     // Prey_print_all(head);
+    //     head = Prey_act_all(head);
+    //     printf("%5d | Count: %lu\n", i, Prey_count(head));
+    //     printf("==========================\n");
+    //     if (!head) break;
 
 
-    }
+    // }
 
     // Prey_print(head);
     // Prey_print_all(head);
 
-    Prey_remove_all(head);
+    // Prey_remove_all(head);
+
+
+    Simulation *sim = Simulation_new(5, 5);
+
+    Simulation_summary(sim);
+
+    Simulation_nsteps(sim, 40);
+
+
+    Simulation_summary(sim);
+
+    // Simulation_print_pred(sim);
+
 
 
 

@@ -11,13 +11,13 @@ typedef enum Direction { UP, RIGHT, DOWN, LEFT} Direction;
 #define PREY_START_ENERGY 100
 #define PREY_D_ENERGY -10
 // #define PREY_P_REPRODUCE 1.0
-#define PREY_P_REPRODUCE 0.11
+#define PREY_P_REPRODUCE 0.20
 #define PREY_P_CHDIR 0.30
 
 #define PRED_START_ENERGY 100
 #define PRED_D_ENERGY -10
 #define PRED_P_REPRODUCE 0.10
-#define PRED_P_MANGER 0.20
+#define PRED_P_MANGER 0.50
 #define PRED_P_CHDIR 0.30
 
 
@@ -429,7 +429,20 @@ Prey *Prey_init(size_t __n) {
 
 }
 
+// Return the first prey found at this location or return null
+Prey *Prey_find_at(const Prey *__head, int __x, int __y) {
 
+    Prey *iprey = __head;
+
+    while (iprey) {
+
+        if (iprey->x == __x && iprey->y ==__y) return iprey;
+        iprey = iprey->next;
+    }
+
+    return NULL; // no prey found at this position
+
+}
 
 
 /**========================================================================
@@ -438,15 +451,19 @@ Prey *Prey_init(size_t __n) {
 
 typedef struct predator_t {
 
+    int x;
+    int y;
+
     double energy;
     double d_energy;
     double p_reproduce;
     double p_manger;
     double p_ch_dir;
     Direction direction;
-    bool has_moved; // True when the predator has moved since the last iteration
+    bool has_acted; // True when the predator has moved since the last iteration
 
     struct predator_t* next;
+    struct predator_t* prev;
 
 } Pred;
 
@@ -455,41 +472,218 @@ Pred *new_Pred() {
 }
 
 // Pred default constructor
-Pred *Pred_new() {
+Pred *Pred_new(int __x, int __y) {
 
     Pred *pred = new_Pred();
+
+    pred->x = __x;
+    pred->y = __y;
+
     pred->energy = PRED_START_ENERGY;
     pred->d_energy = PRED_D_ENERGY;
     pred->p_reproduce = PRED_P_REPRODUCE;
     pred->p_manger = PRED_P_MANGER;
     pred->p_ch_dir = PRED_P_CHDIR;
-    pred->has_moved = false;
-
     pred->direction = unif(0, 3);
+
+    pred->has_acted = true;
+
+    pred->next = NULL;
+    pred->prev = NULL;
 
 }
 
-// // Always return the HEAD of the new list!!!
-Pred *Pred_append(Pred *__head, Pred *__pred) {
+// Append __prey to the end of the doubly-linked list headed by __head
+Pred *Pred_append(const Pred *__head, Pred *__pred) {
 
-    Pred *ihead = __head;
+    // printf("Inside prey_append\n");
 
-    if (!ihead) { // if our initial list is empty, return __pred
+    Pred *iter = __head;
+
+    if (!iter) {
+        // printf("__head is null, aborting\n");
+        __pred->prev = NULL;
         return __pred;
+    } else {
+
+        // iterate to the end of __head
+        while (iter->next) {
+            iter = iter->next;
+        }
+
+        iter->next = __pred;
+
+        if (__pred) {
+            __pred->prev = iter;
+        }
     }
 
-    // iterate until we have found the finale position
-    while (ihead->next) {
-        ihead = ihead->next;
-    }
-
-    ihead->next = __pred; // consequently, if __pred is already a list we can concatenate these two lists fast
     return __head;
 
 }
 
-Pred *Pred_prepend(Pred *__head, Pred *__pred) {
-    return Pred_append(__pred, __head); // This is some genius level shit, right?
+// create a new prey and append it to the list of head, returning the head
+Pred *Pred_append_new(const Pred *__head, int __x, int __y) {
+    return Pred_append(__head, Pred_new(__x, __y));
+}
+
+// What actually happens is we prepend the entire list pointed to by __pred, instead of just a single prey
+// getting prepended
+Pred *Pred_prepend(const Pred *__head, const Pred *__pred) {
+    return Pred_append(__pred, __head);
+}
+
+Pred *Pred_prepend_new(const Pred *__head, int __x, int __y) {
+    return Pred_prepend(__head, Pred_new(__x, __y));
+}
+
+// Insert a SINGLE __prey to the right of __head and return a pointer to the new head
+Pred *Pred_insert_next(Pred *__head, Pred *__pred) {
+
+    if (__head) {
+
+        if (__head->next) {
+
+            __head->next->prev = __pred;
+            __pred->next = __head->next;
+
+            __pred->prev = __head;
+            __head->next = __pred;
+
+        } else {
+
+            __head->next = __pred;
+            __pred->prev = __head;
+
+            __pred->next = NULL;
+
+        }
+
+        return __head;
+
+    } else {
+
+        return __pred;
+
+    }
+}
+
+Pred *Pred_insert_prev(Pred *__head, Pred *__pred) {
+
+    if (__head) {
+
+        if (__head->prev) {
+
+            __head->prev->next = __pred;
+            __pred->prev = __head->prev;
+
+            __pred->next = __head;
+            __head->prev = __pred;
+
+        } else {
+
+            __head->prev = __pred;
+            __pred->next = __head;
+
+            __pred->prev = NULL;
+
+        }
+
+        return __pred;
+
+    } else {
+        return __pred;
+    }
+}
+
+// Remove this prey from the list it lives in and free the memory associated with it
+// Return a pointer to next element of __pred
+Pred *Pred_remove(Pred *__pred) {
+
+    if (!__pred) return NULL; // do nothing if __pred is null
+
+    if (__pred->prev && __pred->next) { // If __pred is not on a boarder
+
+        __pred->prev->next = __pred->next;
+        __pred->next->prev = __pred->prev;
+
+        Pred *temp = __pred->prev;
+
+        __pred->next = NULL;
+        __pred->prev = NULL;
+
+        free(__pred);
+        return temp;
+
+    } else if (__pred->prev && !__pred->next) { // If __pred is the last element
+
+        __pred->prev->next = NULL;
+
+        Pred *temp = __pred->prev;
+
+        __pred->next = NULL;
+        __pred->prev = NULL;
+
+        free(__pred);
+        return temp;
+
+    } else if (!__pred->prev && __pred->next) { // If __pred is the first element
+
+        __pred->next->prev = NULL;
+
+        Pred *temp = __pred->next;
+
+        __pred->next = NULL;
+        __pred->prev = NULL;
+
+        free(__pred);
+        return temp;
+
+    } else { // __pred is the SOLE element
+
+        free(__pred);
+        return NULL;
+
+    }
+}
+
+Pred *Pred_remove_all(Pred *__head) {
+
+    while(__head) {
+        __head = Pred_remove(__head);
+    }
+    return __head;
+}
+
+void Pred_print(const Pred *__pred) {
+    if (__pred) {
+        printf("Pred@%x, .energy: %lf, .x: %d, .y: %d, .prev: %x, .next: %x\n", __pred, __pred->energy, __pred->x, __pred->y, __pred->prev, __pred->next);
+    } else {
+        printf("NULL\n");
+    }
+}
+
+void Pred_print_all(const Pred *__pred) {
+    Pred *iter = __pred;
+    while (iter) {
+        Pred_print(iter);
+        iter = iter->next;
+    }
+}
+
+// get nth prey offset from the head. Can return null
+Pred *Pred_get_nth(const Pred *__head, int __n) {
+
+    if (__n < 0) return NULL;
+
+    Pred *iter = __head;
+    while (iter && __n > 0) {
+        iter = iter->next;
+        __n --;
+    }
+
+    return iter;
+
 }
 
 size_t Pred_count(Pred *__head) {
@@ -504,12 +698,37 @@ size_t Pred_count(Pred *__head) {
     return count;
 }
 
-// Decrease the amount of energy from the __pred and roll to change direction
-void Pred_move(Pred *__pred) {
+void Pred_ch_dir(Pred *__pred) {
 
-    __pred->has_moved = true;
-    __pred->energy -= __pred->d_energy;
+    // We should choose a direction that is not already occupied
+    enum Direction next_dir = unif(0, 3);
 
+    while (next_dir == __pred->direction) { // while the direction guessed hasn't changed at all,
+        next_dir = unif(0, 3);
+    }
+
+    __pred->direction = next_dir;
+
+}
+
+// Make a new Pred
+void Pred_reproduce(Pred *__pred) {
+    Pred_insert_next(__pred, Pred_new(__pred->x, __pred->y)); // create a new prey right next to this one!
+}
+
+
+// Eating the prey
+Prey *Pred_eat(Pred *__pred, Prey *__prey) {
+
+    if (__prey) {
+
+        __pred->energy += __prey->energy;
+        __prey = Prey_remove(__prey);
+        return __prey;
+
+    }
+
+    return NULL;
 }
 
 // Maybe I want The predators decision to eat increase if he has lower energy !
@@ -525,248 +744,213 @@ bool Pred_should_reproduce(const Pred *__pred) {
     return unifd(0, 1) < __pred->p_reproduce;
 }
 
-// Should the predator die if his energy is 0?
-// any animal?
+// Make a single prey move and return the next eligible Pred to act on
+// We might eat the __prey, so pass a double pointer
+Pred *Pred_act(Pred *__pred, Prey **__prey) {
 
+    if (!__pred) return NULL;
 
+    // coordinates are interpreted so that right is positive x direction and up is positive y
+    // Carry out the physical displacement
+    switch (__pred->direction) {
 
+        case UP:
 
-// typedef struct ycoordinate_t {
+            __pred->y ++;
+            break;
 
-//     int y;
-//     struct ycoordinate_t *up;
-//     struct ycoordinate_t *down;
+        case RIGHT:
 
-//     Pred* pred;
-//     Prey* prey;
+            __pred->x ++;
+            break;
 
-// } YCoordinate;
+        case DOWN:
 
+            __pred->y --;
+            break;
 
-// typedef struct xcoordinate_t {
+        case LEFT:
 
-//     int x;
-//     struct xcoordinate_t *right;
-//     struct xcoordinate_t *left;
-//     struct ycoordinate_t *y_coord;
+            __pred->x --;
+            break;
+    }
 
-// } XCoordinate;
+    // Now adjust energy, attempt to change direction, reproduce, die?
 
-// This means that the entire grid is kind of encapsulated in this space
+    __pred->energy += __pred->d_energy;
 
-// allocate space for one coordinate and return the pointer associated to the block of memory
-// XCoordinate *new_XCoord() {return (XCoordinate *) malloc(sizeof(XCoordinate)); }
-// YCoordinate *new_YCoord() {return (YCoordinate *) malloc(sizeof(YCoordinate)); }
+    if (__pred->energy <= 0) {
 
-// XCoordinate *XCoord_new(int __x) {
-//     XCoordinate *coord = new_XCoord();
-//     coord->x = __x;
-//     coord->right = NULL;
-//     coord->left = NULL;
-//     return coord;
-// }
+        // printf("Pred@%x is dying!\n", __pred);
+        __pred = Pred_remove(__pred);
+        // printf("Pred after dying: %x\n", __pred);
+        return __pred;
 
-// YCoordinate *YCoord_new(int __y) {
+    } else {
 
-//     YCoordinate *coord = new_YCoord();
-//     coord->y = __y;
-//     coord->down = NULL;
-//     coord->up = NULL;
-//     coord->prey = NULL;
-//     coord->pred = NULL;
-// }
+        // Check if we should change direction
+        if (Pred_should_ch_dir(__pred)) {
+            // printf("Pred@%x is changing direction !\n", __pred);
+            Pred_ch_dir(__pred);
+        }
 
-// size_t YCoord_count_prey(const YCoordinate *__ycoord) {
+        if (Pred_should_reproduce(__pred)) {
+            // printf("Pred@%x reproduced!\n", __pred);
+            Pred_reproduce(__pred);
+        }
 
-//     size_t count = 0;
-//     Prey *itprey = __ycoord->prey;
-//     while(itprey) {
-//         count ++;
-//         itprey = itprey->next;
-//     }
+        if (Pred_should_eat(__pred)) {
 
-//     return count;
-// }
+            // Pred_print_all(__pred);
+            // printf("Predator at %d, %d having a snack!\n", __pred->x, __pred->y);
+            // Prey_print_all(*__prey);
+            Prey *prey = Prey_find_at(*__prey, __pred->x, __pred->y);
+            if (prey) {
+                // printf("Prey found!!:\n");
+                // Prey_print(prey);
+                (*__prey) = Prey_head(Pred_eat(__pred, prey)); // point (*__prey) at the correct head
+            }
+            // printf("Prey succesfully eaten?\n");
+            // Prey_print_all(*__prey);
 
-// size_t YCoord_count_pred(const YCoordinate *__ycoord) {
+        }
+    }
 
-//     size_t count = 0;
-//     Pred *itpred = __ycoord->pred;
-//     while(itpred) {
-//         count ++;
-//         itpred = itpred->next;
-//     }
+    if (__pred) __pred->has_acted = true;
 
-//     return count;
-// }
+    return __pred;
 
+}
 
-// YCoordinate *YCoord_append(YCoordinate *__head, YCoordinate *__y) {
+// Set the __has_acted attribute of all Pred to false
+void Pred_reset_act(const Pred *__head) {
 
-//     YCoordinate *iy = __head;
+    Pred *iter = __head;
 
-//     if (!iy) { // if our initial list is empty, return __pred
-//         return __y;
-//     }
+    while (iter) {
+        iter->has_acted = false;
+        iter = iter->next;
+    }
+}
 
-//     while (iy->down) {
-//         iy = iy->down;
-//     }
+// Search backwards for the head element and return it
+Pred *Pred_head(const Pred *__pred) {
 
-//     iy->down = __y;
-//     __y->up = iy;
+    Pred *iter = __pred;
 
-//     return __head;
+    if (!iter) return iter;
 
-// }
+    while (iter->prev) {
+        iter = iter->prev;
+    }
 
-// YCoordinate *YCoord_prepend(YCoordinate *__head, YCoordinate *__y) {
-//     return YCoord_append(__y, __head);
-// }
+    return iter;
 
+}
 
-// void YCoord_pred_append(YCoordinate *__ycoord, Pred *__pred) {
-//     __ycoord->pred = Pred_append(__ycoord->pred, __pred);
-// }
+// Return a pointer the the new head (some elements get removed!)
+Pred *Pred_act_all(const Pred *__head, Prey **__prey) {
 
-// void YCoord_pred_prepend(YCoordinate *__ycoord, Pred *__pred) {
-//     __ycoord->pred = Pred_prepend(__ycoord->pred, __pred);
-// }
 
-// void YCoord_prey_append(const YCoordinate *__ycoord, Prey *__prey) {
-//     Prey_append(__ycoord->prey, __prey);
-// }
+    Pred *iter = Pred_head(__head);
+    // printf("Pred_act_all iter: %x\n", iter);
+    Pred *prev = __head;
 
-// void YCoord_prey_prepend(const YCoordinate *__ycoord, Prey *__prey) {
-//     Prey_prepend(__ycoord->prey, __prey);
-// }
+    Pred_reset_act(__head);
+    // printf("Population before step: %lu\n", Pred_count(__head));
 
-// void YCoord_summary(const YCoordinate *__ycoord) {
-//     printf("{@%x .y = %d, pred_count: %ld, prey_count: %ld,  up: %x, down: %x\n", __ycoord, __ycoord->y, YCoord_count_pred(__ycoord), YCoord_count_prey(__ycoord), __ycoord->up, __ycoord->down);
-// }
+    while (iter) {
 
-// void Print_Y(const YCoordinate *__ycoord) {
-//     YCoordinate *iter_y = __ycoord;
-//     while (iter_y) {
-//         YCoord_summary(iter_y);
-//         iter_y = iter_y->down;
-//     }
-// }
+        prev = iter;
 
-// // Set the has_moved attribute to false for every predator at this coordinate
-// void YCoord_reset_pred_move(const YCoordinate *__ycoord) {
+        if (!iter->has_acted) {
 
-//     Pred *it_pred = __ycoord->pred;
+            iter = Pred_act(iter, __prey);
+            // printf("Pred just acted, iter should now be null?\n");
+            // printf("iter: %x\n", iter); // iter is confirmed null
+            if (!iter) return NULL; // If acting leaves us with an empty list, report that back
 
-//     while (it_pred) {
+        } else {
+            iter = iter->next;
+        }
+    }
 
-//         it_pred->has_moved = false;
-//         it_pred = it_pred->next;
-//     }
-// }
+    __head = Pred_head(prev);
+    // printf("Population after step: %lu\n", Pred_count(__head));
 
+    return __head;
+}
 
+// Initialize Pred list of __n prey all at (x, y) = (0, 0)
+Pred *Pred_init(size_t __n) {
 
+    Pred *head = Pred_new(0, 0);
 
-// // Process all of the predator's operations, for a single y coordinate
-// YCoordinate *YCoord_process_pred(const YCoordinate *__ycoord) {
+    for (size_t i = 1; i < __n; i++) {
+        head = Pred_append_new(head, 0, 0);
+    }
 
-//     Pred *it_pred = __ycoord->pred;
+    return head;
 
-//     while (it_pred) {
+}
 
-//         // Move predator
-//         // what does it mean to move a predator?
+// A Simulation just consists of a pointer to a Pred and a pointer to a Prey...
+typedef struct simulation_t {
 
+    Pred *pred;
+    Prey *prey;
 
+} Simulation;
 
+void Simulation_step(Simulation *__sim) {
 
+    __sim->prey = Prey_act_all(__sim->prey);
+    __sim->pred = Pred_act_all(__sim->pred, &(__sim->prey));
 
+}
 
+Simulation *Simulation_new(size_t __npred, size_t __nprey) {
 
+    Simulation *sim = (Simulation *) malloc(sizeof(Simulation));
 
-//         it_pred = it_pred->next;
-//     }
+    sim->pred = Pred_init(__npred);
+    sim->prey = Prey_init(__nprey);
 
+    return sim;
 
+}
 
-// }
+void Simulation_summary(const Simulation *__sim) {
 
+    int pred_count = Pred_count(__sim->pred);
+    int prey_count = Prey_count(__sim->prey);
 
+    printf("Simulation has %d pred and %d prey\n", pred_count, prey_count);
 
+}
 
+void Simulation_nsteps(Simulation *__sim, size_t __n) {
 
+    for (size_t i = 0; i < __n; i++) {
 
+        Simulation_step(__sim);
+    }
+}
 
+void Simulation_nsteps_summary(Simulation *__sim, size_t __n) {
+    for (size_t i = 0; i < __n; i++) {
+        Simulation_summary(__sim);
+        Simulation_step(__sim);
+    }
+}
 
+void Sumulation_print_prey(const Simulation *__sim) {
+    Prey_print_all(__sim->prey);
+}
 
-
-// // The high level idea of "Prey move" is implemented as remove_prey, insert_prey
-// // iterate through every pred and se if they need to eat!
-// void Sim_pred_eat(const XCoordinate *__x0) {
-
-
-
-
-
-// }
-
-
-// void Simulation_step() {
-
-
-
-
-// }
-
-
-
-
-
-
-
-
-
-// void Coordinate_prepend_x(XCoordinate *__xlist, int __x) {
-
-
-
-// }
-
-// // Assume that the x list is sorted
-// void Coordinate_insert_x(XCoordinate **__xlist, int __x) {
-
-//     XCoordinate *xiter = *__xlist;
-
-//     if(!xiter) {
-//         (*__xlist) = XCoord_new(__x); // point the first x coordinate towards this new coord
-//         return;
-//     }
-
-//     while (xiter) {
-
-//         if (xiter->right) { // if we are not at the ned of the coordinates
-
-//             if (xiter->right->x > __x) { // go ahead and insert __xcoord here
-
-
-
-
-//             }
-
-
-
-//         }
-
-//         xiter = xiter->right;
-//     }
-
-
-
-
-// }
-
-// For a y coordinate,
+void Simulation_print_pred(const Simulation *__sim) {
+    Pred_print_all(__sim->pred);
+}
 
 
 #endif
