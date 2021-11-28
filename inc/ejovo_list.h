@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <math.h>
+#include <stdarg.h>
+#include "ejovo_matrix.h"
 
 // header files to declare functions declared in TP6
 typedef struct node_t {
@@ -508,6 +510,12 @@ double Polynome_eval(const Polynome *__p, double __x) {
 
 }
 
+Vector *Polynome_eval_vec(const Polynome *__p, const Vector *__v) {
+
+
+
+}
+
 void Polynome_print(const Polynome *__p) {
 
     int n = 0;
@@ -559,6 +567,19 @@ Polynome *Polynome_sum(const Polynome *__lhs, const Polynome *__rhs) {
     List *rhs = List_clone(__rhs);
     polysum(lhs, rhs);
     return lhs;
+
+}
+
+// Add multiple polymomes together:
+// polysum_var(p1, p2, p3)
+void polysum_var(Polynome *__lhs, ...) {
+
+    va_list args;
+    va_start(args, __lhs);
+
+
+
+
 
 }
 

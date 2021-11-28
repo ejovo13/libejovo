@@ -19,15 +19,17 @@ Matrix *matalloc(size_t __nrows, size_t __ncols) {
     return x;
 }
 
+// low level function to literally just free both pointers
 void matfree(Matrix *__A) {
-    if(!__A->data) free(__A->data); // if data is null, don't call free on it!!!
+    free(__A->data); // if data is null, don't call free on it!!!
     free(__A);
 }
 
 // Free the memory associated with the matrix and then free the pointer itself
 void Matrix_free(Matrix *__A) {
     if (__A) {
-        matfree(__A);
+        if (__A->data) matfree(__A);
+        else free(__A);
     }
 }
 
