@@ -603,7 +603,7 @@ Polynome *Polynome_mult_k(const Polynome *__lhs, double __k) {
 
 }
 
-void polymult_monome(Polynome *__lhs, Node *__monome) {
+void polymult_monome(Polynome *__lhs, const Node *__monome) {
 
     Node *node = __lhs->head;
 

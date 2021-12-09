@@ -431,12 +431,13 @@ Matrix * Matrix_minor(Matrix * __A, size_t __irow, size_t __icol) {
     // Split matrix into 4 corners
     // printf("nrows: %lu, ncols: %lu\n", __A->nrows, __A->ncols);
 
-    Matrix * upper_left = NULL;
-    Matrix * upper_right = NULL;
-    Matrix * lower_left = NULL;
-    Matrix * lower_right = NULL;
-    Matrix * upper_half = NULL;
-    Matrix * lower_half = NULL;
+    Matrix *upper_left = NULL;
+    Matrix *upper_right = NULL;
+    Matrix *lower_left = NULL;
+    Matrix *lower_right = NULL;
+    Matrix *upper_half = NULL;
+    Matrix *lower_half = NULL;
+    Matrix *composite = NULL;
 
     if (__irow == 0) {
 
@@ -453,7 +454,12 @@ Matrix * Matrix_minor(Matrix * __A, size_t __irow, size_t __icol) {
         } else {
             lower_left = Matrix_submat(__A, 1, __A->nrows - 1, 0, __icol - 1);
             lower_right = Matrix_submat(__A, 1, __A->nrows - 1, __icol + 1, __A->ncols - 1);
-            return Matrix_ccat(lower_left, lower_right);
+            composite = Matrix_ccat(lower_left, lower_right);
+
+            Matrix_reset(&lower_left);
+            Matrix_reset(&lower_right);
+
+            return composite;
         }
 
     } else if (__irow == __A->nrows - 1) {
@@ -472,7 +478,12 @@ Matrix * Matrix_minor(Matrix * __A, size_t __irow, size_t __icol) {
         } else {
             upper_left= Matrix_submat(__A, 0, __A->nrows - 2, 0, __icol - 1);
             upper_right = Matrix_submat(__A, 0, __A->nrows - 2, __icol + 1, __A->ncols - 1);
-            return Matrix_ccat(upper_left, upper_right);
+            composite = Matrix_ccat(upper_left, upper_right);
+
+            Matrix_reset(&upper_left);
+            Matrix_reset(&upper_right);
+
+            return composite;
         }
 
     } else {
@@ -482,13 +493,24 @@ Matrix * Matrix_minor(Matrix * __A, size_t __irow, size_t __icol) {
             // printf("Using upper right and lower right sections!\n");
             upper_right = Matrix_submat(__A, 0, __irow-1, 1, __A->ncols - 1);
             lower_right = Matrix_submat(__A, __irow + 1, __A->nrows - 1, 1, __A->ncols - 1);
-            return Matrix_rcat(upper_right, lower_right);
+            composite = Matrix_rcat(upper_right, lower_right);
+
+            Matrix_reset(&upper_right);
+            Matrix_reset(&lower_right);
+
+            return composite;
+
         } else if (__icol == __A->ncols - 1) {
             // use the upper left and lower left sections!
             // printf("using upper_left and lower_left\n");
             upper_left = Matrix_submat(__A, 0, __irow-1, 0, __A->ncols - 2);
             lower_left = Matrix_submat(__A, __irow + 1, __A->nrows - 1, 0, __A->ncols - 2);
-            return Matrix_rcat(upper_left, lower_left);
+            composite = Matrix_rcat(upper_left, lower_left);
+
+            Matrix_reset(&upper_left);
+            Matrix_reset(&lower_left);
+
+            return composite;
         } else {
             // use all 4 sections!!!
 
@@ -500,8 +522,16 @@ Matrix * Matrix_minor(Matrix * __A, size_t __irow, size_t __icol) {
             upper_half = Matrix_ccat(upper_left, upper_right);
             lower_half = Matrix_ccat(lower_left, lower_right);
 
-            return Matrix_rcat(upper_half, lower_half);
+            composite = Matrix_rcat(upper_half, lower_half);
 
+            Matrix_reset(&upper_left);
+            Matrix_reset(&upper_right);
+            Matrix_reset(&lower_left);
+            Matrix_reset(&lower_right);
+            Matrix_reset(&upper_half);
+            Matrix_reset(&lower_half);
+
+            return composite;
         }
     }
 }
@@ -547,6 +577,7 @@ Matrix * Matrix_rcat(Matrix * __A, Matrix * __B) {
         int status2 = matcpyele(Mcat, __A->nrows, __A->nrows + __B->nrows - 1, 0, __A->ncols - 1, __B);
 
         if (status1 < 0 || status2 < 0) {
+            Matrix_reset(&Mcat);
             return NULL;
         } else {
             return Mcat;
@@ -565,6 +596,7 @@ Matrix * Matrix_ccat(Matrix * __A, Matrix * __B) {
         int status2 = matcpyele(Mcat, 0, __A->nrows - 1, __A->ncols, __A->ncols + __B->ncols - 1, __B);
 
         if (status1 < 0 || status2 < 0) {
+            Matrix_reset(&Mcat);
             return NULL;
         } else {
             return Mcat;

@@ -4,7 +4,7 @@
  *!                                        Unary Matrix Operators
  *================================================================================================**/
 
-Matrix * Matrix_pow(Matrix * __A, size_t __power) {
+Matrix *Matrix_pow(Matrix * __A, size_t __power) {
 
     assert(Matrix_is_square(__A));
     if ( __power == 0 ) {
@@ -15,10 +15,10 @@ Matrix * Matrix_pow(Matrix * __A, size_t __power) {
         return Matrix_clone(__A);
     }
 
-    Matrix * m = Matrix_clone(__A);
+    Matrix *m = Matrix_clone(__A);
 
     for (size_t i = 2; i <= __power; i++) {
-        m = Matrix_multiply(__A, m);
+        Matrix_catch(&m, Matrix_multiply(__A, m));
     }
 
     return m;
@@ -27,11 +27,12 @@ Matrix * Matrix_pow(Matrix * __A, size_t __power) {
 
 
 // recursive algorithm to compute the determinant of a matrix
-double Matrix_det(Matrix * __A) {
+double Matrix_det(const Matrix * __A) {
 
     assert(Matrix_is_square(__A));
 
     double local_det = 0;
+    Matrix *minor = NULL;
 
     if (__A->ncols == 1 && __A->nrows == 1) {
         return matat(__A, 0, 0);
@@ -39,10 +40,14 @@ double Matrix_det(Matrix * __A) {
 
         size_t i = 0;
         for (size_t j = 0; j < __A->ncols; j++) {
-            double cofactor = pow(-1.0, j)*Matrix_det(Matrix_minor(__A, i, j));
+            Matrix_catch(&minor, Matrix_minor(__A, i, j));
+            double cofactor = pow(-1.0, j)*Matrix_det(minor);
             // printf("Cofactor: %lf, i: %lu, j: %lu\n", cofactor, i, j);
             local_det += cofactor * matat(__A, i, j);
         }
+
+        Matrix_reset(&minor);
+
     }
 
     return local_det;
@@ -240,15 +245,17 @@ Matrix *Matrix_subtract(const Matrix *__A, const Matrix *__B) {
  *================================================================================================**/
 
 // Calculate the norm of a column using ColIter's
-MATRIX_TYPE colnorm(ColIter *__begin, const ColIter *__end) {
+MATRIX_TYPE colnorm(const ColIter *__begin, const ColIter *__end) {
 
+    ColIter *c = ColIter_clone(__begin);
     MATRIX_TYPE sum = 0;
 
     do {
-        sum += ColIter_value(__begin) * ColIter_value(__begin);
-        ColIter_next(__begin);
-    } while(!ColIter_cmp(__begin, __end));
+        sum += ColIter_value(c) * ColIter_value(c);
+        ColIter_next(c);
+    } while(!ColIter_cmp(c, __end));
 
+    free(c);
     return sqrt(sum);
 
 }
@@ -256,15 +263,24 @@ MATRIX_TYPE colnorm(ColIter *__begin, const ColIter *__end) {
 // Calculate the norm of a specific column
 MATRIX_TYPE Matrix_col_norm(const Matrix *__A, size_t __j) {
 
+    ColIter *begin = NULL;
+    ColIter *end = NULL;
+    double out = 0;
+
     if (__j < __A->ncols) {
-        return colnorm(Matrix_col_begin(__A, __j), Matrix_col_end(__A, __j));
+        begin = Matrix_col_begin(__A, __j);
+        end = Matrix_col_end(__A, __j);
+        out = colnorm(begin, end);
+        free(begin);
+        free(end);
+        return out;
     } else {
         perror("Col requested exceeds bounds");
         return -1;
     }
 }
 
-void matnormcol(ColIter *__begin, const ColIter *__end) {
+void matnormcol(const ColIter *__begin, const ColIter *__end) {
 
     ColIter *c = ColIter_clone(__begin);
     MATRIX_TYPE norm = colnorm(__begin, __end);
@@ -275,19 +291,35 @@ void matnormcol(ColIter *__begin, const ColIter *__end) {
         *(c->ptr) /= norm;
         ColIter_next(c);
     }
+    free(c);
     // *(c->ptr) /= norm;
 }
 
 void matnormcols(Matrix *__A) {
+
+    ColIter *begin = NULL;
+    ColIter *end = NULL;
+
     for (size_t j = 0; j < __A->ncols; j++) {
-        matnormcol(Matrix_col_begin(__A, j), Matrix_col_end(__A, j));
+        begin = Matrix_col_begin(__A, j);
+        end = Matrix_col_end(__A, j);
+        matnormcol(begin, end);
+        free(begin);
+        free(end);
     }
 }
 
 void Matrix_normalize_col(Matrix *__A, size_t __j) {
 
+    ColIter *begin = NULL;
+    ColIter *end = NULL;
+
     if (__j < __A->ncols) {
-        matnormcol(Matrix_col_begin(__A, __j), Matrix_col_end(__A, __j));
+        begin = Matrix_col_begin(__A, __j);
+        end = Matrix_col_end(__A, __j);
+        matnormcol(begin, end);
+        free(begin);
+        free(end);
     } else {
         printf("selected column is out of bounds");
         return;
@@ -366,10 +398,6 @@ LU Matrix_lu(const Matrix *__A) {
  *!                                        General Algorithms
  *================================================================================================**/
 
-
-
-
-
 Matrix *Matrix_solve_lu(const Matrix *__A, const Vector *__b) {
 
     // printf("Entered matrix_solve\n");
@@ -440,6 +468,11 @@ Matrix *Matrix_solve_lu(const Matrix *__A, const Vector *__b) {
         Matrix_set(x, i, 0, y_i / Matrix_at(lu.U, i, i) );
 
     }
+
+    Matrix_reset(&y);
+    Matrix_reset(&b);
+    Matrix_reset(&(lu.L));
+    Matrix_reset(&(lu.U));
 
     return x;
 

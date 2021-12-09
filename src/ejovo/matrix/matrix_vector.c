@@ -27,6 +27,26 @@ size_t Vector_size(const Vector *__v) {
     else return __v->ncols;
 }
 
+void Vector_set(Vector *__v, size_t __pos, MATRIX_TYPE __val) {
+    if (Matrix_is_col(__v)) Matrix_set(__v, __pos, 0, __val); else Matrix_set(__v, 0, __pos, __val);
+}
+
+void Vector_set_first(Vector *__v, MATRIX_TYPE __val) {
+    Vector_set(__v, 0, __val);
+}
+
+void Vector_set_last(Vector *__v, MATRIX_TYPE __val) {
+    Vector_set(__v, Vector_size(__v) - 1, __val);
+}
+
+MATRIX_TYPE Vector_first(const Vector *__v) {
+    return matat(__v, 0, 0);
+}
+
+MATRIX_TYPE Vector_last(const Vector *__v) {
+    return Vector_at(__v, Vector_size(__v) - 1);
+}
+
 /**================================================================================================
  *!                                        Vector iterator functions
  *================================================================================================**/
@@ -48,6 +68,31 @@ MATRIX_TYPE *Vector_access(const Vector *__v, size_t __i) {
     else return matacc(__v, 0, __i);
 }
 
+// More abstract, functional pattern "map"
+// apply a function to the objects of a
+Vector *Vector_map(const Vector *__v, function __fn) {
+    Vector *v_mapped = Matrix_clone(__v);
+    for (int i = 0; i < Vector_size(__v); i++) {
+        Vector_set(v_mapped, i, __fn(Vector_at(__v, i)));
+    }
+    return v_mapped;
+}
+
+MATRIX_TYPE Vector_sum(const Vector *__v) {
+    MATRIX_TYPE sum = 0;
+    for (size_t i = 0; i < Vector_size(__v); i++) {
+        sum += Vector_at(__v, i);
+    }
+    return sum;
+}
+
+void Vector_print_as_row(const Vector *__v) {
+    printf("| ");
+    for (size_t i = 0; i < Vector_size(__v); i++) {
+        printf("%4.4lf ", Vector_at(__v, i));
+    }
+    printf("|\n");
+}
 
 /**================================================================================================
  *!                                        Unary Vector Operators

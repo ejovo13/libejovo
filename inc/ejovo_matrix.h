@@ -102,6 +102,23 @@ Matrix *Matrix_shallow_copy(const Matrix *__rhs);
 
 Matrix *Matrix_take(Matrix *__rhs);
 
+Matrix *Matrix_anon(const Matrix *__anon_rhs);
+
+void Matrix_anon_free();
+
+Matrix *Matrix_catch(Matrix **__lhs_ptr, const Matrix *__anon_rhs);
+
+Vector *Vector_catch(Vector **__lhs_ptr, const Vector *__anon_rhs);
+
+void Vector_set(Vector *__v, size_t __pos, MATRIX_TYPE __val);
+
+void Vector_set_first(Vector *__v, MATRIX_TYPE __val);
+
+void Vector_set_last(Vector *__v, MATRIX_TYPE __val);
+
+Vector *Vector_linspace(MATRIX_TYPE __start, MATRIX_TYPE __end, int __N);
+
+
 /**
  * @brief Create a square diagonal matrix with random entries from 1 to 10
  *
@@ -127,6 +144,8 @@ Matrix *Matrix_tridiagonal(size_t __n);
  * @return a new malloc'ed matrix
  */
 extern Matrix *Matrix_new(int __nrows, int __ncols);
+
+extern void Matrix_reset(Matrix **__A_ptr);
 
 /**
  * Take ownership of the data pointed to by `*__arr_ptr` and nullify it afterwards
@@ -461,7 +480,7 @@ extern Matrix * Matrix_minor(Matrix * __A, size_t __irow, size_t __icol);
  * Recursive algorithm to compute the determinant of a matrix
  *
  */
-extern double Matrix_det(Matrix * __A);
+extern double Matrix_det(const Matrix * __A);
 
 
 extern void mathad(Matrix *__A, const Matrix *__B);
@@ -556,12 +575,12 @@ extern MATRIX_TYPE vecpnorm(const Vector *__u, const int __p);
 extern MATRIX_TYPE vecnorm(const Vector *__A);
 
 // Calculate the norm of a column using ColIter's
-extern MATRIX_TYPE colnorm(ColIter *__begin, const ColIter *__end);
+extern MATRIX_TYPE colnorm(const ColIter *__begin, const ColIter *__end);
 
 // Calculate the norm of a specific column
 extern MATRIX_TYPE Matrix_col_norm(const Matrix *__A, size_t __j);
 
-extern void matnormcol(ColIter *__begin, const ColIter *__end);
+extern void matnormcol(const ColIter *__begin, const ColIter *__end);
 
 extern void matnormcols(Matrix *__A);
 
@@ -1079,6 +1098,21 @@ extern void Matrix_rowop_add_scaled(Matrix *__A, const size_t __r1, const size_t
 ColIter *Vector_col(const Vector *__v);
 
 RowIter *Vector_row(const Vector *__v);
+
+/**========================================================================
+ *!                           matrix_vec.c
+ *========================================================================**/
+typedef MATRIX_TYPE (* function) (MATRIX_TYPE); // declare a function type that can be mapped to items of the matrix
+
+Vector *Vector_map(const Vector *__v, function __fn);
+
+MATRIX_TYPE Vector_sum(const Vector *__v);
+
+void Vector_print_as_row(const Vector *__v);
+
+MATRIX_TYPE Vector_first(const Vector *__v);
+
+MATRIX_TYPE Vector_last(const Vector *__v);
 
 
 

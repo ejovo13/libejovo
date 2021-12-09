@@ -14,6 +14,16 @@ int main() {
 
     printf("Frobenius norm: %lf\n", Matrix_frobenius(m));
 
+    Vector *v = Vector_new(10);
+    Vector_set_first(v, 50);
+    Vector_set_last(v, 8);
+    Matrix_print(v);
+    printf("%ld\n", v->nrows);
+    printf("vector size: %ld\n", Vector_size(v));
+    printf("vector_at_last: %lf\n", Vector_at(v, Vector_size(v) - 1));
+
+    Matrix_print(Vector_linspace(0.0, 2.0, 15));
+
 
     return 0;
 }

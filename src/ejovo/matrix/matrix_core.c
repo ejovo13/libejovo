@@ -3,6 +3,8 @@
 
 #include "ejovo_matrix.h"
 
+static Matrix * g_ANON = NULL;
+
 /**================================================================================================
  *!                                        Memory and Allocation
  *================================================================================================**/
@@ -28,9 +30,18 @@ void matfree(Matrix *__A) {
 // Free the memory associated with the matrix and then free the pointer itself
 void Matrix_free(Matrix *__A) {
     if (__A) {
-        if (__A->data) matfree(__A);
-        else free(__A);
+        if (__A->data) free(__A->data);
+        free(__A);
     }
+}
+
+void Matrix_reset(Matrix **__A_ptr) {
+    if (*__A_ptr) {
+        if ((*__A_ptr)->data) free((*__A_ptr)->data);
+        free (*__A_ptr);
+    }
+
+    *__A_ptr = NULL;
 }
 
 // Copy the bytes
@@ -61,6 +72,41 @@ Matrix * matclone(const Matrix *restrict __src) {
     return clone;
 }
 
+// Catch an unnamed Matrix pointer returned from the right side and store it in the
+// __lhs_ptr. Return the __rhs
+// This Is useful for preventing memory leaks for expressions of the type A = A * B
+Matrix *Matrix_catch(Matrix **__lhs_ptr, const Matrix *__anon_rhs) {
+    if (*__lhs_ptr) {
+        if ((*__lhs_ptr)->data)
+            free((*__lhs_ptr)->data);
+        free (*__lhs_ptr);
+    }
+
+    *__lhs_ptr = __anon_rhs;
+    return __anon_rhs;
+}
+
+// Used to manage memory of anonymous Matrices that are the results of intermediate operations
+// FOr example Matrix_print(Matrix_mult(a, b))
+// will lead to a memory leak.
+// Instead, wrap the previous call with
+// Matrix_print(Matrix_anon(Matrix_mult(a, b)));
+// and finall, at the end of the program / scope call
+// Matrix_anon_free
+Matrix *Matrix_anon(const Matrix *__anon_rhs) {
+    if (g_ANON) {
+        if (g_ANON->data) free(g_ANON->data);
+        free (g_ANON);
+    }
+
+    g_ANON = __anon_rhs;
+    return __anon_rhs;
+}
+
+void Matrix_anon_free() {
+    Matrix_anon(NULL);
+}
+
 /**================================================================================================
  *!                                        Assignment Operator
  *================================================================================================**/
@@ -79,6 +125,7 @@ Matrix *Matrix_shallow_copy(const Matrix *__rhs) {
 
 }
 
+// This function has a FATAL FLAW since it does not deallocate the matrix that is potentially being stored in the left hand side!!
 Matrix *Matrix_take(Matrix *__rhs) {
 
     Matrix *__lhs = (Matrix *) malloc(sizeof(Matrix));
@@ -199,6 +246,22 @@ Matrix * Matrix_ij(size_t __nrows, size_t __ncols) {
     return m;
 
 }
+
+Vector *Vector_linspace(MATRIX_TYPE __start, MATRIX_TYPE __end, int __N) {
+
+    MATRIX_TYPE difference = (__end - __start) / (__N - 1.0);
+    Vector *v = Vector_new(__N);
+    Vector_set_first(v, __start);
+    Vector_set_last(v, __end);
+
+    for (int i = 1; i < __N - 1; i++) {
+        Vector_set(v, i, __start + difference * i);
+    }
+
+    return v;
+}
+
+
 
 /**
  * @brief Create a square diagonal matrix with random entries from 1 to 10
