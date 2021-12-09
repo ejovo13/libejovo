@@ -20,7 +20,21 @@ add_compile_options(
     # -Werror
     # -Wimplicit
     # -Wno-incompatible-pointer-types-discards-qualifiers
+    # -fprofile-arcs
+    # -ftest-coverage
+    # --coverage
+    # -g
+    # -pg
 
+)
+
+add_link_options(
+    # -fprofile-arcs
+    # -ftest-coverage
+    # --coverage
+    # -g
+    # -pg
+    # -lgcov
 )
 
 file(MAKE_DIRECTORY ${BIN})
