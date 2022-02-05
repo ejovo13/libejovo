@@ -788,7 +788,6 @@ MATRIX_TYPE Iter_dot(const MatIter *__r, const MatIter *__rend, const MatIter *_
 
 
 
-
 /**=======================================================================================================================
  *!                                           Matrix Interface to Iter functions
  *=======================================================================================================================**/
@@ -847,6 +846,16 @@ MATRIX_TYPE Matrix_row_max(const Matrix *__A, const size_t __i) {
     return MatIter_max(matrowbegin(__A, __i), matrowend(__A, __i));
 }
 
+MATRIX_TYPE Matrix_col_min(const Matrix *__A, const size_t __j) {
+    return MatIter_min(matrowbegin(__A, __j), matrowend(__A, __j));
+}
+
+MATRIX_TYPE Matrix_col_max(const Matrix *__A, const size_t __j) {
+    return MatIter_max(matcolbegin(__A, __j), matcolend(__A, __j));
+}
+
+
+
 MatIter *matcolpos(const Matrix *__A, size_t __i, size_t __j) {
     return MatIter_new(matacc(__A, __i, __j), __A->ncols);
 }
@@ -872,6 +881,14 @@ MatIter *Matrix_col_begin(const Matrix *__A, size_t __j) {
         perror("Matrix does not have that many columns");
         return NULL;
     }
+}
+
+MatIter *matcolbegin(const Matrix *__A, size_t __i) {
+    return matcolpos(__A, __i, 0);
+}
+
+MatIter *matcolend(const Matrix *__A, size_t __i) {
+    return matcolpos(__A, __i, __A->ncols);
 }
 
 MatIter *matrowpos(const Matrix *__A, size_t __i, size_t __j) {
@@ -959,6 +976,73 @@ size_t MatIter_length(const MatIter *begin, const MatIter *end) {
     return diff / begin->ptr_diff;
 }
 
+/**========================================================================
+ *!                           Functional Iter functions
+ *========================================================================**/
+MATRIX_TYPE MatIter_sum(const MatIter *__begin, const MatIter *__end) {
+
+    MATRIX_TYPE sum = 0;
+    MatIter *iter = __begin;
+
+    while (!MatIter_cmp(iter, __end)) {
+        sum += MatIter_value(iter);
+        MatIter_next(iter);
+    }
+
+    return sum;
+}
+
+MATRIX_TYPE MatIter_prod(const MatIter *__begin, const MatIter *__end) {
+
+    MATRIX_TYPE prod = 0;
+    MatIter *iter = __begin;
+
+    while (!MatIter_cmp(iter, __end)) {
+        prod *= MatIter_value(iter);
+        MatIter_next(iter);
+    }
+
+    return prod;
+}
+
+// Get the maximum value in a row
+MATRIX_TYPE MatIter_max(MatIter *__a, const MatIter *__b) {
+
+    MATRIX_TYPE max = MatIter_value(__a);
+    MatIter_next(__a);
+
+    // This is the MatIter idiom to traverse a row
+    while (!MatIter_cmp(__a, __b)) {
+
+        if (MatIter_value(__a) > max)
+            max = MatIter_value(__a);
+
+        MatIter_next(__a);
+    }
+
+    return max;
+
+}
+
+// Get the maximum value in a row
+MATRIX_TYPE MatIter_min(MatIter *__a, const MatIter *__b) {
+
+    MATRIX_TYPE min = MatIter_value(__a);
+    MatIter_next(__a);
+
+    // This is the MatIter idiom to traverse a row
+    while (!MatIter_cmp(__a, __b)) {
+
+        if (MatIter_value(__a) < min)
+            min = MatIter_value(__a);
+
+        MatIter_next(__a);
+    }
+
+    return min;
+
+}
+
 /**================================================================================================
  *!                                        MatIter basic utility routines - SINGLE
  *================================================================================================**/
@@ -1027,43 +1111,7 @@ void MatIter_div_iter(MatIter *__a, const MatIter *__b) {
     *(__a->ptr) /= *(__b->ptr);
 }
 
-// Get the maximum value in a row
-MATRIX_TYPE MatIter_max(MatIter *__a, const MatIter *__b) {
 
-    MATRIX_TYPE max = MatIter_value(__a);
-    MatIter_next(__a);
-
-    // This is the MatIter idiom to traverse a row
-    while (!MatIter_cmp(__a, __b)) {
-
-        if (MatIter_value(__a) > max)
-            max = MatIter_value(__a);
-
-        MatIter_next(__a);
-    }
-
-    return max;
-
-}
-
-// Get the maximum value in a row
-MATRIX_TYPE MatIter_min(MatIter *__a, const MatIter *__b) {
-
-    MATRIX_TYPE min = MatIter_value(__a);
-    MatIter_next(__a);
-
-    // This is the MatIter idiom to traverse a row
-    while (!MatIter_cmp(__a, __b)) {
-
-        if (MatIter_value(__a) < min)
-            min = MatIter_value(__a);
-
-        MatIter_next(__a);
-    }
-
-    return min;
-
-}
 
 
 

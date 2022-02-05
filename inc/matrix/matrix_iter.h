@@ -322,7 +322,6 @@ MATRIX_TYPE Iter_dot(const MatIter *__r, const MatIter *__rend, const MatIter *_
 
 
 
-
 /**=======================================================================================================================
  *!                                           Matrix Interface to Iter functions
  *=======================================================================================================================**/
@@ -347,6 +346,12 @@ MATRIX_TYPE Matrix_row_min(const Matrix *__A, const size_t __i);
 
 MATRIX_TYPE Matrix_row_max(const Matrix *__A, const size_t __i);
 
+MATRIX_TYPE Matrix_col_min(const Matrix *__A, const size_t __j);
+
+MATRIX_TYPE Matrix_col_max(const Matrix *__A, const size_t __j);
+
+
+
 MatIter *matcolpos(const Matrix *__A, size_t __i, size_t __j);
 
 
@@ -354,6 +359,10 @@ MatIter *matcolpos(const Matrix *__A, size_t __i, size_t __j);
 MatIter *Matrix_col_end(const Matrix *__A, size_t __j);
 
 MatIter *Matrix_col_begin(const Matrix *__A, size_t __j);
+
+MatIter *matcolbegin(const Matrix *__A, size_t __i);
+
+MatIter *matcolend(const Matrix *__A, size_t __i);
 
 MatIter *matrowpos(const Matrix *__A, size_t __i, size_t __j);
 
@@ -387,6 +396,19 @@ MATRIX_TYPE MatIter_value(const MatIter *__c);
 
 // Return the number of iteration between begin and end
 size_t MatIter_length(const MatIter *begin, const MatIter *end);
+
+/**========================================================================
+ *!                           Functional Iter functions
+ *========================================================================**/
+MATRIX_TYPE MatIter_sum(const MatIter *__begin, const MatIter *__end);
+
+MATRIX_TYPE MatIter_prod(const MatIter *__begin, const MatIter *__end);
+
+// Get the maximum value in a row
+MATRIX_TYPE MatIter_max(MatIter *__a, const MatIter *__b);
+
+// Get the maximum value in a row
+MATRIX_TYPE MatIter_min(MatIter *__a, const MatIter *__b);
 
 /**================================================================================================
  *!                                        MatIter basic utility routines - SINGLE
@@ -424,11 +446,7 @@ void MatIter_mult_iter(MatIter *__a, const MatIter *__b);
 
 void MatIter_div_iter(MatIter *__a, const MatIter *__b);
 
-// Get the maximum value in a row
-MATRIX_TYPE MatIter_max(MatIter *__a, const MatIter *__b);
 
-// Get the maximum value in a row
-MATRIX_TYPE MatIter_min(MatIter *__a, const MatIter *__b);
 
 
 
