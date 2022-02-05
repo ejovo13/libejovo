@@ -7,763 +7,71 @@
 //! should be passing copies of the colIter and NOT a pointer
 //! I don't really want to modify/ consume the iterator...
 
-// /**================================================================================================
-//  *!                                        Column Iterators
-//  *================================================================================================**/
-// ColIter *ColIter_new(MATRIX_TYPE *__ptr, size_t __ncols) {
+/**================================================================================================
+ *!                                        Special Types of Iterators
+ *================================================================================================**/
+// Should have row, col, diagonal iterators. There are even some special iterators like "checkerboards"
+// that can hit every other element.
 
-//     ColIter *c = (ColIter *) malloc(sizeof(ColIter));
+MatIter *matdiagbegin(const Matrix *__m, const int __d) {
+    if (__d == 0) {
+        return MatIter_new(matacc(__m, 0, 0), __m->ncols + 1);
+    } else if (__d > 0) {
+        return MatIter_new(matacc(__m, 0, __d), __m->ncols + 1);
+    } else {
+        return MatIter_new(matacc(__m, -__d, 0), __m->ncols + 1);
+    }
+}
 
-//     if (c) {
-//         c->ptr = __ptr;
-//         c->ncols = __ncols;
-//     }
-//     return c;
-// }
-
-// ColIter *ColIter_clone(const ColIter *__c) {
-//     return ColIter_new(__c->ptr, __c->ncols);
-// }
-
-// void ColIter_free(ColIter *__c) {
-
-//     if (__c) {
-
-//         if (__c->ptr) {
-//             free(__c->ptr);
-//         }
-//         free(__c);
-//     }
-// }
-
-// void ColIter_next(ColIter *__c) {
-//     __c->ptr += __c->ncols;
-// }
-
-// // Return true if the __lhs and __rhs point to the same element
-// bool ColIter_cmp(const ColIter *__lhs, const ColIter *__rhs) {
-//     return __lhs->ptr == __rhs->ptr;
-// }
-
-// // ColIter *matcolpos(const Matrix *__A, size_t __i, size_t __j) {
-// //     return ColIter_new(matacc(__A, __i, __j), __A->ncols);
-// // }
-
-
-// // // return a new Column Iterator that points to the final element in this column
-// // ColIter *Matrix_col_end(const Matrix *__A, size_t __j) {
-
-// //     if (__j < __A->ncols) {
-// //         return matcolpos(__A, __A->nrows, __j);
-// //     } else {
-// //         perror("Matrix does not have that many columns");
-// //         return NULL;
-// //     }
-
-// // }
-
-// // ColIter *Matrix_col_begin(const Matrix *__A, size_t __j) {
-
-// //     if (__j < __A->ncols) {
-// //         return matcolpos(__A, 0, __j);
-// //     } else {
-// //         perror("Matrix does not have that many columns");
-// //         return NULL;
-// //     }
-// // }
-
-// MATRIX_TYPE ColIter_value(const ColIter *__c) {
-//     return *(__c->ptr);
-// }
-
-// /**================================================================================================
-//  *!                                        ColIter basic utility routines - SINGLE
-//  *================================================================================================**/
-
-// /**======================
-//  *!    Scalar operations
-//  *========================**/
-// void ColIter_set(ColIter *__c, const MATRIX_TYPE __k) {
-//     *(__c->ptr) = __k;
-// }
-
-// void ColIter_add_k(ColIter *__c, const MATRIX_TYPE __k) {
-//     *(__c->ptr) += __k;
-// }
-
-// void ColIter_sub_k(ColIter *__c, const MATRIX_TYPE __k) {
-//     *(__c->ptr) -= __k;
-// }
-
-// void ColIter_mult_k(ColIter *__c, const MATRIX_TYPE __k) {
-//     *(__c->ptr) *= __k;
-// }
-
-// void ColIter_div_k(ColIter *__c, const MATRIX_TYPE __k) {
-//     *(__c->ptr) /= __k;
-// }
-
-// /**======================
-//  *!    Pointer operations
-//  *========================**/
-// void ColIter_set_ptr(ColIter *__c, const MATRIX_TYPE *__ptr) {
-//     *(__c->ptr) = *__ptr;
-// }
-
-// void ColIter_add_ptr(ColIter *__c, const MATRIX_TYPE *__ptr) {
-//     *(__c->ptr) += *__ptr;
-// }
-
-// void ColIter_sub_ptr(ColIter *__c, const MATRIX_TYPE *__ptr) {
-//     *(__c->ptr) -= *__ptr;
-// }
-
-// void ColIter_mult_ptr(ColIter *__c, const MATRIX_TYPE *__ptr) {
-//     *(__c->ptr) *= *__ptr;
-// }
-
-// void ColIter_div_ptr(ColIter *__c, const MATRIX_TYPE *__ptr) {
-//     *(__c->ptr) /= *__ptr;
-// }
-
-// /**======================
-//  *!    Iterator functions
-//  *========================**/
-// void ColIter_set_iter(ColIter *__a, const ColIter *__b) {
-//     *(__a->ptr) = *(__b->ptr);
-// }
-
-// void ColIter_add_iter(ColIter *__a, const ColIter *__b) {
-//     *(__a->ptr) += *(__b->ptr);
-// }
-
-// void ColIter_sub_iter(ColIter *__a, const ColIter *__b) {
-//     *(__a->ptr) -= *(__b->ptr);
-// }
-
-// void ColIter_mult_iter(ColIter *__a, const ColIter *__b) {
-//     *(__a->ptr) *= *(__b->ptr);
-// }
-
-// void ColIter_div_iter(ColIter *__a, const ColIter *__b) {
-//     *(__a->ptr) /= *(__b->ptr);
-// }
-
-// /**================================================================================================
-//  *!                                        ColIter basic utility routines - COLUMN
-//  *================================================================================================**/
-
-// // Set the elements of a row when given a row iterator and a value k
-// void ColIter_col_set_k(ColIter *__cbegin, const ColIter *__cend, const MATRIX_TYPE __k) {
-
-//     ColIter *cbegin = ColIter_clone(__cbegin);
-
-//     while (! ColIter_cmp(cbegin, __cend)) {
-//         ColIter_set(cbegin, __k);
-//         ColIter_next(cbegin);
-//     }
-// }
-
-// void ColIter_col_add_k(ColIter *__cbegin, const ColIter *__cend, const MATRIX_TYPE __k) {
-
-//     ColIter *cbegin = ColIter_clone(__cbegin);
-
-//     while (! ColIter_cmp(cbegin, __cend)) {
-//         ColIter_add_k(cbegin, __k);
-//         ColIter_next(cbegin);
-//     }
-// }
-
-// void ColIter_col_sub_k(ColIter *__cbegin, const ColIter *__cend, const MATRIX_TYPE __k) {
-
-//     ColIter *cbegin = ColIter_clone(__cbegin);
-
-//     while (! ColIter_cmp(cbegin, __cend)) {
-//         ColIter_sub_k(cbegin, __k);
-//         ColIter_next(cbegin);
-//     }
-// }
-
-// void ColIter_col_mult_k(ColIter *__cbegin, const ColIter *__cend, const MATRIX_TYPE __k) {
-
-//     ColIter *cbegin = ColIter_clone(__cbegin);
-
-//     while (! ColIter_cmp(cbegin, __cend)) {
-//         ColIter_mult_k(cbegin, __k);
-//         ColIter_next(cbegin);
-//     }
-// }
-
-// void ColIter_col_div_k(ColIter *__cbegin, const ColIter *__cend, const MATRIX_TYPE __k) {
-
-//     ColIter *cbegin = ColIter_clone(__cbegin);
-
-//     while (! ColIter_cmp(cbegin, __cend)) {
-//         ColIter_div_k(cbegin, __k);
-//         ColIter_next(cbegin);
-//     }
-// }
-
-// // Add to row __a the elements of row __b
-// void ColIter_col_add_col(ColIter *__abegin, const ColIter *__aend, ColIter *__bbegin) {
-
-//     ColIter *abegin = ColIter_clone(__abegin);
-//     ColIter *bbegin = ColIter_clone(__bbegin);
-
-//     while (! ColIter_cmp(abegin, __aend)) {
-//         ColIter_add_iter(abegin, __bbegin);
-//         ColIter_next(abegin);
-//         ColIter_next(bbegin);
-//     }
-// }
-
-// /**================================================================================================
-//  *!                                        Experimental APPLY functions
-//  *================================================================================================**/
-
-// // Appy functions are a way to iterate a ColIter until we reach the "end" point
-
-// void ColIter_apply(ColIter *__cbegin, const ColIter *__cend, ColIterFn __fn) {
-
-//     ColIter *cbegin = ColIter_clone(__cbegin);
-
-//     while (! ColIter_cmp(cbegin, __cend)) {
-//         __fn(cbegin);
-//         ColIter_next(cbegin);
-//     }
-// }
-
-// void ColIter_apply_k(ColIter *__cbegin, const ColIter *__cend, const MATRIX_TYPE __k, ColIterFn_k __fn_k) {
-
-//     ColIter *cbegin = ColIter_clone(__cbegin);
-
-//     while (! ColIter_cmp(cbegin, __cend)) {
-//         __fn_k(cbegin, __k);
-//         ColIter_next(cbegin);
-//     }
-// }
-
-// void ColIter_apply_ptr(ColIter *__cbegin, const ColIter *__cend, const MATRIX_TYPE *__ptr, ColIterFn_ptr __fn_ptr) {
-
-//     ColIter *cbegin = ColIter_clone(__cbegin);
-
-//     while (! ColIter_cmp(cbegin, __cend)) {
-//         __fn_ptr(cbegin, __ptr);
-//         ColIter_next(cbegin);
-//     }
-// }
-
-// void ColIter_apply_iter(ColIter *__abegin, const ColIter *__aend, ColIter *__bbegin, ColIterFn_iter __fn_iter) {
-
-//     ColIter *abegin = ColIter_clone(__abegin);
-//     ColIter *bbegin = ColIter_clone(__bbegin);
-
-//     while (! ColIter_cmp(abegin, __aend)) {
-//         __fn_iter(abegin, bbegin);
-//         ColIter_next(abegin);
-//         ColIter_next(bbegin);
-//     }
-// }
-
-// /**================================================================================================
-//  *!                                        Col manipulations using apply functions
-//  *================================================================================================**/
-
-// /**======================
-//  *!    Scalar operations
-//  *========================**/
-// void ColIter_apply_set_k(ColIter *__cbegin, const ColIter *__cend, const MATRIX_TYPE __k) {
-//     ColIter_apply_k(__cbegin, __cend, __k, ColIter_set);
-// }
-
-// void ColIter_apply_add_k(ColIter *__cbegin, const ColIter *__cend, const MATRIX_TYPE __k) {
-//     ColIter_apply_k(__cbegin, __cend, __k, ColIter_add_k);
-// }
-
-// void ColIter_apply_sub_k(ColIter *__cbegin, const ColIter *__cend, const MATRIX_TYPE __k) {
-//     ColIter_apply_k(__cbegin, __cend, __k, ColIter_sub_k);
-// }
-
-// void ColIter_apply_mult_k(ColIter *__cbegin, const ColIter *__cend, const MATRIX_TYPE __k) {
-//     ColIter_apply_k(__cbegin, __cend, __k, ColIter_mult_k);
-// }
-
-// void ColIter_apply_div_k(ColIter *__cbegin, const ColIter *__cend, const MATRIX_TYPE __k) {
-//     ColIter_apply_k(__cbegin, __cend, __k, ColIter_div_k);
-// }
-
-// /**======================
-//  *!    Pointer operations
-//  *========================**/
-
-// void ColIter_apply_set_ptr(ColIter *__cbegin, const ColIter *__cend, const MATRIX_TYPE *__ptr) {
-//     ColIter_apply_ptr(__cbegin, __cend, __ptr, ColIter_set_ptr);
-// }
-
-// void ColIter_apply_add_ptr(ColIter *__cbegin, const ColIter *__cend, const MATRIX_TYPE *__ptr) {
-//     ColIter_apply_ptr(__cbegin, __cend, __ptr, ColIter_add_ptr);
-// }
-
-// void ColIter_apply_sub_ptr(ColIter *__cbegin, const ColIter *__cend, const MATRIX_TYPE *__ptr) {
-//     ColIter_apply_ptr(__cbegin, __cend, __ptr, ColIter_sub_ptr);
-// }
-
-// void ColIter_apply_mult_ptr(ColIter *__cbegin, const ColIter *__cend, const MATRIX_TYPE *__ptr) {
-//     ColIter_apply_ptr(__cbegin, __cend, __ptr, ColIter_mult_ptr);
-// }
-
-// void ColIter_apply_div_ptr(ColIter *__cbegin, const ColIter *__cend, const MATRIX_TYPE *__ptr) {
-//     ColIter_apply_ptr(__cbegin, __cend, __ptr, ColIter_div_ptr);
-// }
-
-// /**======================
-//  *!    Iterator operations
-//  *========================**/
-
-// void ColIter_apply_set_iter(ColIter *__abegin, const ColIter *__aend, ColIter *__bbegin) {
-//     ColIter_apply_iter(__abegin, __aend, __bbegin, ColIter_set_iter);
-// }
-
-// void ColIter_apply_add_iter(ColIter *__abegin, const ColIter *__aend, ColIter *__bbegin) {
-//     ColIter_apply_iter(__abegin, __aend, __bbegin, ColIter_add_iter);
-// }
-
-// void ColIter_apply_sub_iter(ColIter *__abegin, const ColIter *__aend, ColIter *__bbegin) {
-//     ColIter_apply_iter(__abegin, __aend, __bbegin, ColIter_sub_iter);
-// }
-
-// void ColIter_apply_mult_iter(ColIter *__abegin, const ColIter *__aend, ColIter *__bbegin) {
-//     ColIter_apply_iter(__abegin, __aend, __bbegin, ColIter_mult_iter);
-// }
-
-// void ColIter_apply_div_iter(ColIter *__abegin, const ColIter *__aend, ColIter *__bbegin) {
-//     ColIter_apply_iter(__abegin, __aend, __bbegin, ColIter_div_iter);
-// }
-
-// /**================================================================================================
-//  *!                                        Row Iterators
-//  *================================================================================================**/
-// RowIter *RowIter_new(MATRIX_TYPE *__ptr, size_t __ptr_diff) {
-
-//     RowIter *c = (RowIter *) malloc(sizeof(RowIter));
-
-//     if (c) {
-//         c->ptr = __ptr;
-//         c->ptr_diff = __ptr_diff;
-//     }
-//     return c;
-// }
-
-// RowIter *RowIter_clone(const RowIter *__c) {
-//     return RowIter_new(__c->ptr, __c->ptr_diff);
-// }
-
-// //! This function should actually never be called
-// void RowIter_free(RowIter *__c) {
-
-//     if (__c) {
-
-//         if (__c->ptr) {
-//             free(__c->ptr);
-//         }
-//         free(__c);
-//     }
-// }
-
-// // Increment the row iter
-// void RowIter_next(RowIter *__c) {
-//     __c->ptr += __c->ptr_diff;
-// }
-
-// // Return true if the __lhs and __rhs point to the same element
-// bool RowIter_cmp(const RowIter *__lhs, const RowIter *__rhs) {
-//     return __lhs->ptr == __rhs->ptr;
-// }
-
-// // RowIter *matrowpos(const Matrix *__A, size_t __i, size_t __j) {
-// //     return RowIter_new(matacc(__A, __i, __j), 1); // In row-major order, rows are next to each other
-// // }
-
-// // // get row iterator without checking bounds
-// // RowIter *matrowbegin(const Matrix *__A, size_t __i) {
-// //     return matrowpos(__A, __i, 0);
-// // }
-
-// // RowIter *matrowend(const Matrix *__A, size_t __i) {
-// //     return matrowpos(__A, __i, __A->ncols);
-// // }
-
-// // // return a new Column Iterator that points to the final element in this column
-// // RowIter *Matrix_row_end(const Matrix *__A, size_t __i) {
-
-// //     if (__i < __A->ncols) {
-// //         return matrowpos(__A, __i, __A->ncols);
-// //     } else {
-// //         perror("Matrix does not have that many columns");
-// //         return NULL;
-// //     }
-
-// // }
-
-// // RowIter *Matrix_row_begin(const Matrix *__A, size_t __i) {
-
-// //     if (__i < __A->ncols) {
-// //         return matrowpos(__A, __i, 0);
-// //     } else {
-// //         perror("Matrix does not have that many rows");
-// //         return NULL;
-// //     }
-// // }
-
-// MATRIX_TYPE RowIter_value(const RowIter *__c) {
-//     return *(__c->ptr);
-// }
-
-// /**================================================================================================
-//  *!                                        RowIter basic utility routines - SINGLE
-//  *================================================================================================**/
-
-// void RowIter_set(RowIter *__r, const MATRIX_TYPE __k) {
-//     *(__r->ptr) = __k;
-// }
-
-// void RowIter_add_k(RowIter *__r, const MATRIX_TYPE __k) {
-//     *(__r->ptr) += __k;
-// }
-
-// void RowIter_sub_k(RowIter *__r, const MATRIX_TYPE __k) {
-//     *(__r->ptr) -= __k;
-// }
-
-// void RowIter_mult_k(RowIter *__r, const MATRIX_TYPE __k) {
-//     *(__r->ptr) *= __k;
-// }
-
-// void RowIter_div_k(RowIter *__r, const MATRIX_TYPE __k) {
-//     *(__r->ptr) /= __k;
-// }
-
-// void RowIter_set_ptr(RowIter *__r, const MATRIX_TYPE *__ptr) {
-//     *(__r->ptr) = *__ptr;
-// }
-
-// void RowIter_add_ptr(RowIter *__r, const MATRIX_TYPE *__ptr) {
-//     *(__r->ptr) += *__ptr;
-// }
-
-// void RowIter_sub_ptr(RowIter *__r, const MATRIX_TYPE *__ptr) {
-//     *(__r->ptr) -= *__ptr;
-// }
-
-// void RowIter_mult_ptr(RowIter *__r, const MATRIX_TYPE *__ptr) {
-//     *(__r->ptr) *= *__ptr;
-// }
-
-// void RowIter_div_ptr(RowIter *__r, const MATRIX_TYPE *__ptr) {
-//     *(__r->ptr) /= *__ptr;
-// }
-
-// void RowIter_set_iter(RowIter *__a, const RowIter *__b) {
-//     *(__a->ptr) = *(__b->ptr);
-// }
-
-// void RowIter_add_iter(RowIter *__a, const RowIter *__b) {
-//     *(__a->ptr) += *(__b->ptr);
-// }
-
-// void RowIter_add_iter_scaled(RowIter *__a, const RowIter *__b, const MATRIX_TYPE __k) {
-//     *(__a->ptr) += *(__b->ptr) * __k;
-// }
-
-// void RowIter_sub_iter(RowIter *__a, const RowIter *__b) {
-//     *(__a->ptr) -= *(__b->ptr);
-// }
-
-// void RowIter_mult_iter(RowIter *__a, const RowIter *__b) {
-//     *(__a->ptr) *= *(__b->ptr);
-// }
-
-// void RowIter_div_iter(RowIter *__a, const RowIter *__b) {
-//     *(__a->ptr) /= *(__b->ptr);
-// }
-
-// // Get the maximum value in a row
-// MATRIX_TYPE RowIter_max(RowIter *__a, const RowIter *__b) {
-
-//     MATRIX_TYPE max = RowIter_value(__a);
-//     RowIter_next(__a);
-
-//     // This is the RowIter idiom to traverse a row
-//     while (!RowIter_cmp(__a, __b)) {
-
-//         if (RowIter_value(__a) > max)
-//             max = RowIter_value(__a);
-
-//         RowIter_next(__a);
-//     }
-
-//     return max;
-
-// }
-
-// // Get the maximum value in a row
-// MATRIX_TYPE RowIter_min(RowIter *__a, const RowIter *__b) {
-
-//     MATRIX_TYPE min = RowIter_value(__a);
-//     RowIter_next(__a);
-
-//     // This is the RowIter idiom to traverse a row
-//     while (!RowIter_cmp(__a, __b)) {
-
-//         if (RowIter_value(__a) < min)
-//             min = RowIter_value(__a);
-
-//         RowIter_next(__a);
-//     }
-
-//     return min;
-
-// }
-
-
-
-// /**================================================================================================
-//  *!                                        RowIter basic utility routines - ROW
-//  *================================================================================================**/
-
-// // Set the elements of a row when given a row iterator and a value k
-// void RowIter_row_set_k(const RowIter *__rbegin, const RowIter *__rend, const MATRIX_TYPE __k) {
-
-//     RowIter *rbegin = RowIter_clone(__rbegin);
-
-//     while (! RowIter_cmp(rbegin, __rend)) {
-//         RowIter_set(rbegin, __k);
-//         RowIter_next(rbegin);
-//     }
-
-//     free(rbegin);
-// }
-
-// void RowIter_row_add_k(const RowIter *__rbegin, const RowIter *__rend, const MATRIX_TYPE __k) {
-
-//     RowIter *rbegin = RowIter_clone(__rbegin);
+MatIter *matdiagend(const Matrix *__m, const int __d) {
 
-//     while (! RowIter_cmp(rbegin, __rend)) {
-//         RowIter_add_k(rbegin, __k);
-//         RowIter_next(rbegin);
-//     }
+    // First I have to work out whether is wide or tall
+    size_t lim = 0;
 
-//     free(rbegin);
-// }
-
-// void RowIter_row_sub_k(const RowIter *__rbegin, const RowIter *__rend, const MATRIX_TYPE __k) {
-
-//     RowIter *rbegin = RowIter_clone(__rbegin);
-
-//     while (! RowIter_cmp(rbegin, __rend)) {
-//         RowIter_sub_k(rbegin, __k);
-//         RowIter_next(rbegin);
-//     }
-
-//     free(rbegin);
-// }
-
-// void RowIter_row_mult_k(const RowIter *__rbegin, const RowIter *__rend, const MATRIX_TYPE __k) {
-
-//     RowIter *rbegin = RowIter_clone(__rbegin);
-
-//     while (! RowIter_cmp(rbegin, __rend)) {
-//         RowIter_mult_k(rbegin, __k);
-//         RowIter_next(rbegin);
-//     }
-
-//     free(rbegin);
-// }
-
-// void RowIter_row_div_k(const RowIter *__rbegin, const RowIter *__rend, const MATRIX_TYPE __k) {
-
-//     RowIter *rbegin = RowIter_clone(__rbegin);
-
-//     while (! RowIter_cmp(rbegin, __rend)) {
-//         RowIter_div_k(rbegin, __k);
-//         RowIter_next(rbegin);
-//     }
-
-//     free(rbegin);
-// }
-
-// // Add to row __a the elements of row __b
-// void RowIter_row_add_row(const RowIter *__abegin, const RowIter *__aend, const RowIter *__bbegin) {
-
-//     RowIter *abegin = RowIter_clone(__abegin);
-//     RowIter *bbegin = RowIter_clone(__bbegin);
-
-//     while (! RowIter_cmp(abegin, __aend)) {
-//         RowIter_add_iter(abegin, bbegin);
-//         RowIter_next(abegin);
-//         RowIter_next(bbegin);
-//     }
-
-//     free(abegin);
-//     free(bbegin);
-// }
-
-
-// /**================================================================================================
-//  *!                                        Experimental APPLY functions
-//  *================================================================================================**/
-
-// // Appy functions are a way to iterate a ColIter until we reach the "end" point
-
-
-// void RowIter_apply(const RowIter *__rbegin, const RowIter *__rend, RowIterFn __fn) {
-
-//     RowIter *rbegin = RowIter_clone(__rbegin);
-
-//     while (! RowIter_cmp(rbegin, __rend)) {
-//         __fn(rbegin);
-//         RowIter_next(rbegin);
-//     }
-
-//     free(rbegin);
-// }
-
-// void RowIter_apply_k(const RowIter *__rbegin, const RowIter *__rend, const MATRIX_TYPE __k, RowIterFn_k __fn_k) {
-
-//     RowIter *rbegin = RowIter_clone(__rbegin);
-
-//     while (! RowIter_cmp(rbegin, __rend)) {
-//         __fn_k(rbegin, __k);
-//         RowIter_next(rbegin);
-//     }
-
-//     free(rbegin);
-// }
+    if (__d == 0) {
+        // Then i need to find the smaller side
+        lim = Matrix_rect_limit(__m);
+        return MatIter_new(matacc(__m, lim, lim), __m->ncols + 1);
 
-// void RowIter_apply_ptr(const RowIter *__rbegin, const RowIter *__rend, const MATRIX_TYPE *__ptr, RowIterFn_ptr __fn_ptr) {
+    } else if (__d > 0) {
+        size_t adj_cols = __m->ncols - __d;
+        lim = adj_cols < __m->nrows ? adj_cols : __m->nrows;
+        return MatIter_new(matacc(__m, lim, lim + __d), __m->ncols + 1);
+    } else {
+        size_t adj_rows = __m->nrows + __d;
+        lim = adj_rows < __m->ncols ? adj_rows : __m->ncols;
+        return MatIter_new(matacc(__m, lim - __d, lim), __m->ncols + 1);
+    }
+}
 
-//     RowIter *rbegin = RowIter_clone(__rbegin);
+void MatIter_print(const MatIter *__begin, const MatIter *__end) {
 
-//     while (! RowIter_cmp(rbegin, __rend)) {
-//         __fn_ptr(rbegin, __ptr);
-//         RowIter_next(rbegin);
-//     }
+    MatIter *iter = __begin;
 
-//     free(rbegin);
-// }
-
-// void RowIter_apply_iter(const RowIter *__abegin, const RowIter *__aend, const RowIter *__bbegin, RowIterFn_iter __fn_iter) {
-
-//     RowIter *abegin = RowIter_clone(__abegin);
-//     RowIter *bbegin = RowIter_clone(__bbegin);
-
-//     while (! RowIter_cmp(abegin, __aend)) {
-//         __fn_iter(abegin, bbegin);
-//         RowIter_next(abegin);
-//         RowIter_next(bbegin);
-//     }
-
-//     free(abegin);
-//     free(bbegin);
-// }
-
-// void RowIter_apply_iter_scaled(const RowIter *__abegin, const RowIter *__aend, const RowIter *__bbegin, const MATRIX_TYPE __k, RowIterFn_iter_k __fn_iter_k) {
-
-//     RowIter *abegin = RowIter_clone(__abegin);
-//     RowIter *bbegin = RowIter_clone(__bbegin);
-
-//     while (! RowIter_cmp(abegin, __aend)) {
-//         __fn_iter_k(abegin, bbegin, __k);
-//         RowIter_next(abegin);
-//         RowIter_next(bbegin);
-//     }
-
-//     free(abegin);
-//     free(bbegin);
-
-// }
-
-// /**================================================================================================
-//  *!                                        Row manipulations using apply functions
-//  *================================================================================================**/
-
-// /**======================
-//  *!    Scalar operations
-//  *========================**/
-// void RowIter_apply_set_k(RowIter *__rbegin, const RowIter *__rend, const MATRIX_TYPE __k) {
-//     RowIter_apply_k(__rbegin, __rend, __k, RowIter_set);
-// }
-
-// void RowIter_apply_add_k(RowIter *__rbegin, const RowIter *__rend, const MATRIX_TYPE __k) {
-//     RowIter_apply_k(__rbegin, __rend, __k, RowIter_add_k);
-// }
-
-// void RowIter_apply_sub_k(RowIter *__rbegin, const RowIter *__rend, const MATRIX_TYPE __k) {
-//     RowIter_apply_k(__rbegin, __rend, __k, RowIter_sub_k);
-// }
-
-// void RowIter_apply_mult_k(RowIter *__rbegin, const RowIter *__rend, const MATRIX_TYPE __k) {
-//     RowIter_apply_k(__rbegin, __rend, __k, RowIter_mult_k);
-// }
-
-// void RowIter_apply_div_k(RowIter *__rbegin, const RowIter *__rend, const MATRIX_TYPE __k) {
-//     RowIter_apply_k(__rbegin, __rend, __k, RowIter_div_k);
-// }
-
-// /**======================
-//  *!    Pointer operations
-//  *========================**/
-
-// void RowIter_apply_set_ptr(RowIter *__rbegin, const RowIter *__rend, const MATRIX_TYPE *__ptr) {
-//     RowIter_apply_ptr(__rbegin, __rend, __ptr, RowIter_set_ptr);
-// }
-
-// void RowIter_apply_add_ptr(RowIter *__rbegin, const RowIter *__rend, const MATRIX_TYPE *__ptr) {
-//     RowIter_apply_ptr(__rbegin, __rend, __ptr, RowIter_add_ptr);
-// }
+    printf("{");
+    MatIter_next(iter);
 
-// void RowIter_apply_sub_ptr(RowIter *__rbegin, const RowIter *__rend, const MATRIX_TYPE *__ptr) {
-//     RowIter_apply_ptr(__rbegin, __rend, __ptr, RowIter_sub_ptr);
-// }
+    while (! MatIter_cmp(iter, __end)) {
+        printf("%lf, ", *(iter->ptr - iter->ptr_diff)); //basically, print the previous value
+        MatIter_next(iter);
+    }
 
-// void RowIter_apply_mult_ptr(RowIter *__rbegin, const RowIter *__rend, const MATRIX_TYPE *__ptr) {
-//     RowIter_apply_ptr(__rbegin, __rend, __ptr, RowIter_mult_ptr);
-// }
+    printf("%lf}\n", *(iter->ptr - iter->ptr_diff)); //basically, print the previous value
 
-// void RowIter_apply_div_ptr(RowIter *__rbegin, const RowIter *__rend, const MATRIX_TYPE *__ptr) {
-//     RowIter_apply_ptr(__rbegin, __rend, __ptr, RowIter_div_ptr);
-// }
+}
 
-// /**======================
-//  *!    Iterator operations
-//  *========================**/
 
-// void RowIter_apply_set_iter(RowIter *__abegin, const RowIter *__aend, RowIter *__bbegin) {
-//     RowIter_apply_iter(__abegin, __aend, __bbegin, RowIter_set_iter);
+// The 0th diagonal will start at the position __m(0, 0)
+// The 1st diagonal will start at the position __m(0, 1)
+// The -1  diagonal will start at the position __m(1, 0)
+// MatIter *Matrix_diag_begin(const Matrix *__m, const int __d) {
+//
 // }
 
-// void RowIter_apply_add_iter(RowIter *__abegin, const RowIter *__aend, RowIter *__bbegin) {
-//     RowIter_apply_iter(__abegin, __aend, __bbegin, RowIter_add_iter);
-// }
 
-// void RowIter_apply_sub_iter(RowIter *__abegin, const RowIter *__aend, RowIter *__bbegin) {
-//     RowIter_apply_iter(__abegin, __aend, __bbegin, RowIter_sub_iter);
-// }
 
-// void RowIter_apply_mult_iter(RowIter *__abegin, const RowIter *__aend, RowIter *__bbegin) {
-//     RowIter_apply_iter(__abegin, __aend, __bbegin, RowIter_mult_iter);
-// }
 
-// void RowIter_apply_div_iter(RowIter *__abegin, const RowIter *__aend, RowIter *__bbegin) {
-//     RowIter_apply_iter(__abegin, __aend, __bbegin, RowIter_div_iter);
-// }
 
-// /**======================
-//  *!    add iter scaled
-//  *========================**/
-// void RowIter_apply_add_iter_scaled(RowIter *__abegin, const RowIter *__aend, RowIter *__bbegin, const MATRIX_TYPE __k) {
-//     RowIter_apply_iter_scaled(__abegin, __aend, __bbegin, __k, RowIter_add_iter_scaled);
-// }
 
 /**================================================================================================
  *!                                        RowCol and ColIter
@@ -785,12 +93,51 @@ MATRIX_TYPE Iter_dot(const MatIter *__r, const MatIter *__rend, const MatIter *_
 
 }
 
-
-
-
 /**=======================================================================================================================
  *!                                           Matrix Interface to Iter functions
  *=======================================================================================================================**/
+
+void Matrix_print_row(const Matrix *__A, size_t __i) {
+
+    MatIter *b = Matrix_row_begin(__A, __i);
+    MatIter *e = Matrix_row_end(__A, __i);
+
+    printf("Row %ld: ", __i + 1);
+    MatIter_print(b, e);
+
+    free(b);
+    free(e);
+}
+
+void Matrix_print_col(const Matrix *__A, size_t __j) {
+
+    MatIter *b = Matrix_col_begin(__A, __j);
+    MatIter *e = Matrix_col_end(__A, __j);
+
+    printf("Col %ld: ", __j + 1);
+    MatIter_print(b, e);
+
+    free(b);
+    free(e);
+}
+
+
+void Matrix_print_diag(const Matrix *__A, size_t __d) {
+
+    MatIter *b = matdiagbegin(__A, __d);
+    MatIter *e = matdiagend(__A, __d);
+
+    printf("Diag %ld: ", __d);
+    MatIter_print(b, e);
+
+    free(b);
+    free(e);
+}
+
+
+
+
+
 
 // Here I want to be able to manipulate the functions defined above to create clean and simple Matrix api
 
@@ -839,7 +186,13 @@ void Matrix_rowop_add_scaled(Matrix *__A, const size_t __r1, const size_t __r2, 
 }
 
 MATRIX_TYPE Matrix_row_min(const Matrix *__A, const size_t __i) {
-    return MatIter_min(matrowbegin(__A, __i), matrowend(__A, __i));
+    MatIter *b = matrowbegin(__A, __i);
+    MatIter *e = matrowend(__A, __i);
+
+    MATRIX_TYPE min = MatIter_min(b, e);
+    free(b);
+    free(e);
+    return min;
 }
 
 MATRIX_TYPE Matrix_row_max(const Matrix *__A, const size_t __i) {
@@ -847,11 +200,44 @@ MATRIX_TYPE Matrix_row_max(const Matrix *__A, const size_t __i) {
 }
 
 MATRIX_TYPE Matrix_col_min(const Matrix *__A, const size_t __j) {
-    return MatIter_min(matrowbegin(__A, __j), matrowend(__A, __j));
+    return MatIter_min(matcolbegin(__A, __j), matcolend(__A, __j));
 }
 
 MATRIX_TYPE Matrix_col_max(const Matrix *__A, const size_t __j) {
     return MatIter_max(matcolbegin(__A, __j), matcolend(__A, __j));
+}
+
+MATRIX_TYPE Matrix_diag_min(const Matrix *__A, const size_t __j) {
+    return MatIter_min(matdiagbegin(__A, __j), matdiagend(__A, __j));
+}
+
+MATRIX_TYPE Matrix_diag_max(const Matrix *__A, const size_t __j) {
+    return MatIter_max(matdiagbegin(__A, __j), matdiagend(__A, __j));
+}
+
+MATRIX_TYPE Matrix_row_prod(const Matrix *__A, const size_t __i) {
+    return MatIter_prod(matrowbegin(__A, __i), matrowend(__A, __i));
+}
+
+MATRIX_TYPE Matrix_col_prod(const Matrix *__A, const size_t __i) {
+    return MatIter_prod(matcolbegin(__A, __i), matcolend(__A, __i));
+}
+
+MATRIX_TYPE Matrix_diag_prod(const Matrix *__A, const size_t __i) {
+    return MatIter_prod(matdiagbegin(__A, __i), matdiagend(__A, __i));
+}
+
+
+MATRIX_TYPE Matrix_row_sum(const Matrix *__A, const size_t __i) {
+    return MatIter_sum(matrowbegin(__A, __i), matrowend(__A, __i));
+}
+
+MATRIX_TYPE Matrix_col_sum(const Matrix *__A, const size_t __i) {
+    return MatIter_sum(matcolbegin(__A, __i), matcolend(__A, __i));
+}
+
+MATRIX_TYPE Matrix_diag_sum(const Matrix *__A, const size_t __i) {
+    return MatIter_sum(matdiagbegin(__A, __i), matdiagend(__A, __i));
 }
 
 
@@ -859,7 +245,6 @@ MATRIX_TYPE Matrix_col_max(const Matrix *__A, const size_t __j) {
 MatIter *matcolpos(const Matrix *__A, size_t __i, size_t __j) {
     return MatIter_new(matacc(__A, __i, __j), __A->ncols);
 }
-
 
 // return a new Matumn Iterator that points to the final element in this column
 MatIter *Matrix_col_end(const Matrix *__A, size_t __j) {
@@ -994,7 +379,7 @@ MATRIX_TYPE MatIter_sum(const MatIter *__begin, const MatIter *__end) {
 
 MATRIX_TYPE MatIter_prod(const MatIter *__begin, const MatIter *__end) {
 
-    MATRIX_TYPE prod = 0;
+    MATRIX_TYPE prod = 1;
     MatIter *iter = __begin;
 
     while (!MatIter_cmp(iter, __end)) {

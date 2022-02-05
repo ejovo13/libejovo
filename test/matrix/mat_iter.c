@@ -1,330 +1,177 @@
 // test out these bad ass fucking iterator functions!!!
 
 // I will also eventually want to benchmark these different function types
+#include "test_mat.h"
 
-#include "ejovo_matrix.h"
-#include <assert.h>
-#include <stdbool.h>
+void t_iter();
 
-// void t_ColIter_ctors();
-// void t_ColIter_basic_utility();
-// void t_ColIter_basic_utility_cols();
-/* TODO
+void t_diag_wide();
+void t_diag_tall();
+void t_diag_sq();
 
-    - [x] ColIter basic utility for columns (finish!!)
-    - [ ] ColIter apply functions
-    - [ ] ColIter column manipulations
 
-    - [ ] All row iterator operations
-
-*/
-// void t_Matrix_rowop(); // test matrix elementary row operations
-// void t_Iter_dot();
+void t_minmax();
+// void t_coliter();
+// void t_diagiter();
 
 int main() {
 
-    ejovo_seed();
-
-    // t_ColIter_ctors();
-    // t_ColIter_basic_utility();
-    // t_ColIter_basic_utility_cols();
-    // t_Matrix_rowop();
-    // t_Iter_dot();
-
-    // Matrix *m = Matrix_random(5, 5, 0, 10);
-
-    // printf("Starting matrix\n");
-    // Matrix_print(m);
-
-    // // test out the various array functions!
-
-    // RowIter *r0begin = Matrix_row_begin(m, 0);
-    // RowIter *r0col9 = matrowpos(m, 0, 9);
-
-    // printf("Adding 10 to m(1,:)\n");
-    // RowIter_apply_add_k(r0begin, r0col9, 10);
-
-    // RowIter *r0end = Matrix_row_end(m, 0);
-    // r0begin = matrowpos(m, 0, 3);
-
-    // printf("Multiplying m(1,4:) by 0\n");
-    // RowIter_apply_mult_k(r0begin, r0end, 0);
-
-    // // r0begin = matrowpos(m, 0, 0);
-    // RowIter *r2begin = Matrix_row_begin(m, 2);
-    // RowIter *r2end = Matrix_row_end(m, 2);
-
-    // printf("Subracting 100 from m(3,:)\n");
-    // RowIter_apply_sub_k(r2begin, r2end, 100);
-
-    // Matrix_print(m);
-
-    // RowIter *r5begin = Matrix_row_begin(m, 4);
-    // RowIter *r5end = Matrix_row_end(m, 4);
-
-    // printf("Dividing row 5 by 5\n");
-    // RowIter_apply_div_k(r5begin, r5end, 5);
-
-    // Matrix_print(m);
-
-    // printf("Matrix_at(0, 0) %lf\n", Matrix_at(m, 0, 0));
-    // printf("Matrix_at(4, 4) %lf\n", Matrix_at(m, 4, 4));
-
-
-    // printf("Adding row 3 to row 1\n");
-
-    // RowIter *r1begin = Matrix_row_begin(m, 0);
-    // RowIter *r1end = Matrix_row_end(m, 0);
-
-    // RowIter *r3begin = Matrix_row_begin(m, 3);
-
-    // RowIter_apply_add_iter(r1begin, r1end, r3begin);
-
-    // Matrix_print(m);
-
-
-    return 0;
+    // t_iter();
+    t_diag_wide();
+    t_diag_tall();
+    t_diag_sq();
 }
 
-// Test that Column iterators are created appropriately
-// void t_ColIter_ctors() {
+void t_iter() {
 
-//     MATRIX_TYPE dub = 100;
-//     MATRIX_TYPE dub_arr[] = {1, 2, 3, 4, 5};
+    ejovo_seed();
+    Matrix *m = Matrix_rand(5, 5);
+    Matrix_print(m);
 
-//     /**======================
-//      *!    Single Value testing
-//      *========================**/
-//     ColIter *c = ColIter_new(&dub, 1); // nrows should be replaced with ptr_diff!!!
-//     assert(ColIter_value(c) == 100);
-//     ColIter_set(c, 10);
-//     assert(ColIter_value(c) == 10);
+    MatIter *b = Matrix_row_begin(m, 3);
+    MatIter *e = Matrix_row_end(m, 3);
 
-//     /**======================
-//      *!    Array ColIter testing
-//      *========================**/
-//     ColIter *arr_begin = ColIter_new(dub_arr, 1);
-//     ColIter *arr_end = ColIter_new(dub_arr + 5, 1); // set the ending iterator to onte past the array!
+    printf("row 4: ");
+    MatIter_print(b, e);
 
-//     assert(ColIter_value(arr_begin) == 1);
-//     ColIter_next(arr_begin);
-//     assert(ColIter_value(arr_begin) == 2);
-//     ColIter_next(arr_begin);
-//     assert(ColIter_value(arr_begin) == 3);
-//     ColIter_next(arr_begin);
-//     assert(ColIter_value(arr_begin) == 4);
-//     ColIter_next(arr_begin);
-//     assert(ColIter_value(arr_begin) == 5);
-//     ColIter_next(arr_begin);
-//     assert(ColIter_cmp(arr_begin, arr_end)); // Check that the iterator now points to after the final element!
+    MatIter *b1 = Matrix_col_begin(m, 4);
+    MatIter *e1 = Matrix_col_end(m, 4);
+    printf("col 5: ");
+    MatIter_print(b1, e1);
 
-//     MATRIX_TYPE data[] = {1, 2, 3, 4, 5, 6}; // row major order
+    free(b);
+    free(e);
+    free(b1);
+    free(e1);
+    Matrix_free(m);
+}
 
+// Need to assert that the products, sums, min, max are valid.
+void t_diag_wide() {
 
-//     /**======================
-//      *!    Matrix ColIter testing
-//      *========================**/
-//     Matrix *m = Matrix_from(data, 3, 2); // create a new matrix from the data provided
+    Matrix *wide = get_wide();
 
-//     ColIter *c0 = Matrix_col_begin(m, 0);
-//     ColIter *c0_clone = ColIter_clone(c0);
-//     ColIter *c1 = Matrix_col_begin(m, 1);
+    Matrix_print(wide);
+    Matrix_print_diag(wide, 0);
+    Matrix_print_diag(wide, 2);
+    Matrix_print_diag(wide, -1);
+    Matrix_print_diag(wide, -2);
+    Matrix_print_diag(wide, 8);
+    Matrix_print_diag(wide, 9);
 
-//     const ColIter *c0_end = Matrix_col_end(m, 0);
-//     const ColIter *c1_end = Matrix_col_end(m, 1);
+    assert(Matrix_diag_max(wide, 0) == 7);
+    assert(Matrix_diag_max(wide, 2) == 8);
+    assert(Matrix_diag_max(wide, -1) == 9);
+    assert(Matrix_diag_max(wide, -2) == 10);
+    assert(Matrix_diag_max(wide, 8) == 9);
+    assert(Matrix_diag_max(wide, 9) == 10);
 
-//     assert(ColIter_value(c0) == 1);
-//     assert(ColIter_value(c0_clone) == 1);
-//     assert(ColIter_value(c1) == 2);
-//     assert(ColIter_cmp(c0, matcolpos(m, 0, 0))); // check that matcolpos returns the approprate results
-//     assert(ColIter_cmp(c1, matcolpos(m, 0, 1)));
-//     // iterate
-//     ColIter_next(c0);
-//     ColIter_next(c0_clone);
-//     ColIter_next(c1);
+    assert(Matrix_diag_min(wide, 0) == 0);
+    assert(Matrix_diag_min(wide, 2) == 0);
+    assert(Matrix_diag_min(wide, -1) == 3);
+    assert(Matrix_diag_min(wide, -2) == 4);
+    assert(Matrix_diag_min(wide, 8) == 5);
+    assert(Matrix_diag_min(wide, 9) == 10);
 
-//     assert(ColIter_value(c0) == 3);
-//     assert(ColIter_value(c0_clone) == 3);
-//     assert(ColIter_value(c1) == 4);
-//     assert(ColIter_cmp(c0, matcolpos(m, 1, 0)));
-//     assert(ColIter_cmp(c1, matcolpos(m, 1, 1)));
+    assert(Matrix_diag_sum(wide, 0) == 12);
+    assert(Matrix_diag_sum(wide, 2) == 24);
+    assert(Matrix_diag_sum(wide, -1) == 21);
+    assert(Matrix_diag_sum(wide, -2) == 20);
+    assert(Matrix_diag_sum(wide, 8) == 14);
+    assert(Matrix_diag_sum(wide, 9) == 10);
 
-//     ColIter_next(c0);
-//     ColIter_next(c0_clone);
-//     ColIter_next(c1);
+    assert(Matrix_diag_prod(wide, 0) == 0);
+    assert(Matrix_diag_prod(wide, 2) == 0);
+    assert(Matrix_diag_prod(wide, -1) == 486);
+    assert(Matrix_diag_prod(wide, -2) == 240);
+    assert(Matrix_diag_prod(wide, 8) == 45);
+    assert(Matrix_diag_prod(wide, 9) == 10);
 
-//     assert(ColIter_value(c0) == 5);
-//     assert(ColIter_value(c0_clone) == 5);
-//     assert(ColIter_value(c1) == 6);
-//     assert(ColIter_cmp(c0, matcolpos(m, 2, 0)));
-//     assert(ColIter_cmp(c1, matcolpos(m, 2, 1)));
+    Matrix_free(wide);
+}
 
-//     ColIter_next(c0);
-//     ColIter_next(c0_clone);
-//     ColIter_next(c1);
+void t_diag_tall() {
 
-//     assert(ColIter_cmp(c0, c0_end));
-//     assert(ColIter_cmp(c0_clone, c0_end));
-//     assert(ColIter_cmp(c1, c1_end));
-//     assert(ColIter_cmp(c0, matcolpos(m, 3, 0)));
-//     assert(ColIter_cmp(c1, matcolpos(m, 3, 1)));
+    Matrix *tall = get_tall();
 
-//     printf("ColIter_ctors passed\n");
+    Matrix_print(tall);
+    Matrix_print_diag(tall, 0);
+    Matrix_print_diag(tall, 3);
+    Matrix_print_diag(tall, 2);
+    Matrix_print_diag(tall, -4);
+    Matrix_print_diag(tall, -3);
+    Matrix_print_diag(tall, -6);
 
-// }
+    assert(Matrix_diag_max(tall, 0) == 9);
+    assert(Matrix_diag_max(tall, 3) == 1);
+    assert(Matrix_diag_max(tall, 2) == 9);
+    assert(Matrix_diag_max(tall, -4) == 5);
+    assert(Matrix_diag_max(tall, -3) == 9);
+    assert(Matrix_diag_max(tall, -6) == 10);
 
-// // Test the functions defined under the "Basic utility" heading
-// void t_ColIter_basic_utility() {
+    assert(Matrix_diag_min(tall, 0) == 3);
+    assert(Matrix_diag_min(tall, 3) == 1);
+    assert(Matrix_diag_min(tall, 2) == 2);
+    assert(Matrix_diag_min(tall, -4) == 2);
+    assert(Matrix_diag_min(tall, -3) == 0);
+    assert(Matrix_diag_min(tall, -6) == 6);
 
-//     Matrix *m = Matrix_new(4, 4); // create a matrix of zeros
+    assert(Matrix_diag_sum(tall, 0) == 23);
+    assert(Matrix_diag_sum(tall, 3) == 1);
+    assert(Matrix_diag_sum(tall, 2) == 11);
+    assert(Matrix_diag_sum(tall, -4) == 13);
+    assert(Matrix_diag_sum(tall, -3) == 25);
+    assert(Matrix_diag_sum(tall, -6) == 16);
 
-//     ColIter *c0 = Matrix_col_begin(m, 0);
+    assert(Matrix_diag_prod(tall, 0) == 756);
+    assert(Matrix_diag_prod(tall, 3) == 1);
+    assert(Matrix_diag_prod(tall, 2) == 18);
+    assert(Matrix_diag_prod(tall, -4) == 80);
+    assert(Matrix_diag_prod(tall, -3) == 0);
+    assert(Matrix_diag_prod(tall, -6) == 60);
 
-//     /**======================
-//      *!    WARNING HEADER
-//     *========================**/
-//     ColIter_set(c0, 10);
-//     assert(Matrix_at(m, 0, 0) == 10);
+    Matrix_free(tall);
+}
 
-//     ColIter_next(c0);
-//     ColIter_add_k(c0, 51.3);
-//     assert(Matrix_at(m, 1, 0) == 51.3);
+void t_diag_sq() {
 
-//     ColIter_next(c0);
-//     ColIter_sub_k(c0, 13.9);
-//     assert(Matrix_at(m, 2, 0) == -13.9);
-//     ColIter_mult_k(c0, 2);
-//     assert(Matrix_at(m, 2, 0) == -13.9 * 2);
-//     ColIter_div_k(c0, 4);
-//     assert(Matrix_at(m, 2, 0) == -13.9 / 2);
+    Matrix *sq   = get_square();
 
-//     /**======================
-//      *!    Ptr operations
-//      *========================**/
-//     MATRIX_TYPE v1 = 13;
-//     MATRIX_TYPE v2 = 3;
-//     MATRIX_TYPE v3 = 1934.2;
-//     MATRIX_TYPE v4 = 145.3;
-//     MATRIX_TYPE v5 = 152;
+    Matrix_print(sq);
+    Matrix_print_diag(sq, 0);
+    Matrix_print_diag(sq, 3);
+    Matrix_print_diag(sq, 2);
+    Matrix_print_diag(sq, -4);
+    Matrix_print_diag(sq, -3);
+    Matrix_print_diag(sq, -5);
 
-//     ColIter *c1 = Matrix_col_begin(m, 1);
+    assert(Matrix_diag_max(sq, 0) == 9);
+    assert(Matrix_diag_max(sq, 3) == 7);
+    assert(Matrix_diag_max(sq, 2) == 10);
+    assert(Matrix_diag_max(sq, -4) == 9);
+    assert(Matrix_diag_max(sq, -3) == 9);
+    assert(Matrix_diag_max(sq, -5) == 8);
 
-//     ColIter_set_ptr(c1, &v1);
-//     assert(Matrix_at(m, 0, 1) == v1);
+    assert(Matrix_diag_min(sq, 0) == 1);
+    assert(Matrix_diag_min(sq, 3) == 3);
+    assert(Matrix_diag_min(sq, 2) == 4);
+    assert(Matrix_diag_min(sq, -4) == 0);
+    assert(Matrix_diag_min(sq, -3) == 6);
+    assert(Matrix_diag_min(sq, -5) == 2);
 
-//     ColIter_next(c1);
-//     ColIter_add_ptr(c1, &v2);
-//     assert(Matrix_at(m, 1, 1) == v2);
+    assert(Matrix_diag_sum(sq, 0) == 36);
+    assert(Matrix_diag_sum(sq, 3) == 27);
+    assert(Matrix_diag_sum(sq, 2) == 42);
+    assert(Matrix_diag_sum(sq, -4) == 21);
+    assert(Matrix_diag_sum(sq, -3) == 40);
+    assert(Matrix_diag_sum(sq, -5) == 17);
 
-//     ColIter_next(c1);
-//     ColIter_sub_ptr(c1, &v3);
-//     assert(Matrix_at(m, 2, 1) == -v3);
-//     ColIter_mult_ptr(c1, &v4);
-//     assert(Matrix_at(m, 2, 1) == -v3 * v4);
-//     ColIter_div_ptr(c1, &v5);
-//     assert(Matrix_at(m, 2, 1) == (-v3 * v4) / v5);
+    assert(Matrix_diag_prod(sq, 0) == 19440);
+    assert(Matrix_diag_prod(sq, 3) == 3528);
+    assert(Matrix_diag_prod(sq, 2) == 90720);
+    assert(Matrix_diag_prod(sq, -4) == 0);
+    assert(Matrix_diag_prod(sq, -3) == 31104);
+    assert(Matrix_diag_prod(sq, -5) == 112);
 
-//     /**======================
-//      *!    Iterator operations
-//      *========================**/
-//     c1 = Matrix_col_begin(m, 1); // reset the iterator
-//     ColIter *c2 = Matrix_col_begin(m, 2);
-
-//     ColIter_set_iter(c2, c1); // Set the 3rd column first row equal to v1
-//     assert(Matrix_at(m, 0, 2) == v1);
-
-//     ColIter_next(c2);
-//     ColIter_add_iter(c2, c1); // Add v1 to 0
-//     ColIter_next(c1); // advance c1 to the second row
-//     ColIter_sub_iter(c2, c1); // subtract v2
-//     assert(Matrix_at(m, 1, 2) == v1 - v2);
-
-//     ColIter_next(c2);
-//     ColIter_next(c1); // advance c1 to the third row, (-v3 * v4)
-
-//     ColIter_set(c2, 10);
-//     ColIter_mult_iter(c2, c1);
-//     assert(Matrix_at(m, 2, 2) == (10 * ((-v3 * v4) / v5)));
-//     ColIter_div_iter(c2, c2);
-//     assert(Matrix_at(m, 2, 2) == 1);
-
-//     printf("Basic utility passed\n");
-
-// }
-
-// void t_ColIter_basic_utility_cols() {
-
-//     Matrix *m = Matrix_new(10, 10);
-
-//     ColIter *c0 = Matrix_col_begin(m, 0);
-//     ColIter *c1 = Matrix_col_begin(m, 1);
-//     ColIter *c2 = Matrix_col_begin(m, 2);
-//     ColIter *c3 = Matrix_col_begin(m, 3);
-//     ColIter *c4 = Matrix_col_begin(m, 4);
-//     ColIter *c5 = Matrix_col_begin(m, 5);
-//     const ColIter *c0_end = Matrix_col_end(m, 0);
-//     const ColIter *c1_end = Matrix_col_end(m, 1);
-//     const ColIter *c2_end = Matrix_col_end(m, 2);
-//     const ColIter *c3_end = Matrix_col_end(m, 3);
-//     const ColIter *c4_end = Matrix_col_end(m, 4);
-//     const ColIter *c5_end = Matrix_col_end(m, 5);
-
-//     ColIter_col_set_k(c0, c0_end, 10);
-//     ColIter_col_add_k(c1, c1_end, 5);
-//     ColIter_col_sub_k(c2, c2_end, 13);
-//     ColIter_col_div_k(c0, c0_end, 5);
-//     ColIter_col_mult_k(c1, c1_end, 3);
-//     ColIter_col_add_col(c3, c3_end, c0);
-
-//     // assert that the operations were applied column-wise
-//     for (size_t i = 0; i < 10; i++) {
-//         assert(Matrix_at(m, i, 0) == 10 / 5);
-//         assert(Matrix_at(m, i, 1) == 5 * 3);
-//         assert(Matrix_at(m, i, 2) == -13);
-//         assert(Matrix_at(m, i, 3) == Matrix_at(m, i, 0));
-//     }
-
-//     // Matrix_print(m);
-//     printf("Basic utility cols passed \n");
-
-// }
-
-// void t_Matrix_rowop() {
-
-//     MATRIX_TYPE data[] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
-
-//     Matrix *m = Matrix_from(data, 3, 3);
-
-//     // Matrix_print(m);
-//     // Matrix_rowop_add(m, 0, 1);
-//     // Matrix_print(m);
-//     // Matrix_rowop_add_offset(m, 1, 2, 5);
-//     // Matrix_print(m);
-//     // Matrix_rowop_add_offset(m, 1, 2, 1);
-//     // Matrix_print(m);
-//     // Matrix_rowop_add_scaled(m, 2, 2, 3);
-//     // Matrix_print(m);
-
-//     printf("Matrix_rowop passed\n");
-
-// }
-
-// void t_Iter_dot() {
-
-//     ejovo_seed();
-
-//     Matrix *m = Matrix_rand(5, 3);
-//     Vector *v = Matrix_rand(3, 1);
-
-//     double dot = Iter_dot(Matrix_row_begin(m, 2), Matrix_row_end(m, 2), Vector_col(v));
-
-//     printf("Dot product of m row 3 and v is: %lf\n", dot);
-
-//     Matrix_print(m);
-//     Matrix_print(v);
-
-//     Matrix_free(m);
-//     Matrix_free(v);
-
-
-// }
+    Matrix_free(sq);
+}

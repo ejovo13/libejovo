@@ -1,6 +1,4 @@
-#include "ejovo_matrix.h"
-#include <assert.h>
-#include <stdbool.h>
+#include "test_mat.h"
 
 
 int main() {
