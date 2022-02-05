@@ -73,6 +73,10 @@ typedef struct mat_row_iterator_t {
     size_t ptr_diff; // pointer difference between elements in the same row
 } RowIter;
 
+typedef struct mat_iterator_t {
+    MATRIX_TYPE *ptr;
+    size_t ptr_diff;
+} MatIter;
 
 /**
  * A `Vector` is a `Matrix` that is either a column or row vector.
@@ -117,6 +121,11 @@ typedef struct ldu_t {
     Vector *U;
 } LDU;
 
+typedef void (* MatIterFn) (MatIter *);
+typedef void (* MatIterFn_k) (MatIter *, MATRIX_TYPE);
+typedef void (* MatIterFn_ptr) (MatIter *, const MATRIX_TYPE *);
+typedef void (* MatIterFn_iter) (MatIter *, MatIter *);
+typedef void (* MatIterFn_iter_k) (MatIter *, MatIter *, const MATRIX_TYPE);
 
 typedef void (* ColIterFn) (ColIter *);
 typedef void (* ColIterFn_k) (ColIter *, MATRIX_TYPE);

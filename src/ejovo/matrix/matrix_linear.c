@@ -244,16 +244,16 @@ Matrix *Matrix_subtract(const Matrix *__A, const Matrix *__B) {
  *!                                        Normalizations
  *================================================================================================**/
 
-// Calculate the norm of a column using ColIter's
-MATRIX_TYPE colnorm(const ColIter *__begin, const ColIter *__end) {
+// Calculate the norm of a column using MatIter's
+MATRIX_TYPE colnorm(const MatIter *__begin, const MatIter *__end) {
 
-    ColIter *c = ColIter_clone(__begin);
+    MatIter *c = MatIter_clone(__begin);
     MATRIX_TYPE sum = 0;
 
     do {
-        sum += ColIter_value(c) * ColIter_value(c);
-        ColIter_next(c);
-    } while(!ColIter_cmp(c, __end));
+        sum += MatIter_value(c) * MatIter_value(c);
+        MatIter_next(c);
+    } while(!MatIter_cmp(c, __end));
 
     free(c);
     return sqrt(sum);
@@ -263,8 +263,8 @@ MATRIX_TYPE colnorm(const ColIter *__begin, const ColIter *__end) {
 // Calculate the norm of a specific column
 MATRIX_TYPE Matrix_col_norm(const Matrix *__A, size_t __j) {
 
-    ColIter *begin = NULL;
-    ColIter *end = NULL;
+    MatIter *begin = NULL;
+    MatIter *end = NULL;
     double out = 0;
 
     if (__j < __A->ncols) {
@@ -280,16 +280,16 @@ MATRIX_TYPE Matrix_col_norm(const Matrix *__A, size_t __j) {
     }
 }
 
-void matnormcol(const ColIter *__begin, const ColIter *__end) {
+void matnormcol(const MatIter *__begin, const MatIter *__end) {
 
-    ColIter *c = ColIter_clone(__begin);
+    MatIter *c = MatIter_clone(__begin);
     MATRIX_TYPE norm = colnorm(__begin, __end);
 
     // now that we have calculated the norm, divide the columns values by the norm
 
-    while (!ColIter_cmp(c, __end)) {
+    while (!MatIter_cmp(c, __end)) {
         *(c->ptr) /= norm;
-        ColIter_next(c);
+        MatIter_next(c);
     }
     free(c);
     // *(c->ptr) /= norm;
@@ -297,8 +297,8 @@ void matnormcol(const ColIter *__begin, const ColIter *__end) {
 
 void matnormcols(Matrix *__A) {
 
-    ColIter *begin = NULL;
-    ColIter *end = NULL;
+    MatIter *begin = NULL;
+    MatIter *end = NULL;
 
     for (size_t j = 0; j < __A->ncols; j++) {
         begin = Matrix_col_begin(__A, j);
@@ -311,8 +311,8 @@ void matnormcols(Matrix *__A) {
 
 void Matrix_normalize_col(Matrix *__A, size_t __j) {
 
-    ColIter *begin = NULL;
-    ColIter *end = NULL;
+    MatIter *begin = NULL;
+    MatIter *end = NULL;
 
     if (__j < __A->ncols) {
         begin = Matrix_col_begin(__A, __j);

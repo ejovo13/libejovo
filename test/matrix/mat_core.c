@@ -13,9 +13,9 @@ void t_vector_linspace();
 int main() {
 
     t_matalloc();
-    t_matclone();
-    t_matcatch();
-    t_vector_linspace();
+    // t_matclone();
+    // t_matcatch();
+    // t_vector_linspace();
 
 
 
@@ -25,6 +25,7 @@ int main() {
 void t_matalloc() {
 
     Matrix *m = matalloc(10, 10);
+    Matrix_set(m, 5, 5, 100);
     Matrix_print(m);
     Matrix_reset(&m);
     Matrix_free(m);

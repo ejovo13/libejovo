@@ -2,6 +2,8 @@
 #include <assert.h>
 #include <stdbool.h>
 
+void t_getset();
+
 
 int main() {
 
@@ -24,7 +26,19 @@ int main() {
     Matrix_free(m);
     m = NULL;
 
-
+    t_getset();
 
     return 0;
+}
+
+void t_getset() {
+
+    printf("tgetset\n");
+
+    Matrix *m = Matrix_new(5, 5);
+    matset(m, 0, 0, 999);
+    Matrix_print(m);
+    Matrix_free(m);
+
+
 }

@@ -4,6 +4,8 @@
 // that deal with the creation, destruction and setting of matrix elements
 
 #include "matrix.h"
+#include "matrix_getset.h"
+#include "matrix_vector.h"
 
 static Matrix * g_ANON = NULL;
 

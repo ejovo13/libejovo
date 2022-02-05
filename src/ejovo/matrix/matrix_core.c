@@ -1,7 +1,7 @@
 // matrix_core.c contains essential functions
 // that deal with the creation, destruction and setting of matrix elements
 
-#include "matrix_core.h"
+#include "ejovo_matrix.h"
 
 /**================================================================================================
  *!                                        Memory and Allocation
@@ -33,6 +33,7 @@ void Matrix_free(Matrix *__A) {
     }
 }
 
+// Free the memeory and set the pointer equal to NULL
 void Matrix_reset(Matrix **__A_ptr) {
     if (*__A_ptr) {
         if ((*__A_ptr)->data) free((*__A_ptr)->data);

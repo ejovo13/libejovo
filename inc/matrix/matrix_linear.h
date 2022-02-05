@@ -1,6 +1,8 @@
 #pragma once
 
 #include "matrix.h"
+#include "matrix_core.h"
+// #include "matrix_getset.h"
 
 /**================================================================================================
  *!                                        Unary Matrix Operators
@@ -65,13 +67,13 @@ Matrix *Matrix_subtract(const Matrix *__A, const Matrix *__B);
  *!                                        Normalizations
  *================================================================================================**/
 
-// Calculate the norm of a column using ColIter's
-MATRIX_TYPE colnorm(const ColIter *__begin, const ColIter *__end);
+// Calculate the norm of a column using MatIter's
+MATRIX_TYPE colnorm(const MatIter *__begin, const MatIter *__end);
 
 // Calculate the norm of a specific column
 MATRIX_TYPE Matrix_col_norm(const Matrix *__A, size_t __j);
 
-void matnormcol(const ColIter *__begin, const ColIter *__end);
+void matnormcol(const MatIter *__begin, const MatIter *__end);
 
 void matnormcols(Matrix *__A);
 
