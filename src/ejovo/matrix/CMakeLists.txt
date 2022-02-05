@@ -13,3 +13,4 @@ set(EJOVO_MATRIX_SRC
 )
 
 add_library(ejovo_matrix OBJECT ${EJOVO_MATRIX_SRC})
+target_include_directories(ejovo_matrix PRIVATE ${INC}/matrix)

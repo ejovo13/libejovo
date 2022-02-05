@@ -78,10 +78,16 @@ uint64_t xoshiro256ss(struct xoshiro256ss_state *state)
 
 int get_int_xoshiro(struct xoshiro256ss_state *state) {
 // interpret the first 32 bits of the 64 bits as an integer. - this returns a uniform X ~ [0, 2147483647]
-    int * iptr = NULL;
+    int *iptr = NULL;
     uint64_t bits = xoshiro256ss(state);
     iptr = (int *) &bits;
     return abs(iptr[1]);
+    // return iptr[1];
+}
+
+// Interpret
+long get_long_xoshiro(struct xoshiro256ss_state *state) {
+
 }
 
 int unif(int a, int b) {

@@ -1,9 +1,7 @@
 // matrix_core.c contains essential functions
 // that deal with the creation, destruction and setting of matrix elements
 
-#include "ejovo_matrix.h"
-
-static Matrix * g_ANON = NULL;
+#include "matrix_core.h"
 
 /**================================================================================================
  *!                                        Memory and Allocation

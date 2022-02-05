@@ -370,6 +370,7 @@ void RowIter_free(RowIter *__c) {
     }
 }
 
+// Increment the row iter
 inline void RowIter_next(RowIter *__c) {
     __c->ptr += __c->ptr_diff;
 }
@@ -485,6 +486,46 @@ inline void RowIter_mult_iter(RowIter *__a, const RowIter *__b) {
 inline void RowIter_div_iter(RowIter *__a, const RowIter *__b) {
     *(__a->ptr) /= *(__b->ptr);
 }
+
+// Get the maximum value in a row
+MATRIX_TYPE RowIter_max(RowIter *__a, const RowIter *__b) {
+
+    MATRIX_TYPE max = RowIter_value(__a);
+    RowIter_next(__a);
+
+    // This is the RowIter idiom to traverse a row
+    while (!RowIter_cmp(__a, __b)) {
+
+        if (RowIter_value(__a) > max)
+            max = RowIter_value(__a);
+
+        RowIter_next(__a);
+    }
+
+    return max;
+
+}
+
+// Get the maximum value in a row
+MATRIX_TYPE RowIter_min(RowIter *__a, const RowIter *__b) {
+
+    MATRIX_TYPE min = RowIter_value(__a);
+    RowIter_next(__a);
+
+    // This is the RowIter idiom to traverse a row
+    while (!RowIter_cmp(__a, __b)) {
+
+        if (RowIter_value(__a) < min)
+            min = RowIter_value(__a);
+
+        RowIter_next(__a);
+    }
+
+    return min;
+
+}
+
+
 
 /**================================================================================================
  *!                                        RowIter basic utility routines - ROW
@@ -797,3 +838,19 @@ void Matrix_rowop_add_offset(Matrix *__A, const size_t __r1, const size_t __r2, 
 void Matrix_rowop_add_scaled(Matrix *__A, const size_t __r1, const size_t __r2, const MATRIX_TYPE __k) {
     matrowop_add_scaled(__A, __r1, __r2, __k, 0);
 }
+
+MATRIX_TYPE Matrix_row_min(const Matrix *__A, const size_t __i) {
+    return RowIter_min(matrowbegin(__A, __i), matrowend(__A, __i));
+}
+
+MATRIX_TYPE Matrix_row_max(const Matrix *__A, const size_t __i) {
+    return RowIter_max(matrowbegin(__A, __i), matrowend(__A, __i));
+}
+
+/**=======================================================================================================================
+ *!                                                   MIter that has more general capabilities
+ *=======================================================================================================================**/
+
+
+
+

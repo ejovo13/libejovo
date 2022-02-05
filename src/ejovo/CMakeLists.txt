@@ -8,9 +8,11 @@ set (EJOVO_LIB
     ejovo_labyrinth.c
     ejovo_sort.c
     ejovo_comp.c
+    ejovo_crypto.c
 
 )
 
+# I don't remember why I have to do this weird shit...
 set (EJOVO_LIB_HEADERS
 
     ${INC}/ejovo_print.h
@@ -21,10 +23,13 @@ set (EJOVO_LIB_HEADERS
     ${INC}/ejovo_labyrinth.h
     ${INC}/ejovo_sort.h
     ${INC}/ejovo_comp.h
+    ${INC}/ejovo_crypto.h
+    # ${INC}/matrix/matrix_core.h
 
 )
 
 add_subdirectory(matrix)
+# include_directories(${INC}/matrix)
 
 
 add_library(ejovo STATIC ${EJOVO_LIB} $<TARGET_OBJECTS:ejovo_matrix>)
@@ -32,6 +37,7 @@ if (NOT WIN32)
     target_link_libraries(ejovo m)
 endif()
 target_include_directories(ejovo PRIVATE "${CMAKE_SOURCE_DIR}/inc")
+target_include_directories(ejovo PRIVATE "${CMAKE_SOURCE_DIR}/inc/matrix")
 
 set_target_properties(ejovo PROPERTIES
 
