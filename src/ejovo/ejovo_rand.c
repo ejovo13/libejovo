@@ -85,34 +85,43 @@ int get_int_xoshiro(struct xoshiro256ss_state *state) {
     // return iptr[1];
 }
 
-// Interpret
-long get_long_xoshiro(struct xoshiro256ss_state *state) {
-
+// get a double in the range [0, 1]
+double get_double() {
+    uint64_t val = xoshiro256ss(&XOSHIRO_RNG);
+    return (double) val / (double) ULONG_MAX; // This is how we "take the top 53 bits I think........."
 }
 
 int unif(int a, int b) {
 // return a random variable X ~ [a, b]
     // int = get_int_xoshiro()
     int spread = (b - a) + 1;
-    double x = (double) get_int_xoshiro(&XOSHIRO_RNG) / RAND_MAX; // returns a value in [0, 1)
-
-    // printf("I'm in unif and xoshiro_rng state is:");
-    // print_xoshiro256ss_state(&XOSHIRO_RNG);
-
-    // printf("x = %lf", x);
+    double x = get_double(); // returns a value in [0, 1)
 
     return (int) floor(x * spread) + (a) ; // floor(x * spread) returns a vlue in [0, spread)
-
 }
 
 double unifd(double a, double b) {
 
     double spread = (b - a);
 
-    double x = (double) get_int_xoshiro(&XOSHIRO_RNG) / RAND_MAX; // returns a value in [0, 1)
+    double x = get_double(); // returns a value in [0, 1)
 
     return x * spread + a;
+}
 
+// Generate a variate that follows the standard normal distribution using the Box-Muller transform
+double std_norm() {
+
+    double u1 = unifd(0, 1);
+    double u2 = unifd(0, 1);
+
+    double R = sqrt(-2 * log(u1));
+
+    return R * cos(2 * M_PI * u2);
+}
+
+double normd(double mean, double std) {
+    return (std_norm() * std) + mean;
 }
 
 void ejovo_seed() {

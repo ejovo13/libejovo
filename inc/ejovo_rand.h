@@ -1,6 +1,7 @@
 #ifndef EJOVO_RAND
 #define EJOVO_RAND
 
+
 #include <stdlib.h>
 #include <math.h>
 #include <time.h>
@@ -12,6 +13,13 @@
 #include <limits.h>
 #include <stdio.h>
 #include <string.h>
+
+#define _USE_MATH_DEFINES // acces M_PI
+#ifndef M_PI
+    #define M_PI 3.14159265358979323846
+#endif
+
+
 
 /**@file
  * @brief Utilities for non-naive random number generation in C
@@ -118,6 +126,12 @@ int unif(int a, int b);
  */
 double unifd(double a, double b);
 
+// Generate a variate that follows the standard normal distribution using the Box-Muller transform
+double std_norm();
+
+double normd(double mean, double std);
+
+double get_double();
 
 /**
  * Seed the default XOSHIRO_RNG rng included in this header

@@ -10,6 +10,7 @@ set(EJOVO_MATRIX_SRC
     matrix_iter.c
     matrix_special.c
     matrix_stats.c
+    matrix_dist.c
 
 )
 

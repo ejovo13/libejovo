@@ -12,5 +12,6 @@
 #include "matrix/matrix_state.h"
 #include "matrix/matrix_vector.h"
 #include "matrix/matrix_stats.h"
+#include "matrix/matrix_dist.h"
 
 #endif
