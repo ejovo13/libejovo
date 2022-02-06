@@ -3,6 +3,8 @@
 
 #include "ejovo_matrix.h"
 
+Matrix *g_ANON = NULL;
+
 /**================================================================================================
  *!                                        Memory and Allocation
  *================================================================================================**/
@@ -366,6 +368,11 @@ void Matrix_print(const Matrix *__m) {
 
         printf("|\n");
     }
+}
+
+// Print in the {1, 2, 3} iter style
+void Matrix_print_iter(const Matrix *__m) {
+    MatIter_print(Matrix_begin(__m), Matrix_end(__m));
 }
 
 void Matrix_summary(const Matrix *__m) {

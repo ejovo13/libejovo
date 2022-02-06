@@ -184,6 +184,7 @@ void t_length() {
 
     assert(MatIter_length(b, e) == wide->ncols);
 
+    Matrix_free(wide);
 
 
 }

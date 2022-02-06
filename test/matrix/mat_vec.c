@@ -20,8 +20,12 @@ int main() {
     printf("vector size: %ld\n", Vector_size(v));
     printf("vector_at_last: %lf\n", Vector_at(v, Vector_size(v) - 1));
 
-    Matrix_print(Vector_linspace(0.0, 2.0, 15));
+    Matrix_print_iter(Matrix_anon(Vector_linspace(0.0, 2.0, 15)));
 
+
+    Matrix_anon_free();
+    Matrix_free(v);
+    Matrix_free(m);
 
     return 0;
 }

@@ -4,10 +4,6 @@
 // that deal with the creation, destruction and setting of matrix elements
 
 #include "matrix.h"
-#include "matrix_getset.h"
-#include "matrix_vector.h"
-
-static Matrix * g_ANON = NULL;
 
 /**================================================================================================
  *!                                        Memory and Allocation
@@ -22,6 +18,7 @@ void matfree(Matrix *__A);
 // Free the memory associated with the matrix and then free the pointer itself
 void Matrix_free(Matrix *__A);
 
+// Free the memeory and set the pointer equal to NULL
 void Matrix_reset(Matrix **__A_ptr);
 
 // Copy the bytes
@@ -117,5 +114,8 @@ Matrix * Matrix_identity(size_t __n);
 void matprint(const Matrix *__m);
 
 void Matrix_print(const Matrix *__m);
+
+// Print in the; iter style
+void Matrix_print_iter(const Matrix *__m);
 
 void Matrix_summary(const Matrix *__m);

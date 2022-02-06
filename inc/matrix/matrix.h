@@ -43,6 +43,8 @@ typedef struct mat_t {
     size_t ncols;
 } Matrix;
 
+extern Matrix *g_ANON;
+
 // Iterate through a column, stopping when we've reached the final element
 /**
  * @brief A C++ style iterator that iterates along a Matrix's column.
