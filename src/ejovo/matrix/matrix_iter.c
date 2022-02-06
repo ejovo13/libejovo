@@ -2,10 +2,6 @@
 
 #include "ejovo_matrix.h"
 
-// TODO I think it might be a good idea to actually
-//! implement the functions that use col iters
-//! should be passing copies of the colIter and NOT a pointer
-//! I don't really want to modify/ consume the iterator...
 // TODO I need to add checks for some of my iterator functions like matdiagend -> Matrix_diag_end
 
 /**================================================================================================

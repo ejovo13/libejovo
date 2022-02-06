@@ -100,6 +100,9 @@ typedef bool (* Mask) (MATRIX_TYPE *); // A "Mask" is a pointer to a function th
                                        // Masks then can be used to only interact with data
                                        // that fit a specific criterion
 
+// I'll have to revise this because what a mask really should be is a matrix with elements either 1 or 0.
+// This can be constructed with a Mask Function
+
 /**================================================================================================
  *!                                        Matrix Decompositions
  *================================================================================================**/
