@@ -9,6 +9,7 @@ set (EJOVO_LIB
     ejovo_sort.c
     ejovo_comp.c
     ejovo_crypto.c
+    ejovo_bin.c
 
 )
 
