@@ -131,6 +131,10 @@ double std_norm();
 
 double normd(double mean, double std);
 
+// Get a random variable folling the exponential distribution with rate parameter \lambda
+// ~ \exp(-\x), where \ is "\lambda"
+double expd(double rate);
+
 double get_double();
 
 /**

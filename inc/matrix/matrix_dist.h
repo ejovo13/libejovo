@@ -9,3 +9,6 @@
 Vector *Vector_runif(size_t __n, double __a, double __b);
 
 Vector *Vector_rnorm(size_t __n, double __mean, double __std);
+
+// fill a vector with a uniform random distribution
+Vector *Vector_rexp(size_t __n, double __rate);

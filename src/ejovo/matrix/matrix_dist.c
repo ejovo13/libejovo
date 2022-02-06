@@ -28,3 +28,15 @@ Vector *Vector_rnorm(size_t __n, double __mean, double __std) {
 
     return v;
 }
+
+// fill a vector with a uniform random distribution
+Vector *Vector_rexp(size_t __n, double __rate) {
+
+    Vector *v = Vector_new(__n); // this will create a column vector by default
+
+    for (size_t i = 0; i < __n; i++) {
+        matset(v, i, 0, expd(__rate));
+    }
+
+    return v;
+}

@@ -124,6 +124,15 @@ double normd(double mean, double std) {
     return (std_norm() * std) + mean;
 }
 
+// Get a random variable folling the exponential distribution with rate parameter \lambda
+// ~ \exp(-\x), where \ is "\lambda"
+double expd(double rate) {
+
+    double y = unifd(0, 1);
+
+    return (-1 / rate) * log(1 - y);
+}
+
 void ejovo_seed() {
     seed_xoshiro256ss(&XOSHIRO_RNG);
 }
