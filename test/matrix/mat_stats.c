@@ -3,7 +3,6 @@
 void t_stats();
 
 int main() {
-
     t_stats();
     return 0;
 }
@@ -14,21 +13,14 @@ void t_stats() {
     Vector *v = get_V();
 
     assert(Vector_iter_sum(v) == 4827);
-    // assert(Vector_iter_mean(v) == 48.27);
+    assert(Vector_iter_mean(v) == 48.27);
+    assert(Vector_iter_prod(v) == 2084665261716893743665907133825444382365162377526258418090488426290510496570594647344840764092672500968715732110683532356837753775075967405071449991413760.0);
+    assert(Vector_iter_mean_squared(v) == 3140.6700);
+    assert(Vector_iter_rms(v) == sqrt(3140.6700));
+    assert(Vector_iter_min(v) == 1);
+    assert(Vector_iter_max(v) == 97);
 
-    MatIter b = Vector_begin(v);
-    MatIter e = Vector_end(v);
-
-    // printf("Vector_size(v) -> %ld\n", Vector_size(v));
-
-    // printf("Length of v: %ld\n", MatIter_length(b, e));
-    // printf("Mean of v: %lf\n", Vector_iter_mean(v));
-    printf("[t_stats]          end->ptr: %x, begin->ptr: %x\n", e.ptr, b.ptr);
-    printf("MatIter_mean(b, e): %lf\n", MatIter_mean(b, e));
-    // printf("MatIter_sum(b, e): %lf\n", MatIter_sum(b, e));
-    // printf("MatIter_sum(b, b): %lf\n", MatIter_sum(b, b));
+    Matrix_print(v);
 
     Matrix_free(v);
-
-
 }
