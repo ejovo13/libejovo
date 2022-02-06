@@ -11,6 +11,8 @@
 // Default to making a column vector
 Vector *Vector_new(size_t __nrows);
 
+Vector *Vector_from_iter(MatIter __begin, MatIter __end);
+
 Vector *Vector_rand(size_t __nrows);
 
 Vector *Vector_random(size_t __nrows, int __min, int __max);

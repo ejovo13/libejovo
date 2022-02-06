@@ -11,6 +11,14 @@ Vector *Vector_new(size_t __nrows) {
     return Matrix_new(__nrows, 1);
 }
 
+Vector *Vector_from_iter(MatIter __begin, MatIter __end) {
+    size_t len = MatIter_length(__begin, __end);
+    Vector *v = Vector_new(len);
+
+    MatIter_row_set_iter(Vector_begin(v), Vector_end(v), __begin);
+    return v;
+}
+
 Vector *Vector_rand(size_t __nrows) {
     return Matrix_rand(__nrows, 1);
 }

@@ -12,6 +12,14 @@
 // return -1 if bounds are not respected and prints an error to the screen
 MATRIX_TYPE Matrix_at(const Matrix *__m, size_t __i, size_t __j);
 
+MATRIX_TYPE Matrix_first(const Matrix *__m);
+
+MATRIX_TYPE Matrix_last(const Matrix *__m);
+
+MatIter Matrix_begin(const Matrix *__m);
+
+MatIter Matrix_end(const Matrix *__m);
+
 // Return element at __m[__i][__j] without checking bounds
 MATRIX_TYPE matat(const Matrix *__m, size_t __i, size_t __j);
 

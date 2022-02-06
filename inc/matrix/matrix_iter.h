@@ -196,6 +196,10 @@ void MatIter_div_iter(MatIter __a, const MatIter __b);
 // Set the elements of a row when given a row iterator and a value k
 void MatIter_row_set_k(const MatIter __rbegin, const MatIter __rend, const MATRIX_TYPE __k);
 
+// Set the elements of a row when given a row iterator and another starting iterator
+void MatIter_row_set_iter(const MatIter __rbegin, const MatIter __rend, const MatIter __bbegin);
+
+
 void MatIter_row_add_k(const MatIter __rbegin, const MatIter __rend, const MATRIX_TYPE __k);
 
 void MatIter_row_sub_k(const MatIter __rbegin, const MatIter __rend, const MATRIX_TYPE __k);

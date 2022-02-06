@@ -25,6 +25,24 @@ MATRIX_TYPE Matrix_at(const Matrix *__m, size_t __i, size_t __j) {
     }
 }
 
+MATRIX_TYPE Matrix_first(const Matrix *__m) {
+    return matat(__m, 0, 0);
+}
+
+MATRIX_TYPE Matrix_last(const Matrix *__m) {
+    return matat(__m, __m->nrows - 1, __m->ncols - 1);
+}
+
+MatIter Matrix_begin(const Matrix *__m) {
+    MatIter b = {.ptr = __m->data, .ptr_diff = 1};
+    return b;
+}
+
+MatIter Matrix_end(const Matrix *__m) {
+    MatIter e = {.ptr = matacc(__m, __m->nrows - 1, __m->ncols), .ptr_diff = 1}; // want the elment justtt after the final one
+    return e;
+}
+
 // Return element at __m[__i][__j] without checking bounds
 MATRIX_TYPE matat(const Matrix *__m, size_t __i, size_t __j) {
     return __m->data[__i * __m->ncols + __j];

@@ -482,6 +482,20 @@ void MatIter_row_set_k(const MatIter __rbegin, const MatIter __rend, const MATRI
     }
 }
 
+// Set the elements of a row when given a row iterator and another starting iterator
+void MatIter_row_set_iter(const MatIter __rbegin, const MatIter __rend, const MatIter __bbegin) {
+
+    MatIter rbegin = __rbegin;
+    MatIter bbegin = __bbegin;
+
+    while (! MatIter_cmp(rbegin, __rend)) {
+        MatIter_set_iter(rbegin, bbegin);
+        rbegin = MatIter_next(rbegin);
+        bbegin = MatIter_next(bbegin);
+    }
+}
+
+
 void MatIter_row_add_k(const MatIter __rbegin, const MatIter __rend, const MATRIX_TYPE __k) {
 
     MatIter rbegin = __rbegin;
