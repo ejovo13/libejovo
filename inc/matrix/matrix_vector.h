@@ -33,9 +33,9 @@ MATRIX_TYPE Vector_last(const Vector *__v);
 /**================================================================================================
  *!                                        Vector iterator functions
  *================================================================================================**/
-ColIter *Vector_col(const Vector *__v);
+MatIter Vector_begin(Vector *__v);
 
-RowIter *Vector_row(const Vector *__v);
+MatIter Vector_end(Vector *__v);
 
 MATRIX_TYPE Vector_at(const Vector *__v, size_t __i);
 

@@ -50,12 +50,12 @@ MATRIX_TYPE Vector_last(const Vector *__v) {
 /**================================================================================================
  *!                                        Vector iterator functions
  *================================================================================================**/
-ColIter *Vector_col(const Vector *__v) {
-    return Matrix_col_begin(__v, 0);
+MatIter Vector_begin(Vector *__v) {
+    return MatIter_new(matacc(__v, 0, 0), 1);
 }
 
-RowIter *Vector_row(const Vector *__v) {
-    return Matrix_row_begin(__v, 0);
+MatIter Vector_end(Vector *__v) {
+    return MatIter_new(Vector_access(__v, Vector_size(__v)), 1);
 }
 
 MATRIX_TYPE Vector_at(const Vector *__v, size_t __i) {

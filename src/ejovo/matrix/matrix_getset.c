@@ -146,48 +146,48 @@ void matsetcol(Matrix *__A, size_t __i, size_t __j, const MATRIX_TYPE *__src, si
 // matsetrow_add_k
 
 // multiply the row of a matrix times the value __k
-void matsetrow_mult_k(Matrix *__A, MatIter *__r, const MatIter *__row_end, MATRIX_TYPE __k) {
+void matsetrow_mult_k(Matrix *__A, MatIter __r, const MatIter __row_end, MATRIX_TYPE __k) {
 
     while(! MatIter_cmp(__r, __row_end)) { // while we haven't reached the end,
-        multscalar(__r->ptr, __k);
-        MatIter_next(__r);
+        multscalar(__r.ptr, __k);
+        __r = MatIter_next(__r);
     }
 
 }
 
 // multiply the row of a matrix times the value __k
-void matsetrow_div_k(Matrix *__A, MatIter *__r, const MatIter *__row_end, MATRIX_TYPE __k) {
+void matsetrow_div_k(Matrix *__A, MatIter __r, const MatIter __row_end, MATRIX_TYPE __k) {
 
     while(! MatIter_cmp(__r, __row_end)) { // while we haven't reached the end,
-        divscalar(__r->ptr, __k);
-        MatIter_next(__r);
+        divscalar(__r.ptr, __k);
+        __r = MatIter_next(__r);
     }
 
 }
 // multiply the row of a matrix times the value __k
-void matsetrow_add_k(Matrix *__A, MatIter *__r, const MatIter *__row_end, MATRIX_TYPE __k) {
+void matsetrow_add_k(Matrix *__A, MatIter __r, const MatIter __row_end, MATRIX_TYPE __k) {
 
     while(! MatIter_cmp(__r, __row_end)) { // while we haven't reached the end,
-        addscalar(__r->ptr, __k);
-        MatIter_next(__r);
+        addscalar(__r.ptr, __k);
+        __r = MatIter_next(__r);
     }
 
 }
 
 // multiply the row of a matrix times the value __k
-void matsetrow_sub_k(Matrix *__A, MatIter *__r, const MatIter *__row_end, MATRIX_TYPE __k) {
+void matsetrow_sub_k(Matrix *__A, MatIter __r, const MatIter __row_end, MATRIX_TYPE __k) {
 
     while(! MatIter_cmp(__r, __row_end)) { // while we haven't reached the end,
-        subscalar(__r->ptr, __k);
-        MatIter_next(__r);
+        subscalar(__r.ptr, __k);
+        __r = MatIter_next(__r);
     }
 
 }
 
 int Matrix_mult_row_k(Matrix *__A, const size_t __i, const MATRIX_TYPE __k) {
 
-    const MatIter *row_end = Matrix_row_end(__A, __i);
-    MatIter *row_begin = Matrix_row_begin(__A, __i);
+    const MatIter row_end = Matrix_row_end(__A, __i);
+    MatIter row_begin = Matrix_row_begin(__A, __i);
 
     matsetrow_mult_k(__A, row_begin, row_end, __k);
     return EXIT_SUCCESS;
@@ -196,8 +196,8 @@ int Matrix_mult_row_k(Matrix *__A, const size_t __i, const MATRIX_TYPE __k) {
 
 int Matrix_div_row_k(Matrix *__A, const size_t __i, const MATRIX_TYPE __k) {
 
-    const MatIter *row_end = Matrix_row_end(__A, __i);
-    MatIter *row_begin = Matrix_row_begin(__A, __i);
+    const MatIter row_end = Matrix_row_end(__A, __i);
+    MatIter row_begin = Matrix_row_begin(__A, __i);
 
     matsetrow_div_k(__A, row_begin, row_end, __k);
     return EXIT_SUCCESS;
@@ -206,8 +206,8 @@ int Matrix_div_row_k(Matrix *__A, const size_t __i, const MATRIX_TYPE __k) {
 int Matrix_add_row_k(Matrix *__A, const size_t __i, const MATRIX_TYPE __k) {
 
 
-    const MatIter *row_end = Matrix_row_end(__A, __i);
-    MatIter *row_begin = Matrix_row_begin(__A, __i);
+    const MatIter row_end = Matrix_row_end(__A, __i);
+    MatIter row_begin = Matrix_row_begin(__A, __i);
 
     matsetrow_add_k(__A, row_begin, row_end, __k);
     return EXIT_SUCCESS;
@@ -216,8 +216,8 @@ int Matrix_add_row_k(Matrix *__A, const size_t __i, const MATRIX_TYPE __k) {
 
 int Matrix_sub_row_k(Matrix *__A, const size_t __i, const MATRIX_TYPE __k) {
 
-    const MatIter *row_end = Matrix_row_end(__A, __i);
-    MatIter *row_begin = Matrix_row_begin(__A, __i);
+    const MatIter row_end = Matrix_row_end(__A, __i);
+    MatIter row_begin = Matrix_row_begin(__A, __i);
 
     matsetrow_sub_k(__A, row_begin, row_end, __k);
     return EXIT_SUCCESS;
@@ -225,39 +225,39 @@ int Matrix_sub_row_k(Matrix *__A, const size_t __i, const MATRIX_TYPE __k) {
 }
 
 // editing columns now
-void matsetcol_mult_k(Matrix *__A, MatIter *__c, const MatIter *__col_end, MATRIX_TYPE __k) {
+void matsetcol_mult_k(Matrix *__A, MatIter __c, const MatIter __col_end, MATRIX_TYPE __k) {
 
     while(! MatIter_cmp(__c, __col_end)) { // while we haven't reached the end,
-        multscalar(__c->ptr, __k);
+        multscalar(__c.ptr, __k);
         MatIter_next(__c);
     }
 
 }
 
 // multiply the col of a matrix times the value __k
-void matsetcol_div_k(Matrix *__A, MatIter *__c, const MatIter *__col_end, MATRIX_TYPE __k) {
+void matsetcol_div_k(Matrix *__A, MatIter __c, const MatIter __col_end, MATRIX_TYPE __k) {
 
     while(! MatIter_cmp(__c, __col_end)) { // while we haven't reached the end,
-        divscalar(__c->ptr, __k);
+        divscalar(__c.ptr, __k);
         MatIter_next(__c);
     }
 
 }
 // multiply the col of a matrix times the value __k
-void matsetcol_add_k(Matrix *__A, MatIter *__c, const MatIter *__col_end, MATRIX_TYPE __k) {
+void matsetcol_add_k(Matrix *__A, MatIter __c, const MatIter __col_end, MATRIX_TYPE __k) {
 
     while(! MatIter_cmp(__c, __col_end)) { // while we haven't reached the end,
-        addscalar(__c->ptr, __k);
+        addscalar(__c.ptr, __k);
         MatIter_next(__c);
     }
 
 }
 
 // multiply the col of a matrix times the value __k
-void matsetcol_sub_k(Matrix *__A, MatIter *__c, const MatIter *__col_end, MATRIX_TYPE __k) {
+void matsetcol_sub_k(Matrix *__A, MatIter __c, const MatIter __col_end, MATRIX_TYPE __k) {
 
     while(! MatIter_cmp(__c, __col_end)) { // while we haven't reached the end,
-        subscalar(__c->ptr, __k);
+        subscalar(__c.ptr, __k);
         MatIter_next(__c);
     }
 
@@ -265,8 +265,8 @@ void matsetcol_sub_k(Matrix *__A, MatIter *__c, const MatIter *__col_end, MATRIX
 
 int Matrix_mult_col_k(Matrix *__A, const size_t __i, const MATRIX_TYPE __k) {
 
-    const MatIter *col_end = Matrix_col_end(__A, __i);
-    MatIter *col_begin = Matrix_col_begin(__A, __i);
+    const MatIter col_end = Matrix_col_end(__A, __i);
+    MatIter col_begin = Matrix_col_begin(__A, __i);
 
     matsetcol_mult_k(__A, col_begin, col_end, __k);
     return EXIT_SUCCESS;
@@ -275,8 +275,8 @@ int Matrix_mult_col_k(Matrix *__A, const size_t __i, const MATRIX_TYPE __k) {
 
 int Matrix_div_col_k(Matrix *__A, const size_t __i, const MATRIX_TYPE __k) {
 
-    const MatIter *col_end = Matrix_col_end(__A, __i);
-    MatIter *col_begin = Matrix_col_begin(__A, __i);
+    const MatIter col_end = Matrix_col_end(__A, __i);
+    MatIter col_begin = Matrix_col_begin(__A, __i);
 
     matsetcol_div_k(__A, col_begin, col_end, __k);
     return EXIT_SUCCESS;
@@ -285,8 +285,8 @@ int Matrix_div_col_k(Matrix *__A, const size_t __i, const MATRIX_TYPE __k) {
 int Matrix_add_col_k(Matrix *__A, const size_t __i, const MATRIX_TYPE __k) {
 
 
-    const MatIter *col_end = Matrix_col_end(__A, __i);
-    MatIter *col_begin = Matrix_col_begin(__A, __i);
+    const MatIter col_end = Matrix_col_end(__A, __i);
+    MatIter col_begin = Matrix_col_begin(__A, __i);
 
     matsetcol_add_k(__A, col_begin, col_end, __k);
     return EXIT_SUCCESS;
@@ -295,8 +295,8 @@ int Matrix_add_col_k(Matrix *__A, const size_t __i, const MATRIX_TYPE __k) {
 
 int Matrix_sub_col_k(Matrix *__A, const size_t __i, const MATRIX_TYPE __k) {
 
-    const MatIter *col_end = Matrix_col_end(__A, __i);
-    MatIter *col_begin = Matrix_col_begin(__A, __i);
+    const MatIter col_end = Matrix_col_end(__A, __i);
+    MatIter col_begin = Matrix_col_begin(__A, __i);
 
     matsetcol_sub_k(__A, col_begin, col_end, __k);
     return EXIT_SUCCESS;

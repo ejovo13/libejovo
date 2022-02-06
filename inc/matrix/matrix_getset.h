@@ -3,7 +3,6 @@
 // Essential routines to get and set elements and columns and rows of matrices
 
 #include "matrix.h"
-#include "matrix_state.h"
 
 /**================================================================================================
  *!                                        Set/Get Individual Elements
@@ -65,15 +64,15 @@ void matsetcol(Matrix *__A, size_t __i, size_t __j, const MATRIX_TYPE *__src, si
 // matsetrow_add_k
 
 // multiply the row of a matrix times the value __k
-void matsetrow_mult_k(Matrix *__A, MatIter *__r, const MatIter *__row_end, MATRIX_TYPE __k);
+void matsetrow_mult_k(Matrix *__A, MatIter __r, const MatIter __row_end, MATRIX_TYPE __k);
 
 // multiply the row of a matrix times the value __k
-void matsetrow_div_k(Matrix *__A, MatIter *__r, const MatIter *__row_end, MATRIX_TYPE __k);
+void matsetrow_div_k(Matrix *__A, MatIter __r, const MatIter __row_end, MATRIX_TYPE __k);
 // multiply the row of a matrix times the value __k
-void matsetrow_add_k(Matrix *__A, MatIter *__r, const MatIter *__row_end, MATRIX_TYPE __k);
+void matsetrow_add_k(Matrix *__A, MatIter __r, const MatIter __row_end, MATRIX_TYPE __k);
 
 // multiply the row of a matrix times the value __k
-void matsetrow_sub_k(Matrix *__A, MatIter *__r, const MatIter *__row_end, MATRIX_TYPE __k);
+void matsetrow_sub_k(Matrix *__A, MatIter __r, const MatIter __row_end, MATRIX_TYPE __k);
 
 int Matrix_mult_row_k(Matrix *__A, const size_t __i, const MATRIX_TYPE __k);
 
@@ -83,15 +82,15 @@ int Matrix_add_row_k(Matrix *__A, const size_t __i, const MATRIX_TYPE __k);
 int Matrix_sub_row_k(Matrix *__A, const size_t __i, const MATRIX_TYPE __k);
 
 // editing columns now
-void matsetcol_mult_k(Matrix *__A, MatIter *__c, const MatIter *__col_end, MATRIX_TYPE __k);
+void matsetcol_mult_k(Matrix *__A, MatIter __c, const MatIter __col_end, MATRIX_TYPE __k);
 
 // multiply the col of a matrix times the value __k
-void matsetcol_div_k(Matrix *__A, MatIter *__c, const MatIter *__col_end, MATRIX_TYPE __k);
+void matsetcol_div_k(Matrix *__A, MatIter __c, const MatIter __col_end, MATRIX_TYPE __k);
 // multiply the col of a matrix times the value __k
-void matsetcol_add_k(Matrix *__A, MatIter *__c, const MatIter *__col_end, MATRIX_TYPE __k);
+void matsetcol_add_k(Matrix *__A, MatIter __c, const MatIter __col_end, MATRIX_TYPE __k);
 
 // multiply the col of a matrix times the value __k
-void matsetcol_sub_k(Matrix *__A, MatIter *__c, const MatIter *__col_end, MATRIX_TYPE __k);
+void matsetcol_sub_k(Matrix *__A, MatIter __c, const MatIter __col_end, MATRIX_TYPE __k);
 
 int Matrix_mult_col_k(Matrix *__A, const size_t __i, const MATRIX_TYPE __k);
 

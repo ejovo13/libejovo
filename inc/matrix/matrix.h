@@ -121,11 +121,11 @@ typedef struct ldu_t {
     Vector *U;
 } LDU;
 
-typedef void (* MatIterFn) (MatIter *);
-typedef void (* MatIterFn_k) (MatIter *, MATRIX_TYPE);
-typedef void (* MatIterFn_ptr) (MatIter *, const MATRIX_TYPE *);
-typedef void (* MatIterFn_iter) (MatIter *, MatIter *);
-typedef void (* MatIterFn_iter_k) (MatIter *, MatIter *, const MATRIX_TYPE);
+typedef void (* MatIterFn) (MatIter);
+typedef void (* MatIterFn_k) (MatIter, MATRIX_TYPE);
+typedef void (* MatIterFn_ptr) (MatIter, const MATRIX_TYPE *);
+typedef void (* MatIterFn_iter) (MatIter, MatIter);
+typedef void (* MatIterFn_iter_k) (MatIter, MatIter, const MATRIX_TYPE);
 
 typedef void (* ColIterFn) (ColIter *);
 typedef void (* ColIterFn_k) (ColIter *, MATRIX_TYPE);

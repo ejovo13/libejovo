@@ -9,6 +9,7 @@ set(EJOVO_MATRIX_SRC
     matrix_compute.c
     matrix_iter.c
     matrix_special.c
+    matrix_stats.c
 
 )
 

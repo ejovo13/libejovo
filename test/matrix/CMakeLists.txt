@@ -5,6 +5,7 @@ set(MATRIX_TEST_SRC
     mat_iter
     mat_lin
     mat_core
+    mat_stats
 
 
 

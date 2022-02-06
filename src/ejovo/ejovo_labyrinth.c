@@ -577,22 +577,3 @@ bool chercher_chemin(Matrix *__maze, size_t __starti, size_t __startj) {
     return true;
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

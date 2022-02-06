@@ -1,8 +1,6 @@
 #pragma once
 
 #include "matrix.h"
-#include "matrix_core.h"
-// #include "matrix_getset.h"
 
 /**================================================================================================
  *!                                        Unary Matrix Operators
@@ -68,12 +66,12 @@ Matrix *Matrix_subtract(const Matrix *__A, const Matrix *__B);
  *================================================================================================**/
 
 // Calculate the norm of a column using MatIter's
-MATRIX_TYPE colnorm(const MatIter *__begin, const MatIter *__end);
+MATRIX_TYPE colnorm(const MatIter __begin, const MatIter __end);
 
 // Calculate the norm of a specific column
 MATRIX_TYPE Matrix_col_norm(const Matrix *__A, size_t __j);
 
-void matnormcol(const MatIter *__begin, const MatIter *__end);
+void matnormcol(const MatIter __begin, const MatIter __end);
 
 void matnormcols(Matrix *__A);
 
@@ -138,3 +136,5 @@ Matrix *gausselim(Matrix *__A, const Matrix *__B);
  *
  */
 Vector *jacobi_iteration(const Matrix *__A, const Vector *__b, const Vector *__x0, MATRIX_TYPE __crit);
+
+

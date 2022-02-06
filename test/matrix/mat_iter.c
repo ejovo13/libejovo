@@ -9,6 +9,8 @@ void t_diag_wide();
 void t_diag_tall();
 void t_diag_sq();
 
+void t_length(); /* Verify that the length calculated is accurate. */
+
 
 void t_minmax();
 // void t_coliter();
@@ -20,6 +22,7 @@ int main() {
     t_diag_wide();
     t_diag_tall();
     t_diag_sq();
+    t_length();
 }
 
 void t_iter() {
@@ -28,21 +31,17 @@ void t_iter() {
     Matrix *m = Matrix_rand(5, 5);
     Matrix_print(m);
 
-    MatIter *b = Matrix_row_begin(m, 3);
-    MatIter *e = Matrix_row_end(m, 3);
+    MatIter b = Matrix_row_begin(m, 3);
+    MatIter e = Matrix_row_end(m, 3);
 
     printf("row 4: ");
     MatIter_print(b, e);
 
-    MatIter *b1 = Matrix_col_begin(m, 4);
-    MatIter *e1 = Matrix_col_end(m, 4);
+    MatIter b1 = Matrix_col_begin(m, 4);
+    MatIter e1 = Matrix_col_end(m, 4);
     printf("col 5: ");
     MatIter_print(b1, e1);
 
-    free(b);
-    free(e);
-    free(b1);
-    free(e1);
     Matrix_free(m);
 }
 
@@ -174,4 +173,17 @@ void t_diag_sq() {
     assert(Matrix_diag_prod(sq, -5) == 112);
 
     Matrix_free(sq);
+}
+
+void t_length() {
+
+    Matrix *wide = get_wide();
+
+    MatIter b = matrowbegin(wide, 0);
+    MatIter e = matrowend(wide, 0);
+
+    assert(MatIter_length(b, e) == wide->ncols);
+
+
+
 }

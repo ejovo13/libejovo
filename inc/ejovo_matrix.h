@@ -11,5 +11,6 @@
 #include "matrix/matrix_special.h"
 #include "matrix/matrix_state.h"
 #include "matrix/matrix_vector.h"
+#include "matrix/matrix_stats.h"
 
 #endif

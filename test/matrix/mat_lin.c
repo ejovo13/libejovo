@@ -140,6 +140,8 @@ void t_frobenius() {
 
 void t_matlu() {
 
+    printf("Starting matlu\n");
+
     ejovo_seed();
 
     Matrix *m = Matrix_random(3, 3, 1, 10);
@@ -147,9 +149,13 @@ void t_matlu() {
 
     Matrix *U = Matrix_clone(m);
 
+    printf("Matrix cloned\n");
+
     Matrix *L = matlu_nopivot(U);
     Matrix_print(L);
     Matrix_print(U);
+
+
 
     printf("L * U = \n");
 

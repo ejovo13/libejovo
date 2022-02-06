@@ -245,17 +245,16 @@ Matrix *Matrix_subtract(const Matrix *__A, const Matrix *__B) {
  *================================================================================================**/
 
 // Calculate the norm of a column using MatIter's
-MATRIX_TYPE colnorm(const MatIter *__begin, const MatIter *__end) {
+MATRIX_TYPE colnorm(const MatIter __begin, const MatIter __end) {
 
-    MatIter *c = MatIter_clone(__begin);
+    MatIter c = __begin;
     MATRIX_TYPE sum = 0;
 
     do {
         sum += MatIter_value(c) * MatIter_value(c);
-        MatIter_next(c);
+        c = MatIter_next(c);
     } while(!MatIter_cmp(c, __end));
 
-    free(c);
     return sqrt(sum);
 
 }
@@ -263,16 +262,14 @@ MATRIX_TYPE colnorm(const MatIter *__begin, const MatIter *__end) {
 // Calculate the norm of a specific column
 MATRIX_TYPE Matrix_col_norm(const Matrix *__A, size_t __j) {
 
-    MatIter *begin = NULL;
-    MatIter *end = NULL;
+    MatIter begin = MatIter_null();
+    MatIter end = MatIter_null();
     double out = 0;
 
     if (__j < __A->ncols) {
         begin = Matrix_col_begin(__A, __j);
         end = Matrix_col_end(__A, __j);
         out = colnorm(begin, end);
-        free(begin);
-        free(end);
         return out;
     } else {
         perror("Col requested exceeds bounds");
@@ -280,46 +277,41 @@ MATRIX_TYPE Matrix_col_norm(const Matrix *__A, size_t __j) {
     }
 }
 
-void matnormcol(const MatIter *__begin, const MatIter *__end) {
+void matnormcol(const MatIter __begin, const MatIter __end) {
 
-    MatIter *c = MatIter_clone(__begin);
+    MatIter c = __begin;
     MATRIX_TYPE norm = colnorm(__begin, __end);
 
     // now that we have calculated the norm, divide the columns values by the norm
 
     while (!MatIter_cmp(c, __end)) {
-        *(c->ptr) /= norm;
-        MatIter_next(c);
+        *(c.ptr) /= norm;
+        c = MatIter_next(c);
     }
-    free(c);
     // *(c->ptr) /= norm;
 }
 
 void matnormcols(Matrix *__A) {
 
-    MatIter *begin = NULL;
-    MatIter *end = NULL;
+    MatIter begin = MatIter_null();
+    MatIter end = MatIter_null();
 
     for (size_t j = 0; j < __A->ncols; j++) {
         begin = Matrix_col_begin(__A, j);
         end = Matrix_col_end(__A, j);
         matnormcol(begin, end);
-        free(begin);
-        free(end);
     }
 }
 
 void Matrix_normalize_col(Matrix *__A, size_t __j) {
 
-    MatIter *begin = NULL;
-    MatIter *end = NULL;
+    MatIter begin = MatIter_null();
+    MatIter end = MatIter_null();
 
     if (__j < __A->ncols) {
         begin = Matrix_col_begin(__A, __j);
         end = Matrix_col_end(__A, __j);
         matnormcol(begin, end);
-        free(begin);
-        free(end);
     } else {
         printf("selected column is out of bounds");
         return;
@@ -534,7 +526,7 @@ Vector *jacobi_iteration(const Matrix *__A, const Vector *__b, const Vector *__x
     Matrix_print(__x0);
 
     while(nsteps < MAX_STEP_SIZE) {
-    // for (size_t s = 0; s < 3; s++) {
+    // for (size_t s = 0; s < 3; s++)
         // For jacobi iteration we have an initial guess, we have a residual,
         for (size_t i = 0; i < Vector_size(__b); i++) { // loop through the rows
 
