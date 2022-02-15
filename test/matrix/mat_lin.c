@@ -1,6 +1,4 @@
-#include "ejovo_matrix.h"
-#include <assert.h>
-#include <stdbool.h>
+#include "test_mat.h"
 
 void t_mat_pow();
 void t_mat_det();
@@ -35,28 +33,24 @@ int main() {
 
 void t_mat_pow() {
 
-    ejovo_seed();
+    Matrix *sq = get_square();
 
-    Matrix *m = Matrix_rand(10, 10);
-    Matrix_print(m);
-    Matrix_catch(&m, Matrix_pow(m, 3));
-    Matrix_print(m);
+    Matrix_catch(&sq, Matrix_pow(sq, 3));
+    Matrix *sq_3 = Matrix_from(
+        (double[]) {10681.000000, 10490.000000, 11813.000000, 7830.000000, 11105.000000, 11420.000000, 7055.000000, 8967.000000, 6871.000000, 6046.000000, 7185.000000, 4899.000000, 6720.000000, 7045.000000, 3862.000000, 5637.000000, 7845.000000, 6869.000000, 7820.000000, 5215.000000, 7603.000000, 7571.000000, 4555.000000, 5906.000000, 11428.000000, 10243.000000, 11794.000000, 7442.000000, 10729.000000, 11454.000000, 6503.000000, 9057.000000, 12614.000000, 11574.000000, 13027.000000, 8291.000000, 12173.000000, 12708.000000, 7485.000000, 9773.000000, 9346.000000, 8532.000000, 10264.000000, 6262.000000, 9355.000000, 9328.000000, 5478.000000, 7607.000000, 9630.000000, 8960.000000, 10087.000000, 6510.000000, 9374.000000, 10434.000000, 5873.000000, 7757.000000, 10936.000000, 10037.000000, 11457.000000, 7264.000000, 10773.000000, 11155.000000, 6747.000000, 8662.000000},
+        8, 8);
 
-    Matrix_free(m);
+    assert(matcmp(sq, sq_3)); // Verify the matrix power computation.
 
+    Matrix_free(sq);
+    Matrix_free(sq_3);
 }
 
 void t_mat_det() {
 
-    ejovo_seed();
-
-    Matrix *m = Matrix_rand(2, 2);
-    Matrix_print(m);
-
-    printf("Det(m): %lf\n", Matrix_det(m));
-
-    Matrix_free(m);
-
+    Matrix *s = get_square();
+    assert(Matrix_det(s) == 5853640);
+    Matrix_free(s);
 }
 
 void t_matcdr_check() {
@@ -71,6 +65,12 @@ void t_matcdr_check() {
 
     printf("m2 c2 dot with m1 r 1: %lf\n", matcdr_check(m1, m2, 0, 1));
 
+    Matrix *wide = get_wide();
+    Matrix *sq = get_square();
+
+    Matrix_free(wide);
+    Matrix_free(sq);
+
     Matrix_free(m1);
     Matrix_free(m2);
 
@@ -78,25 +78,20 @@ void t_matcdr_check() {
 
 void t_matmul() {
 
-    ejovo_seed();
+    Matrix *tall = get_tall();
+    Matrix *sq = get_square();
+    Matrix *sq_tall = Matrix_multiply(sq, tall);
 
-    Matrix *m1 = Matrix_rand(2, 2);
-    Matrix *m2 = Matrix_rand(2, 2);
+    Matrix *true_value = Matrix_from(
+        (double[]) {280.000000, 250.000000, 221.000000, 204.000000, 116.000000, 143.000000, 138.000000, 89.000000, 169.000000, 154.000000, 160.000000, 87.000000, 233.000000, 225.000000, 222.000000, 165.000000, 296.000000, 257.000000, 258.000000, 172.000000, 224.000000, 202.000000, 271.000000, 120.000000, 234.000000, 164.000000, 181.000000, 147.000000, 269.000000, 201.000000, 229.000000, 176.000000},
+        8, 4);
 
-    Matrix_print(m1);
-    Matrix_print(m2);
+    assert(matcmp(sq_tall, true_value));
 
-    Matrix *product = matmul(m1, m2);
-
-    printf("m1 * m2 \n");
-
-    Matrix_print(product);
-
-    Matrix_free(product);
-    Matrix_free(m1);
-    Matrix_free(m2);
-
-
+    Matrix_free(tall);
+    Matrix_free(sq);
+    Matrix_free(sq_tall);
+    Matrix_free(true_value);
 }
 
 void t_colnorm() {
@@ -108,8 +103,6 @@ void t_colnorm() {
     printf("Colnorm: %lf\n", Matrix_col_norm(m, 3));
 
     Matrix_free(m);
-
-
 }
 
 void t_matnormcol() {

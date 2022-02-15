@@ -25,8 +25,22 @@ set (EJOVO_LIB_HEADERS
     ${INC}/ejovo_sort.h
     ${INC}/ejovo_comp.h
     ${INC}/ejovo_crypto.h
-    # ${INC}/matrix/matrix_core.h
+)
 
+set (EJOVO_MATRIX_HEADERS
+
+    ${INC}/matrix/matrix_compute.h
+    ${INC}/matrix/matrix_core.h
+    ${INC}/matrix/matrix_dist.h
+    ${INC}/matrix/matrix_foreach.h
+    ${INC}/matrix/matrix_getset.h
+    ${INC}/matrix/matrix_iter.h
+    ${INC}/matrix/matrix_linear.h
+    ${INC}/matrix/matrix_special.h
+    ${INC}/matrix/matrix_state.h
+    ${INC}/matrix/matrix_stats.h
+    ${INC}/matrix/matrix_vector.h
+    ${INC}/matrix/matrix.h
 )
 
 add_subdirectory(matrix)
@@ -43,6 +57,7 @@ target_include_directories(ejovo PRIVATE "${CMAKE_SOURCE_DIR}/inc/matrix")
 set_target_properties(ejovo PROPERTIES
 
     PUBLIC_HEADER "${EJOVO_LIB_HEADERS}"
+    # MATRIX_HEADER "${EJOVO_MATRIX_HEADERS}"
 
 )
 
@@ -50,7 +65,11 @@ include(GNUInstallDirs)
 install(TARGETS ejovo
     PUBLIC_HEADER
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/ejovo
+    # MATRIX_HEADER ${CMAKE_INSTALL_INCLUDEDIR}/matrix
 )
+
+install(DIRECTORY ${INC}/matrix
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/ejovo)
 
 # message("Trying to include directory ${CMAKE_SOURCE_DIR}/inc/battleship")
 

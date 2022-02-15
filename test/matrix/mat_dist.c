@@ -1,6 +1,4 @@
 #include "test_mat.h"
-#include <stdint.h>
-#include "ejovo_bin.h"
 
 void t_unif();
 void t_norm();
