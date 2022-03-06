@@ -248,6 +248,29 @@ Matrix * Matrix_ij(size_t __nrows, size_t __ncols) {
 
 }
 
+Vector *range(int __start, int __end, int __diff) {
+
+    // first calculate how many elements there will be.
+    int n = (__end - __start) / __diff + 1;
+    Vector *v = Matrix_new(1, n);
+
+    for (int i = 0; i < n; i++) {
+        Vector_set(v, i, __start + i * __diff);
+    }
+
+    return v;
+}
+
+Vector *linspace(MATRIX_TYPE __start, MATRIX_TYPE __end, int __N) {
+
+    Vector *v = Vector_linspace(__start, __end, __N);
+    int tmp = v->ncols;
+    v->ncols = v->nrows;
+    v->nrows = tmp;
+
+    return v;
+}
+
 Vector *Vector_linspace(MATRIX_TYPE __start, MATRIX_TYPE __end, int __N) {
 
     MATRIX_TYPE difference = (__end - __start) / (__N - 1.0);

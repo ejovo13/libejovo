@@ -85,6 +85,10 @@ Matrix * Matrix_ones(size_t __nrows, size_t __ncols);
 
 Matrix * Matrix_ij(size_t __nrows, size_t __ncols);
 
+Vector *linspace(MATRIX_TYPE __start, MATRIX_TYPE __end, int __N);
+
+Vector *range(int __start, int __end, int __diff);
+
 Vector *Vector_linspace(MATRIX_TYPE __start, MATRIX_TYPE __end, int __N);
 
 

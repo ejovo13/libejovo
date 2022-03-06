@@ -14,6 +14,8 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${BIN})
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${LIB})
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${LIB})
 
+# set(EJOVO_HEADERS ${CMAKE_})
+
 add_compile_options(
 
     # -Wall
@@ -42,9 +44,12 @@ file(MAKE_DIRECTORY ${LIB})
 # file(MAKE_DIRECTORY ${})
 
 include_directories(${INC})
+include_directories(inc)
+include_directories(inc/battleship)
+include_directories(inc/matrix)
 
-add_subdirectory(${SRC})
-add_subdirectory(${TEST})
+add_subdirectory(src)
+add_subdirectory(test)
 
 add_custom_target( unit_tests ALL
                     DEPENDS ${TESTS})
