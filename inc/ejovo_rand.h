@@ -146,5 +146,6 @@ double get_double();
  */
 void ejovo_seed();
 
+int *fischer_yates(int n);
 
 #endif

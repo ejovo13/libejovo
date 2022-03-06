@@ -136,3 +136,25 @@ double expd(double rate) {
 void ejovo_seed() {
     seed_xoshiro256ss(&XOSHIRO_RNG);
 }
+
+// Create a shuffled array with elements 1 to n
+int *fischer_yates(int n) {
+
+    int *arr = (int *) malloc(sizeof(int) * n);
+
+    for (int i = 0; i < n; i++) {
+        arr[i] = i + 1;
+    }
+
+
+    int tmp;
+    // now go ahead and shuffle them
+    for (int j = 0, i = n - 1; i > 0; i--) {
+        j = unif(0, i);
+        int tmp = arr[j];
+        arr[j] = arr[i];
+        arr[i] = tmp;
+    }
+
+    return arr;
+}
