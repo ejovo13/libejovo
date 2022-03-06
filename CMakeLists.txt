@@ -48,6 +48,8 @@ include_directories(inc)
 include_directories(inc/battleship)
 include_directories(inc/matrix)
 
+message("${INC} added to to include directories")
+
 add_subdirectory(src)
 add_subdirectory(test)
 
