@@ -401,3 +401,16 @@ void Matrix_print_iter(const Matrix *__m) {
 void Matrix_summary(const Matrix *__m) {
     printf("%lu x %lu matrix\n", __m->nrows, __m->ncols);
 }
+
+void Vector_print_head(const Matrix *__m, int __n) {
+
+    int n = Vector_size(__m) < __n ? Vector_size(__m) : __n;
+
+    Matrix_summary(__m);
+    printf("| ");
+    for (size_t i = 0; i < n; i++) {
+        printf("%4.4lf ", Vector_at(__m, i));
+    }
+    printf("|\n");
+
+}

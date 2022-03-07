@@ -119,6 +119,8 @@ void matprint(const Matrix *__m);
 
 void Matrix_print(const Matrix *__m);
 
+void Vector_print_head(const Matrix *__m, int __n);
+
 // Print in the; iter style
 void Matrix_print_iter(const Matrix *__m);
 

@@ -51,3 +51,35 @@ MATRIX_TYPE Matrix_iter_max(const Matrix *__m);
 MATRIX_TYPE Matrix_iter_var(const Matrix *__m);
 
 MATRIX_TYPE Matrix_iter_std(const Matrix *__m);
+
+typedef MATRIX_TYPE (* mat_iter_fn) (const MatIter, const MatIter);
+
+MATRIX_TYPE Matrix_iterate(const Matrix *__m, mat_iter_fn fn);
+
+MATRIX_TYPE mean(const Matrix *__m);
+
+MATRIX_TYPE sum(const Matrix *__m);
+
+MATRIX_TYPE std(const Matrix *__m);
+
+MATRIX_TYPE var(const Matrix *__m);
+
+MATRIX_TYPE min(const Matrix *__m);
+
+MATRIX_TYPE max(const Matrix *__m);
+
+MATRIX_TYPE rms(const Matrix *__m);
+
+MATRIX_TYPE mean_squared(const Matrix *__m);
+
+MATRIX_TYPE cov(const Matrix *__x, const Matrix *__y);
+
+MATRIX_TYPE prod(const Matrix *__m);
+
+MATRIX_TYPE cor(const Matrix *__x, const Matrix *__y);
+
+// central moment
+MATRIX_TYPE cmoment(const Vector *__v, int __k);
+
+// raw moment
+MATRIX_TYPE rmoment(const Vector *__v, int __k);

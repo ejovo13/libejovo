@@ -178,6 +178,17 @@ void mathad(Matrix *__A, const Matrix *__B) {
     }
 }
 
+// Take the exponential hadamard ie {1, 2, 3} to the 3rd => {1, 8, 27}
+void mathadexp(Matrix *__A, int __k) {
+
+    // Iterate through the elements and raise them to an exponential
+    // I should really implement a macro to get a foriterator loop....
+    // Go through and replace all of the elements with their value raised to a power
+    for (MatIter it = Matrix_begin(__A); !MatIter_cmp(it, Matrix_end(__A)); it = MatIter_next(it)) {
+        MatIter_set(it, pow(MatIter_value(it), __k)); // not bad huh??
+    }
+}
+
 // Call hadamard multiplication, checking the indices with each access.
 void mathad_check(Matrix *__A, const Matrix *__B) {
 

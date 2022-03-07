@@ -123,3 +123,157 @@ MATRIX_TYPE Matrix_iter_var(const Matrix *__m) {
 MATRIX_TYPE Matrix_iter_std(const Matrix *__m) {
     return MatIter_std(Matrix_begin(__m), Matrix_end(__m));
 }
+
+/**========================================================================
+ *!                           Regular matrix stats routines
+ *========================================================================**/
+// typedef MATRIX_TYPE (* mat_iter_fn) (const MatIter, const MatIter);
+
+MATRIX_TYPE Matrix_iterate(const Matrix *__m, mat_iter_fn fn) {
+    return fn(Matrix_begin(__m), Matrix_end(__m));
+}
+
+MATRIX_TYPE mean(const Matrix *__m) {
+    // return MatIter_mean(Matrix_begin(__m), Matrix_end(__m));
+    return Matrix_iterate(__m, MatIter_mean);
+}
+
+MATRIX_TYPE sum(const Matrix *__m) {
+    // return MatIter_sum(Matrix_begin(__m), Matrix_end(__m));
+    return Matrix_iterate(__m, MatIter_sum);
+}
+
+MATRIX_TYPE std(const Matrix *__m) {
+    // return MatIter_std(Matrix_begin(__m), Matrix_end(__m));
+    return Matrix_iterate(__m, MatIter_std);
+}
+
+MATRIX_TYPE var(const Matrix *__m) {
+    // return MatIter_std(Matrix_begin(__m), Matrix_end(__m));
+    return Matrix_iterate(__m, MatIter_var);
+}
+
+MATRIX_TYPE min(const Matrix *__m) {
+    // return MatIter_std(Matrix_begin(__m), Matrix_end(__m));
+    return Matrix_iterate(__m, MatIter_min);
+}
+
+MATRIX_TYPE max(const Matrix *__m) {
+    // return MatIter_std(Matrix_begin(__m), Matrix_end(__m));
+    return Matrix_iterate(__m, MatIter_max);
+}
+
+MATRIX_TYPE rms(const Matrix *__m) {
+    return Matrix_iterate(__m, MatIter_rms);
+}
+
+MATRIX_TYPE mean_squared(const Matrix *__m) {
+    return Matrix_iterate(__m, MatIter_mean_squared);
+}
+
+MATRIX_TYPE prod(const Matrix *__m) {
+    return Matrix_iterate(__m, Matrix_iter_prod);
+}
+
+// Implement the `cor` function to compute the correlation coefficient between two points
+// I will also want to eventually add in my own data science and statistic routines just for good
+// practice
+
+// We are just assuming that both of these are vectors with the same size
+// MATRIX_TYPE cor(const Matrix *__a, const Matrix *__b) {
+
+//     if (! (Matrix_is_vec(__a) && Matrix_is_vec(__b))) return -1; // If they arent both vectors
+
+//     // make sure their sizes are the same
+//     if (Vector_size(__a) != Vector_size(__b)) return -2;
+
+//     // First we need to find the average of __a and __b
+
+//     MATRIX_TYPE mean_a = mean(__a);
+//     MATRIX_TYPE mean_b = mean(__b);
+
+//     // Now we need to compute The sum of x minus the mean and the sum
+//     // of y minus its mean
+//     Vector *a_min_mean = Matrix_sub_scalar(__a, mean_a);
+//     Vector *b_min_mean = Matrix_sub_scalar(__b, mean_b);
+
+//     Vector *num_arr = Matrix_hadamard(a_min_mean, b_min_mean);
+
+//     MATRIX_TYPE num = sum(num_arr);
+//     MATRIX_TYPE den = std(__a) * std(__b);
+
+//     MATRIX_TYPE out = num / den;
+
+//     Matrix_free(a_min_mean);
+//     Matrix_free(b_min_mean);
+//     Matrix_free(num_arr);
+
+//     return out;
+// }
+MATRIX_TYPE cov(const Matrix *__x, const Matrix *__y) {
+
+
+    if (! (Matrix_is_vec(__x) && Matrix_is_vec(__y))) return -1; // If they arent both vectors
+
+    if (Vector_size(__x) != Vector_size(__y)) return -2;
+
+    MATRIX_TYPE mean_x = mean(__x);
+    MATRIX_TYPE mean_y = mean(__y);
+
+    Vector *x_min_mean = Matrix_sub_scalar(__x, mean_x);
+    Vector *y_min_mean = Matrix_sub_scalar(__y, mean_y);
+
+    Vector *num_arr = Matrix_hadamard(x_min_mean, y_min_mean);
+
+    MATRIX_TYPE out = sum(num_arr) / Vector_size(num_arr);
+
+    Matrix_free(x_min_mean);
+    Matrix_free(y_min_mean);
+    Matrix_free(num_arr);
+
+    return out;
+}
+
+// Attempt to compute the correlation coefficient by using standard scores
+MATRIX_TYPE cor(const Matrix *__a, const Matrix *__b) {
+
+    if (! (Matrix_is_vec(__a) && Matrix_is_vec(__b))) return -1; // If they arent both vectors
+
+    // make sure their sizes are the same
+    if (Vector_size(__a) != Vector_size(__b)) return -2;
+
+    // Now we need to compute The sum of x minus the mean and the sum
+    // of y minus its mean
+    return cov(__a, __b) / (std(__a) * std(__b));
+}
+
+// Find the kth central moment
+MATRIX_TYPE cmoment(const Vector *__v, int __k) {
+
+    // Take the hadamard product of __v minus its mean.
+    // Then take the sum and divide by n
+    MATRIX_TYPE u_v = mean(__v);
+    Vector *v_min_uv = Matrix_sub_scalar(__v, u_v);
+
+    // take the kth hadamard exponential
+    mathadexp(v_min_uv, __k);
+
+    MATRIX_TYPE out = sum(v_min_uv) / Vector_size(__v);
+
+    Matrix_free(v_min_uv);
+
+    return out;
+}
+
+MATRIX_TYPE rmoment(const Vector *__v, int __k) {
+
+    Vector *v = Matrix_clone(__v);
+
+    mathadexp(v, __k);
+
+    MATRIX_TYPE out = sum(v) / Vector_size(__v);
+
+    Matrix_free(v);
+
+    return out;
+}

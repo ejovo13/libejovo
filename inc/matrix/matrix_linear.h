@@ -49,6 +49,8 @@ void mathad(Matrix *__A, const Matrix *__B);
 // Call hadamard multiplication, checking the indices with each access.
 void mathad_check(Matrix *__A, const Matrix *__B);
 
+void mathadexp(Matrix *__A, int __k);
+
 /**
  * Compute the Hadamard product (element-wise multiplication) of two matrices
  */
