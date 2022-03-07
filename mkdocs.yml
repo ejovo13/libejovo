@@ -1,0 +1,12 @@
+site_name: Libejovo
+
+site_description: High level API for libejovo
+site_author: Evan Voyles
+
+# repo_url: https://github.com/ejovo13/libejovo
+
+theme:
+  # name: mkdocs
+  name: readthedocs
+  # nav_style: dark
+  hljs_style: monokai

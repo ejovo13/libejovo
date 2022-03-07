@@ -1,0 +1,7 @@
+version: 2
+
+# docs_dir: TP2/docs
+
+mkdocs:
+  configuration: mkdocs.yml
+  fail_on_warning: false
