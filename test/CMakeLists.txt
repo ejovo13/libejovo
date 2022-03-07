@@ -40,7 +40,7 @@ macro(ejovo_add_test TESTNAME)
     # create an exectuable in which the tests will be stored
     set(TEST_BIN "test_${TESTNAME}")
 
-    message(STATUS "Adding test ${TESTNAME}")
+    # message(STATUS "Adding test ${TESTNAME}")
     add_executable(${TEST_BIN} "${TESTNAME}.c")
     target_link_libraries(${TEST_BIN} ${TEST_LIBS})
     target_include_directories(${TEST_BIN} PUBLIC ${TEST_INC})

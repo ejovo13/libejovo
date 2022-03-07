@@ -1,3 +1,19 @@
+# set (EJOVO_MODULES
+
+#     "print"
+#     "rand"
+#     "string"
+#     input
+#     labyrinth
+#     input
+#     matrix
+#     labyrinth
+#     sort
+#     comp
+#     crypto
+# )
+
+
 set (EJOVO_LIB
 
     ejovo_print.c
@@ -43,16 +59,18 @@ set (EJOVO_MATRIX_HEADERS
     ${INC}/matrix/matrix.h
 )
 
-add_subdirectory(matrix)
-# include_directories(${INC}/matrix)
+message("Current source: ${CMAKE_CURRENT_SOURCE_DIR}")
+message("Source: ${CMAKE_SOURCE_DIR}")
+message("Project: ${PROJECT_SOURCE_DIR}")
 
+add_subdirectory(matrix)
 
 add_library(ejovo STATIC ${EJOVO_LIB} $<TARGET_OBJECTS:ejovo_matrix>)
 if (NOT WIN32)
     target_link_libraries(ejovo m)
 endif()
-target_include_directories(ejovo PRIVATE "${CMAKE_SOURCE_DIR}/inc")
-target_include_directories(ejovo PRIVATE "${CMAKE_SOURCE_DIR}/inc/matrix")
+target_include_directories(ejovo PUBLIC "${INC}")
+target_include_directories(ejovo PUBLIC "${INC}/matrix")
 
 set_target_properties(ejovo PROPERTIES
 
@@ -70,9 +88,3 @@ install(TARGETS ejovo
 
 install(DIRECTORY ${INC}/matrix
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/ejovo)
-
-# message("Trying to include directory ${CMAKE_SOURCE_DIR}/inc/battleship")
-
-# target_include_directories(ex9 PUBLIC "${CMAKE_SOURCE_DIR}/inc/battleship")
-# target_include_directories(ex9 PUBLIC "${CMAKE_SOURCE_DIR}/inc")
-# target_compile_options(ex9 PUBLIC -Wall)

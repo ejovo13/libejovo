@@ -15,4 +15,9 @@ set(EJOVO_MATRIX_SRC
 )
 
 add_library(ejovo_matrix OBJECT ${EJOVO_MATRIX_SRC})
-target_include_directories(ejovo_matrix PRIVATE ${INC}/matrix)
+target_include_directories(ejovo_matrix PUBLIC ${INC}/matrix)
+set_target_properties(ejovo_matrix PROPERTIES
+    HEADER_DIRS
+        ${INC}/matrix
+
+)

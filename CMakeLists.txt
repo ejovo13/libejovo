@@ -1,14 +1,14 @@
 cmake_minimum_required(VERSION 3.11 FATAL_ERROR)
 
-project(TP_ALL)
+project("Ejovo lib")
 enable_language(C)
 enable_testing(ON)
 
-set(INC ${CMAKE_CURRENT_SOURCE_DIR}/inc)
-set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/src)
-set(TEST ${CMAKE_CURRENT_SOURCE_DIR}/test)
-set(BIN ${CMAKE_CURRENT_SOURCE_DIR}/bin)
-set(LIB ${CMAKE_CURRENT_SOURCE_DIR}/lib)
+set(INC ${PROJECT_SOURCE_DIR}/inc)
+set(SRC ${PROJECT_SOURCE_DIR}/src)
+set(TEST ${PROJECT_SOURCE_DIR}/test)
+set(BIN ${PROJECT_SOURCE_DIR}/bin)
+set(LIB ${PROJECT_SOURCE_DIR}/lib)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${BIN})
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${LIB})
