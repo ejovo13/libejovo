@@ -53,8 +53,8 @@ message("${INC} added to to include directories")
 add_subdirectory(src)
 add_subdirectory(test)
 
-add_custom_target( unit_tests ALL
-                    DEPENDS ${TESTS})
+# add_custom_target( unit_tests ALL
+#                     DEPENDS ${TESTS})
 
 # Run tests after building the project
 # add_custom_command(TARGET unit_tests
