@@ -393,6 +393,20 @@ void Matrix_print(const Matrix *__m) {
     }
 }
 
+void Matrix_print_fixed(const Matrix *__m) {
+
+    Matrix_summary(__m);
+    for (size_t i = 0; i < __m->nrows; i++) {
+        printf("| ");
+        for (size_t j = 0; j < __m->ncols; j++) {
+            printf("%8.4lf ", Matrix_at(__m, i, j));
+        }
+
+        printf("|\n");
+    }
+}
+
+
 // Print in the {1, 2, 3} iter style
 void Matrix_print_iter(const Matrix *__m) {
     MatIter_print(Matrix_begin(__m), Matrix_end(__m));
