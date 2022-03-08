@@ -32,7 +32,7 @@ Libejovo is the synthesis of my Applied Mathematics and Computer Science educati
 
 ## Documentation
 
-A high-level API hosted at `readthedocs` is available [here](https://libejovo.readthedocs.io/en/latest/dataframe/). This documentation tells a story about what this library is and snippets of code that demonstrate how to use and think with this library. For a more technical API, consult the `doxygen` documentation hosted with github pages.
+A high-level API hosted at `readthedocs` is available [here](https://libejovo.readthedocs.io/en/latest/). This documentation tells a story about what this library is and snippets of code that demonstrate how to use and think with this library. For a more technical API, consult the `doxygen` documentation hosted with github pages.
 
 ## Build
 Build out of source with `CMake`
