@@ -69,7 +69,6 @@ Matrix_print_fixed(m); // %6.4lf as format descriptor
 Matrix_reset(&m);
 
 m = Matrix_random(8, 13, 0, 200);
-
 Matrix_print_fixed(B); // %6.4lf format descriptor per element
 
 Matrix_reset(&m);
@@ -77,7 +76,7 @@ Matrix_reset(&m);
 
 ![8 by 13 matrix of elements between 0 and 200](media/eight_by_thirteen.png)
 
-A `Vector`, a type-alias for a `Matrix` that communicates _intent_ of working with a `Matrix` that is a 1-dimensional column (or row) vector.
+A `Vector` is a type-alias for a `Matrix` that communicates _intent_ of working with a `Matrix` that is a 1-dimensional column (or row) vector.
 
 We can create a new `Vector` that is a sample from the Normal distribution `X ~ N(a, b)`:
 
@@ -114,7 +113,7 @@ We can wrap up a series of vectors that have the same length along with a string
 
 Available at our disposal are the fundamental statistics routines to gather information about the data in a `Vector`.
 
-Here is the showcase of just a few of these functions:
+Here we showcase just a few of these functions:
 
 ```
 double u_v      = mean(v);
@@ -124,7 +123,7 @@ double max_v    = max(v);
 double var_v    = var(v);
 ```
 
-These statistical routines are not prefixed with a unique identifier like `Vector_`. Therefore, it is acknowlege that this may change in the future or this might provide namespace conflicts for other projects.
+These statistical routines are not prefixed with a unique identifier like `Vector_`. Therefore, we acknowlege that this may change in the future or this might provide namespace conflicts for other projects.
 
 Other routines that are similar but have more use in Linear Algebra will be prefixed:
 
@@ -151,13 +150,20 @@ printDataFrame(df);
 
 Readers familiar with the tidyverse will recognize this presentation. We invite yout to notice the new functional style approach with `newChainVar`, `printDataFrame`, as opposed to `Chain_new_var` and `DataFrame_print`.
 
-We can compute the `mean` of the `nth` col of `df` as:
+We can compute the `mean` of the `nth` (**zero**-based indexing) col of `df` as:
 
 ```
-printf("Mean: %lf\n", mean(getColDF(df, 2)));
+printf("Mean: %lf\n", mean(getColDF(df, 2))); // get the THIRD column of df
 printf("std:  %lf\n",  std(getColDF(df, 2)));
 ```
 
 ![Mean and standard normal](media/stdnorm.png)
 
 The mean and standard deviation are what we expect from a random variable `X ~ N(0, 1)`. As we increase the size of our vector, `n`, the values will approach 0 and 1.
+
+To export our data in a format that we can plot in Python or R, we use the `createCSV(df, filename)` function:
+
+```
+createCSV(df, "df.csv");
+
+```
