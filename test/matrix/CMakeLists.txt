@@ -7,6 +7,8 @@ set(MATRIX_TEST_SRC
     mat_core
     mat_stats
     mat_dist
+    mat_log
+    mat_func
 
 
 )
