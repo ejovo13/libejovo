@@ -2,7 +2,7 @@
 #include <assert.h>
 #include <stdbool.h>
 
-#define N 7500
+#define N 500
 #define MAX_ITER 1E1
 
 int main() {
