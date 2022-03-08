@@ -15,6 +15,7 @@ Libejovo is the synthesis of my Applied Mathematics and Computer Science educati
     - Random Matrix generation
     - Basic framework of matrix operations, additions, norms
     - [ ] inquiry functions like is Hermitian, rank, dim, etc..
+    - Polynomial interpolation
 - Statistics
     - Standard routines (std, mean, var, cor)
     - Functional patterns to operate on columns
@@ -45,6 +46,7 @@ cmake --build ./build
 
 To test that the functions are working properly, run `CTest` in the `build` directory.
 ```
+cd ./build
 ctest
 ```
 
@@ -53,6 +55,7 @@ We can inspect the symbols of `libejovo.a` with
 nm ./lib/libejovo.a
 ```
 
+where `./` is the top-level source directory.
 ## As a dependency
 To include this project as a dependency, there are two **super easy** methods. The first consists of building and installing this project, followed by adding the header file paths to your `$C_INCLUDE_PATH`. When including this library in another `CMake` project, simply link the `ejovo` library with the `target_add_libary` command.
 
@@ -61,6 +64,10 @@ cmake --install build
 ```
 
 Alternatively, we can use gitsubmodules to lock a reference to a commit of this repository in another project. For an example, see [this project](https://github.com/ejovo13/Informatique-TP) that uses `libejovo` as a dependency. I was blown away with how simple it was. All you have to do when cloning is make sure you download the submodule's files and then add the submodule as a subdirectory to your cmake project with `add_subdirectory`. `CMake` will take care of the rest!
+
+# In Progress
+
+I am currently working on getting a proper High-level API established at readthedocs. The skeleton is already in place and provides a brief introduction to this library. The technical documentation is also a work in progress, with about half of all publicly exposed functions being documented.
 
 # TODO
 
