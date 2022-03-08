@@ -14,5 +14,6 @@
 #include "matrix/matrix_stats.h"
 #include "matrix/matrix_dist.h"
 #include "matrix/matrix_functional.h"
+#include "matrix/matrix_logical.h"
 
 #endif
