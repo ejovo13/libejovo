@@ -2,7 +2,10 @@ cmake_minimum_required(VERSION 3.11 FATAL_ERROR)
 
 project("Ejovo lib")
 enable_language(C)
-enable_testing(ON)
+
+include(CTest)
+
+# enable_testing(ON)
 
 set(INC ${PROJECT_SOURCE_DIR}/inc)
 set(SRC ${PROJECT_SOURCE_DIR}/src)
