@@ -144,3 +144,8 @@ typedef void (* RowIterFn_iter) (RowIter *, RowIter *);
 typedef void (* RowIterFn_iter_k) (RowIter *, RowIter *, const MATRIX_TYPE);
 
 typedef MATRIX_TYPE (* function) (MATRIX_TYPE); // declare a function type that can be mapped to items of the matrix
+
+/**========================================================================
+ *!                           Functional patters
+ *========================================================================**/
+typedef bool (* predicate_fn) (double); // used to filter out values

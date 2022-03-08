@@ -467,3 +467,60 @@ char * int_to_string(int __x) {
     return num_str;
 
 }
+
+String *newStr(const char *__str) {
+
+    String *str = (String *) malloc(sizeof(String));
+
+    if (!str) return NULL;
+
+    // First thing to do is count the number of characters in the string.
+    int len = 0;
+
+    while (__str[len] != '\0') {
+        len++;
+    }
+
+    // Now allocate my OWN memory of the string
+    str->str = (char *) malloc(sizeof(char) * len + 1);
+
+    // it's way faster to just copy over the bytes.
+
+    memcpy(str->str, __str, len + 1);
+    // for (int i = 0; i < len; i++) {
+    //     str->str[i] = __str[i];
+    // }
+
+    // str->str[len] = '\0';
+    str->len = len;
+
+    return str;
+
+}
+
+void print(const String *__str) {
+    printf("%s", __str->str);
+}
+
+void println(const String *__str) {
+    printf("%s\n", __str->str);
+}
+
+String *copyStr(const String *__str) {
+
+    String *str = (String *) malloc(sizeof(String));
+
+    str->len = __str->len;
+    memcpy(str->str, __str->str, __str->len);
+    return str;
+
+}
+
+void freeStr(String **__str) {
+
+    if (!*__str) return;
+
+    if ((*__str)->str) free((*__str)->str);
+
+    *__str = NULL;
+}

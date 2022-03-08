@@ -89,7 +89,14 @@ Vector *linspace(MATRIX_TYPE __start, MATRIX_TYPE __end, int __N);
 
 Vector *range(int __start, int __end, int __diff);
 
+double raisedBy10(double __input); // used as a utility function for logspace
+
+// use base 10
+Vector *logspace(double __start, double __end, int __n);
+
 Vector *Vector_linspace(MATRIX_TYPE __start, MATRIX_TYPE __end, int __N);
+
+
 
 
 

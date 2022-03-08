@@ -11,6 +11,7 @@ set(EJOVO_MATRIX_SRC
     matrix_special.c
     matrix_stats.c
     matrix_dist.c
+    matrix_functional.c
 
 )
 

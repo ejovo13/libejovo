@@ -26,6 +26,7 @@ set (EJOVO_LIB
     ejovo_comp.c
     ejovo_crypto.c
     ejovo_bin.c
+    ejovo_dataframe.c
 
 )
 
@@ -41,6 +42,7 @@ set (EJOVO_LIB_HEADERS
     ${INC}/ejovo_sort.h
     ${INC}/ejovo_comp.h
     ${INC}/ejovo_crypto.h
+    ${INC}/ejovo_dataframe.h
 )
 
 set (EJOVO_MATRIX_HEADERS
@@ -49,6 +51,7 @@ set (EJOVO_MATRIX_HEADERS
     ${INC}/matrix/matrix_core.h
     ${INC}/matrix/matrix_dist.h
     ${INC}/matrix/matrix_foreach.h
+    ${INC}/matrix/matrix_functional.h
     ${INC}/matrix/matrix_getset.h
     ${INC}/matrix/matrix_iter.h
     ${INC}/matrix/matrix_linear.h

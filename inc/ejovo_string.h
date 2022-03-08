@@ -118,5 +118,22 @@ static int nb_chiffres_(long x);
 
 size_t count_words(const char * __string);
 
+typedef struct str_t {
+
+    char *str;
+    int len;
+
+} String;
+
+String *newStr(const char *__str);
+
+void print(const String *__str);
+
+void println(const String *__str);
+
+String *copyStr(const String *__str);
+
+void freeStr(String **__str);
+
 
 #endif

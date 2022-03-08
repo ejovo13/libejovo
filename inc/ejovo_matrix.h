@@ -13,5 +13,6 @@
 #include "matrix/matrix_vector.h"
 #include "matrix/matrix_stats.h"
 #include "matrix/matrix_dist.h"
+#include "matrix/matrix_functional.h"
 
 #endif

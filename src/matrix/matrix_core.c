@@ -271,6 +271,22 @@ Vector *linspace(MATRIX_TYPE __start, MATRIX_TYPE __end, int __N) {
     return v;
 }
 
+double raisedBy10(double __input) {
+    return pow(10, __input);
+}
+
+// use base 10
+Vector *logspace(double __start, double __end, int __n) {
+
+    Vector *exp = linspace(__start, __end, __n);
+
+    Vector *out = Vector_map(exp, raisedBy10);
+
+    Matrix_free(exp);
+
+    return out;
+}
+
 Vector *Vector_linspace(MATRIX_TYPE __start, MATRIX_TYPE __end, int __N) {
 
     MATRIX_TYPE difference = (__end - __start) / (__N - 1.0);
