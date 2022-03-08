@@ -25,6 +25,11 @@ int main(void) {
     printf("Here begins the computational functions\n");
     print_line(80, '=');
 
+    Matrix_reset(&m1);
+    Matrix_reset(&m2);
+    Matrix_reset(&m3);
+    Matrix_reset(&m4);
+
     Matrix * m5 = Matrix_value(10, 10, 5);
     Matrix * m6 = Matrix_value(10, 10, 4);
     Matrix * m7 = Matrix_add(m5, m6);
@@ -38,6 +43,11 @@ int main(void) {
     print_line(80, '=');
     ejovo_seed();
 
+
+    Matrix_reset(&m5);
+    Matrix_reset(&m6);
+    Matrix_reset(&m7);
+
     Matrix * m8 = Matrix_random(6, 5, 0, 15);
     Matrix * m9 = Matrix_random(1, 6, 1, 2);
     Matrix * m10 = Matrix_multiply(m9, m8);
@@ -45,10 +55,11 @@ int main(void) {
     assert(m10);
 
 
+
     Matrix * m11 = Matrix_random(5, 5, -5, 5);
     Matrix_print(m11);
     printf("\n\t^1 = \n");
-    Matrix_print(Matrix_pow(m11, 1));
+    Matrix_print(Matrix_anon(Matrix_pow(m11, 1)));
 
     Matrix * m11_1 = Matrix_pow(m11, 1);
     Matrix * m11_1_0 = Matrix_pow(m11, 0);
@@ -56,7 +67,7 @@ int main(void) {
     Matrix * m11_4 = Matrix_pow(m11, 4);
 
     printf("\n\t^0 = \n");
-    Matrix_print(Matrix_pow(m11_1, 0));
+    Matrix_print(Matrix_anon(Matrix_pow(m11_1, 0)));
 
     printf("\n\t^2 = \n");
     Matrix_print(m11_2);
@@ -72,6 +83,18 @@ int main(void) {
 
     print_line(80, '-');
 
+
+
+    Matrix_reset(&m8);
+    Matrix_reset(&m9);
+    Matrix_reset(&m10);
+
+    Matrix_reset(&m11);
+    Matrix_reset(&m11_1);
+    Matrix_reset(&m11_1_0);
+    Matrix_reset(&m11_2);
+    Matrix_reset(&m11_4);
+
     Matrix * A1 = Matrix_rand(25, 25);
     Matrix_print(A1);
     printf("\n");
@@ -82,7 +105,7 @@ int main(void) {
     printf("\t+\n");
     Matrix_print(A_sub2);
     printf("\t=\n");
-    Matrix_print(Matrix_add(A_sub1, A_sub2));
+    Matrix_print(Matrix_anon(Matrix_add(A_sub1, A_sub2)));
 
     print_line(80, '&');
 
@@ -91,14 +114,14 @@ int main(void) {
 
     Matrix_print(A_sub3);
     Matrix_print(A_sub4);
-    Matrix_print(Matrix_ccat(A_sub3, A_sub4));
+    Matrix_print(Matrix_anon(Matrix_ccat(A_sub3, A_sub4)));
 
     Matrix * A_sub5 = Matrix_submat(A1, 5, 8, 3, 8);
     Matrix * A_sub6 = Matrix_submat(A1, 12, 15, 6, 11);
 
     Matrix_print(A_sub5);
     Matrix_print(A_sub6);
-    Matrix_print(Matrix_rcat(A_sub5, A_sub6));
+    Matrix_print(Matrix_anon(Matrix_rcat(A_sub5, A_sub6))); // These are anonymous
 
     Matrix * A_sub0 = Matrix_submat(A1, 0, 0, 0, 0);
     Matrix_print(A_sub0);
@@ -140,10 +163,25 @@ int main(void) {
 
     Matrix * D = Matrix_random(4, 4, 0, 3);
     Matrix_print(D);
-    printf("Det(D): %lf\n", Matrix_det(D));
+    // printf("Det(D): %lf\n", Matrix_det(D));
 
+    Matrix_reset(&A_sub0);
+    Matrix_reset(&A_sub1);
+    Matrix_reset(&A_sub2);
+    Matrix_reset(&A_sub3);
+    Matrix_reset(&A_sub4);
+    Matrix_reset(&A_sub5);
+    Matrix_reset(&A_sub6);
 
+    Matrix_reset(&toy);
+    Matrix_reset(&D);
+    Matrix_reset(&A1);
 
+    Matrix_reset(&toy_m01);
+    Matrix_reset(&toy_m41);
+    Matrix_reset(&toy_m31);
+
+    Matrix_anon_free();
 
     return 0;
 }
