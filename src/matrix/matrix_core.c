@@ -1,7 +1,7 @@
 // matrix_core.c contains essential functions
 // that deal with the creation, destruction and setting of matrix elements
 
-#include "matrix_core.h"
+#include "ejovo_matrix.h"
 
 Matrix *g_ANON = NULL;
 
