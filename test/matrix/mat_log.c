@@ -26,6 +26,11 @@ void t_logical() {
     Matrix *logical = Matrix_as_logical(m, lambda_gt5);
     Matrix_print(logical);
 
+    Matrix *logic_5 = Matrix_gt(m, 5);
+    Matrix *logic_lt5 = Matrix_lt(m, 5);
+    Matrix_print(logic_lt5);
+
+
     Matrix *true_mat = Matrix_as_true(m);
     Matrix_print(true_mat);
 
@@ -37,7 +42,7 @@ void t_logical() {
     matsetmask(m, logical, 0);
     Matrix_print(m);
 
-    Matrix *gt5 = Matrix_filter_mask(m, logical);
+    Matrix *gt5 = Matrix_filter_mask(m, Logical_not(logical));
     Matrix_print(gt5);
 
 

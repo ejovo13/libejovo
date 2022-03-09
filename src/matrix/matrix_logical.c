@@ -87,6 +87,83 @@ Matrix *Matrix_as_logical(const Matrix *__m, pred_fn __fn) {
     return log;
 }
 
+// Return a Logical mask of all the values in __m that are lt __k
+Logical *Matrix_lt(const Matrix *__m, double __k) {
+
+    Matrix *log = matalloc(__m->nrows, __m->ncols);
+
+    MatIter end = Matrix_end(__m);
+    MatIter logit = Matrix_begin(log);
+
+    // printf("logit points to: %lf\n", MatIter_value(logit));
+
+    for (MatIter it = Matrix_begin(__m); !MatIter_cmp(it, end); it = MatIter_next(it), logit = MatIter_next(logit)) {
+        // printf("Processing: %lf\n", MatIter_value(it));
+        MatIter_set(logit, MatIter_value(it) < __k);
+    }
+
+    return log;
+}
+
+// Return a Logical mask of all the values in __m that are <= __k
+Logical *Matrix_lteq(const Matrix *__m, double __k) {
+
+    Matrix *log = matalloc(__m->nrows, __m->ncols);
+
+    MatIter end = Matrix_end(__m);
+    MatIter logit = Matrix_begin(log);
+
+    // printf("logit points to: %lf\n", MatIter_value(logit));
+
+    for (MatIter it = Matrix_begin(__m); !MatIter_cmp(it, end); it = MatIter_next(it), logit = MatIter_next(logit)) {
+        // printf("Processing: %lf\n", MatIter_value(it));
+        MatIter_set(logit, MatIter_value(it) <= __k);
+    }
+
+    return log;
+}
+
+// Return a Logical mask of all the values in __m that are > lt __k
+Logical *Matrix_gt(const Matrix *__m, double __k) {
+
+    Matrix *log = matalloc(__m->nrows, __m->ncols);
+
+    MatIter end = Matrix_end(__m);
+    MatIter logit = Matrix_begin(log);
+
+    // printf("logit points to: %lf\n", MatIter_value(logit));
+
+    for (MatIter it = Matrix_begin(__m); !MatIter_cmp(it, end); it = MatIter_next(it), logit = MatIter_next(logit)) {
+        // printf("Processing: %lf\n", MatIter_value(it));
+        MatIter_set(logit, MatIter_value(it) > __k);
+    }
+
+    return log;
+}
+
+// Return a Logical mask of all the values in __m that are >= __k
+Logical *Matrix_gteq(const Matrix *__m, double __k) {
+
+    Matrix *log = matalloc(__m->nrows, __m->ncols);
+
+    MatIter end = Matrix_end(__m);
+    MatIter logit = Matrix_begin(log);
+
+    // printf("logit points to: %lf\n", MatIter_value(logit));
+
+    for (MatIter it = Matrix_begin(__m); !MatIter_cmp(it, end); it = MatIter_next(it), logit = MatIter_next(logit)) {
+        // printf("Processing: %lf\n", MatIter_value(it));
+        MatIter_set(logit, MatIter_value(it) >= __k);
+    }
+
+    return log;
+}
+
+
+
+
+
+
 Matrix *Matrix_as_true(const Matrix *__m) {
     return Matrix_as_logical(__m, true_fn);
 }
@@ -127,7 +204,7 @@ Vector *Matrix_filter_mask(const Matrix *__m, const Matrix *__mask) {
 
         if (MatIter_value(mask_it) == TRUE) {
             MatIter_set(nit, MatIter_value(it));
-            nit = MatIter_next(it);
+            nit = MatIter_next(nit);
         }
     }
 
