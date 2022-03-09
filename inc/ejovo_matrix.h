@@ -15,5 +15,6 @@
 #include "matrix/matrix_dist.h"
 #include "matrix/matrix_functional.h"
 #include "matrix/matrix_logical.h"
+#include "matrix/matrix_index.h"
 
 #endif

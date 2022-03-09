@@ -12,6 +12,8 @@
 // return -1 if bounds are not respected and prints an error to the screen
 MATRIX_TYPE Matrix_at(const Matrix *__m, size_t __i, size_t __j);
 
+MATRIX_TYPE matget(const Matrix *__m, size_t __i);
+
 MATRIX_TYPE Matrix_first(const Matrix *__m);
 
 MATRIX_TYPE Matrix_last(const Matrix *__m);
