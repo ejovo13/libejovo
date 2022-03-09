@@ -9,6 +9,7 @@ set(MATRIX_TEST_SRC
     mat_dist
     mat_log
     mat_func
+    mat_index
 
 
 )

@@ -13,6 +13,7 @@ set(EJOVO_MATRIX_SRC
     matrix_dist.c
     matrix_functional.c
     matrix_logical.c
+    matrix_index.c
 
 )
 

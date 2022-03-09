@@ -141,3 +141,81 @@ Index *Matrix_where(const Matrix *__m, pred_fn __fn) {
     Matrix_free(log);
     return ind;
 }
+
+// Given a Logical matrix (1.0s and 0.0s), return a column vector whose elements are the indices
+// of the nonzero elements and whose length is the number of nozero elements, or sum(__log).
+Index *Logical_index(const Logical *__log) {
+
+    // Should I validate the index?
+
+    // Create a vector to store the indices, whose nrows is the number of elements in __log
+    Index *ind = Vector_new(Vector_mask_count(__log));
+
+    // Now let's iterate through our logical matrix. If the logical matrix is true,
+    // add the index counter to ind
+    // MatIter ind_it = Matrix_begin(ind);
+    MatIter it = Matrix_begin(ind);
+    // MatIter end = Matrix_end(log);
+
+
+    for (size_t i = 0; i < Matrix_size(__log); i++) {
+        if (matget(log, i) == TRUE) {
+            MatIter_set(it, i);
+            it = MatIter_next(it);
+        }
+    }
+
+    return ind;
+}
+
+// Return the indices where a predicate is satisfied
+Index *Matrix_where_lt(const Matrix *__m, double __k) {
+
+    // First let's get the logical matrix:
+    Logical *logic = Matrix_lt(__m, __k);
+
+    Index *ind = Logical_index(logic);
+
+    Matrix_free(logic);
+
+    return ind;
+}
+
+// Return the indices where a predicate is satisfied
+Index *Matrix_where_lteq(const Matrix *__m, double __k) {
+
+    // First let's get the logical matrix:
+    Logical *logic = Matrix_lteq(__m, __k);
+
+    Index *ind = Logical_index(logic);
+
+    Matrix_free(logic);
+
+    return ind;
+}
+
+// Return the indices where a predicate is satisfied
+Index *Matrix_where_gt(const Matrix *__m, double __k) {
+
+    // First let's get the logical matrix:
+    Logical *logic = Matrix_gt(__m, __k);
+
+    Index *ind = Logical_index(logic);
+
+    Matrix_free(logic);
+
+    return ind;
+}
+
+// Return the indices where a predicate is satisfied
+Index *Matrix_where_gteq(const Matrix *__m, double __k) {
+
+    // First let's get the logical matrix:
+    Logical *logic = Matrix_gteq(__m, __k);
+
+    Index *ind = Logical_index(logic);
+
+    Matrix_free(logic);
+
+    return ind;
+}

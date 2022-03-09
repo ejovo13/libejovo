@@ -25,6 +25,10 @@ MATRIX_TYPE Matrix_at(const Matrix *__m, size_t __i, size_t __j) {
     }
 }
 
+MATRIX_TYPE matget(const Matrix *__m, size_t __i) {
+    return __m->data[__i];
+}
+
 MATRIX_TYPE Matrix_first(const Matrix *__m) {
     return matat(__m, 0, 0);
 }
