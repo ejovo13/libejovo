@@ -8,8 +8,8 @@ int main() {
 
     ejovo_seed();
 
-    t_index();
-    // t_set_index();
+    // t_index();
+    t_set_index();
 
     return 0;
 }
@@ -58,15 +58,24 @@ void t_index() {
 void t_set_index() {
 
     Matrix *m = Vector_rnorm(100, 0, 3);
+    m->ncols = 100;
+    m->nrows = 1;
+
 
     Vector *r = range(0, 99, 2);
 
-    // matsetind(m, r, anon(2, 10, 13));
+    // Pay careful attention, these values HAVE TO BE DOUBLES otherwise they will end up mangled by the variadic function
+    Vector *a = anon(3, 1.0, 2.0, 3.0);
+    Matrix_print(a);
 
-    printf("Hello\n");
+    matsetind(m, r, a);
+
+    Matrix_anon_free();
+    // printf("Hello\n");
 
     Matrix_print(m);
-
+    Matrix_free(m);
+    Matrix_free(r);
 
 
 

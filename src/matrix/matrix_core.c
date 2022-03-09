@@ -45,12 +45,12 @@ Matrix *anon(int __count, ...) {
     if (__count == 0) return NULL;
 
 
-    for (int i = 1; i < __count; i++) {
-        v->data[i - 1] = next;
+    for (int i = 0; i < __count; i++) {
+        v->data[i] = next;
         next = va_arg(ptr, double);
     }
 
-    return v;
+    return Matrix_anon(v);
 
 }
 
