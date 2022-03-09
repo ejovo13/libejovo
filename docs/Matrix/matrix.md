@@ -24,7 +24,7 @@ The Matrix module, whose interface is defined in `ejovo_matrix.h`, contains the 
 - `matrix_stats.c`
 - `matrix_vector.c`
 
-Each of these submodules is detailed in this document. A brief introduction to instantiation of the `Matrix` structure is provided by [libejovo](index.md) and will be elaborated upon in the `Matrix_core` section.
+Each of these submodules is detailed in this document. A brief introduction to instantiation of the `Matrix` structure is provided by [libejovo](../index.md) and will be elaborated upon in the `Matrix_core` section.
 
 ## Matrix_compute
 
@@ -42,7 +42,7 @@ As described in the landing page, the `Matrix` API adopts an OOP strategy where 
 
 #### Matrix constructors
 
-Some of this content will be a repeat of what's already been showcased in [libejovo](index.md).
+Some of this content will be a repeat of what's already been showcased in [libejovo](../index.md).
 
 ###### Allocating new memory
 

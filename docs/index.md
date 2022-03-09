@@ -8,7 +8,7 @@ This project is an organic application of the concepts that I'm studying. It's i
 
 ### Bite-sized Introduction
 
-This section will _briefly_ introduce the user-facing functions that are used to dictate `Matrix` operations. For more information, see [matrix](matrix.md).
+This section will _briefly_ introduce the user-facing functions that are used to dictate `Matrix` operations. For more information, see [matrix](Matrix/matrix.md).
 
 ###### Instantiation
 
@@ -106,7 +106,7 @@ Matrix_reset(&v);
 
 Note that `n` in the call to `linspace` is the size of the resulting `Vector`.
 
-Check out the Constructors section in [Matrix](matrix.md) for other ways to construct a Matrix
+Check out the Constructors section in [Matrix](Matrix/matrix.md) for other ways to construct a Matrix
 
 ###### Data Analysis
 We can wrap up a series of vectors that have the same length along with a string that gives us a meaningful descriptor of the data into a new structure, the `DataFrame`. Readers who have used `R` or Python's `Pandas` for data science will be familiar with the `DataFrame` in theory and in practice.
