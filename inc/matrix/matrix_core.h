@@ -12,6 +12,10 @@
 // perform literally 0 checks, just allocate the space for a new matrix
 Matrix *matalloc(size_t __nrows, size_t __ncols);
 
+Matrix *vec(double __k);
+
+Matrix *anon(int __count, ...);
+
 // low level function to literally just free both pointers
 void matfree(Matrix *__A);
 

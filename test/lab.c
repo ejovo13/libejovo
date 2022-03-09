@@ -12,6 +12,8 @@ int main() {
     // generate_path(maze, 1, 1);
     print_matrix_as_lab(maze);
 
+    Matrix_reset(&maze);
+
 
     return 0;
 }

@@ -1,13 +1,14 @@
 // matrix_core.c contains essential functions
 // that deal with the creation, destruction and setting of matrix elements
 
-#include "ejovo_matrix.h"
+#include "matrix_core.h"
 
 Matrix *g_ANON = NULL;
 
 /**================================================================================================
  *!                                        Memory and Allocation
  *================================================================================================**/
+
 
 // perform literally 0 checks, just allocate the space for a new matrix
 Matrix *matalloc(size_t __nrows, size_t __ncols) {
@@ -20,6 +21,39 @@ Matrix *matalloc(size_t __nrows, size_t __ncols) {
 
     return x;
 }
+
+Matrix *vec(double __k) {
+
+    Matrix *x = matalloc(1, 1);
+    x->data[0] = __k;
+    return x;
+}
+
+// Let's use a new variadic function called anon to instantiate a new anonymous matrix that should get slotted for immediate
+// removal. -- This could easily lead to concurrency issues FYI
+Matrix *anon(int __count, ...) {
+
+    va_list ptr;
+    va_start(ptr, __count);
+
+    // allocate a new vector with the alloted elements;
+    Vector *v = matalloc(__count, 1);
+
+
+    double next = va_arg(ptr, double);
+
+    if (__count == 0) return NULL;
+
+
+    for (int i = 1; i < __count; i++) {
+        v->data[i - 1] = next;
+        next = va_arg(ptr, double);
+    }
+
+    return v;
+
+}
+
 
 // low level function to literally just free both pointers
 void matfree(Matrix *__A) {

@@ -144,7 +144,7 @@ Index *Matrix_where(const Matrix *__m, pred_fn __fn) {
 
 // Given a Logical matrix (1.0s and 0.0s), return a column vector whose elements are the indices
 // of the nonzero elements and whose length is the number of nozero elements, or sum(__log).
-Index *Logical_index(const Logical *__log) {
+Index *Logical_get_index(const Logical *__log) {
 
     // Should I validate the index?
 
@@ -174,7 +174,7 @@ Index *Matrix_where_lt(const Matrix *__m, double __k) {
     // First let's get the logical matrix:
     Logical *logic = Matrix_lt(__m, __k);
 
-    Index *ind = Logical_index(logic);
+    Index *ind = Logical_get_index(logic);
 
     Matrix_free(logic);
 
@@ -187,7 +187,7 @@ Index *Matrix_where_lteq(const Matrix *__m, double __k) {
     // First let's get the logical matrix:
     Logical *logic = Matrix_lteq(__m, __k);
 
-    Index *ind = Logical_index(logic);
+    Index *ind = Logical_get_index(logic);
 
     Matrix_free(logic);
 
@@ -200,7 +200,7 @@ Index *Matrix_where_gt(const Matrix *__m, double __k) {
     // First let's get the logical matrix:
     Logical *logic = Matrix_gt(__m, __k);
 
-    Index *ind = Logical_index(logic);
+    Index *ind = Logical_get_index(logic);
 
     Matrix_free(logic);
 
@@ -213,9 +213,34 @@ Index *Matrix_where_gteq(const Matrix *__m, double __k) {
     // First let's get the logical matrix:
     Logical *logic = Matrix_gteq(__m, __k);
 
-    Index *ind = Logical_index(logic);
+    Index *ind = Logical_get_index(logic);
 
     Matrix_free(logic);
 
     return ind;
+}
+
+Matrix *matsetind(Matrix *__m, const Matrix *__ind, const Matrix *__val) {
+
+    // Loop through the indices
+
+    MatIter it = Matrix_begin(__ind);
+    MatIter val_it = Matrix_begin(__val);
+
+    MatIter end = Matrix_end(__ind);
+    MatIter val_end = Matrix_end(__val);
+
+    for (it; !MatIter_cmp(it, end); it = MatIter_next(it), val_it = MatIter_next(val_it)) {
+        if (MatIter_cmp(val_it, val_end)) val_it = Matrix_begin(__val); // loop back the value if we have passed the end
+        __m->data[(int) MatIter_value(it)] = MatIter_value(val_it);
+    }
+
+    return __m;
+}
+
+Matrix *Matrix_set_index(const Matrix *__m, const Matrix *__ind, const Matrix *__val) {
+
+    // Duplicate __m
+    Matrix *m = Matrix_clone(__m);
+    return matsetind(m, __ind, __val);
 }

@@ -6,6 +6,7 @@
 #include <assert.h>
 #include "ejovo_rand.h"
 #include <string.h>
+#include <stdarg.h>
 // #include "ejovo_comp.h"
 
 /** @file

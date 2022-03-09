@@ -35,7 +35,7 @@ Index *Matrix_where(const Matrix *__m, pred_fn __fn);
 
 // Given a Logical matrix (1.0s and 0.0s), return a column vector whose elements are the indices
 // of the nonzero elements and whose length is the number of nozero elements, or sum(__log).
-Index *Logical_index(const Logical *__log);
+Index *Logical_get_index(const Logical *__log);
 
 // Return the indices where a predicate is satisfied
 Index *Matrix_where_lt(const Matrix *__m, double __k);
@@ -48,3 +48,7 @@ Index *Matrix_where_gt(const Matrix *__m, double __k);
 
 // Return the indices where a predicate is satisfied
 Index *Matrix_where_gteq(const Matrix *__m, double __k);
+
+Matrix *matsetind(Matrix *__m, const Matrix *__ind, const Matrix *__val);
+
+Matrix *Matrix_set_index(const Matrix *__m, const Matrix *__ind, const Matrix *__val);

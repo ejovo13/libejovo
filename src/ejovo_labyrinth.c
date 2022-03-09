@@ -558,6 +558,7 @@ Matrix *create_maze(size_t __nrows, size_t __ncols) {
         }
     }
 
+
     printf("Generating path...\n");
     generate_path(maze, stack, 1, 1);
 
