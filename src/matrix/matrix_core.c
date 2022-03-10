@@ -54,29 +54,6 @@ Matrix *anon(int __count, ...) {
 
 }
 
-Matrix *vector(int __count, ...) {
-
-    va_list ptr;
-    va_start(ptr, __count);
-
-    // allocate a new vector with the alloted elements;
-    Vector *v = matalloc(__count, 1);
-
-
-    double next = va_arg(ptr, double);
-
-    if (__count == 0) return NULL;
-
-
-    for (int i = 0; i < __count; i++) {
-        v->data[i] = next;
-        next = va_arg(ptr, double);
-    }
-
-    return v;
-}
-
-
 // low level function to literally just free both pointers
 void matfree(Matrix *__A) {
     free(__A->data); // if data is null, don't call free on it!!!

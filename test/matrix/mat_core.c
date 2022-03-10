@@ -25,8 +25,17 @@ int main() {
 void t_matalloc() {
 
     Matrix *m = matalloc(10, 10);
+
+    assert(m);
+    assert(m->data);
+    assert(m->ncols == 10);
+    assert(m->nrows == 10);
+    // Matrices allocated with matalloc should NOT be used.
+    // This is because the values are uninitialized
+
+
     Matrix_set(m, 5, 5, 100);
-    Matrix_print(m);
+    // Matrix_print(m);
     Matrix_reset(&m);
     Matrix_free(m);
     printf("Should be null: %x\n", m);

@@ -8,6 +8,9 @@
  *!                                        Constructors
  *================================================================================================**/
 
+
+Vector *vector(int __count, ...);
+
 // Default to making a column vector
 Vector *Vector_new(size_t __nrows);
 
@@ -16,6 +19,31 @@ Vector *Vector_from_iter(MatIter __begin, MatIter __end);
 Vector *Vector_rand(size_t __nrows);
 
 Vector *Vector_random(size_t __nrows, int __min, int __max);
+
+Vector *Vector_from(const double* __arr, size_t __nrows);
+
+Vector *Vector_clone(const Vector *__v);
+
+Vector *Vector_from_matrix(const Matrix *__m);
+
+Vector *Vector_as_col(const Vector *__v);
+
+Vector *Vector_as_row(const Vector *__v);
+
+
+
+
+/**================================================================================================
+ *!                                        Matrix to vec functions
+ *================================================================================================**/
+Vector *Matrix_as_col(const Matrix *__m);
+
+Vector *Matrix_as_row(const Matrix *__m);
+
+
+
+
+
 
 /**================================================================================================
  *!                                        State Functions
@@ -38,6 +66,11 @@ MATRIX_TYPE Vector_last(const Vector *__v);
 MatIter Vector_begin(Vector *__v);
 
 MatIter Vector_end(Vector *__v);
+
+// Create a new vector iter starting at the ith position
+MatIter Vector_iter(Vector *__v, size_t i);
+
+MATRIX_TYPE Vector_max(const Vector *__v);
 
 MATRIX_TYPE Vector_at(const Vector *__v, size_t __i);
 
@@ -78,6 +111,10 @@ Vector *Vector_project_onto(const Vector *__v, const Vector *__u);
 /**================================================================================================
  *!                                        Normalization
  *================================================================================================**/
+
+// All of these functions should REALLY REALLY end up in the linear algebra section....
+
+MATRIX_TYPE Vector_dot(const Vector *__u, const Vector *__v);
 
 /**
  * Compute the p-norm of a vector

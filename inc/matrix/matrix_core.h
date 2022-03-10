@@ -16,8 +16,6 @@ Matrix *vec(double __k);
 
 Matrix *anon(int __count, ...);
 
-Matrix *vector(int __count, ...);
-
 // low level function to literally just free both pointers
 void matfree(Matrix *__A);
 

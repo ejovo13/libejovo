@@ -51,8 +51,7 @@ Matrix_print(m);
 
 ![10 by 10 matrix of 5's](media/ten_by_ten.png)
 
-We can create an `m` by `n` `Matrix` whose elements are sampled from an iid uniform distribution of integers belonging to `{0, ... , 10}` with `Matrix_rand(m, n)` or belonging to `{a, ... , b}` with
-`Matrix_random(m, n, a, b)`
+We can create an `m` by `n` `Matrix` whose elements are sampled from an iid uniform distribution of integers belonging to `{0, ... , 10}` with `Matrix_rand(m, n)`
 
 ```
 Matrix_reset(&m);
@@ -64,6 +63,7 @@ Matrix_print_fixed(m); // %6.4lf as format descriptor
 
 ![4 by 3 matrix of elements between 0 and 10](media/four_by_three.png)
 
+or belonging to `{a, ... , b}` with `Matrix_random(m, n, a, b)`
 
 ```
 Matrix_reset(&m);

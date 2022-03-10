@@ -6,6 +6,29 @@
  *!                                        Constructors
  *================================================================================================**/
 
+
+Vector *vector(int __count, ...) {
+
+    va_list ptr;
+    va_start(ptr, __count);
+
+    // allocate a new vector with the alloted elements;
+    Vector *v = matalloc(__count, 1);
+
+
+    double next = va_arg(ptr, double);
+
+    if (__count == 0) return NULL;
+
+
+    for (int i = 0; i < __count; i++) {
+        v->data[i] = next;
+        next = va_arg(ptr, double);
+    }
+
+    return v;
+}
+
 // Default to making a column vector
 Vector *Vector_new(size_t __nrows) {
     return Matrix_new(__nrows, 1);
@@ -19,6 +42,30 @@ Vector *Vector_from_iter(MatIter __begin, MatIter __end) {
     return v;
 }
 
+
+Vector *Vector_from(const double* __arr, size_t __nrows) {
+    return Matrix_from(__arr, __nrows, 1);
+}
+
+// Return a COLUMN vector whose elements are the row-major components of __m
+Vector *Vector_from_matrix(const Matrix *__m) {
+    return Vector_as_col(__m);
+}
+
+Vector *Vector_clone(const Vector *__v) {
+    return Matrix_clone(__v);
+}
+
+Vector *Vector_as_col(const Vector *__v) {
+    Vector *v = Vector_clone(__v);
+    return ascol(v);
+}
+
+Vector *Vector_as_row(const Vector *__v) {
+    Vector *v = Vector_clone(__v);
+    return asrow(__v);
+}
+
 Vector *Vector_rand(size_t __nrows) {
     return Matrix_rand(__nrows, 1);
 }
@@ -26,6 +73,18 @@ Vector *Vector_rand(size_t __nrows) {
 Vector *Vector_random(size_t __nrows, int __min, int __max) {
     return Matrix_random(__nrows, 1, __min, __max);
 }
+
+/**================================================================================================
+ *!                                        Matrix to vec functions
+ *================================================================================================**/
+Vector *Matrix_as_col(const Matrix *__m) {
+    return Vector_as_col(__m);
+}
+
+Vector *Matrix_as_row(const Matrix *__m) {
+    return Vector_as_row(__m);
+}
+
 
 /**================================================================================================
  *!                                        State Functions
@@ -66,6 +125,11 @@ MatIter Vector_end(Vector *__v) {
     return MatIter_new(Vector_access(__v, Vector_size(__v)), 1);
 }
 
+MatIter Vector_iter(Vector *__v, size_t __i) {
+    MatIter it = {.ptr = Vector_access(__v, __i), .ptr_diff = 1};
+    return it;
+}
+
 MATRIX_TYPE Vector_at(const Vector *__v, size_t __i) {
     if (Matrix_is_col(__v)) return matat(__v, __i, 0);
     else return matat(__v, 0, __i);
@@ -84,6 +148,10 @@ Vector *Vector_map(const Vector *__v, function __fn) {
         Vector_set(v_mapped, i, __fn(Vector_at(__v, i)));
     }
     return v_mapped;
+}
+
+MATRIX_TYPE Vector_max(const Vector *__v) {
+    return Matrix_iter_max(__v);
 }
 
 MATRIX_TYPE Vector_sum(const Vector *__v) {
@@ -124,6 +192,10 @@ MATRIX_TYPE vecdot(const Vector *__u, const Vector *__v) {
         }
     }
     return dot;
+}
+
+MATRIX_TYPE Vector_dot(const Vector *__u, const Vector *__v) {
+    return Vector_inner(__u, __v);
 }
 
 MATRIX_TYPE Vector_inner(const Vector *__u, const Vector *__v) {
@@ -238,9 +310,6 @@ MATRIX_TYPE ColIter_norm(ColIter *__c) {
 // modify this vector in place so that it is a column vector (n rows, 1 col)
 Vector *ascol(Vector *__v) {
 
-    // Verify that __v is a vector
-    if (!Matrix_is_vec(__v)) return NULL;
-
     const size_t size = Matrix_size(__v);
 
     __v->ncols = 1;
@@ -251,9 +320,6 @@ Vector *ascol(Vector *__v) {
 
 // modify this vector in place so that it is a column vector (n rows, 1 col)
 Vector *asrow(Vector *__v) {
-
-    // Verify that __v is a vector
-    if (!Matrix_is_vec(__v)) return NULL;
 
     const size_t size = Matrix_size(__v);
 
