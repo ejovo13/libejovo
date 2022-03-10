@@ -277,3 +277,28 @@ MATRIX_TYPE rmoment(const Vector *__v, int __k) {
 
     return out;
 }
+
+// Let's do a simple linear regression with respect to an x and y variable
+// Return a matrix whose elements are the coefficients a_0, a_1, a_n for an nth
+// degree polynomial
+Vector *linear_regression(const Vector *__x, const Vector *__y) {
+
+    // We will solve the linear regression problem via the Vandermonde matrix.
+
+    Matrix *V = Matrix_vandermonde_reduced(__x, 1);
+    Matrix *Vt = Matrix_transpose(V);
+
+    Vector *y_hat = Matrix_multiply(Vt, __y);
+
+    Matrix *lhs = Matrix_multiply(Vt, V);
+
+    Matrix_reset(&V);
+    Matrix_reset(&Vt);
+
+    Vector *a = Matrix_solve_lu(lhs, y_hat);
+
+    Matrix_reset(&y_hat);
+    Matrix_reset(&lhs);
+
+    return a;
+}

@@ -83,3 +83,5 @@ MATRIX_TYPE cmoment(const Vector *__v, int __k);
 
 // raw moment
 MATRIX_TYPE rmoment(const Vector *__v, int __k);
+
+Vector *linear_regression(const Vector *__x, const Vector *__y);
