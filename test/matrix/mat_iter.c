@@ -9,8 +9,9 @@ void t_diag_wide();
 void t_diag_tall();
 void t_diag_sq();
 
-void t_length(); /* Verify that the length calculated is accurate. */
 
+void t_length(); /* Verify that the length calculated is accurate. */
+void t_set_iter_pow();
 
 void t_minmax();
 // void t_coliter();
@@ -18,11 +19,14 @@ void t_minmax();
 
 int main() {
 
+    ejovo_seed();
+
     // t_iter();
     t_diag_wide();
     t_diag_tall();
     t_diag_sq();
     t_length();
+    t_set_iter_pow();
 }
 
 void t_iter() {
@@ -185,6 +189,21 @@ void t_length() {
     assert(MatIter_length(b, e) == wide->ncols);
 
     Matrix_free(wide);
+
+
+}
+
+void t_set_iter_pow() {
+
+    Matrix *m = Vector_rnorm(100, 0, 1);
+
+    Matrix *b = Matrix_rowvec(m->data, 100);
+    MatIter_apply_set_iter_pow(Matrix_begin(b), Matrix_end(b), Matrix_begin(m), 2.0);
+
+    Vector_print_as_row(m);
+    Matrix_print(b);
+
+
 
 
 }

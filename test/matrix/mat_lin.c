@@ -10,6 +10,7 @@ void t_frobenius();
 void t_matlu();
 void t_Matrix_lu();
 void t_jacobi();
+void t_vandermonde();
 
 // Not all of these function have been tested for accuracy.
 // However, what is true is that none the the functions called in this test suite
@@ -27,6 +28,7 @@ int main() {
     t_matlu();
     t_Matrix_lu();
     t_jacobi();
+    t_vandermonde();
 
     return 0;
 }
@@ -240,6 +242,44 @@ void t_jacobi() {
     // Matrix *B = Matrix_tridiagonal(10);
     // Matrix_print(B);
     // Matrix_free(B);
+
+
+}
+
+void t_vandermonde() {
+
+    Matrix *v = Vector_runif(10, -3, 3);
+
+    Matrix_print(v);
+
+    Matrix *V = Matrix_vandermonde(v);
+
+    Matrix *Vr = Matrix_vandermonde_reduced(v, 3);
+    Matrix *Vr_t = Matrix_transpose(Vr);
+
+
+    Matrix_print(V);
+    Matrix_print(Vr);
+    Matrix_print(Vr_t);
+
+    Matrix_print(Matrix_anon(Matrix_multiply(Vr_t, Vr)));
+
+    Matrix_anon_free();
+    Matrix_reset(&V);
+    Matrix_reset(&Vr);
+    Matrix_reset(&Vr_t);
+
+    Matrix *r = ascol(range(1, 100, 24));
+
+    Matrix_print(r);
+
+    asrow(r);
+
+    v = asrow(vector(5, 1.0, 13.0, -24.0, 14.0, 4.1));
+
+    Matrix_print(v);
+
+    Matrix_print(r);
 
 
 }

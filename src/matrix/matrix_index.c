@@ -96,7 +96,7 @@ Vector *Matrix_logical_index(const Matrix *__m, const Logical *__log) {
     int count = sum(__log);
 
     // and allocate a new vector
-    Vector *out = matalloc(Matrix_size(__m), 1);
+    Vector *out = matalloc(count, 1);
 
     MatIter out_it = Matrix_begin(out);
     MatIter it = Matrix_begin(__log);
