@@ -171,6 +171,8 @@ void MatIter_div_ptr(MatIter __r, const MATRIX_TYPE *__ptr);
 
 void MatIter_set_iter(MatIter __a, const MatIter __b);
 
+void MatIter_set_iter_pow(MatIter __a, const MatIter __b, double __n);
+
 void MatIter_add_iter(MatIter __a, const MatIter __b);
 
 void MatIter_add_iter_scaled(MatIter __a, const MatIter __b, const MATRIX_TYPE __k);
@@ -261,6 +263,8 @@ void MatIter_apply_div_ptr(MatIter __rbegin, const MatIter __rend, const MATRIX_
  *========================**/
 
 void MatIter_apply_set_iter(MatIter __abegin, const MatIter __aend, MatIter __bbegin);
+
+void MatIter_apply_set_iter_pow(MatIter __abegin, const MatIter __aend, MatIter __bbegin, double __n);
 
 void MatIter_apply_add_iter(MatIter __abegin, const MatIter __aend, MatIter __bbegin);
 
