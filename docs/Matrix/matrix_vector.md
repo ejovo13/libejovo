@@ -198,6 +198,20 @@ Vector *u = Vector_rnorm(100, 5, 5);
 printf("<u, v> = %lf\n", Vector_dot(u, v)); // Vector_inner(u, v) works here as well
 ```
 
+`Vector_hadamard` is used for element-wise multiplication of two `Vectors`s
+
+```
+Vector *uv = Vector_hadamard(u, v);
+```
+
+###### Outer Product
+
+The outer product of two vectors can be computed with `Vector_outer`
+
+```
+Vector *uv_t = Vector_outer(u, v) // u * vT
+```
+
 ##### Norms
 
 The euclidean norm of a `Vector` can be accessed with `Vector_norm`. Other _p-norms_ can be computed with `Vector_pnorm`. For the special cases of the p-norm `p = 1` we can use `Vector_sum` and for `p = \infty` we can use `Vector_max`.

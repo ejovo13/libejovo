@@ -30,6 +30,9 @@ Vector *Vector_as_col(const Vector *__v);
 
 Vector *Vector_as_row(const Vector *__v);
 
+void Vector_free(Vector *__v);
+
+void Vector_reset(Vector **__v);
 
 
 
@@ -115,6 +118,13 @@ Vector *Vector_project_onto(const Vector *__v, const Vector *__u);
 // All of these functions should REALLY REALLY end up in the linear algebra section....
 
 MATRIX_TYPE Vector_dot(const Vector *__u, const Vector *__v);
+
+Vector *Vector_hadamard(const Vector *__u, const Vector *__v);
+
+Matrix *Vector_outer(const Vector *__u, const Vector *__v);
+
+// Return the orthogonal Projection matrix v * v^T
+Matrix *Vector_orthogonal_projection(const Vector *__v);
 
 /**
  * Compute the p-norm of a vector

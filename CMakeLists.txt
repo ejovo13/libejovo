@@ -55,6 +55,7 @@ message("${INC} added to to include directories")
 
 add_subdirectory(src)
 add_subdirectory(test)
+add_subdirectory(demo)
 
 # add_custom_target( unit_tests ALL
 #                     DEPENDS ${TESTS})
