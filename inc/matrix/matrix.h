@@ -29,6 +29,10 @@
 
 #define MAX_STEP_SIZE 100000
 
+const extern double PI;
+const extern double TWO_PI;
+const extern double HALF_PI;
+
 /**
  * @brief Matrix structure that simulates a 2d matrix accessed by A(row, col).
  *

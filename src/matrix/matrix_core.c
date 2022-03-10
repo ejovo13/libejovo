@@ -5,6 +5,11 @@
 
 Matrix *g_ANON = NULL;
 
+const double PI = 3.141592653589793;
+const double TWO_PI = 2.0 * 3.141592653589793;
+const double HALF_PI = 3.141592653589793 / 2.0;
+
+
 /**================================================================================================
  *!                                        Memory and Allocation
  *================================================================================================**/
@@ -50,8 +55,9 @@ Matrix *anon(int __count, ...) {
         next = va_arg(ptr, double);
     }
 
-    return Matrix_anon(v);
+    Matrix_anon(v);
 
+    return v;
 }
 
 // low level function to literally just free both pointers

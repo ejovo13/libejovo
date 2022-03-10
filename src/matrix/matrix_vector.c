@@ -63,7 +63,7 @@ Vector *Vector_as_col(const Vector *__v) {
 
 Vector *Vector_as_row(const Vector *__v) {
     Vector *v = Vector_clone(__v);
-    return asrow(__v);
+    return asrow(v);
 }
 
 Vector *Vector_rand(size_t __nrows) {
@@ -73,6 +73,15 @@ Vector *Vector_rand(size_t __nrows) {
 Vector *Vector_random(size_t __nrows, int __min, int __max) {
     return Matrix_random(__nrows, 1, __min, __max);
 }
+
+void Vector_free(Vector *__v) {
+    Matrix_free(__v);
+}
+
+void Vector_reset(Vector **__v) {
+    Matrix_reset(__v);
+}
+
 
 /**================================================================================================
  *!                                        Matrix to vec functions
@@ -198,6 +207,24 @@ MATRIX_TYPE Vector_dot(const Vector *__u, const Vector *__v) {
     return Vector_inner(__u, __v);
 }
 
+Vector *Vector_hadamard(const Vector *__u, const Vector *__v) {
+
+    // Create new matrix
+    Vector *new = Vector_clone(__u);
+
+    MatIter u_it = Vector_begin(__u);
+    MatIter v_it = Vector_begin(__v);
+    MatIter new_it = Vector_begin(new);
+
+    const MatIter end = Vector_end(__u);
+
+    for (u_it; !MatIter_cmp(u_it, end); u_it = MatIter_next(u_it), v_it = MatIter_next(v_it), new_it = MatIter_next(new_it)) {
+        MatIter_set(new_it, MatIter_value(u_it) * MatIter_value(v_it));
+    }
+
+    return new;
+}
+
 MATRIX_TYPE Vector_inner(const Vector *__u, const Vector *__v) {
     // perform the appropriate checks
     if (!Matrix_comp_add(__u, __v)) {
@@ -206,6 +233,40 @@ MATRIX_TYPE Vector_inner(const Vector *__u, const Vector *__v) {
     }
 
     return vecdot(__u, __v);
+}
+
+// Compute the outer product u * v_T
+Matrix *Vector_outer(const Vector *__u, const Vector *__v) {
+
+    // This is really costly but fuck it I'm just gonna allocate two new vectors so I
+    // dont have to footsy about with "is_col" logic
+
+    // A more efficient implementation wouldn't worry about rows and
+    // columns and would just copy u as the rows of the output
+    // and then apply across the rows an iterator of __v.
+
+    // But ima just do this:
+
+    Vector *u = Vector_as_col(__u);
+    Vector *v = Vector_as_row(__v);
+
+    Matrix *out = Matrix_multiply(u, v);
+
+    Matrix_reset(&u);
+    Matrix_reset(&v);
+
+    return out;
+}
+
+Matrix *Vector_orthogonal_projection(const Vector *__v) {
+
+    Matrix *v_norm = Vector_normalize(__v);
+
+    Matrix *outer = Vector_outer(v_norm, v_norm);
+
+    Matrix_reset(&v_norm);
+
+    return outer;
 }
 
 Vector *vecproject(const Vector *__v, const Vector *__u) {
