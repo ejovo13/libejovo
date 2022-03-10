@@ -234,3 +234,31 @@ MATRIX_TYPE ColIter_norm(ColIter *__c) {
 
 }
 
+// Resizing/reorienting
+// modify this vector in place so that it is a column vector (n rows, 1 col)
+Vector *ascol(Vector *__v) {
+
+    // Verify that __v is a vector
+    if (!Matrix_is_vec(__v)) return NULL;
+
+    const size_t size = Matrix_size(__v);
+
+    __v->ncols = 1;
+    __v->nrows = size;
+
+    return __v;
+}
+
+// modify this vector in place so that it is a column vector (n rows, 1 col)
+Vector *asrow(Vector *__v) {
+
+    // Verify that __v is a vector
+    if (!Matrix_is_vec(__v)) return NULL;
+
+    const size_t size = Matrix_size(__v);
+
+    __v->ncols = size;
+    __v->nrows = 1;
+
+    return __v;
+}

@@ -103,3 +103,6 @@ Vector *Vector_normalize(const Vector *__u);
 // Take a coliter and compute the pnorm
 MATRIX_TYPE ColIter_norm(ColIter *__c);
 
+Vector *ascol(Vector *__v);
+
+Vector *asrow(Vector *__v);
