@@ -16,6 +16,8 @@ Matrix *vec(double __k);
 
 Matrix *anon(int __count, ...);
 
+Matrix *vector(int __count, ...);
+
 // low level function to literally just free both pointers
 void matfree(Matrix *__A);
 
@@ -48,6 +50,8 @@ Matrix *Matrix_anon(const Matrix *__anon_rhs);
 
 void Matrix_anon_free();
 
+Matrix *Matrix_transpose(const Matrix *__m);
+
 /**================================================================================================
  *!                                        Assignment Operator
  *================================================================================================**/
@@ -58,7 +62,6 @@ Matrix *Matrix_shallow_copy(const Matrix *__rhs);
 
 // This function has a FATAL FLAW since it does not deallocate the matrix that is potentially being stored in the left hand side!!
 Matrix *Matrix_take(Matrix *__rhs);
-
 
 
 

@@ -54,6 +54,28 @@ Matrix *anon(int __count, ...) {
 
 }
 
+Matrix *vector(int __count, ...) {
+
+    va_list ptr;
+    va_start(ptr, __count);
+
+    // allocate a new vector with the alloted elements;
+    Vector *v = matalloc(__count, 1);
+
+
+    double next = va_arg(ptr, double);
+
+    if (__count == 0) return NULL;
+
+
+    for (int i = 0; i < __count; i++) {
+        v->data[i] = next;
+        next = va_arg(ptr, double);
+    }
+
+    return v;
+}
+
 
 // low level function to literally just free both pointers
 void matfree(Matrix *__A) {
@@ -140,6 +162,27 @@ Matrix *Matrix_anon(const Matrix *__anon_rhs) {
 
 void Matrix_anon_free() {
     Matrix_anon(NULL);
+}
+
+Matrix *Matrix_transpose(const Matrix *__m) {
+
+    Matrix *mt = matalloc(__m->ncols, __m->nrows);
+
+
+    for (size_t i = 0; i < __m->ncols; i++) {
+
+        MatIter m_it = Matrix_col_begin(__m, i);
+        MatIter m_end = Matrix_col_end(__m, i);
+
+        MatIter mt_end = Matrix_row_end(mt, i);
+        MatIter mt_it = Matrix_row_begin(mt, i);
+
+        for (m_it; !MatIter_cmp(m_it, m_end); m_it = MatIter_next(m_it), mt_it = MatIter_next(mt_it)) {
+            MatIter_set(mt_it, MatIter_value(m_it));
+        }
+    }
+
+    return mt;
 }
 
 /**================================================================================================
