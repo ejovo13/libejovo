@@ -308,6 +308,10 @@ Matrix * Matrix_ij(size_t __nrows, size_t __ncols) {
 
 }
 
+Vector *Vector_range(double __start, int __end, int __diff) {
+    return range(__start, __end, __diff);
+}
+
 Vector *range(int __start, int __end, int __diff) {
 
     // first calculate how many elements there will be.

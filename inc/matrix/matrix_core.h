@@ -101,7 +101,7 @@ Vector *logspace(double __start, double __end, int __n);
 
 Vector *Vector_linspace(MATRIX_TYPE __start, MATRIX_TYPE __end, int __N);
 
-
+Vector *Vector_range(double __start, int __end, int __diff);
 
 
 
