@@ -1,8 +1,16 @@
-#include "matrix_functional.h"
+#include "ejovo_matrix.h"
 
 // The identity function...
 double ID(double x) {
     return x;
+}
+
+double x_squared(double x) {
+    return x * x;
+}
+
+double x_cubed(double x) {
+    return x * x * x;
 }
 
 // If the predicate is costly, we should consider using the Logical matrix counterpart that
@@ -29,6 +37,51 @@ Vector *filter(const Vector *__v, predicate_fn __pred) {
 
     return out;
 
+}
+
+Vector *filter_lt(const Vector *__v, double __cutoff) {
+
+    Matrix *log = Matrix_lt(__v, __cutoff);
+
+    Matrix *out = Matrix_logical_index(__v, log);
+
+    Matrix_reset(&log);
+
+    return out;
+}
+
+Vector *filter_lteq(const Vector *__v, double __cutoff) {
+
+    Matrix *log = Matrix_lteq(__v, __cutoff);
+
+    Matrix *out = Matrix_logical_index(__v, log);
+
+    Matrix_reset(&log);
+
+    return out;
+
+}
+
+Vector *filter_gt(const Vector *__v, double __cutoff) {
+
+    Matrix *log = Matrix_gt(__v, __cutoff);
+
+    Matrix *out = Matrix_logical_index(__v, log);
+
+    Matrix_reset(&log);
+
+    return out;
+}
+
+Vector *filter_gteq(const Vector *__v, double __cutoff) {
+
+    Matrix *log = Matrix_gteq(__v, __cutoff);
+
+    Matrix *out = Matrix_logical_index(__v, log);
+
+    Matrix_reset(&log);
+
+    return out;
 }
 
 Vector *filter_if_not(const Vector *__v, predicate_fn __pred) {
@@ -66,6 +119,20 @@ Matrix *map(const Matrix *__m, function fn) {
     }
 
     return dup;
+}
+
+// Apply a Double -> Double function to all of the elements of __m, modifying it in place.
+// Then return a pointer to __m
+Matrix *apply(Matrix *__m, function fn) {
+
+    MatIter it = Matrix_begin(__m);
+    MatIter end = Matrix_end(__m);
+
+    for (it; !MatIter_cmp(it, end); it = MatIter_next(it)) {
+        MatIter_set(it, fn(MatIter_value(it)));
+    }
+
+    return __m;
 }
 
 // These functions should only operate on VECTORS
