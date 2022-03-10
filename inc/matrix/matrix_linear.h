@@ -139,4 +139,6 @@ Matrix *gausselim(Matrix *__A, const Matrix *__B);
  */
 Vector *jacobi_iteration(const Matrix *__A, const Vector *__b, const Vector *__x0, MATRIX_TYPE __crit);
 
+Matrix *Matrix_vandermonde(const Vector *__v);
 
+Matrix *Matrix_vandermonde_reduced(const Vector *__v, size_t __degree);

@@ -25,6 +25,39 @@ Matrix *Matrix_pow(Matrix * __A, size_t __power) {
 
 }
 
+// Create the n x n Vandermonde matrix
+Matrix *Matrix_vandermonde(const Vector *__v) {
+
+    size_t size = Matrix_size(__v);
+    Matrix *V = Matrix_new(size, size);
+
+    // Set the first column to 1
+    MatIter_apply_set_k(Matrix_col_begin(V, 0), Matrix_col_end(V, 0), 1.0);
+
+    // Iterate through the columns
+    for (size_t i = 1; i < size; i++) {
+        MatIter_apply_set_iter_pow(Matrix_col_begin(V, i), Matrix_col_end(V, i), Matrix_begin(__v), (double) i);
+    }
+
+    return V;
+}
+
+// A 1st degree polynomial has 2 points that completely characterise it
+Matrix *Matrix_vandermonde_reduced(const Vector *__v, size_t __degree) {
+
+    // Only create the first __degree + 1 columns
+    size_t size = Matrix_size(__v);
+    Matrix *Vr = Matrix_new(size, __degree + 1);
+
+    MatIter_apply_set_k(Matrix_col_begin(Vr, 0), Matrix_col_end(Vr, 0), 1.0);
+
+    for (size_t i = 1; i < __degree + 1; i++) {
+        MatIter_apply_set_iter_pow(Matrix_col_begin(Vr, i), Matrix_col_end(Vr, i), Matrix_begin(__v), (double) i);
+    }
+
+    return Vr;
+}
+
 
 // recursive algorithm to compute the determinant of a matrix
 double Matrix_det(const Matrix * __A) {
