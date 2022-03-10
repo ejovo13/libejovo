@@ -10,16 +10,19 @@
 
 #include "ejovo_matrix.h"
 
+// Function declaration for Vector_map function
+double x_sq(double x);
+
 int main() {
 
-    ejovo_seed();
+    ejovo_seed(); // Initialize rng with data from /dev/rand
 
     /**========================================================================
      *!   Compute the dot product of sin and cos over the interval [0, 2PI]
      *========================================================================**/
 
     // Create a new Vector of x values from -pi to pi.
-    Vector *x = Vector_linspace(-PI, PI, 5000);
+    Vector *x = Vector_linspace(-PI, PI, 500);
 
     Vector *cosx = Vector_map(x, cos);
     Vector *sinx = Vector_map(x, sin);
@@ -70,15 +73,45 @@ int main() {
     Vector *proj_v_of_u = Vector_project_onto(u, v);
     Vector *proj_v_mat_u = Matrix_multiply(proj_v, u);
 
-
+    // Both these projections are mathematically equal
     Matrix_print(proj_v_of_u);
     Matrix_print(proj_v_mat_u);
 
 
+    /**========================================================================
+     *!                Here's an example of the map functionality
+     *========================================================================**/
+
+    Vector *r = Vector_range(1, 50, 2);
+    Vector *r_sq = Vector_map(r, x_sq);
+
+    printf("r    :\t");
+    Matrix_print(r);
+    printf("r.^2 :\t");
+    Matrix_print(r_sq);
+
+
+    // This is largely unnecessary since at the end of the programs execution memory will stop. However, when writing your own routines
+    // if is important to clean up matrices that are allocated temporarily during certain operations.
     Vector_reset(&x);
     Vector_reset(&cosx);
     Vector_reset(&sinx);
+    Vector_reset(&r);
+    Vector_reset(&r_sq);
+    Vector_reset(&u);
+    Vector_reset(&v);
+    Vector_reset(&proj_v);
+    Vector_reset(&proj_v_of_u);
+    Vector_reset(&proj_v_mat_u);
+    Vector_reset(&hadamard_product);
+    Vector_reset(&dp_m);
+
 
     Matrix_anon_free(); // Free any leftover anonymous matrices
 
+}
+
+// Custom function for use with Vector_map
+double x_sq(double x) {
+    return x * x;
 }
