@@ -1,14 +1,8 @@
 #pragma once
 
 #include "matrix.h"
-#include "matrix_core.h"
-#include "matrix_vector.h"
-#include "matrix_state.h"
-#include "matrix_vector.h"
-#include "matrix_iter.h"
-#include "matrix_getset.h"
 
-double ID(double x);
+double Id(double x);
 
 double x_squared(double x);
 
