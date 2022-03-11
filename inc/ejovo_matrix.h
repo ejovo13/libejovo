@@ -16,5 +16,6 @@
 #include "matrix/matrix_functional.h"
 #include "matrix/matrix_logical.h"
 #include "matrix/matrix_index.h"
+#include "matrix/matrix_stochastic.h"
 
 #endif

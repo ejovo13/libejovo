@@ -14,6 +14,7 @@ set(EJOVO_MATRIX_SRC
     matrix_functional.c
     matrix_logical.c
     matrix_index.c
+    matrix_stochastic.c
 
 )
 
