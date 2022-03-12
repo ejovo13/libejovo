@@ -515,20 +515,65 @@ Matrix *Matrix_solve_lu(const Matrix *__A, const Vector *__b) {
 }
 
 
+const double EPS = 1E-10;
 
-
-// Return a column vector that contains the solutions
-// this column vector can be null if there are no solutions/infinitely many solutions
+// Return a matrix that contains the solutions tot Ax = B
+// this matrix will be null if there are no solutions/infinitely many solutions
 Matrix *gausselim(Matrix *__A, const Matrix *__B) {
 
+    // if __A is not square, return NULL;
+    if (__A->ncols != __A->nrows) return NULL;
+
     // I think that gausselim performs LU decomposition in place while modifying the right hand side which is more
-    // efficient for a single operation but not more efficient if we are going to solve Ax = b multiple times
+    // efficient for a single operation but not more efficient if we are going to solve Ax = b multiple times for
+    // different values of b.
 
+    // We are going to implement pivoting!
 
+    // For this testing, we are going to blatantly ignore __B.
+    Index *ind = range(0, __A->nrows - 1, 1);
 
+    // For i in 1:__A->nrows
+    for (size_t j = 0; j < __A->ncols - 1; j++) {
+    // for (size_t j = 0; j < 1; j++) {
 
+        size_t pivot_index = j + Matrix_col_max_index_from_row(__A, ind->data[j], j); // man this shit is HARD to read.
+        double pivot_value = Matrix_at(__A, ind->data[pivot_index], j);
 
+        // printf("=== processing column = %d\n", j);
+        // printf("=== indices: ");
+        // Vector_print_as_row(ind);
 
+        // make sure that the pivot_index is not zero.
+        if (fabs(pivot_value) < EPS) {
+            perror ("__A does not have full rank and thus no solutions exist. Returning NULL\n");
+            return NULL;
+        }
+
+        Row_switch(__A, ind, pivot_index, j);
+
+        // printf("=== Row switch: pivot = %lf, pivot_index = %d\n", pivot_value, pivot_index);
+        // printf("=== new indices: "); Vector_print_as_row(ind);
+        // Now iterate along the rows that are below the index!!
+
+        for (size_t i = j + 1; i < __A->nrows; i++) {
+
+            int row_index = ind->data[i];
+
+            double scalar = -Matrix_at(__A, row_index, j) / pivot_value;
+            // printf("====== Scalar = %lf\n", scalar);
+
+            // Now add to this row the scalar times the pivot row.
+            Row_addition_k(__A, ind, i, j, scalar);
+        }
+
+        // Matrix_print(Matrix_extract_rows(__A, ind));
+    }
+
+    Matrix *a = Matrix_extract_rows(__A, ind);
+    Matrix_reset(&ind);
+
+    return a;
 }
 
 /**================================================================================================
@@ -615,4 +660,65 @@ Vector *jacobi_iteration(const Matrix *__A, const Vector *__b, const Vector *__x
     return xk;
 }
 
+// Now I want to implement Gaussian Elimination with pivoting for numerical stability
 
+// I'll start off by introducing an elementary row operations interface.
+
+// There are 3 elementary row operations. Let's also implement their column counterparts...
+// These operation will operate on a matrix and modify the matrix in place!!!
+
+// Here's one hiccup. I want these functions to accept A Matrix with an accompanying index matrix.
+// Therefore, Changing "row3" and "row2" is going to edit the elements of this index matrix. Let's see this
+// in action
+
+// typedef struct {
+
+    // Matrix *m;
+    // Index  *ind;
+
+// } OrderedMatrix;
+
+// Interpret the order indices as the indices of the rows
+// Matrix *Matrix_from_row_order(const OrderedMatrix __m) {
+//     return Matrix_extract_rows(__m.m, __m.ind);
+// }
+
+// These elementary operations will be considered low level and don't consider checking bounds...
+// void Matrix_switch_rows(OrderedMatrix m, size_t __r1, size_t __r2) {
+void Row_switch(const Matrix *__m, Index *__ind, size_t __r1, size_t __r2) {
+
+    double tmp = __ind->data[__r1];
+
+    __ind->data[__r1] = __ind->data[__r2];
+    __ind->data[__r2] = tmp;
+
+}
+
+void Row_multiply(Matrix *__m, Index *__ind, size_t __r, double __k) {
+
+    // multiply the row pointed to by __ind->data[__r] with __k
+    Matrix_mult_row_k(__m, __ind->data[__r], __k);
+}
+
+// Modify the contents of __r1 by adding __r2 in place.
+void Row_addition(Matrix *__m, Index *__ind, size_t __r1, size_t __r2) {
+
+    MatIter r1 = Matrix_row_begin(__m, __ind->data[__r1]);
+    const MatIter end = Matrix_row_end(__m, __ind->data[__r1]);
+    MatIter r2 = Matrix_row_begin(__m, __ind->data[__r2]);
+
+    MatIter_apply_add_iter(r1, end, r2);
+}
+
+// r1 = r1 + k * r2
+void Row_addition_k(Matrix *__m, Index *__ind, size_t __r1, size_t __r2, double __k) {
+
+    MatIter r1 = Matrix_row_begin(__m, __ind->data[__r1]);
+    const MatIter end = Matrix_row_end(__m, __ind->data[__r1]);
+    MatIter r2 = Matrix_row_begin(__m, __ind->data[__r2]);
+
+    MatIter_apply_add_iter_scaled(r1, end, r2, __k);
+}
+
+
+// void Matrix_switch

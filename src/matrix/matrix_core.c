@@ -462,6 +462,11 @@ void matprint(const Matrix *__m) {
 
 void Matrix_print(const Matrix *__m) {
 
+    if (!__m) {
+        printf("Matrix is NULL.\n");
+        return;
+    }
+
     Matrix_summary(__m);
     for (size_t i = 0; i < __m->nrows; i++) {
         printf("| ");
@@ -474,6 +479,11 @@ void Matrix_print(const Matrix *__m) {
 }
 
 void Matrix_print_fixed(const Matrix *__m) {
+
+    if (!__m) {
+        printf("Matrix is NULL.\n");
+        return;
+    }
 
     Matrix_summary(__m);
     for (size_t i = 0; i < __m->nrows; i++) {

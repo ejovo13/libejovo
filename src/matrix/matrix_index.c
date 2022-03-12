@@ -1,7 +1,7 @@
 // This submodule contains important routines for using a vector of integers as indices.
 
 // General routines for verifying that a vector indeed represents a list of integers would be nice
-#include "matrix_index.h"
+#include "ejovo_matrix.h"
 // A new typedef of "Index" is a type of Vector whose values are integers
 
 static bool is_int(double x) {
@@ -431,3 +431,74 @@ static bool are_row_indices_valid(const Matrix *__m, const Index *__ind) {
 
     return true;
 }
+
+// I want to return the index of the max or min element.
+int MatIter_max_index(MatIter begin, const MatIter end) {
+
+    int index = 0;
+    double max = MatIter_value(begin);
+    MatIter it = MatIter_next(begin);
+
+    for (size_t i = 1; !MatIter_cmp(it, end); it = MatIter_next(it), i++) {
+        if (MatIter_value(it) > max) {
+            index = i;
+            max = MatIter_value(it);
+        }
+    }
+
+    return index;
+}
+
+// I want to return the index of the max or min element.
+int MatIter_min_index(MatIter begin, const MatIter end) {
+
+    int index = 0;
+    double min = MatIter_value(begin);
+    MatIter it = MatIter_next(begin);
+
+    for (size_t i = 1; !MatIter_cmp(it, end); it = MatIter_next(it), i++) {
+        if (MatIter_value(it) < min) {
+            index = i;
+            min = MatIter_value(it);
+        }
+    }
+
+    return index;
+}
+
+int Matrix_row_min_index(const Matrix *__m, size_t __i) {
+    return MatIter_min_index(Matrix_row_begin(__m, __i), Matrix_row_end(__m, __i));
+}
+
+int Matrix_row_max_index(const Matrix *__m, size_t __i) {
+    return MatIter_max_index(Matrix_row_begin(__m, __i), Matrix_row_end(__m, __i));
+}
+
+int Matrix_row_max_index_from_col(const Matrix *__m, size_t __i, size_t __j) {
+    return MatIter_max_index(Matrix_row_begin_from_col(__m, __i, __j), Matrix_row_end(__m, __i));
+}
+
+int Matrix_row_min_index_from_col(const Matrix *__m, size_t __i, size_t __j) {
+    return MatIter_min_index(Matrix_row_begin_from_col(__m, __i, __j), Matrix_row_end(__m, __i));
+}
+
+
+int Matrix_col_min_index(const Matrix *__m, size_t __i) {
+    return MatIter_min_index(Matrix_col_begin(__m, __i), Matrix_col_end(__m, __i));
+}
+
+int Matrix_col_max_index(const Matrix *__m, size_t __i) {
+    return MatIter_max_index(Matrix_col_begin(__m, __i), Matrix_col_end(__m, __i));
+}
+
+int Matrix_col_max_index_from_row(const Matrix *__m, size_t __j, size_t __i) {
+    return MatIter_max_index(Matrix_col_begin_from_row(__m, __j, __i), Matrix_col_end(__m, __j));
+}
+
+// Find the max value of column j starting from row i
+int Matrix_col_min_index_from_row(const Matrix *__m, size_t __j, size_t __i) {
+    return MatIter_min_index(Matrix_col_begin_from_row(__m, __j, __i), Matrix_col_end(__m, __j));
+}
+
+
+// I want to return the index of the first occurence of some double

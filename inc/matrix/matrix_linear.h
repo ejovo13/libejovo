@@ -142,3 +142,15 @@ Vector *jacobi_iteration(const Matrix *__A, const Vector *__b, const Vector *__x
 Matrix *Matrix_vandermonde(const Vector *__v);
 
 Matrix *Matrix_vandermonde_reduced(const Vector *__v, size_t __degree);
+
+// These elementary operations will be considered low level and don't consider checking bounds...
+// void Matrix_switch_rows(OrderedMatrix m, size_t __r1, size_t __r2) {
+void Row_switch(const Matrix *__m, Index *__ind, size_t __r1, size_t __r2);
+
+void Row_multiply(Matrix *__m, Index *__ind, size_t __r, double __k);
+
+// Modify the contents of __r1 by adding __r2 in place.
+void Row_addition(Matrix *__m, Index *__ind, size_t __r1, size_t __r2);
+
+// r1 = r1 + k * r2
+void Row_addition_k(Matrix *__m, Index *__ind, size_t __r1, size_t __r2, double __k);

@@ -12,7 +12,6 @@
 
 // A new typedef of "Index" is a type of Vector whose values are integers
 
-typedef Matrix Index;
 
 // Use your functional tools to simply cast __m to a floor
 Vector *Matrix_as_index(const Matrix *__m);
@@ -72,3 +71,26 @@ static bool are_col_indices_valid(const Matrix *__m, const Index *__ind);
 
 // Return true if all of the elements in __ind are valid column indices of __m
 static bool are_row_indices_valid(const Matrix *__m, const Index *__ind);
+
+// I want to return the index of the max or min element.
+int MatIter_max_index(MatIter begin, const MatIter end);
+
+// I want to return the index of the max or min element.
+int MatIter_min_index(MatIter begin, const MatIter end);
+
+int Matrix_row_min_index(const Matrix *__m, size_t __i);
+
+int Matrix_row_max_index(const Matrix *__m, size_t __i);
+
+int Matrix_col_min_index(const Matrix *__m, size_t __i);
+
+int Matrix_col_max_index(const Matrix *__m, size_t __i);
+
+int Matrix_col_max_index_from_row(const Matrix *__m, size_t __j, size_t __i);
+
+// Find the max value of column j starting from row i
+int Matrix_col_min_index_from_row(const Matrix *__m, size_t __j, size_t __i);
+
+int Matrix_row_max_index_from_col(const Matrix *__m, size_t __i, size_t __j);
+
+int Matrix_row_min_index_from_col(const Matrix *__m, size_t __i, size_t __j);

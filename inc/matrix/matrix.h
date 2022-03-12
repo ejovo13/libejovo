@@ -154,3 +154,5 @@ typedef MATRIX_TYPE (* function) (MATRIX_TYPE); // declare a function type that 
  *!                           Functional patters
  *========================================================================**/
 typedef bool (* predicate_fn) (double); // used to filter out values
+
+typedef Matrix Index;

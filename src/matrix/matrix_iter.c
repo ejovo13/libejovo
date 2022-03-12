@@ -244,6 +244,16 @@ MatIter Matrix_col_begin(const Matrix *__A, size_t __j) {
     }
 }
 
+MatIter Matrix_col_begin_from_row(const Matrix *__A, size_t __j, size_t __i) {
+
+    if (__j < __A->ncols) {
+        return matcolpos(__A, __i, __j);
+    } else {
+        perror("Matrix does not have that many columns");
+        return MatIter_null();
+    }
+}
+
 MatIter matcolbegin(const Matrix *__A, size_t __i) {
     return matcolpos(__A, __i, 0);
 }
@@ -281,6 +291,15 @@ MatIter Matrix_row_begin(const Matrix *__A, size_t __i) {
 
     if (__i < __A->nrows) {
         return matrowpos(__A, __i, 0);
+    } else {
+        perror("Matrix does not have that many rows");
+        return MatIter_null();
+    }
+}
+
+MatIter Matrix_row_begin_from_col(const Matrix *__A, size_t __i, size_t __j) {
+    if (__i < __A->nrows) {
+        return matrowpos(__A, __i, __j);
     } else {
         perror("Matrix does not have that many rows");
         return MatIter_null();
@@ -721,5 +740,7 @@ Matrix *Matrix_set_row_iter(Matrix *__m, size_t __i, MatIter __source) {
     return __m;
 }
 
+// TODO I need to add other functions that are the matrix interface to these MatIter functions. I want to call
+// Matrix_add_row_iter(m, 3, it);
 
 
