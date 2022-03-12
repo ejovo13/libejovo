@@ -52,3 +52,23 @@ Index *Matrix_where_gteq(const Matrix *__m, double __k);
 Matrix *matsetind(Matrix *__m, const Matrix *__ind, const Matrix *__val);
 
 Matrix *Matrix_set_index(const Matrix *__m, const Matrix *__ind, const Matrix *__val);
+
+Matrix *Matrix_extract_rows(const Matrix *__m, const Index *__ind);
+
+Matrix *Matrix_extract_cols(const Matrix *__m, const Index *__ind);
+
+// Take a supposed index matrix and scrub it -- making sure that all of the elements fall within
+// the appropriate columns
+Vector *Matrix_scrub_col_index(const Matrix *__m, const Index *__ind);
+
+Vector *Matrix_scrub_row_index(const Matrix *__m, const Index *__ind);
+
+/**================================================================================================
+ *!              Utility functions for dealing with indices -- probably shouldnt be exported
+ *================================================================================================**/
+
+// Return true if all of the elements in __ind are valid column indices of __m
+static bool are_col_indices_valid(const Matrix *__m, const Index *__ind);
+
+// Return true if all of the elements in __ind are valid column indices of __m
+static bool are_row_indices_valid(const Matrix *__m, const Index *__ind);

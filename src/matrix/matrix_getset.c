@@ -392,7 +392,7 @@ Matrix *Matrix_get_row(const Matrix *__A, size_t __i) {
         return NULL;
     }
 
-    printf("Trying to set row\n");
+    // printf("Trying to set row\n");
     Matrix *row = matalloc(1, __A->ncols);
     matsetrow(row, 0, 0, matacc(__A, __i, 0), __A->ncols);
     return row;
