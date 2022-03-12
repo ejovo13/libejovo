@@ -11,7 +11,7 @@ static bool is_int(double x) {
 
 // Use your functional tools to simply cast __m to a floor
 Vector *Matrix_as_index(const Matrix *__m) {
-    return map(__m, floor); // Ok this is neat but now I think that it actually has 0 utility...
+    return apply(map(__m, floor), fabs); // Ok this is neat but now I think that it actually has 0 utility...
 }
 
 // Take a supposed index matrix and scrub it -- making sure that all of the elements fall within
@@ -40,6 +40,70 @@ Vector *Matrix_scrub_index(const Matrix *__m, const Index *__ind) {
     for (it; !MatIter_cmp(it, end); it = MatIter_next(it)) {
         val = MatIter_value(it);
         if (val >= 0 && val <= (len - 1)) {
+            MatIter_set(out_it, floor(val)); // save the integer index
+            out_it = MatIter_next(out_it);
+        }
+    }
+
+    return out;
+}
+
+// Take a supposed index matrix and scrub it -- making sure that all of the elements fall within
+// the appropriate columns
+Vector *Matrix_scrub_col_index(const Matrix *__m, const Index *__ind) {
+
+    // The only bounds we care about are (size - 1) and 0.
+    int n_valid = 0;
+    double val = 0;
+
+    // First let's check once if the indices are valid:
+    // iterate through the index, count how many are valid
+    for (MatIter it = Matrix_begin(__ind); !MatIter_cmp(it, Matrix_end(__ind)); it = MatIter_next(it)) {
+        val = MatIter_value(it);
+        if (val >= 0 && val <= (__m->ncols - 1)) n_valid++;
+    }
+
+    Vector *out = Vector_new(n_valid);
+
+
+    MatIter it = Matrix_begin(__ind);
+    MatIter out_it = Matrix_begin(out);
+    MatIter end = Matrix_end(__ind);
+
+    for (it; !MatIter_cmp(it, end); it = MatIter_next(it)) {
+        val = MatIter_value(it);
+        if (val >= 0 && val <= (__m->ncols - 1)) {
+            MatIter_set(out_it, floor(val)); // save the integer index
+            out_it = MatIter_next(out_it);
+        }
+    }
+
+    return out;
+}
+
+Vector *Matrix_scrub_row_index(const Matrix *__m, const Index *__ind) {
+
+    // The only bounds we care about are (size - 1) and 0.
+    int n_valid = 0;
+    double val = 0;
+
+    // First let's check once if the indices are valid:
+    // iterate through the index, count how many are valid
+    for (MatIter it = Matrix_begin(__ind); !MatIter_cmp(it, Matrix_end(__ind)); it = MatIter_next(it)) {
+        val = MatIter_value(it);
+        if (val >= 0 && val <= (__m->nrows - 1)) n_valid++;
+    }
+
+    Vector *out = Vector_new(n_valid);
+
+
+    MatIter it = Matrix_begin(__ind);
+    MatIter out_it = Matrix_begin(out);
+    MatIter end = Matrix_end(__ind);
+
+    for (it; !MatIter_cmp(it, end); it = MatIter_next(it)) {
+        val = MatIter_value(it);
+        if (val >= 0 && val <= (__m->nrows - 1)) {
             MatIter_set(out_it, floor(val)); // save the integer index
             out_it = MatIter_next(out_it);
         }
@@ -159,7 +223,7 @@ Index *Logical_get_index(const Logical *__log) {
 
 
     for (size_t i = 0; i < Matrix_size(__log); i++) {
-        if (matget(log, i) == TRUE) {
+        if (matget(__log, i) == TRUE) {
             MatIter_set(it, i);
             it = MatIter_next(it);
         }
@@ -238,9 +302,132 @@ Matrix *matsetind(Matrix *__m, const Matrix *__ind, const Matrix *__val) {
     return __m;
 }
 
-Matrix *Matrix_set_index(const Matrix *__m, const Matrix *__ind, const Matrix *__val) {
+Matrix *Matrix_set_index(const Matrix *__m, const Index *__ind, const Matrix *__val) {
 
     // Duplicate __m
     Matrix *m = Matrix_clone(__m);
     return matsetind(m, __ind, __val);
+}
+
+Matrix *Matrix_extract_rows(const Matrix *__m, const Index *__ind) {
+
+    // First let's figure out the size of the resulting matrix.
+    // Necessarily, the output will have __m->ncols cols whereas the number of
+    // rows will depend on if the passed indices are legit or not
+
+    int nrows = 0;
+    const Index *ind = NULL;
+
+    bool ind_newly_allocated = false;
+
+    if (are_row_indices_valid(__m, __ind)) {
+        nrows = Matrix_size(__ind);
+        ind = __ind;
+    } else {
+
+        // we need to allocate a new indices vector
+        ind_newly_allocated = true;
+        ind = Matrix_scrub_row_index(__m, __ind);
+        nrows = Matrix_size(ind);
+    }
+
+    Matrix *out = Matrix_new(nrows, __m->ncols);
+
+    // Now let's iterate through ind, copying the contents of the columns over to out.
+    // This operation would be more efficient if we could just copy a certain block of memory
+    // to another, although since the matrix is either row or column major order, we are forced
+    // to use iteration in at least on of the cases. To keep this function more adaptive,
+    // we opt to use the iterative route.
+
+    MatIter it = Vector_begin(ind);
+    const MatIter end = Vector_end(ind);
+
+    for (int i = 0; !MatIter_cmp(it, end); it = MatIter_next(it), i++) {
+        Matrix_set_row_iter(out, i, Matrix_row_begin(__m, MatIter_value(it))); // clean way to set all of the columns
+    }
+
+    if (ind_newly_allocated) Matrix_free(ind);
+
+    return out;
+}
+
+Matrix *Matrix_extract_cols(const Matrix *__m, const Index *__ind) {
+
+    // First let's figure out the size of the resulting matrix.
+    // Necessarily, the output will have __m->nrows rows whereas the number of
+    // columns will depend on if the passed indices are legit or not
+
+    int ncols = 0;
+    Index *ind = NULL;
+
+    bool ind_newly_allocated = false;
+
+    if (are_col_indices_valid(__m, __ind)) {
+        ncols = Matrix_size(__ind);
+        ind = __ind;
+    } else {
+
+        // we need to allocate a new indices vector
+        ind_newly_allocated = true;
+        ind = Matrix_scrub_col_index(__m, __ind);
+        ncols = Matrix_size(ind);
+    }
+
+    Matrix *out = Matrix_new(__m->nrows, ncols);
+
+    // Now let's iterate through ind, copying the contents of the columns over to out.
+    // This operation would be more efficient if we could just copy a certain block of memory
+    // to another, although since the matrix is either row or column major order, we are forced
+    // to use iteration in at least on of the cases. To keep this function more adaptive,
+    // we opt to use the iterative route.
+
+    MatIter it = Vector_begin(ind);
+    const MatIter end = Vector_end(ind);
+
+    for (int i = 0; !MatIter_cmp(it, end); it = MatIter_next(it), i++) {
+        Matrix_set_col_iter(out, i, Matrix_col_begin(__m, MatIter_value(it))); // clean way to set all of the columns
+    }
+
+    if (ind_newly_allocated) Matrix_free(ind);
+
+    return out;
+}
+
+
+/**================================================================================================
+ *!              Utility functions for dealing with indices -- probably shouldnt be exported
+ *================================================================================================**/
+
+// Return true if all of the elements in __ind are valid column indices of __m
+static bool are_col_indices_valid(const Matrix *__m, const Index *__ind) {
+
+    // loop through the __index vector
+    MatIter it = Matrix_begin(__ind);
+    const MatIter end = Matrix_begin(__ind);
+
+    for(it; !MatIter_cmp(it, end); it = MatIter_next(it)) {
+
+        double val = MatIter_value(it);
+        // make sure the elements of __ind are positive, integers, and within __m's column range
+        if (val < 0 || !is_int(val) || val >= __m->ncols) return false;
+    }
+
+    return true;
+}
+
+// Return true if all of the elements in __ind are valid column indices of __m
+static bool are_row_indices_valid(const Matrix *__m, const Index *__ind) {
+
+    // loop through the __index vector
+    MatIter it = Matrix_begin(__ind);
+    const MatIter end = Matrix_begin(__ind);
+
+    for(it; !MatIter_cmp(it, end); it = MatIter_next(it)) {
+
+        double val = MatIter_value(it);
+        // make sure the elements of __ind are positive, integers, and within __m's column range
+        if (val < 0 || !is_int(val) || val >= __m->nrows) return false;
+    }
+
+    return true;
 }
