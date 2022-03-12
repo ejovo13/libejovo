@@ -63,11 +63,48 @@ void MatIter_print(const MatIter __begin, const MatIter __end) {
 // The 0th diagonal will start at the position __m(0, 0)
 // The 1st diagonal will start at the position __m(0, 1)
 // The -1  diagonal will start at the position __m(1, 0)
-// MatIter Matrix_diag_begin(const Matrix *__m, const int __d) {
-//
-// }
+MatIter Matrix_diag_begin(const Matrix *__m, const int __d) {
+    // Verify that the diagonal is even possible. If __d is negative, we should
+    // compare the nrows. If __d is positive, we check the ncols
+    if (__d < 0) {
 
+        if (abs(__d) >= __m->nrows) {
+            perror("===Matrix_diag_begin===");
+            perror("Not enough rows to accomodate diagonal");
+            return MatIter_null();
+        }
+    } else if (__d > 0) {
 
+        if (__d >= __m->ncols) {
+            perror("===Matrix_diag_begin===");
+            perror("Not enough columns to accomodate diagonal");
+            return MatIter_null();
+        }
+    }
+
+    return matdiagbegin(__m, __d);
+}
+
+MatIter Matrix_diag_end(const Matrix *__m, const int __d) {
+
+    if (__d < 0) {
+
+        if (abs(__d) >= __m->nrows) {
+            perror("===Matrix_diag_end===");
+            perror("Not enough rows to accomodate diagonal");
+            return MatIter_null();
+        }
+    } else if (__d > 0) {
+
+        if (__d >= __m->ncols) {
+            perror("===Matrix_diag_end===");
+            perror("Not enough columns to accomodate diagonal");
+            return MatIter_null();
+        }
+    }
+
+    return matdiagend(__m, __d);
+}
 
 
 

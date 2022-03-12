@@ -431,6 +431,20 @@ Matrix * Matrix_rand(size_t __nrows, size_t __ncols) {
     return Matrix_random(__nrows, __ncols, 0, 10);
 }
 
+Matrix *Matrix_id(size_t __m, size_t __n) {
+
+    Matrix *m = Matrix_new(__m, __n);
+
+    MatIter diag = Matrix_diag_begin(m, 0);
+    const MatIter end = Matrix_diag_end(m, 0);
+
+    for (diag; !MatIter_cmp(diag, end); diag = MatIter_next(diag)) {
+        MatIter_set(diag, 1);
+    }
+
+    return m;
+}
+
 Matrix * Matrix_identity(size_t __n) {
 
     Matrix * m = Matrix_new(__n, __n);
@@ -496,6 +510,23 @@ void Matrix_print_fixed(const Matrix *__m) {
     }
 }
 
+void Matrix_print_all_digits(const Matrix *__m) {
+
+    if (!__m) {
+        printf("Matrix is NULL.\n");
+        return;
+    }
+
+    Matrix_summary(__m);
+    for (size_t i = 0; i < __m->nrows; i++) {
+        printf("| ");
+        for (size_t j = 0; j < __m->ncols; j++) {
+            printf("%.16lf ", Matrix_at(__m, i, j));
+        }
+
+        printf("|\n");
+    }
+}
 
 // Print in the {1, 2, 3} iter style
 void Matrix_print_iter(const Matrix *__m) {

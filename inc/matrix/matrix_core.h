@@ -137,3 +137,9 @@ void Vector_print_head(const Matrix *__m, int __n);
 void Matrix_print_iter(const Matrix *__m);
 
 void Matrix_summary(const Matrix *__m);
+
+void Matrix_print_all_digits(const Matrix *__m);
+
+void Matrix_print_fixed(const Matrix *__m);
+
+Matrix *Matrix_id(size_t __m, size_t __n);

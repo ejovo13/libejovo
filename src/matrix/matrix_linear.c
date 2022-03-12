@@ -106,21 +106,11 @@ double Matrix_det(const Matrix * __A) {
 // used as a subroutine called in matmul
 MATRIX_TYPE matcdr_check(const Matrix *__A, const Matrix *__B, size_t __irow, size_t __icol) {
 
-    // #if MATRIX_TYPE == Complex
-
-    //     MATRIX_TYPE inner_product = Complex_zero();
-    //     for (size_t i = 0; i < __A->ncols; i++) {
-    //         inner_product = Complex_add(inner_product, ())
-    //     }
-
-    // #else
-        // We are assuming that __A and __B are compatible matrices for matrix multiplication
-        MATRIX_TYPE inner_product = 0;
-        for (size_t i = 0; i < __A->ncols; i++) {
-            inner_product += (Matrix_at(__A, __irow, i) * Matrix_at(__B, i, __icol));
-        }
-        return inner_product;
-    // #endif
+    MATRIX_TYPE inner_product = 0;
+    for (size_t i = 0; i < __A->ncols; i++) {
+        inner_product += (Matrix_at(__A, __irow, i) * Matrix_at(__B, i, __icol));
+    }
+    return inner_product;
 }
 
 // Compute the dot product without checking any indices
@@ -271,7 +261,6 @@ void matsub(Matrix *__A, const Matrix *__B) {
             b = matacc(__B, i, j);
 
             *a -= *b;
-
         }
     }
 }
@@ -281,7 +270,6 @@ Matrix *Matrix_subtract(const Matrix *__A, const Matrix *__B) {
     Matrix *A = Matrix_clone(__A);
     matsub(A, __B);
     return A;
-
 }
 
 /**================================================================================================
@@ -384,7 +372,8 @@ MATRIX_TYPE Matrix_frobenius(const Matrix *__A) {
 Matrix *matlu_nopivot(Matrix *__A) {
 
     // first step is to create an identity matrix that starts off being L
-    Matrix *L = Matrix_identity(__A->nrows); // TODO I need to add support for rectangular identity matrices
+    // Matrix *L = Matrix_identity(__A->nrows);
+    Matrix *L = Matrix_id(__A->nrows, __A->ncols);
 
     // Do a big for loop that is going to iterate through the diagonals of __A.
     // In order to do so, we should determine the smallest value of nrows and ncols
@@ -533,16 +522,12 @@ Matrix *gausselim(Matrix *__A, const Matrix *__B) {
     // For this testing, we are going to blatantly ignore __B.
     Index *ind = range(0, __A->nrows - 1, 1);
 
-    // For i in 1:__A->nrows
+    // iterate through all of the columns except for the last one
     for (size_t j = 0; j < __A->ncols - 1; j++) {
-    // for (size_t j = 0; j < 1; j++) {
 
-        size_t pivot_index = j + Matrix_col_max_index_from_row(__A, ind->data[j], j); // man this shit is HARD to read.
+        // Get index of the pivot (max element) in a slightly weird way.
+        size_t pivot_index = j + Matrix_col_max_index_from_row(__A, ind->data[j], j);
         double pivot_value = Matrix_at(__A, ind->data[pivot_index], j);
-
-        // printf("=== processing column = %d\n", j);
-        // printf("=== indices: ");
-        // Vector_print_as_row(ind);
 
         // make sure that the pivot_index is not zero.
         if (fabs(pivot_value) < EPS) {

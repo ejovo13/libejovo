@@ -287,3 +287,7 @@ Matrix *Matrix_set_row_iter(Matrix *__m, size_t __i, MatIter __source);
 MatIter Matrix_row_begin_from_col(const Matrix *__A, size_t __i, size_t __j);
 
 MatIter Matrix_col_begin_from_row(const Matrix *__A, size_t __j, size_t __i);
+
+MatIter Matrix_diag_end(const Matrix *__m, const int __d);
+
+MatIter Matrix_diag_begin(const Matrix *__m, const int __d);
