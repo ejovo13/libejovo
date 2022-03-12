@@ -3,6 +3,8 @@
 #include "ejovo_matrix.h"
 
 // TODO I need to add checks for some of my iterator functions like matdiagend -> Matrix_diag_end
+// TODO I should have an interface to change a "col iter" to a "row iter"
+// TODO Allow constant iterators that are read only!
 
 /**================================================================================================
  *!                                        Special Types of Iterators
@@ -277,7 +279,7 @@ MatIter Matrix_row_end(const Matrix *__A, size_t __i) {
 
 MatIter Matrix_row_begin(const Matrix *__A, size_t __i) {
 
-    if (__i < __A->ncols) {
+    if (__i < __A->nrows) {
         return matrowpos(__A, __i, 0);
     } else {
         perror("Matrix does not have that many rows");
@@ -695,5 +697,29 @@ void MatIter_apply_div_iter(MatIter __abegin, const MatIter __aend, MatIter __bb
 void MatIter_apply_add_iter_scaled(MatIter __abegin, const MatIter __aend, MatIter __bbegin, const MATRIX_TYPE __k) {
     MatIter_apply_iter_scaled(__abegin, __aend, __bbegin, __k, MatIter_add_iter_scaled);
 }
+
+
+// Add a few new functions that allow me to set A Matrix's columns using an arbitrary iterator
+
+// THIS FUNCTION MODIFIES IN PLACE
+Matrix *Matrix_set_col_iter(Matrix *__m, size_t __j, MatIter __source) {
+
+    MatIter it = Matrix_col_begin(__m, __j);
+    const MatIter end = Matrix_col_end(__m, __j);
+    MatIter_apply_set_iter(it, end, __source);
+
+    return __m;
+}
+
+// THIS FUNCTION MODIFIES IN PLACE
+Matrix *Matrix_set_row_iter(Matrix *__m, size_t __i, MatIter __source) {
+
+    MatIter it = Matrix_row_begin(__m, __i);
+    const MatIter end = Matrix_row_end(__m, __i);
+    MatIter_apply_set_iter(it, end, __source);
+
+    return __m;
+}
+
 
 

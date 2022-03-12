@@ -279,4 +279,7 @@ void MatIter_apply_div_iter(MatIter __abegin, const MatIter __aend, MatIter __bb
  *========================**/
 void MatIter_apply_add_iter_scaled(MatIter __abegin, const MatIter __aend, MatIter __bbegin, const MATRIX_TYPE __k);
 
+Matrix *Matrix_set_col_iter(Matrix *__m, size_t __j, MatIter __source);
 
+// THIS FUNCTION MODIFIES IN PLACE
+Matrix *Matrix_set_row_iter(Matrix *__m, size_t __i, MatIter __source);
