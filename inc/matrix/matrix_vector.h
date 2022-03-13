@@ -153,3 +153,7 @@ MATRIX_TYPE ColIter_norm(ColIter *__c);
 Vector *ascol(Vector *__v);
 
 Vector *asrow(Vector *__v);
+
+MATRIX_TYPE Vector_distance(const Vector *__v, const Vector *__u);
+
+Vector *Vector_difference(const Vector *__v, const Vector *__u);

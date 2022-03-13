@@ -68,5 +68,32 @@ int main() {
 
     // Matrix_print(Matrix_multiply(v, Matrix_pow(p, 2)));
 
+    Matrix *m = Matrix_runif(10, 10, 0, 5);
+
+    Matrix_print(m);
+
+    // Matrix_print(Matrix_anon(as_stochastic(Matrix_clone(m))));
+
+    printf("------- Double Stochastic Tests ---------\n");
+
+    Matrix_print(m);
+
+    Matrix *m_pos = map(m, fabs);
+
+    Matrix_print(as_doubly_stochastic(m_pos));
+    // v = Matrix_value(3, 1, 1.0);
+    // Vector *u = Matrix_value(3, 1, 1.0);
+
+
+    // Let's check out the new distance functions.
+    // Vector *diff = Vector_difference(v, u);
+
+    // Matrix_print(diff);
+
+    // printf("Distance between u and v: %lf\n", Vector_distance(u, v));
+
+    Matrix_print(Matrix_pow(m_pos, 10));
+
+
     return 0;
 }

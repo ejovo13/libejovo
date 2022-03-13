@@ -389,3 +389,26 @@ Vector *asrow(Vector *__v) {
 
     return __v;
 }
+
+
+// Find the difference between vectors that are the same size.
+Vector *Vector_difference(const Vector *__v, const Vector *__u) {
+    if (Matrix_size(__v) != Matrix_size(__u));
+    return MatIter_difference(Vector_begin(__v), Vector_end(__v), Vector_begin(__u));
+}
+
+// Find the EUCLIDEAN DISTANCE between two vectors. Returns -1 if the vectors are not the same size
+MATRIX_TYPE Vector_distance(const Vector *__v, const Vector *__u) {
+    Vector *diff = Vector_difference(__v, __u);
+
+    MATRIX_TYPE dist = Vector_norm(diff);
+    Matrix_reset(&diff);
+
+    return dist;
+}
+
+
+
+
+
+
