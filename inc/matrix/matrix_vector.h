@@ -14,6 +14,8 @@ Vector *vector(int __count, ...);
 // Default to making a column vector
 Vector *Vector_new(size_t __nrows);
 
+Vector *Vector_ones(size_t __nrows);
+
 Vector *Vector_from_iter(MatIter __begin, MatIter __end);
 
 Vector *Vector_rand(size_t __nrows);

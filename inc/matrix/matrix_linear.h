@@ -118,6 +118,8 @@ Matrix *Matrix_solve_lu(const Matrix *__A, const Vector *__b);
 // this column vector can be null if there are no solutions/infinitely many solutions
 Matrix *gausselim(const Matrix *__A, const Matrix *__B);
 
+Matrix *Matrix_inverse(const Matrix *__A);
+
 /**================================================================================================
  *!                                        Iterative Algorithms
  *================================================================================================**/
