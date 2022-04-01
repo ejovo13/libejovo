@@ -142,6 +142,9 @@ Matrix *as_doubly_stochastic(Matrix *__m) {
         (row_err > STOCHASTIC_EPSILON || col_err > STOCHASTIC_EPSILON)
     );
 
+    printf("Exiting 'as_doubly_stochastic' with row_err: %lf, col_err: %lf, niter: %d\n", row_err, col_err, counter);
+    // if (counter == MAX_STOCHASTIC_ITERATIONS) printf("Reached max iterations\n");
+
     return __m;
 }
 
@@ -291,10 +294,10 @@ Vector *compute_row_sums(const Matrix *__m) {
 
 Vector *compute_col_sums(const Matrix *__m) {
 
-    Vector *out = asrow(Vector_new(__m->ncols));
+    Vector *out = asrow(Vector_new(__m->nrows));
 
-    for (size_t i = 0; i < __m->ncols; i++) {
-        // sum each of the rows, storing
+    for (size_t i = 0; i < __m->nrows; i++) {
+        // sum each of the cols, storing
         Vector_set(out, i, Matrix_col_sum(__m, i));
     }
 

@@ -32,9 +32,6 @@ Matrix *Stochastic_rexp(size_t __n, double __rate);
 
 Vector *Vector_prob_unif(size_t __n);
 
-Vector *compute_col_sums(const Matrix *__m);
-
-Vector *compute_row_sums(const Matrix *__m);
 
 /**========================================================================
  *!                           Utility functions

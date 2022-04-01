@@ -27,6 +27,7 @@ set (EJOVO_LIB
     ejovo_crypto.c
     ejovo_bin.c
     ejovo_dataframe.c
+    ejovo_color.c
 
 )
 
@@ -43,6 +44,7 @@ set (EJOVO_LIB_HEADERS
     ${INC}/ejovo_comp.h
     ${INC}/ejovo_crypto.h
     ${INC}/ejovo_dataframe.h
+    ${INC}/ejovo_color.h
 )
 
 set (EJOVO_MATRIX_HEADERS

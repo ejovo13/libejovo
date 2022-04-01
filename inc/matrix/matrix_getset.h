@@ -161,6 +161,6 @@ void Matrix_fill(Matrix * __A, const MATRIX_TYPE value);
  */
 void Matrix_fill_mask(Matrix *__A, Mask __mask, const MATRIX_TYPE __value);
 
-Matrix * Matrix_rcat(Matrix * __A, Matrix * __B);
+Matrix *Matrix_rcat(const Matrix *__A, const Matrix *__B);
 
-Matrix * Matrix_ccat(Matrix * __A, Matrix * __B);
+Matrix *Matrix_ccat(const Matrix *__A, const Matrix *__B);

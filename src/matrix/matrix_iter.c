@@ -292,11 +292,11 @@ MatIter Matrix_col_begin_from_row(const Matrix *__A, size_t __j, size_t __i) {
 }
 
 MatIter matcolbegin(const Matrix *__A, size_t __i) {
-    return matcolpos(__A, __i, 0);
+    return matcolpos(__A, 0, __i);
 }
 
 MatIter matcolend(const Matrix *__A, size_t __i) {
-    return matcolpos(__A, __i, __A->ncols);
+    return matcolpos(__A, __A->nrows, __i);
 }
 
 MatIter matrowpos(const Matrix *__A, size_t __i, size_t __j) {

@@ -116,7 +116,7 @@ Matrix *Matrix_solve_lu(const Matrix *__A, const Vector *__b);
 
 // Return a column vector that contains the solutions
 // this column vector can be null if there are no solutions/infinitely many solutions
-Matrix *gausselim(Matrix *__A, const Matrix *__B);
+Matrix *gausselim(const Matrix *__A, const Matrix *__B);
 
 /**================================================================================================
  *!                                        Iterative Algorithms

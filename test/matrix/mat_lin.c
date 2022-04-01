@@ -11,6 +11,7 @@ void t_matlu();
 void t_Matrix_lu();
 void t_jacobi();
 void t_vandermonde();
+void t_gausselim();
 
 // Not all of these function have been tested for accuracy.
 // However, what is true is that none the the functions called in this test suite
@@ -29,6 +30,7 @@ int main() {
     t_Matrix_lu();
     t_jacobi();
     t_vandermonde();
+    t_gausselim();
 
     return 0;
 }
@@ -280,6 +282,25 @@ void t_vandermonde() {
     Matrix_print(v);
 
     Matrix_print(r);
+
+
+}
+
+void t_gausselim() {
+
+    Matrix *A = Matrix_id(3, 3);
+    Matrix_set(A, 1, 1, 2);
+    Matrix_set(A, 1, 0, 3);
+
+    Matrix *b = Matrix_value(3, 1, 3);
+
+    Matrix *x = gausselim(A, b);
+
+    Matrix_print(x);
+
+    Matrix_reset(&A);
+    Matrix_reset(&b);
+    Matrix_reset(&x);
 
 
 }

@@ -508,26 +508,27 @@ const double EPS = 1E-10;
 
 // Return a matrix that contains the solutions tot Ax = B
 // this matrix will be null if there are no solutions/infinitely many solutions
-Matrix *gausselim(Matrix *__A, const Matrix *__B) {
+Matrix *gausselim(const Matrix *__A, const Matrix *__B) {
 
     // if __A is not square, return NULL;
     if (__A->ncols != __A->nrows) return NULL;
+
+    // First thing that I REALLY need to do is create an augmented matrix
+    Matrix *aug = Matrix_ccat(__A, __B);
 
     // I think that gausselim performs LU decomposition in place while modifying the right hand side which is more
     // efficient for a single operation but not more efficient if we are going to solve Ax = b multiple times for
     // different values of b.
 
     // We are going to implement pivoting!
-
-    // For this testing, we are going to blatantly ignore __B.
     Index *ind = range(0, __A->nrows - 1, 1);
 
     // iterate through all of the columns except for the last one
     for (size_t j = 0; j < __A->ncols - 1; j++) {
 
         // Get index of the pivot (max element) in a slightly weird way.
-        size_t pivot_index = j + Matrix_col_max_index_from_row(__A, ind->data[j], j);
-        double pivot_value = Matrix_at(__A, ind->data[pivot_index], j);
+        size_t pivot_index = j + Matrix_col_max_index_from_row(aug, ind->data[j], j);
+        double pivot_value = Matrix_at(aug, ind->data[pivot_index], j);
 
         // make sure that the pivot_index is not zero.
         if (fabs(pivot_value) < EPS) {
@@ -535,7 +536,7 @@ Matrix *gausselim(Matrix *__A, const Matrix *__B) {
             return NULL;
         }
 
-        Row_switch(__A, ind, pivot_index, j);
+        Row_switch(aug, ind, pivot_index, j);
 
         // printf("=== Row switch: pivot = %lf, pivot_index = %d\n", pivot_value, pivot_index);
         // printf("=== new indices: "); Vector_print_as_row(ind);
@@ -545,17 +546,18 @@ Matrix *gausselim(Matrix *__A, const Matrix *__B) {
 
             int row_index = ind->data[i];
 
-            double scalar = -Matrix_at(__A, row_index, j) / pivot_value;
+            double scalar = -Matrix_at(aug, row_index, j) / pivot_value;
             // printf("====== Scalar = %lf\n", scalar);
 
             // Now add to this row the scalar times the pivot row.
-            Row_addition_k(__A, ind, i, j, scalar);
+            Row_addition_k(aug, ind, i, j, scalar);
+            // Row_addition_k(__B, ind, i, j, scalar);
         }
 
         // Matrix_print(Matrix_extract_rows(__A, ind));
     }
 
-    Matrix *a = Matrix_extract_rows(__A, ind);
+    Matrix *a = Matrix_extract_rows(aug, ind);
     Matrix_reset(&ind);
 
     return a;
