@@ -8,6 +8,8 @@
 
 Matrix *Matrix_pow(Matrix * __A, size_t __power);
 
+MATRIX_TYPE Matrix_trace(const Matrix *__A);
+
 
 // recursive algorithm to compute the determinant of a matrix
 double Matrix_det(const Matrix * __A);
@@ -156,3 +158,16 @@ void Row_addition(Matrix *__m, Index *__ind, size_t __r1, size_t __r2);
 
 // r1 = r1 + k * r2
 void Row_addition_k(Matrix *__m, Index *__ind, size_t __r1, size_t __r2, double __k);
+
+/**========================================================================
+ *!                           Householder type transformations
+ *========================================================================**/
+
+Vector *Matrix_householder_v(const Vector *__start, const Vector *__dest);
+
+Matrix *Matrix_householder(const Vector *__v);
+
+// Give the householder transform matrix for __u -> [||__u||, 0, ..., 0]
+Matrix *Matrix_transform(const Vector *__u);
+
+QR Matrix_householder_qr(const Matrix *__A);

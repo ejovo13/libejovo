@@ -119,6 +119,11 @@ typedef struct lu_t {
     Matrix *U;
 } LU;
 
+typedef struct qr_t {
+    Matrix *Q;
+    Matrix *R;
+} QR;
+
 typedef struct lup_t {
     Matrix *L;
     Matrix *U;

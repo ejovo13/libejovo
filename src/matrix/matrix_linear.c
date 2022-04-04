@@ -25,6 +25,10 @@ Matrix *Matrix_pow(Matrix * __A, size_t __power) {
 
 }
 
+MATRIX_TYPE Matrix_trace(const Matrix *__A) {
+    return Matrix_diag_sum(__A, 0);
+}
+
 // Create the n x n Vandermonde matrix
 Matrix *Matrix_vandermonde(const Vector *__v) {
 
@@ -731,3 +735,80 @@ void Row_addition_k(Matrix *__m, Index *__ind, size_t __r1, size_t __r2, double 
 
 
 // void Matrix_switch
+
+/**========================================================================
+ *!                           Householder type transformations
+ *========================================================================**/
+
+// First have to think of a good name for calculating v
+Vector *Matrix_householder_v(const Vector *__start, const Vector *__dest) {
+    // Vectors automatically have to be the same size
+
+    if (Vector_size(__start) != Vector_size(__dest)) return NULL;
+
+    // else start off by subtracting the matrix
+    Vector *v = Matrix_subtract(__start, __dest);
+    vecnormalize(v);
+
+    return v;
+}
+
+Matrix *Matrix_householder(const Vector *__v) {
+
+    Matrix *id = Matrix_identity(Vector_size(__v));
+    Matrix *outer = Vector_outer(__v, __v);
+    matmultscalar(outer, 2);
+
+    Matrix *householder = Matrix_subtract(id, outer);
+
+    Matrix_free(id);
+    Matrix_free(outer);
+
+    return householder;
+}
+
+Matrix *Matrix_householder_transform(const Vector *__u) {
+
+    MATRIX_TYPE length = Vector_norm(__u);
+    Vector *dest = Vector_new(Vector_size(__u));
+    Vector_set(dest, 0, length);
+
+    Vector *v = Matrix_householder_v(__u, dest);
+    Matrix *Q = Matrix_householder(v);
+
+    Matrix_free(dest);
+    Matrix_free(v);
+
+    return Q;
+}
+
+// I think its about time to abandon the c version of this project!!!!
+// QR Matrix_householder_qr(const Matrix *__A) {
+
+//     QR out = {.Q = NULL, .R = NULL};
+//     // if matrix isn't square, bounce
+//     if (!Matrix_is_square(__A)) return out;
+//     // duplicate
+//     Matrix *R = Matrix_clone(__A);
+
+//     // Zero below the diagonals
+//     Matrix *Q = Matrix_identity(__A->ncols);
+//     Matrix *Qn = NULL;
+
+//     // Need to incorporate an iterator...
+//     for (int j = 0; j < __A->ncols; j++) {
+
+//         Vector *col = Matrix_submat(R, j, __A->nrows - 1, j, j);
+//         Qn = Matrix_householder_transform(col);
+//         Q = Matrix_catch(&Q, Matrix_multiply(Q, Qn));
+//         R = Matrix_catch(&R, Matrix_multiply)
+//         Matrix_free(col);
+//     }
+
+
+
+
+
+// }
+
+

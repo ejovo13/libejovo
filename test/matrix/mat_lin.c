@@ -14,6 +14,7 @@ void t_vandermonde();
 void t_gausselim();
 void t_gausselim_rand();
 void t_inverse();
+void t_householder();
 
 // Not all of these function have been tested for accuracy.
 // However, what is true is that none the the functions called in this test suite
@@ -40,6 +41,7 @@ int main() {
     t_gausselim();
     t_gausselim_rand();
     t_inverse();
+    t_householder();
 
     return 0;
 }
@@ -374,4 +376,30 @@ void t_inverse() {
     Matrix_free(A_inv);
     Matrix_free(A_true_inv);
 
+}
+
+void t_householder() {
+
+    Matrix *test = Vector_from((double []) {3, 4}, 2);
+    Matrix *dest = Vector_from((double []) {5, 0}, 2);
+
+    Vector *v = Matrix_householder_v(test, dest);
+
+    printf("v: \n");
+    Matrix_print(v);
+
+    Vector *H = Matrix_householder(v);
+
+    printf("H: \n");
+    Matrix_print(H);
+
+    printf("H test = \n");
+    Matrix_print(Matrix_anon(Matrix_multiply(H, test)));
+
+    Matrix_anon_free();
+    Matrix_free(test);
+    Matrix_free(v);
+
+    // assert(Matrix_det(H) == -1);
+    printf("Det(H): %lf\n", Matrix_det(H));
 }
