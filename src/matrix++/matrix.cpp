@@ -2,6 +2,8 @@
 #include <iostream>
 #include <cstring>
 #include <cmath>
+#include <vector>
+#include <functional>
 
 template <class T>
 class Matrix {
@@ -19,6 +21,11 @@ class Matrix {
     Matrix(int m, int n);
     Matrix(const Matrix& rhs);
     Matrix(Matrix&& rhs);
+
+    /**========================================================================
+     *!                           From functions
+     *========================================================================**/
+    // Matrix from
 
 
     /**----------------------
@@ -62,6 +69,7 @@ class Matrix {
     void to_row();
 
     Matrix diff() const; // return the back elements minus the front elements
+    Matrix abs() const;
 
 
     T& operator()(int i);
@@ -230,6 +238,16 @@ void loop_diag(Matrix<T>& A, UnaryFn f, int diag = 0) {
  *!                           Ejovo namespace
  *========================================================================**/
 namespace ejovo {
+
+    template <class T> T abs(T x) {
+        return x < 0 ? -x : x;
+    }
+
+    template <class T> Matrix<T> abs(Matrix<T> m) {
+        return m.abs();
+    }
+
+    // template <class T> Matrix<T>
 
     template<class T = double>
     Matrix<T> linspace(T start, T end, int n = 100) {
@@ -703,6 +721,13 @@ Matrix<T> Matrix<T>::diff() const {
     return out;
 }
 
+template <class T>
+Matrix<T> Matrix<T>::abs() const {
+    return ejovo::map(*this, [&] (auto x) {
+        return ejovo::abs(x);
+    });
+}
+
 
 template <class T> Matrix<T>::Matrix(Matrix&& rhs) : m{rhs.m}, n{rhs.n} {
 
@@ -909,6 +934,104 @@ bool Matrix<T>::cantAddB(const Matrix &rhs) const {
     return !(this->isSameSize(rhs));
 }
 
+// template <class T>
+// using ScalarFn = T (* ) (T);
+
+// functions
+
+
+
+namespace functions {
+
+    template <class T>
+    T id(T x) {
+        return x;
+    }
+
+    template <class T>
+    class ScalarFn {
+
+        public:
+
+        // a scalar function takes a t and returns a t
+        ScalarFn();
+        ScalarFn(std::function<T(T)> fn);
+
+        T operator()(T x) {
+            return fn(x);
+        }
+
+        Matrix<T> operator()(Matrix<T> x) {
+            return ejovo::map(x, fn);
+        }
+
+        private:
+
+        std::function<T(T)> fn;
+    };
+
+    template <class T>
+    ScalarFn<T>::ScalarFn(): fn{id<T>} {};
+
+    template <class T>
+    ScalarFn<T>::ScalarFn(std::function<T(T)> __fn) : fn{__fn} {};
+
+};
+
+
+
+namespace opti {
+
+    constexpr int MAX_ITERATIONS = 1E5;
+    constexpr double EPS = 1E-10;
+
+    using namespace functions;
+
+    // implement newtons method
+    template <class T>
+    Matrix<T> newtons_method(std::function<T(T)> f, std::function<T(T)> f_prime, T x0, T eps = EPS, int max_it = MAX_ITERATIONS) {
+
+        // f and f_prime are functions of T
+        int i = 0;
+
+        T x = x0;
+
+        while (ejovo::abs(f(x)) > eps && i < MAX_ITERATIONS) {
+
+            x = x - f(x) / f_prime(x);
+            i ++;
+        }
+
+        Matrix<T> out{1, 1};
+        out(1) = x;
+
+
+        std::cout << "Newton's method run with " << i << " iterations\n";
+        out.print();
+
+        return out;
+    }
+
+    template <class T, class ScalarFn>
+    Matrix<T> fixed_point(ScalarFn g, T x0, T eps = EPS, int max_it = MAX_ITERATIONS) {
+
+        int i = 0;
+        T x = x0;
+        T err = ejovo::abs(g(x) - x);
+
+        while (ejovo::abs(err) < eps && i < max_it) {
+
+            x = g(x);
+
+            i++;
+        }
+
+    }
+
+
+};
+
+
 
 /**========================================================================
  *!                           Functional style things
@@ -1044,7 +1167,7 @@ int main() {
 
     auto ij = Matrix<double>::ij(10, 10);
 
-    Matrix prod = ij % ij;
+    Matrix<double> prod = ij % ij;
 
     // ij %= two_id;
     ij.print();
@@ -1075,6 +1198,38 @@ int main() {
     space.print();
     printf("Differences:\n");
     space.diff().print();
+
+
+    auto g = [] (double x) {
+        return x * x - 1;
+    };
+
+    auto g_prime = [] (double x) {
+        return 2 * x;
+    };
+
+    double x0 = 0.5;
+
+    auto root = opti::newtons_method<double>(g, g_prime, x0);
+
+    auto test_fn = functions::ScalarFn<double>();
+    double x = 10;
+
+    std::cout << "test_fn applied to x: " << x << " " << test_fn(x) << "\n";
+
+    auto test_fn2 = functions::ScalarFn<double>(
+        [&] (auto x) {return x + 10;}
+    );
+
+    std::cout << "test_fn2 applied to x: " << x << " " << test_fn2(x) << "\n";
+
+    auto my_x = linspace<double>(1, 10, 10);
+    auto my_y = test_fn2(my_x);
+
+    my_y.print();
+
+    // std::cout << "root found as: " << root << "\n";
+    root.print();
 
 
 }
