@@ -168,6 +168,6 @@ Vector *Matrix_householder_v(const Vector *__start, const Vector *__dest);
 Matrix *Matrix_householder(const Vector *__v);
 
 // Give the householder transform matrix for __u -> [||__u||, 0, ..., 0]
-Matrix *Matrix_transform(const Vector *__u);
+Matrix *Matrix_householder_transform(const Vector *__u);
 
 QR Matrix_householder_qr(const Matrix *__A);
