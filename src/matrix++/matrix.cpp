@@ -13,16 +13,17 @@ class Matrix {
 
     std::unique_ptr<T[]> data;
 
-
+    //======= constructors
     Matrix();
     Matrix(int m); // create a column vector
     Matrix(int m, int n);
-
-
-
     Matrix(const Matrix& rhs);
     Matrix(Matrix&& rhs);
 
+
+    /**----------------------
+     *!    operators
+     *------------------------**/
     Matrix& operator=(const Matrix& rhs);
     // Matrix& operator=(Matrix&& rhs);
     Matrix& operator=(Matrix rhs);
@@ -36,6 +37,33 @@ class Matrix {
     void reset(); // set data to nullptr, m and n to 0.
     // void mutate()
 
+    /**========================================================================
+     *!                           Transformations
+     *========================================================================**/
+    // create a new matrix whose data is a copy
+    Matrix as_vector(); // return a copy of this data in column form
+    Matrix as_colvec(); // just a call to as_vector
+    Matrix as_rowvec();
+
+    bool isSameSize(const Matrix &rhs) const;
+    bool canMultB(const Matrix &rhs) const;
+    bool cantMultB(const Matrix &rhs) const;
+    bool canAddB(const Matrix &rhs) const;
+    bool cantAddB(const Matrix &rhs) const;
+
+    void reshape(std::tuple<int, int> ind);
+    void reshape(Matrix& ind);
+    void reshape(int i, int j);
+
+    // void to_vector(); // Computing the size of the matrix, change the elements so that the matrix is a col vector;
+    // void to_rowvec();
+    void to_col();
+    void to_vec();
+    void to_row();
+
+    Matrix diff() const; // return the back elements minus the front elements
+
+
     T& operator()(int i);
     const T& operator()(int i) const;
     T& operator()(int i, int j);
@@ -43,35 +71,99 @@ class Matrix {
 
     T& at(int i);
     T& at(int i, int j);
+    const T& at(int i) const;
+    const T& at(int i, int j) const;
 
     // interpret the indices as INTEGERS and
     Matrix operator()(const Matrix<int> ind);
 
     T& operator[](int i);
-    // const T& operator[](int i) const;
+    const T& operator[](int i) const;
 
     /**========================================================================
      *!                           Binary operations
      *========================================================================**/
+    // Take the dot product as if we were VECTORS
+    T dot(const Matrix& rhs) const;
+    T dot(const Matrix& rhs, int i, int j) const; // dot the ith of this row with the jth column of rhs
+
+
+    //* Matrix Moperators
     Matrix& operator+=(const Matrix& rhs);
+    Matrix& operator-=(const Matrix& rhs);
+    Matrix& operator%=(const Matrix& rhs); // hadamard multiplication
+
+    //* Matrix + scalar
+    Matrix& operator+=(const T scalar);
+    Matrix& operator-=(const T scalar);
+    Matrix& operator/=(const T scalar);
+    Matrix& operator*=(const T scalar);
+
+
+    Matrix operator-() const;
+    Matrix operator*(const Matrix& rhs) const;
+
     friend Matrix operator+(Matrix lhs, const Matrix rhs) {
         lhs += rhs;
         return lhs;
     }
 
-    Matrix& operator-=(const Matrix& rhs);
+    friend Matrix operator+(Matrix lhs, const T scalar) {
+        lhs += scalar;
+        return lhs;
+    }
+
+    friend Matrix operator+(const T scalar, Matrix rhs) {
+        rhs += scalar;
+        return rhs;
+    }
+
+    // friend Matrix operator+(const T scalar )
+
+    // Matrix& operator-=(const Matrix& rhs);
+
+    // these values are passed in by  copy
     friend Matrix operator-(Matrix lhs, const Matrix rhs) {
         lhs -= rhs;
         return lhs;
     }
 
-    Matrix operator-();
+    friend Matrix operator-(Matrix lhs, const T scalar) {
+        lhs -= scalar;
+        return lhs;
+    }
+
+    friend Matrix operator-(const T scalar, Matrix rhs) {
+        rhs -= scalar;
+        return rhs;
+    }
+
+    friend Matrix operator*(const T scalar, Matrix rhs) {
+        rhs *= scalar;
+        return rhs;
+    }
+
+    friend Matrix operator*(Matrix lhs, const T scalar) {
+        lhs *= scalar;
+        return lhs;
+    }
+
+    friend Matrix operator%(Matrix lhs, const Matrix rhs) {
+        lhs %= rhs;
+        return lhs;
+    }
+
+
+    // fried Matrix operator-(Mat)
+
+
 
     // matrix transpose
     Matrix t();
 
     // Matrix multiplication
-    Matrix operator*(const Matrix& rhs);
+
+
 
 
     /**========================================================================
@@ -82,11 +174,23 @@ class Matrix {
     bool is_colvec();
     bool is_rowvec();
 
+    int mindim();
 
+    /**========================================================================
+     *!                           Static functions
+     *========================================================================**/
     static Matrix<T> zeros(int m);
     static Matrix<T> zeros(int m, int n);
     static Matrix<T> ones(int m);
     static Matrix<T> ones(int m, int n);
+    static Matrix<T> ij(int m, int n);
+    static Matrix<T> id(int n);
+    static Matrix<T> id(int m, int n);
+
+    static Matrix<T> hilbert(int n);
+    static Matrix<T> hilbert(int m, int n);
+
+    static Matrix<T> diagonal(Matrix& vals);
 
     /**========================================================================
      *!                           Matrix interface to ejovo functions
@@ -94,6 +198,10 @@ class Matrix {
 
 };
 
+
+/**========================================================================
+ *!                           Looping functions
+ *========================================================================**/
 // loop elements i, j and set i, j according to what f(i, j) returns
 template <class T, class BinaryFn>
 void loop_ij(Matrix<T>& A, BinaryFn f) {
@@ -111,9 +219,19 @@ void loop_i(Matrix<T>& A, UnaryFn f) {
     }
 }
 
+template <class T, class UnaryFn>
+void loop_diag(Matrix<T>& A, UnaryFn f, int diag = 0) {
+    for (int d = 1 + diag; d <= A.mindim(); d++) {
+        f(d);
+    }
+}
+
+/**========================================================================
+ *!                           Ejovo namespace
+ *========================================================================**/
 namespace ejovo {
 
-    template<class T>
+    template<class T = double>
     Matrix<T> linspace(T start, T end, int n = 100) {
 
         T diff = (end - start) / (n - 1);
@@ -234,8 +352,22 @@ namespace ejovo {
         return out;
     }
 
+    template<class T, class UnaryFn>
+    Matrix<T>& mutate(Matrix<T> &mat, UnaryFn f) {
+        for (int i = 0; i < mat.size(); i++) {
+            mat[i] = f(mat[i]);
+        }
+        return mat;
+    }
+
+
 };
 
+using namespace ejovo;
+
+/**========================================================================
+ *!                           Constructors
+ *========================================================================**/
 template <class T> Matrix<T>::Matrix() : m{0}, n{0} { this->data = nullptr; }
 
 template <class T> void Matrix<T>::reset() {
@@ -278,6 +410,22 @@ Matrix<T>& Matrix<T>::operator=(const Matrix& rhs) {
     return *this;
 }
 
+// template <class T>
+// Matrix<T>& Matrix<T>::operator+=(const Matrix& rhs) {
+
+//     // check if the matrices are compatible for matrix addition.
+//     if (!this->canAddB(rhs)) {
+//         std::cerr << "Can't add two matrices\n";
+//         return *this;
+//     }
+
+//     loop_i(rhs, [&] (int i) {
+//         this->at(i) += rhs(i);
+//     });
+
+//     return *this;
+// }
+
 
 
 // template <class T>
@@ -303,8 +451,16 @@ Matrix<T>& Matrix<T>::operator=(const Matrix& rhs) {
 //     return *this;
 // }
 
+/**========================================================================
+ *!                           Indexing operators
+ *========================================================================**/
 template <class T>
 T& Matrix<T>::operator[](int i) {
+    return (this->data)[i];
+}
+
+template <class T>
+const T& Matrix<T>::operator[](int i) const {
     return (this->data)[i];
 }
 
@@ -338,6 +494,16 @@ T& Matrix<T>::at(int i, int j) {
     return this->operator()(i, j);
 }
 
+template <class T>
+const T& Matrix<T>::at(int i) const {
+    return this->operator()(i);
+}
+
+template <class T>
+const T& Matrix<T>::at(int i, int j) const {
+    return this->operator()(i, j);
+}
+
 // template <class T>
 // T& Matrix<T>::at(int i) {
 //     return this->operator()(i);
@@ -365,7 +531,9 @@ Matrix<T> Matrix<T>::operator()(const Matrix<int> ind) {
 
 
 
-
+/**========================================================================
+ *!                           Mutations
+ *========================================================================**/
 template <class T>
 void Matrix<T>::fill(T val) {
     for (int i = 0; i < this->size(); i++) {
@@ -406,22 +574,135 @@ Matrix<T> Matrix<T>::t() {
 
 template <class T>
 Matrix<T>& Matrix<T>::operator+=(const Matrix& rhs) {
-    loop_ij(*this, [&] (int i, int j) {this->operator()(i, j) += rhs(i, j);});
+
+    if (this->cantAddB(rhs)) {
+        std::cerr << "Trying to add incompatible matrices\n";
+        return *this;
+    }
+    // element-wise addition
+    loop_i(*this, [&] (int i) {
+        this->at(i) += rhs(i);
+    });
     return *this;
 }
 
 template <class T>
 Matrix<T>& Matrix<T>::operator-=(const Matrix& rhs) {
-    loop_ij(*this, [&] (int i, int j) {this->operator()(i, j) -= rhs(i, j);});
+
+    if (this->cantAddB(rhs)) {
+        std::cerr << "Trying to add incompatible matrices\n";
+        return *this;
+    }
+    // element-wise addition
+    loop_i(*this, [&] (int i) {
+        this->at(i) -= rhs(i);
+    });
+    return *this;
+}
+
+//========================= Scalar operations ====================
+template <class T>
+Matrix<T>& Matrix<T>::operator+=(const T scalar) {
+    loop_i(*this, [&] (int i) {
+        this->at(i) += scalar;
+    });
     return *this;
 }
 
 template <class T>
-Matrix<T> Matrix<T>::operator-() {
+Matrix<T>& Matrix<T>::operator-=(const T scalar) {
+    // element-wise addition
+    loop_i(*this, [&] (int i) {
+        this->at(i) -= scalar;
+    });
+    return *this;
+}
+
+template <class T>
+Matrix<T>& Matrix<T>::operator*=(const T scalar) {
+    loop_i(*this, [&] (int i) {
+        this->at(i) *= scalar;
+    });
+    return *this;
+}
+
+template <class T>
+Matrix<T>& Matrix<T>::operator/=(const T scalar) {
+    loop_i(*this, [&] (int i) {
+        this->at(i) /= scalar;
+    });
+    return *this;
+}
+
+template <class T>
+Matrix<T> Matrix<T>::operator-() const {
     Matrix dup{*this};
     loop_i(dup, [&] (int i) {dup(i) = -this->operator()(i);});
     return dup;
 }
+
+// hadamard multiplication
+template <class T>
+Matrix<T>& Matrix<T>::operator%=(const Matrix& rhs) {
+
+    if (this->size() != rhs.size()) {
+        std::cerr << "Not the same size, cant perform hadamard multiplication\n";
+        return *this;
+    }
+    loop_i(*this, [&] (int i) {
+        this->at(i) *= rhs(i);
+    });
+    return *this;
+}
+
+template <class T>
+T Matrix<T>::dot(const Matrix& rhs) const {
+    auto had_res = *this % rhs;
+    return sum(had_res);
+}
+
+template <class T>
+T Matrix<T>::dot(const Matrix& rhs, int i, int j) const {
+    // we are assuming that the sizes are legit
+    T total = 0;
+    for (int k = 1; k <= this->n; k++) {
+        total += (this->at(i, k) * rhs(k, j));
+    }
+    return total;
+}
+
+
+// Matrix multiplication!!!
+template <class T>
+Matrix<T> Matrix<T>::operator*(const Matrix&rhs) const {
+
+    if (this->cantMultB(rhs)) {
+        std::cerr << "Can't multiply matrices\n";
+        return zeros(1);
+    }
+    // o(n3), so we will have 3 loops
+
+    // create output matrix
+    Matrix out{this->m, rhs.n};
+
+    for (int i = 1; i <= out.m; i++) {
+        for (int j = 1; j <= out.n; j++) {
+            out(i, j) = this->dot(rhs, i, j);
+        }
+    }
+    return out;
+}
+
+template <class T>
+Matrix<T> Matrix<T>::diff() const {
+    // create matrix that is smaller
+    Matrix out{this->size() - 1};
+    for (int i = 0; i < out.size(); i++) {
+        out[i] = this->operator[](i + 1) - this->operator[](i);
+    }
+    return out;
+}
+
 
 template <class T> Matrix<T>::Matrix(Matrix&& rhs) : m{rhs.m}, n{rhs.n} {
 
@@ -434,7 +715,19 @@ template <class T> Matrix<T>::Matrix(Matrix&& rhs) : m{rhs.m}, n{rhs.n} {
     rhs.n = 0;
 }
 
+/**========================================================================
+ *!                           Inquiry functions
+ *========================================================================**/
 
+template <class T>
+int Matrix<T>::mindim() {
+    return this->m < this->n ? this->m : this->n;
+}
+
+
+/**========================================================================
+ *!                           Static functions
+ *========================================================================**/
 template <class T>
 Matrix<T> Matrix<T>::zeros(int m) {
 
@@ -467,6 +760,106 @@ Matrix<T> Matrix<T>::ones(int m, int n) {
     return one;
 }
 
+template <class T>
+Matrix<T> Matrix<T>::id(int n) {
+    // take 1 as the identity element...
+    Matrix out = zeros(n, n);
+    loop_diag(out, [&] (int d) {
+        out(d, d) = 1;
+    });
+
+    return out;
+}
+
+template <class T>
+Matrix<T> Matrix<T>::ij(int m, int n) {
+    Matrix out(m, n);
+    loop_ij(out, [&] (int i, int j) {
+        out(i, j) = i + j - 1;
+    });
+    return out;
+}
+
+template <class T>
+Matrix<T> Matrix<T>::hilbert(int n) {
+    Matrix out = Matrix::ij(n, n);
+    loop_i(out, [&] (int i) {
+        out(i) = 1 / out(i);
+    });
+    return out;
+}
+
+/**========================================================================
+ *!                           Transformations
+ *========================================================================**/
+template <class T>
+void Matrix<T>::reshape(std::tuple<int, int> ind) {
+
+    // verify that the first times the second is legitimate
+    if (std::get<0>(ind) * std::get<1>(ind) != this->size()) {
+        std::cerr << "Sizes not compatible for reshaping. Aborting.\n";
+        return;
+    }
+
+    this->m = std::get<0>(ind);
+    this->n = std::get<1>(ind);
+
+}
+
+template <class T>
+void Matrix<T>::reshape(int m, int n) {
+
+    // verify that the first times the second is legitimate
+    if (m * n != this->size()) {
+        std::cerr << "Sizes not compatible for reshaping. Aborting.\n";
+        return;
+    }
+
+    this->m = m;
+    this->n = n;
+}
+
+
+template <class T>
+void Matrix<T>::to_row() {
+    this->reshape(1, this->size());
+}
+
+template <class T>
+void Matrix<T>::to_col() {
+    this->reshape(this->size(), 1);
+}
+
+template <class T>
+void Matrix<T>::to_vec() {
+    this->to_col();
+}
+
+template <class T>
+Matrix<T> Matrix<T>::as_vector() {
+    Matrix out{*this}; // copy this matrix
+    out.to_vec();
+}
+
+template <class T>
+Matrix<T> Matrix<T>::as_colvec() {
+    Matrix out{*this}; // copy this matrix
+    out.to_col();
+}
+
+template <class T>
+Matrix<T> Matrix<T>::as_rowvec() {
+    Matrix out{*this}; // copy this matrix
+    out.to_row();
+}
+
+
+
+
+
+
+
+
 /**========================================================================
  *!                           Inquiry functions
  *========================================================================**/
@@ -490,6 +883,32 @@ template <class T>
 bool Matrix<T>::is_rowvec() {
     return this->m == 1;
 }
+
+template <class T>
+bool Matrix<T>::canMultB(const Matrix &rhs) const {
+    return this->n == rhs.m;
+}
+
+template <class T>
+bool Matrix<T>::cantMultB(const Matrix &rhs) const {
+    return !(this->canMultB(rhs));
+}
+
+template <class T>
+bool Matrix<T>::isSameSize(const Matrix &rhs) const {
+    return this->m == rhs.m && this->n == rhs.n;
+}
+
+template <class T>
+bool Matrix<T>::canAddB(const Matrix &rhs) const {
+    return this->isSameSize(rhs);
+}
+
+template <class T>
+bool Matrix<T>::cantAddB(const Matrix &rhs) const {
+    return !(this->isSameSize(rhs));
+}
+
 
 /**========================================================================
  *!                           Functional style things
@@ -596,5 +1015,66 @@ int main() {
     b.print();
 
     seq(10)(seq(2)).print();
+
+
+    auto m_int = Matrix<int>::ij(5, 6);
+    m_int.print();
+    auto H = Matrix<double>::hilbert(10);
+    H.print();
+
+    H += 10;
+    H.print();
+    H *= 0.5;
+    H.print();
+    H /= 0.5;
+    H.print();
+
+    auto Id = Matrix<double>::id(10);
+    Id.print();
+    auto res = Id + -1;
+    res.print();
+
+    (res - 5).print();
+    (10 + res).print();
+    (10 * res).print();
+
+    std::cout << "========== Hadamard product ===========\n";
+    auto two_id = 2 * Id;
+    two_id.print();
+
+    auto ij = Matrix<double>::ij(10, 10);
+
+    Matrix prod = ij % ij;
+
+    // ij %= two_id;
+    ij.print();
+    prod.print();
+
+    Matrix<double> t1(2, 1);
+    t1(1) = 1;
+    t1(2) = -1;
+
+    Matrix<double> t2(1, 2);
+    t2(1) = 3;
+    t2(2) = 3;
+
+    std::cout << "dot: " << t1.dot(t2) << "\n";
+
+    auto t_prod = Matrix<double>::id(2) * t1;
+    t_prod.print();
+
+    mutate(t_prod, [] (auto x) {
+        return x * 2;
+    });
+
+
+
+    t_prod.print();
+
+    Matrix<double> space = linspace<double>(1, 10, 10);
+    space.print();
+    printf("Differences:\n");
+    space.diff().print();
+
 
 }
