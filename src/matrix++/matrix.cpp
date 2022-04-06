@@ -381,6 +381,49 @@ namespace ejovo {
 
 };
 
+/**========================================================================
+ *!                           Trigonometric functions
+ *========================================================================**/
+namespace trig {
+
+    template <class T>
+    T cosine(T x) {
+        return cos(x);
+    }
+
+    template <class T>
+    T sine(T x) {
+        return sin(x);
+    }
+
+    template <class T>
+    T tangent(T x) {
+        return tan(x);
+    }
+
+}
+
+
+namespace ejovo {
+
+    // I want to  add a numeric restriction to this
+    template <class T>
+    Matrix<T> cos(Matrix<T> x) {
+        return map(x, trig::cosine);
+    }
+
+    template <class T>
+    Matrix<T> sin(Matrix<T> x) {
+        return map(x, trig::sine);
+    }
+
+};
+
+
+
+
+
+
 using namespace ejovo;
 
 /**========================================================================
@@ -1042,6 +1085,12 @@ namespace std {
         return pow(__x, __y);
     }
 }
+
+
+/**========================================================================
+ *!                           Statistics functions
+ *========================================================================**/
+
 
 
 
