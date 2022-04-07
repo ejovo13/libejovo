@@ -58,15 +58,15 @@ class Matrix {
     bool canAddB(const Matrix &rhs) const;
     bool cantAddB(const Matrix &rhs) const;
 
-    void reshape(std::tuple<int, int> ind);
-    void reshape(Matrix& ind);
-    void reshape(int i, int j);
+    Matrix& reshape(std::tuple<int, int> ind);
+    Matrix& reshape(Matrix& ind);
+    Matrix& reshape(int i, int j);
 
     // void to_vector(); // Computing the size of the matrix, change the elements so that the matrix is a col vector;
     // void to_rowvec();
-    void to_col();
-    void to_vec();
-    void to_row();
+    Matrix& to_col();
+    Matrix& to_vec();
+    Matrix& to_row();
 
     Matrix diff() const; // return the back elements minus the front elements
     Matrix abs() const;
@@ -94,6 +94,9 @@ class Matrix {
     // Take the dot product as if we were VECTORS
     T dot(const Matrix& rhs) const;
     T dot(const Matrix& rhs, int i, int j) const; // dot the ith of this row with the jth column of rhs
+    T inner_product(const Matrix& rhs) const;
+    Matrix outer_product(const Matrix& rhs) const; // must be two vectors...
+    Matrix kronecker_product(const Matrix& rhs) const;
 
 
     //* Matrix Moperators
@@ -161,6 +164,18 @@ class Matrix {
         return lhs;
     }
 
+    friend Matrix operator/(const T scalar, Matrix rhs) {
+        loop_i(rhs, [&] (int i) {
+            return rhs(i) = scalar * (1 / rhs(i));
+        });
+        return rhs;
+    }
+
+    friend Matrix operator/(Matrix lhs, const T scalar) {
+        lhs /= scalar;
+        return lhs;
+    }
+
 
     // fried Matrix operator-(Mat)
 
@@ -168,6 +183,7 @@ class Matrix {
 
     // matrix transpose
     Matrix t();
+    Matrix transpose();
 
     // Matrix multiplication
 
@@ -191,6 +207,7 @@ class Matrix {
     static Matrix<T> zeros(int m, int n);
     static Matrix<T> ones(int m);
     static Matrix<T> ones(int m, int n);
+    static Matrix<T> ij(int n);
     static Matrix<T> ij(int m, int n);
     static Matrix<T> id(int n);
     static Matrix<T> id(int m, int n);
@@ -378,28 +395,48 @@ namespace ejovo {
         return mat;
     }
 
+    // whereas map returns a value, apply will just call the function and not save the return
+    template <class T, class UnaryFn>
+    void apply(Matrix<T> &mat, UnaryFn f) {
+        for (int i = 0; i < mat.size(); i++) {
+            f(mat[i]);
+        }
+    }
+
+
 
 };
 
 /**========================================================================
  *!                           Trigonometric functions
  *========================================================================**/
+
+// I could always have a namespace name that corresponds to a typeclass
+
+
+
 namespace trig {
 
+    constexpr double pi = 3.14159265358979323846;
+    constexpr double two_pi = 2 * 3.14159265358979323846;
+    constexpr double half_pi = 3.14159265358979323846 / 2.0;
+
     template <class T>
-    T cosine(T x) {
-        return cos(x);
+    T cos(T x) {
+        return std::cos(x);
     }
 
     template <class T>
-    T sine(T x) {
-        return sin(x);
+    T sin(T x) {
+        return std::sin(x);
     }
 
     template <class T>
-    T tangent(T x) {
-        return tan(x);
+    T tan(T x) {
+        return std::tan(x);
     }
+
+
 
 }
 
@@ -409,12 +446,17 @@ namespace ejovo {
     // I want to  add a numeric restriction to this
     template <class T>
     Matrix<T> cos(Matrix<T> x) {
-        return map(x, trig::cosine);
+        return map(x, trig::cos<T>);
     }
 
     template <class T>
     Matrix<T> sin(Matrix<T> x) {
-        return map(x, trig::sine);
+        return map(x, trig::sin<T>);
+    }
+
+    template <class T>
+    Matrix<T> tan(Matrix<T> x) {
+        return map(x, trig::tan<T>);
     }
 
 };
@@ -634,6 +676,11 @@ Matrix<T> Matrix<T>::t() {
 }
 
 template <class T>
+Matrix<T> Matrix<T>::transpose() {
+    return this->t();
+}
+
+template <class T>
 Matrix<T>& Matrix<T>::operator+=(const Matrix& rhs) {
 
     if (this->cantAddB(rhs)) {
@@ -732,6 +779,29 @@ T Matrix<T>::dot(const Matrix& rhs, int i, int j) const {
     return total;
 }
 
+template <class T>
+T Matrix<T>::inner_product(const Matrix& rhs) const {
+    return this->dot(rhs);
+}
+
+template <class T>
+Matrix<T> Matrix<T>::outer_product(const Matrix& rhs) const {
+    // Treat these as two vectors
+    Matrix out{this->size(), rhs.size()};
+    loop_ij(out, [&] (int i, int j) {
+        out(i, j) = (this->at(i)) * (rhs(j));
+    });
+    return out;
+}
+
+template <class T>
+Matrix<T> Matrix<T>::kronecker_product(const Matrix& rhs) const {
+
+    Matrix out{this->m * rhs.m, this->n * rhs.n};
+
+
+
+}
 
 // Matrix multiplication!!!
 template <class T>
@@ -840,6 +910,15 @@ Matrix<T> Matrix<T>::id(int n) {
 }
 
 template <class T>
+Matrix<T> Matrix<T>::ij(int n) {
+    Matrix out(n, n);
+    loop_ij(out, [&] (int i, int j) {
+        out(i, j) = i + j - 1;
+    });
+    return out;
+}
+
+template <class T>
 Matrix<T> Matrix<T>::ij(int m, int n) {
     Matrix out(m, n);
     loop_ij(out, [&] (int i, int j) {
@@ -861,46 +940,51 @@ Matrix<T> Matrix<T>::hilbert(int n) {
  *!                           Transformations
  *========================================================================**/
 template <class T>
-void Matrix<T>::reshape(std::tuple<int, int> ind) {
+Matrix<T>& Matrix<T>::reshape(std::tuple<int, int> ind) {
 
     // verify that the first times the second is legitimate
     if (std::get<0>(ind) * std::get<1>(ind) != this->size()) {
         std::cerr << "Sizes not compatible for reshaping. Aborting.\n";
-        return;
+        return *this;
     }
 
     this->m = std::get<0>(ind);
     this->n = std::get<1>(ind);
-
+    return *this;
 }
 
 template <class T>
-void Matrix<T>::reshape(int m, int n) {
+Matrix<T>& Matrix<T>::reshape(int m, int n) {
 
     // verify that the first times the second is legitimate
     if (m * n != this->size()) {
         std::cerr << "Sizes not compatible for reshaping. Aborting.\n";
-        return;
+        return *this;
     }
 
     this->m = m;
     this->n = n;
+
+    return *this;
 }
 
 
 template <class T>
-void Matrix<T>::to_row() {
+Matrix<T>& Matrix<T>::to_row() {
     this->reshape(1, this->size());
+    return *this;
 }
 
 template <class T>
-void Matrix<T>::to_col() {
+Matrix<T>& Matrix<T>::to_col() {
     this->reshape(this->size(), 1);
+    return *this;
 }
 
 template <class T>
-void Matrix<T>::to_vec() {
+Matrix<T>& Matrix<T>::to_vec() {
     this->to_col();
+    return *this;
 }
 
 template <class T>
@@ -1281,4 +1365,36 @@ int main() {
     root.print();
 
 
+    auto X = linspace<double>(-trig::pi, trig::pi,  10000);
+
+    auto cosx = cos(X);
+    auto sinx = sin(X);
+
+    std::cout << "cosx \\dot sinx" << cosx.dot(sinx) << "\n";
+
+
+    // cosx.print();
+    std::vector<Matrix<double>> vec {Matrix<double>::id(3), Matrix<double>::ij(4)};
+
+    for (auto m : vec) {
+        m.print();
+    }
+
+    auto Hilb = 1 / vec[1];
+    Hilb.print();
+
+    auto t_new = Matrix<double>::zeros(2, 5).to_vec();
+    auto t_lin = linspace<double>(1, 10, 10).reshape(2, 5);
+    t_new.print();
+    t_lin.print();
+
+    auto t_seq = linspace(1, 5, 3);
+    auto t_seq2 = linspace(-3, 20, 5);
+    // auto t_seq2 = seq(4);
+    auto t_out = t_seq.outer_product(t_seq2);
+    t_seq.print();
+    t_seq2.print();
+
+    // t_lin.t().print();
+    t_out.print();
 }
