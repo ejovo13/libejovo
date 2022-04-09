@@ -3,6 +3,7 @@
 #pragma once
 
 #include "matrix.hpp"
+#include <initializer_list>
 
 /**========================================================================
  *!                           Ejovo namespace
@@ -37,8 +38,46 @@ namespace ejovo {
         return x;
     }
 
+    template <class T>
+    bool eq (T a, T b) {
+        return a == b;
+    }
+
+    template <class T>
+    bool lt (T a, T b) {
+        return a < b;
+    }
+
+    template <class T>
+    bool gt (T a, T b) {
+        return a > b;
+    }
+
+    template <class T>
+    bool leq (T a, T b) {
+        return a <= b;
+    }
+
+    template <class T>
+    bool geq (T a, T b) {
+        return a >= b;
+    }
+
     template <class T> T abs(T x) {
         return x < 0 ? -x : x;
+    }
+
+    template <class T>
+    Matrix<T> vec(std::initializer_list<T> list) {
+        // Get the length of this list
+        int n = list.size();
+        int i = 1;
+        Matrix<T> out{1, n};
+        for (auto x : list) {
+            out(i) = x;
+            i++;
+        }
+        return out;
     }
 
     // this is expensive and computes TWO logarithms

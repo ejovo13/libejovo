@@ -385,7 +385,7 @@ int main() {
     lhs.print();
     rhs.print();
 
-    lhs.kronecker_product(rhs).print();
+    Matrix<int> my_kron = lhs.kronecker_product(rhs);
 
 
     lhs = Matrix<int>::from({1, 2, 3, 4}, 2, 2);
@@ -395,5 +395,66 @@ int main() {
     lhs.print();
 
     id22.hadamard_product(lhs).print();
+
+    my_kron.print();
+
+    (my_kron > 10).print();
+
+    my_kron.which(my_kron > 10).print();
+
+    auto my_bool_view = my_kron(my_kron > 10);
+    my_bool_view = 0;
+
+    my_kron.print();
+
+    auto A = Matrix<double>::ij(5, 10);
+
+    A[A < 3] = 0;
+    A[A == 3] = 99;
+    A[A >= 11] = 0.5;
+
+    A.print();
+
+    using namespace ejovo;
+
+    A.submat({1, 2}, {1, 4}).print();
+    A.submat(1, 2, 1, 4).print();
+    A.submat(seq(2), seq(4)).print();
+
+    my_kron.print();
+
+    my_kron.rows(2, 3).print();
+    my_kron.cols(8, 8).print();
+
+    my_kron.cols({5, 3, 1}).print();
+
+    my_kron.cols({4}).print();
+
+    my_kron.cols(4).print();
+
+    my_kron.print();
+
+    my_kron.rows(3).print();
+    my_kron.rows({8, 8, 3}) = 883;
+    my_kron.rows(1, 4) = 12;
+
+    // my_kron.cols({1, 2}) = 12;
+    // my_kron.cols(1) = 1;
+    auto my_vv = my_kron.cols(4, 7) = 47;
+    // my_kron.cols(4, 7).print();
+
+    my_vv.break_away().print();
+
+    my_kron.print();
+
+    my_kron.submat(ejovo::vec({1, 2}), seq(3, 5)).print();
+    my_kron.submat({1, 2}, seq(3, 5)).print();
+    // my_kron.submat({1, 2}, seq())
+
+    // my_kron.print();
+
+    my_kron.block(1, 1, 5, 6) = 888;
+
+    my_kron.print();
 
 }

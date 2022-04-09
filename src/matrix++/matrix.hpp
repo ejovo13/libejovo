@@ -60,11 +60,14 @@ class Matrix {
     Matrix as_colvec(); // just a call to as_vector
     Matrix as_rowvec();
 
-    bool isSameSize(const Matrix &rhs) const;
-    bool canMultB(const Matrix &rhs) const;
-    bool cantMultB(const Matrix &rhs) const;
-    bool canAddB(const Matrix &rhs) const;
-    bool cantAddB(const Matrix &rhs) const;
+    template <class U> bool is_same_size(const Matrix<U> &rhs) const;
+    template <class U> bool isnt_same_size(const Matrix<U> &rhs) const;
+    template <class U> bool is_same_shape(const Matrix<U> &rhs) const;
+    template <class U> bool isnt_same_shape(const Matrix<U> &rhs) const;
+    bool can_mult_b(const Matrix &rhs) const;
+    bool cant_mult_b(const Matrix &rhs) const;
+    bool can_add_b(const Matrix &rhs) const;
+    bool cant_add_b(const Matrix &rhs) const;
 
     Matrix& reshape(std::tuple<int, int> ind);
     Matrix& reshape(Matrix& ind);
@@ -329,14 +332,90 @@ class Matrix {
     Matrix operator()(const Matrix<int>& ind) const;
 
 
+    Matrix<bool> operator!() const;
+
+    Matrix<bool> binop_k(std::function<bool(T, T)> binop, const T& k) const;
+
+    Matrix<bool> operator<(const T& rhs) const;
+    Matrix<bool> operator<=(const T& rhs) const;
+    Matrix<bool> operator>(const T& rhs) const;
+    Matrix<bool> operator>=(const T& rhs) const;
+    Matrix<bool> operator==(const T& rhs) const;
+
+
     // View<T> operator()(const Matrix<int>& row_ind) const;
     View<T> operator()(const Matrix<int>& row_ind, const Matrix<int>& col_ind);
     View<T> operator()(const Matrix<int>& row_ind, int j);
     View<T> operator()(int i, const Matrix<int>& col_ind);
 
+    View<T> submat(int ib, int ie, int jb, int je);
+    View<T> submat(std::initializer_list<int>, std::initializer_list<int>);
+    View<T> submat(const Matrix<int>& row_ind, const Matrix<int>& col_ind);
+    View<T> submat(std::initializer_list<int>, const Matrix<int>& col_ind);
+    View<T> submat(const Matrix<int>& col_ind, std::initializer_list<int>);
+    // View<T> submat(int i, std::initializer_list<int>);
+    // View<T> submat(std::initializer_list<int>, int j);
+
+    // submat chooses A(ib:ie, jb:je) whereas block chooses A(i:i+m, j:j+n)
+    View<T> block(int i, int j, int m, int n);
+
+    // View<T> rows_from(const Matrix<int>& col_ind, int j)
+
+    View<T> rows(int ib, int ie);
+    View<T> rows(int i);
+    View<T> rows(std::initializer_list<int> list);
+    View<T> cols(int jb, int je);
+    View<T> cols(int j);
+    View<T> cols(std::initializer_list<int> list);
+
     // test a condition, returning a logical matrix
     Matrix<bool> test(std::function<bool(T)> pred) const;
 
+    Matrix<int> which() const;
+    Matrix<int> which(const Matrix<bool>& mask) const;
+
+
+    class BoolView;
+    class ConstBoolView;
+
+
+    BoolView operator()(const Matrix<bool>& mask);
+    BoolView operator[](const Matrix<bool>& mask);
+
+
+    ConstBoolView operator()(const Matrix<bool>& mask) const;
+
+
+};
+
+// Definition of the BoolView class
+
+template <class T>
+class Matrix<T>::BoolView {
+
+public:
+
+    Matrix<int> true_ind;
+
+    int m;
+    int n;
+
+    BoolView(Matrix<T>& mat);
+    BoolView(Matrix<T>& mat, const Matrix<bool> mask);
+    BoolView(Matrix<T>& mat, const Matrix<int> true_ind); // vector indices
+
+    BoolView& loop_i(std::function<void(int)> f);
+
+    T& operator()(int i);
+    T& at(int i);
+
+    BoolView& operator=(T val);
+    // BoolView& operator=(const Matrix<T>& mat);
+
+
+private:
+
+    Matrix<T>& mat;
 
 
 

@@ -3,6 +3,7 @@
 
 #include "ejovo.hpp"
 #include "view.hpp"
+#include <initializer_list>
 
 // This file is like the .cpp counterpart of matrix.hpp, although since we are dealing with a
 // template library we are forced to keep this in a header file that will be included.
@@ -319,7 +320,7 @@ Matrix<T> Matrix<T>::transpose() const {
 template <class T>
 Matrix<T>& Matrix<T>::operator+=(const Matrix& rhs) {
 
-    if (this->cantAddB(rhs)) {
+    if (this->cant_add_b(rhs)) {
         std::cerr << "Trying to add incompatible matrices\n";
         return *this;
     }
@@ -333,7 +334,7 @@ Matrix<T>& Matrix<T>::operator+=(const Matrix& rhs) {
 template <class T>
 Matrix<T>& Matrix<T>::operator-=(const Matrix& rhs) {
 
-    if (this->cantAddB(rhs)) {
+    if (this->cant_add_b(rhs)) {
         std::cerr << "Trying to add incompatible matrices\n";
         return *this;
     }
@@ -466,7 +467,7 @@ Matrix<T> Matrix<T>::hadamard_product(const Matrix& rhs) const {
 template <class T>
 Matrix<T> Matrix<T>::operator*(const Matrix&rhs) const {
 
-    if (this->cantMultB(rhs)) {
+    if (this->cant_mult_b(rhs)) {
         std::cerr << "Can't multiply matrices\n";
         return zeros(1);
     }
@@ -754,28 +755,47 @@ bool Matrix<T>::is_null() const {
 }
 
 template <class T>
-bool Matrix<T>::canMultB(const Matrix &rhs) const {
+bool Matrix<T>::can_mult_b(const Matrix &rhs) const {
     return this->n == rhs.m;
 }
 
 template <class T>
-bool Matrix<T>::cantMultB(const Matrix &rhs) const {
-    return !(this->canMultB(rhs));
+bool Matrix<T>::cant_mult_b(const Matrix &rhs) const {
+    return !(this->can_mult_b(rhs));
 }
 
 template <class T>
-bool Matrix<T>::isSameSize(const Matrix &rhs) const {
+template <class U>
+bool Matrix<T>::is_same_size(const Matrix<U> &rhs) const {
+    return this->size() == rhs.size();
+}
+
+template <class T>
+template <class U>
+bool Matrix<T>::isnt_same_size(const Matrix<U> &rhs) const {
+    return !this->is_same_size(rhs);
+}
+
+template <class T>
+template <class U>
+bool Matrix<T>::is_same_shape(const Matrix<U> &rhs) const {
     return this->m == rhs.m && this->n == rhs.n;
 }
 
 template <class T>
-bool Matrix<T>::canAddB(const Matrix &rhs) const {
-    return this->isSameSize(rhs);
+template <class U>
+bool Matrix<T>::isnt_same_shape(const Matrix<U> &rhs) const {
+    return !this->is_same_shape(rhs);
 }
 
 template <class T>
-bool Matrix<T>::cantAddB(const Matrix &rhs) const {
-    return !(this->isSameSize(rhs));
+bool Matrix<T>::can_add_b(const Matrix &rhs) const {
+    return this->is_same_shape(rhs);
+}
+
+template <class T>
+bool Matrix<T>::cant_add_b(const Matrix &rhs) const {
+    return !(this->is_same_shape(rhs));
 }
 
 template <class T>
@@ -1055,3 +1075,233 @@ View<T> Matrix<T>::view_col(int j) {
     View<T> v{*this, ejovo::seq(this->n), Matrix<int>::val(1, 1, j)};
     return v;
 }
+
+
+/**========================================================================
+ *!                           Logical indexing type functions
+ *========================================================================**/
+template<>
+Matrix<bool> Matrix<bool>::operator!() const {
+    return this->map([&] (bool b) {
+        return !b;
+    });
+}
+
+// Add a binary COMPARISON that returns a bool no matter what T is.
+// Map the elements of this to the binop(this, k)
+template <class T>
+Matrix<bool> Matrix<T>::binop_k(std::function<bool(T, T)> binop, const T& k) const {
+    // Create a bool matrix that is the same size
+    Matrix<bool> logical {this->m, this->n};
+
+    logical.loop_i([&] (int i) {
+        logical(i) = binop(this->at(i), k);
+    });
+
+    return logical;
+}
+
+template <class T>
+Matrix<bool> Matrix<T>::operator<(const T& rhs) const {
+    return this->binop_k(ejovo::lt<T>, rhs);
+}
+
+template <class T>
+Matrix<bool> Matrix<T>::operator<=(const T& rhs) const {
+    return this->binop_k(ejovo::leq<T>, rhs);
+}
+
+template <class T>
+Matrix<bool> Matrix<T>::operator>(const T& rhs) const {
+    return this->binop_k(ejovo::gt<T>, rhs);
+}
+
+template <class T>
+Matrix<bool> Matrix<T>::operator>=(const T& rhs) const {
+    return this->binop_k(ejovo::geq<T>, rhs);
+}
+
+template <class T>
+Matrix<bool> Matrix<T>::operator==(const T& rhs) const {
+    return this->binop_k(ejovo::eq<T>, rhs);
+}
+
+template <>
+Matrix<int> Matrix<bool>::which() const {
+
+    int count = 0;
+    this->loop_i([&] (int i) {
+        if (this->at(i)) count++;
+    });
+
+    Matrix<int> out {1, count};
+
+    int out_i = 1;
+    this->loop_i([&] (int i) {
+        if (this->at(i)) {
+            out(out_i) = i;
+            out_i ++;
+        }
+    });
+
+    return out;
+}
+
+// return the VECTOR indices where the mask is TRUE
+template <class T>
+Matrix<int> Matrix<T>::which(const Matrix<bool>& mask) const{
+    // make one pass to count how many are true.
+    // Check to make sure that the mask has the same shape
+    if (this->isnt_same_shape(mask)) return Matrix<int>::null();
+
+    return mask.which();
+}
+
+
+template <class T>
+typename Matrix<T>::BoolView Matrix<T>::operator()(const Matrix<bool>& mask) {
+    // When given a mask, create a new BoolView.
+    BoolView out{*this, mask};
+    return out;
+}
+
+template <class T>
+typename Matrix<T>::BoolView Matrix<T>::operator[](const Matrix<bool>& mask) {
+    // When given a mask, create a new BoolView.
+    BoolView out{*this, mask};
+    return out;
+}
+
+
+
+// template <class T>
+// typename Mat
+
+
+/**========================================================================
+ *!                           Class Template Type Members
+ *========================================================================**/
+/**======================
+ *!    Constructors
+ *========================**/
+template <class T>
+Matrix<T>::BoolView::BoolView(Matrix<T>& mat)
+    : m{mat.m}
+    , n{mat.n}
+    , true_ind{ejovo::seq<int>(mat.size())}
+    , mat{mat}
+{};
+
+template <class T>
+Matrix<T>::BoolView::BoolView(Matrix<T>& mat, const Matrix<bool> mask)
+    : m{mat.m}
+    , n{mat.n}
+    , true_ind{mat.which(mask)}
+    , mat{mat}
+{};
+
+template <class T>
+Matrix<T>::BoolView::BoolView(Matrix<T>& mat, const Matrix<int> true_ind)
+    : m{mat.m}
+    , n{mat.n}
+    , true_ind{true_ind}
+    , mat{mat}
+{};
+
+template <class T>
+typename Matrix<T>::BoolView& Matrix<T>::BoolView::loop_i(std::function<void(int)> f) {
+    this->true_ind.loop_i(f);
+    return *this;
+}
+
+template <class T>
+T& Matrix<T>::BoolView::operator()(int i) {
+    return mat(true_ind(i));
+}
+
+template <class T>
+T& Matrix<T>::BoolView::at(int i) {
+    return mat(true_ind(i));
+}
+
+template <class T>
+typename Matrix<T>::BoolView& Matrix<T>::BoolView::operator=(T val) {
+    std::cerr << "Called BoolView operator=\n";
+    this->loop_i([&] (int i) {
+        this->at(i) = val;
+    });
+    return *this;
+}
+// TODO validate the indices of the submatrix
+template <class T>
+View<T> Matrix<T>::submat(const Matrix<int>& row_ind, const Matrix<int>& col_ind) {
+    return this->operator()(row_ind, col_ind);
+}
+
+template <class T>
+View<T> Matrix<T>::submat(int ib, int ie, int jb, int je) {
+    return this->operator()(ejovo::seq<int>(ib, ie), ejovo::seq<int>(jb, je));
+}
+
+// A({1, 3}, {1, 4}) === A(1:3, 1:4)
+template <class T>
+View<T> Matrix<T>::submat(std::initializer_list<int> list_1, std::initializer_list<int> list_2) {
+    return this->operator()(Matrix<int>::from(list_1), Matrix<int>::from(list_2));
+}
+
+template <class T>
+View<T> Matrix<T>::submat(std::initializer_list<int> list, const Matrix<int>& col_ind) {
+    return this->operator()(Matrix<int>::from(list), col_ind);
+}
+
+template <class T>
+View<T> Matrix<T>::submat(const Matrix<int>& row_ind, std::initializer_list<int> list) {
+    return this->operator()(row_ind, Matrix<int>::from(list));
+}
+
+
+// A.rows(1, 4) === A(1:4,:)
+template <class T>
+View<T> Matrix<T>::rows(int ib, int ie) {
+    return this->submat(ib, ie, 1, this->n);
+}
+
+template <class T>
+View<T> Matrix<T>::rows(std::initializer_list<int> list) {
+    return this->submat(Matrix<int>::from(list), ejovo::seq<int>(1, this->n));
+}
+
+template <class T>
+View<T> Matrix<T>::rows(int ib) {
+    return this->rows(ib, ib);
+}
+
+// A.cols (1, 3) == A(:, 1:3)
+
+template <class T>
+View<T> Matrix<T>::cols(int jb, int je) {
+    return this->submat(1, this->m, jb, je);
+}
+
+template <class T>
+View<T> Matrix<T>::cols(int jb) {
+    return this->cols(jb, jb);
+}
+
+template <class T>
+View<T> Matrix<T>::cols(std::initializer_list<int> list) {
+    return this->submat(ejovo::seq<int>(1, this->m), Matrix<int>::from(list));
+}
+
+template <class T>
+View<T> Matrix<T>::block(int i, int j, int m, int n) {
+    return this->submat(i, i + m, j, j + n);
+}
+
+
+// template <class T>
+// typename Matrix<T>::BoolView
+
+
+
+

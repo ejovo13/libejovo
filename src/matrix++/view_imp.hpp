@@ -39,7 +39,7 @@ template <class T>
 View<T>& View<T>::loop_ij(std::function<T(int, int)> f) {
     for (int i = 1; i <= this->m; i++) {
         for (int j = 1; j <= this->n; j++) {
-            this->at(i, j) = f(row_ind(i), col_ind(j));
+            this->at(i, j) = f(i, j);
         }
     }
     return *this;
@@ -60,7 +60,7 @@ template <class T>
 View<T>& View<T>::loop_ij(std::function<void(int, int)> f) {
     for (int i = 1; i <= this->m; i++) {
         for (int j = 1; j <= this->n; j++) {
-            f(row_ind(i), col_ind(j));
+            f(i, j);
         }
     }
     return *this;
@@ -90,6 +90,7 @@ void View<T>::print() {
 
 template <class T>
 View<T>& View<T>::operator=(T val) {
+    std::cout << "Setting a view to a const\n";
     this->loop_ij([&] (int i, int j) {
         this->at(i, j) = val;
     });
@@ -144,5 +145,5 @@ View<T>& View<T>::mutate(std::function<T(T)> f) {
 
 template <class T>
 Matrix<T> View<T>::break_away() {
-    return this->map(ejovo::id);
+    return this->map(ejovo::id<T>);
 }
