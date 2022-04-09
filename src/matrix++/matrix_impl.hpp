@@ -1295,7 +1295,7 @@ View<T> Matrix<T>::cols(std::initializer_list<int> list) {
 
 template <class T>
 View<T> Matrix<T>::block(int i, int j, int m, int n) {
-    return this->submat(i, i + m, j, j + n);
+    return this->submat(i, i + m - 1, j, j + n - 1);
 }
 
 

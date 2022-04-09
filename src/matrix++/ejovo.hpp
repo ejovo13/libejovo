@@ -39,6 +39,26 @@ namespace ejovo {
     }
 
     template <class T>
+    void plus_eq(T& a, T& b) {
+        a += b;
+    }
+
+    template <class T>
+    void minus_eq(T& a, T& b) {
+        a -= b;
+    }
+
+    template <class T>
+    void times_eq(T& a, T& b) {
+        a *= b;
+    }
+
+    template <class T>
+    void divide_eq(T& a, T& b) {
+        a /= b;
+    }
+
+    template <class T>
     bool eq (T a, T b) {
         return a == b;
     }

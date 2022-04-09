@@ -55,6 +55,11 @@ T& View<T>::at(int i, int j) {
     return mat(row_ind(i), col_ind(j));
 }
 
+template <class T>
+const T& View<T>::at(int i, int j) const {
+    return mat(row_ind(i), col_ind(j));
+}
+
 // Loops the
 template <class T>
 View<T>& View<T>::loop_ij(std::function<void(int, int)> f) {
@@ -127,7 +132,7 @@ View<T>& View<T>::operator=(const Matrix<T>& mat) {
 }
 
 template <class T>
-Matrix<T> View<T>::map(std::function<T(T)> f) {
+Matrix<T> View<T>::map(std::function<T(const T)> f) const {
     Matrix<T> out = Matrix<T>::zeros(this->m, this->n);
     out.loop_ij([&] (int i, int j) {
         out(i, j) = f(this->at(i, j));
@@ -144,6 +149,84 @@ View<T>& View<T>::mutate(std::function<T(T)> f) {
 }
 
 template <class T>
-Matrix<T> View<T>::break_away() {
+Matrix<T> View<T>::break_away() const {
     return this->map(ejovo::id<T>);
+}
+
+template <class T>
+Matrix<T> View<T>::to_matrix() const {
+    return this->map(ejovo::id<T>);
+}
+
+/**========================================================================
+ *!                           Operators Implementation
+ *========================================================================**/
+template <class T>
+View<T>& View<T>::operator+=(T val) {
+    this->mutate([&] (auto x) {
+        return x + val;
+    });
+    return *this;
+}
+
+template <class T>
+View<T>& View<T>::operator-=(T val) {
+    this->mutate([&] (auto x) {
+        return x - val;
+    });
+    return *this;
+}
+
+template <class T>
+View<T>& View<T>::operator*=(T val) {
+    this->mutate([&] (auto x) {
+        return x * val;
+    });
+    return *this;
+}
+
+template <class T>
+View<T>& View<T>::operator/=(T val) {
+    this->mutate([&] (auto x) {
+        return x / val;
+    });
+    return *this;
+}
+
+template <class T>
+int View<T>::size() {
+    return this->m * this->n;
+}
+
+template <class T>
+View<T>& View<T>::assign_op(View<T> view, std::function<void(T&, T&)> ass_op) {
+    if (this->m != view.m || this->n != view.n) {
+        std::cerr << "Unable to perform assignment with non conforming Views\n";
+        return *this;
+    }
+
+    this->loop_ij([&] (int i, int j) {
+        ass_op(this->at(i, j), view(i, j));
+    });
+    return *this;
+}
+
+template <class T>
+View<T>& View<T>::operator +=(View<T> view) {
+    return this->assign_op(view, ejovo::plus_eq<T>);
+}
+
+template <class T>
+View<T>& View<T>::operator -=(View<T> view) {
+    return this->assign_op(view, ejovo::minus_eq<T>);
+}
+
+template <class T>
+View<T>& View<T>::operator *=(View<T> view) {
+    return this->assign_op(view, ejovo::times_eq<T>);
+}
+
+template <class T>
+View<T>& View<T>::operator /=(View<T> view) {
+    return this->assign_op(view, ejovo::divide_eq<T>);
 }

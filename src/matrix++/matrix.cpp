@@ -457,4 +457,27 @@ int main() {
 
     my_kron.print();
 
+    my_kron.block(1, 1, 3, 3) -= 100;
+
+    my_kron.print();
+
+    auto my_bbb = Matrix<double>::ij(10, 5);
+
+    my_bbb.print();
+
+    my_bbb.block(1, 1, 3, 3) /= my_bbb.block(4, 1, 3, 3);
+    my_bbb.print();
+
+    auto blk = my_bbb.block(1, 1, 3, 3);
+
+    blk.print();
+    (blk * 10).print();
+
+    blk = blk / 5;
+    blk = blk * 5;
+    blk = blk + 5;
+    blk = blk - 5;
+
+    my_bbb.print();
+
 }
