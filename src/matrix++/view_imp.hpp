@@ -95,7 +95,7 @@ void View<T>::print() {
 
 template <class T>
 View<T>& View<T>::operator=(T val) {
-    std::cout << "Setting a view to a const\n";
+    // std::cout << "Setting a view to a const\n";
     this->loop_ij([&] (int i, int j) {
         this->at(i, j) = val;
     });
@@ -191,6 +191,40 @@ View<T>& View<T>::operator/=(T val) {
         return x / val;
     });
     return *this;
+}
+
+template <class T>
+View<T>& View<T>::assign_op(const Matrix<T>& mat, std::function<T(T, T)> ass_op) {
+    // check if they are able to add
+    if (this->m != mat.m || this->n != mat.n) {
+        std::cerr << "Matrix operands are not compatible\n";
+        return *this;
+    }
+
+    this->loop_ij([&] (int i, int j) {
+        ass_op(this->at(i, j), mat(i, j));
+    });
+    return *this;
+}
+
+template <class T>
+View<T>& View<T>::operator+=(const Matrix<T>& mat) {
+    return this->assign_op(mat, ejovo::plus_eq<T>);
+}
+
+template <class T>
+View<T>& View<T>::operator-=(const Matrix<T>& mat) {
+    return this->assign_op(mat, ejovo::minus_eq<T>);
+}
+
+template <class T>
+View<T>& View<T>::operator*=(const Matrix<T>& mat) {
+    return this->assign_op(mat, ejovo::times_eq<T>);
+}
+
+template <class T>
+View<T>& View<T>::operator/=(const Matrix<T>& mat) {
+    return this->assign_op(mat, ejovo::divide_eq<T>);
 }
 
 template <class T>

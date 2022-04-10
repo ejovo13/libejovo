@@ -609,6 +609,33 @@ Matrix<T> Matrix<T>::id(int n) {
     return out;
 }
 
+// template <class T>
+// Matrix<T> Matrix<T>::id(int m, int n) {
+
+// }
+
+template <class T>
+Matrix<T> Matrix<T>::i(int n) {
+    // take 1 as the identity element...
+    Matrix out = Matrix<T>::zeros(n, n);
+    out.loop_i([&] (int i) {
+        out(i) = i;
+    });
+
+    return out;
+}
+
+template <class T>
+Matrix<T> Matrix<T>::i(int m, int n) {
+    // take 1 as the identity element...
+    Matrix out = Matrix<T>::zeros(m, n);
+    out.loop_i([&] (int i) {
+        out(i) = i;
+    });
+
+    return out;
+}
+
 template <class T>
 Matrix<T> Matrix<T>::ij(int n) {
     Matrix out(n, n);
@@ -1267,8 +1294,8 @@ View<T> Matrix<T>::rows(int ib, int ie) {
 }
 
 template <class T>
-View<T> Matrix<T>::rows(std::initializer_list<int> list) {
-    return this->submat(Matrix<int>::from(list), ejovo::seq<int>(1, this->n));
+View<T> Matrix<T>::rows(std::initializer_list<int> list, int from) {
+    return this->submat(Matrix<int>::from(list), ejovo::seq<int>(from, this->n));
 }
 
 template <class T>
@@ -1302,6 +1329,27 @@ View<T> Matrix<T>::block(int i, int j, int m, int n) {
 // template <class T>
 // typename Matrix<T>::BoolView
 
+template <class T>
+std::tuple<Matrix<T>, Matrix<T>> Matrix<T>::lu() const {
 
+    // let's only accept square matrices....
+    if (!this->is_square()) return std::make_tuple(Matrix<T>::null(), Matrix<T>::null());
+
+    Matrix L = Matrix<T>::id(this->m);
+    Matrix U = this->clone();
+
+    for (int j = 1; j < L.n; j++) {
+        for (int i = j + 1; i <= L.m; i++) {
+
+            T scalar = U(i, j) / U(j, j);
+            U.rows({i}, j) = U.rows({i}, j) - scalar * U.rows({j}, j);
+            L(i, j) = scalar;
+
+        }
+    }
+
+    return std::make_tuple<Matrix<T>, Matrix<T>>(std::move(L), std::move(U));
+
+}
 
 

@@ -217,8 +217,10 @@ class Matrix {
     Matrix get_row(int i) const;
     Matrix get_col(int j) const;
 
-
-
+    /**========================================================================
+     *!                           Decompositions!!
+     *========================================================================**/
+    std::tuple<Matrix, Matrix> lu() const;
 
 
     /**========================================================================
@@ -241,6 +243,8 @@ class Matrix {
     static Matrix<T> ones(int m, int n);
     static Matrix<T> ij(int n);
     static Matrix<T> ij(int m, int n);
+    static Matrix<T> i(int n); // like ij but elements are i
+    static Matrix<T> i(int m, int n);
     static Matrix<T> id(int n);
     static Matrix<T> id(int m, int n);
     static Matrix<T> val(int n, T val);
@@ -258,6 +262,8 @@ class Matrix {
     static Matrix<T> col(int n, T val);
     static Matrix<T> from(std::initializer_list<T>);
     static Matrix<T> from(std::initializer_list<T>, int m, int n);
+
+    // static Matrix<T> householder
     // static Matrix<T> vec(int n);
 
     /**========================================================================
@@ -363,7 +369,7 @@ class Matrix {
 
     View<T> rows(int ib, int ie);
     View<T> rows(int i);
-    View<T> rows(std::initializer_list<int> list);
+    View<T> rows(std::initializer_list<int> list, int from = 1);
     View<T> cols(int jb, int je);
     View<T> cols(int j);
     View<T> cols(std::initializer_list<int> list);

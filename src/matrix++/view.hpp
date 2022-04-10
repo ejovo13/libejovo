@@ -46,6 +46,12 @@ public:
     View<T>& operator *=(View<T> view);
     View<T>& operator /=(View<T> view);
 
+    View<T>& assign_op(const Matrix<T>& mat, std::function<T(T, T)> fn);
+    View<T>& operator +=(const Matrix<T>& mat);
+    View<T>& operator -=(const Matrix<T>& mat);
+    View<T>& operator *=(const Matrix<T>& mat);
+    View<T>& operator /=(const Matrix<T>& mat);
+
     Matrix<T> map(std::function<T(T)> f) const;
     View<T>& mutate(std::function<T(T)> f);
 
@@ -54,16 +60,16 @@ public:
 
     // V * 5
     friend Matrix<T> operator*(const View<T>& lhs, const T& scalar) {
-        return lhs.break_away() * scalar;
+        return lhs.break_away() *= scalar;
     }
 
     // 5 * V
     friend Matrix<T> operator*(const T& scalar, const View<T>& rhs) {
-        return rhs.break_away() * scalar;
+        return rhs.break_away() *= scalar;
     }
 
     friend Matrix<T> operator/(const View<T>& lhs, const T& scalar) {
-        return lhs.break_away() / scalar;
+        return lhs.break_away() /= scalar;
     }
 
     friend Matrix<T> operator/(const T& scalar, const View<T>& rhs) {
@@ -71,19 +77,28 @@ public:
     }
 
     friend Matrix<T> operator+(const View<T>& lhs, const T& scalar) {
-        return lhs.break_away() + scalar;
+        return lhs.break_away() += scalar;
     }
 
     friend Matrix<T> operator+(const T& scalar, const View<T>& rhs) {
-        return rhs.break_away() + scalar;
+        return rhs.break_away() += scalar;
     }
 
     friend Matrix<T> operator-(const View<T>& lhs, const T& scalar) {
-        return lhs.break_away() - scalar;
+        return lhs.break_away() -= scalar;
     }
 
     friend Matrix<T> operator-(const T& scalar, const View<T>& rhs) {
-        return rhs.break_away() - scalar;
+        return rhs.break_away() -= scalar;
+    }
+
+    friend Matrix<T> operator-(const View<T>& lhs, const Matrix<T>& rhs) {
+        return lhs.break_away() -= rhs;
+    }
+
+    friend Matrix<T> operator-(const Matrix<T>& lhs, const View<T>& rhs) {
+        // We can avoid a copy here and just loop over the rhs elements
+        return lhs - rhs.break_away();
     }
 
     void print();

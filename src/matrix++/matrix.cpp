@@ -409,9 +409,13 @@ int main() {
 
     auto A = Matrix<double>::ij(5, 10);
 
+    A.print();
+
+    (A >= 11).print();
+
     A[A < 3] = 0;
     A[A == 3] = 99;
-    A[A >= 11] = 0.5;
+    A[A >= 11] = 99;
 
     A.print();
 
@@ -479,5 +483,24 @@ int main() {
     blk = blk - 5;
 
     my_bbb.print();
+
+
+    auto my_lst = Matrix<double>::from({1, 2, 3, 4, 5, 6, 7, 8});
+
+    my_lst.print();
+
+    auto ii = Matrix<double>::i(3);
+    ii.print();
+
+    auto LU = ii.lu();
+    auto L = std::get<0>(LU);
+    auto U = std::get<1>(LU);
+
+    L.print();
+    U.print();
+
+    (L * U).print();
+
+
 
 }
