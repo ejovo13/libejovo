@@ -2,8 +2,14 @@
 #include "matrix.hpp"
 #include "matrix_impl.hpp"
 #include "interval.hpp"
-#include "view.hpp"
-#include "view_imp.hpp"
+// #include "view.hpp"
+// #include "view_imp.hpp"
+#include "AbsView.hpp"
+#include "RowView.hpp"
+#include "ColView.hpp"
+#include "MatView.hpp"
+#include "VecView.hpp"
+
 
 
 int main() {
@@ -334,16 +340,16 @@ int main() {
 
     Id.print();
 
-    View v{Id, seq(2), seq(3)};
+    // View v{Id, seq(2), seq(3)};
 
-    v.print();
+    // v.print();
 
-    v = 4;
+    // v = 4;
 
     Id.print();
 
-    v = Matrix<double>::val(2, 3, 50);
-    v.print();
+    // v = Matrix<double>::val(2, 3, 50);
+    // v.print();
     Id.print();
 
     Id.view_row(1).print();
@@ -355,10 +361,12 @@ int main() {
 
     Id.print();
 
-    View<double> v2 = Id(seq(5), seq(3));
+    Matrix<double>::MatView v2 = Id(seq(5), seq(3));
 
     v2.print();
-    v2 = 13;
+    v2 += 13.0;
+
+    v2.assign(13, ejovo::id_eq<double, double>);
     Id.print();
 
     ttt = Matrix<double>::from({1, 2, 3, 4, 5, 6});
@@ -417,90 +425,162 @@ int main() {
     A[A == 3] = 99;
     A[A >= 11] = 99;
 
-    A.print();
+    // A.print();
 
-    using namespace ejovo;
+    // using namespace ejovo;
 
-    A.submat({1, 2}, {1, 4}).print();
-    A.submat(1, 2, 1, 4).print();
-    A.submat(seq(2), seq(4)).print();
-
-    my_kron.print();
-
-    my_kron.rows(2, 3).print();
-    my_kron.cols(8, 8).print();
-
-    my_kron.cols({5, 3, 1}).print();
-
-    my_kron.cols({4}).print();
-
-    my_kron.cols(4).print();
-
-    my_kron.print();
-
-    my_kron.rows(3).print();
-    my_kron.rows({8, 8, 3}) = 883;
-    my_kron.rows(1, 4) = 12;
-
-    // my_kron.cols({1, 2}) = 12;
-    // my_kron.cols(1) = 1;
-    auto my_vv = my_kron.cols(4, 7) = 47;
-    // my_kron.cols(4, 7).print();
-
-    my_vv.break_away().print();
-
-    my_kron.print();
-
-    my_kron.submat(ejovo::vec({1, 2}), seq(3, 5)).print();
-    my_kron.submat({1, 2}, seq(3, 5)).print();
-    // my_kron.submat({1, 2}, seq())
+    // A.submat({1, 2}, {1, 4}).print();
+    // A.submat(1, 2, 1, 4).print();
+    // A.submat(seq(2), seq(4)).print();
 
     // my_kron.print();
 
-    my_kron.block(1, 1, 5, 6) = 888;
+    // my_kron.rows(2, 3).print();
+    // my_kron.cols(8, 8).print();
 
-    my_kron.print();
+    // my_kron.cols({5, 3, 1}).print();
 
-    my_kron.block(1, 1, 3, 3) -= 100;
+    // my_kron.cols({4}).print();
 
-    my_kron.print();
+    // my_kron.cols(4).print();
 
-    auto my_bbb = Matrix<double>::ij(10, 5);
+    // my_kron.print();
 
-    my_bbb.print();
+    // my_kron.rows(3).print();
+    // my_kron.rows({8, 8, 3}) += 883;
+    // my_kron.rows(1, 4) /= 12;
 
-    my_bbb.block(1, 1, 3, 3) /= my_bbb.block(4, 1, 3, 3);
-    my_bbb.print();
+    // my_kron.cols({1, 2}) = 12;
+    // my_kron.cols(1) = 1;
+    // auto my_vv = my_kron.cols(4, 7) *= 47;
+    // // my_kron.cols(4, 7).print();
 
-    auto blk = my_bbb.block(1, 1, 3, 3);
+    // // my_vv.break_away().print();
 
-    blk.print();
-    (blk * 10).print();
+    // my_kron.print();
 
-    blk = blk / 5;
-    blk = blk * 5;
-    blk = blk + 5;
-    blk = blk - 5;
+    // my_kron.submat(ejovo::vec({1, 2}), seq(3, 5)).print();
+    // my_kron.submat({1, 2}, seq(3, 5)).print();
+    // // my_kron.submat({1, 2}, seq())
 
-    my_bbb.print();
+    // // my_kron.print();
+
+    // my_kron.block(1, 1, 5, 6) += 888;
+
+    // my_kron.print();
+
+    // my_kron.block(1, 1, 3, 3) -= 100;
+
+    // my_kron.print();
+
+    // auto my_bbb = Matrix<double>::ij(10, 5);
+
+    // my_bbb.print();
+
+    // // my_bbb.block(1, 1, 3, 3) /= my_bbb.block(4, 1, 3, 3);
+    // my_bbb.print();
+
+    // auto blk = my_bbb.block(1, 1, 3, 3);
+
+    // blk.print();
+    // (blk * 10).print();
+
+    // blk += blk / 5;
+    // blk += blk * 5;
+    // blk += blk + 5;
+    // blk += blk - 5;
+
+    // my_bbb.print();
 
 
-    auto my_lst = Matrix<double>::from({1, 2, 3, 4, 5, 6, 7, 8});
+    // auto my_lst = Matrix<double>::from({1, 2, 3, 4, 5, 6, 7, 8});
 
-    my_lst.print();
+    // my_lst.print();
 
-    auto ii = Matrix<double>::i(3);
-    ii.print();
+    // auto ii = Matrix<double>::i(3);
+    // ii.print();
 
-    auto LU = ii.lu();
-    auto L = std::get<0>(LU);
-    auto U = std::get<1>(LU);
+    // auto LU = ii.lu();
+    // auto L = std::get<0>(LU);
+    // auto U = std::get<1>(LU);
 
-    L.print();
-    U.print();
+    // L.print();
+    // U.print();
 
-    (L * U).print();
+    // (L * U).swap(1, 2).print();
+    // (L * U).print();
+
+    // // Matrix<double>::AbsView t;
+
+    // auto my_first_row = ii.get_row_view(1);
+
+    // my_first_row.print();
+
+    // // my_first_row = Matrix<double>::from({1, 2, 3});
+    // // my_first_row.Matrix<double>::AbsView::operator+=(Matrix<double>::from({1, 2, 3}));
+
+    // // my_first_row.assign(10, ejovo::id_eq<double, int>);
+
+    // auto my_other_row = ii.rows({1});
+    // my_other_row.print();
+
+    // // my_other_row += ii.rows({2});
+
+    // auto my_second_row = ii.get_row_view(2);
+
+    // // my_first_row.assign(10, ejovo::id_eq<double>);
+
+    // // my_other_row.assign_op(ii.rows({2}), id_eq<double, double>);
+    // my_second_row.print();
 
 
+    // my_first_row.assign(my_second_row, id_eq<double, double>);
+    // my_first_row.assign(5, id_eq<double, double>);
+
+    // my_first_row += 10;
+    // my_first_row += my_second_row;
+    // my_first_row += my_first_row.to_matrix();
+
+    // auto my_third_row = ii.get_row_view(3);
+
+    // ii.print();
+
+    // my_second_row -= 88;
+    // my_second_row -= my_third_row;
+    // my_second_row -= my_first_row.to_matrix();
+
+    // ii.print();
+
+    // // my_third_row *= 0;
+    // my_third_row *= 10;
+
+    // // my_first_row += my_second_row;
+    // // my_first_row += my_second_row.to_matrix();
+
+    // // my_other_row = 5;
+    // // my_other_row.operator+=(ii.rows )
+    // ii.print();
+
+    // auto my_first_col = ii.get_col_view(1);
+
+    // my_first_col.print();
+
+    // auto my_second_col = ii.get_col_view(2);
+    // my_second_col.print();
+
+    // auto my_third_col = ii.get_col_view(3);
+    // my_third_col.print();
+
+    // auto col3 = my_third_col.to_matrix();
+
+    // col3.map([&] (auto x) {
+    //     return x * 2;
+    // }).print();
+
+    // col3.mutate([&] (auto x) {
+    //     return log(abs(x)) * 3.0 * x;
+    // });
+
+    // col3.print();
 
 }

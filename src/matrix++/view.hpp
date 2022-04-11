@@ -40,13 +40,13 @@ public:
     View<T>& operator /=(T val);
 
     View<T>& assign_op(View<T> view, std::function<void(T&, T&)> ass_op);
+    View<T>& assign_op(const Matrix<T>& mat, std::function<void(T&, T&)> fn);
 
     View<T>& operator +=(View<T> view);
     View<T>& operator -=(View<T> view);
     View<T>& operator *=(View<T> view);
     View<T>& operator /=(View<T> view);
 
-    View<T>& assign_op(const Matrix<T>& mat, std::function<T(T, T)> fn);
     View<T>& operator +=(const Matrix<T>& mat);
     View<T>& operator -=(const Matrix<T>& mat);
     View<T>& operator *=(const Matrix<T>& mat);
@@ -108,8 +108,6 @@ private:
     Matrix<T>& mat;
 
 };
-
-
 
 template <class T>
 class ConstView {

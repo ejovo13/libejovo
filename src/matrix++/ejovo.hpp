@@ -38,23 +38,29 @@ namespace ejovo {
         return x;
     }
 
-    template <class T>
-    void plus_eq(T& a, T& b) {
+    // named functions of +=, -=, /=, and *= operators
+    template <class T, class U>
+    void id_eq(T& a, const U& b) {
+        a = b;
+    }
+
+    template <class T, class U>
+    void plus_eq(T& a, const U& b) {
         a += b;
     }
 
-    template <class T>
-    void minus_eq(T& a, T& b) {
+    template <class T, class U>
+    void minus_eq(T& a, const U& b) {
         a -= b;
     }
 
-    template <class T>
-    void times_eq(T& a, T& b) {
+    template <class T, class U>
+    void times_eq(T& a, const U& b) {
         a *= b;
     }
 
-    template <class T>
-    void divide_eq(T& a, T& b) {
+    template <class T, class U>
+    void divide_eq(T& a, const U& b) {
         a /= b;
     }
 

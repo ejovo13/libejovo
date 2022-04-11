@@ -7,12 +7,13 @@
 #include <vector>
 #include <functional>
 #include <initializer_list>
+#include <string>
 
-template <class T>
-class View;
+// template <class T>
+// class View;
 
-template <class T>
-class ConstView;
+// template <class T>
+// class ConstView;
 
 template <class T = double>
 class Matrix {
@@ -80,14 +81,8 @@ class Matrix {
     Matrix& to_row();
     Matrix& to_null();
 
-
-
-
-    View<T> view_row(int i);
-    View<T> view_col(int j);
-
-    ConstView<T> view_row(int i) const;
-    ConstView<T> view_col(int j) const;
+    // ConstView<T> view_row(int i) const;
+    // ConstView<T> view_col(int j) const;
 
     Matrix& nullify();
 
@@ -231,6 +226,7 @@ class Matrix {
     bool is_colvec() const;
     bool is_rowvec() const;
     bool is_null() const;
+    bool is_diagonally_dominant() const;
 
     int mindim() const;
 
@@ -239,6 +235,7 @@ class Matrix {
      *========================================================================**/
     static Matrix<T> zeros(int m);
     static Matrix<T> zeros(int m, int n);
+    static Matrix<T> zeros(const Matrix& mat);
     static Matrix<T> ones(int m);
     static Matrix<T> ones(int m, int n);
     static Matrix<T> ij(int n);
@@ -278,7 +275,8 @@ class Matrix {
     const Matrix& loop_i(std::function<void(int)> f) const; // f: T -> void thus this function can really do whatever the f we want. Call f without overwriting this, looping over the elements as if this were a vector
     const Matrix& loop_ij(std::function<void(int, int)> f) const; // Do something with (i, j)
 
-
+    // Swap the vector elements M(ai) and M(bi)
+    Matrix& swap(int ai, int bi);
 
 
 
@@ -307,6 +305,7 @@ class Matrix {
 
     T reduce(std::function<T(T, T)> f, T init = 0) const;
     T sum() const;
+    T sum_abs() const;
     T mean() const;
     T prod() const;
     T min() const;
@@ -349,30 +348,7 @@ class Matrix {
     Matrix<bool> operator==(const T& rhs) const;
 
 
-    // View<T> operator()(const Matrix<int>& row_ind) const;
-    View<T> operator()(const Matrix<int>& row_ind, const Matrix<int>& col_ind);
-    View<T> operator()(const Matrix<int>& row_ind, int j);
-    View<T> operator()(int i, const Matrix<int>& col_ind);
 
-    View<T> submat(int ib, int ie, int jb, int je);
-    View<T> submat(std::initializer_list<int>, std::initializer_list<int>);
-    View<T> submat(const Matrix<int>& row_ind, const Matrix<int>& col_ind);
-    View<T> submat(std::initializer_list<int>, const Matrix<int>& col_ind);
-    View<T> submat(const Matrix<int>& col_ind, std::initializer_list<int>);
-    // View<T> submat(int i, std::initializer_list<int>);
-    // View<T> submat(std::initializer_list<int>, int j);
-
-    // submat chooses A(ib:ie, jb:je) whereas block chooses A(i:i+m, j:j+n)
-    View<T> block(int i, int j, int m, int n);
-
-    // View<T> rows_from(const Matrix<int>& col_ind, int j)
-
-    View<T> rows(int ib, int ie);
-    View<T> rows(int i);
-    View<T> rows(std::initializer_list<int> list, int from = 1);
-    View<T> cols(int jb, int je);
-    View<T> cols(int j);
-    View<T> cols(std::initializer_list<int> list);
 
     // test a condition, returning a logical matrix
     Matrix<bool> test(std::function<bool(T)> pred) const;
@@ -391,6 +367,42 @@ class Matrix {
 
     ConstBoolView operator()(const Matrix<bool>& mask) const;
 
+    class AbsView;
+    class RowView;
+    class ColView;
+    class VecView; // 1 Dimensional view indexed by a single array of vector indices
+    class MatView;
+
+    MatView view_row(int i);
+    MatView view_col(int j);
+
+    RowView get_row_view(int i);
+    ColView get_col_view(int j);
+
+    // View<T> operator()(const Matrix<int>& row_ind) const;
+    MatView operator()(const Matrix<int>& row_ind, const Matrix<int>& col_ind);
+    MatView operator()(const Matrix<int>& row_ind, int j);
+    MatView operator()(int i, const Matrix<int>& col_ind);
+
+    MatView submat(int ib, int ie, int jb, int je);
+    MatView submat(std::initializer_list<int>, std::initializer_list<int>);
+    MatView submat(const Matrix<int>& row_ind, const Matrix<int>& col_ind);
+    MatView submat(std::initializer_list<int>, const Matrix<int>& col_ind);
+    MatView submat(const Matrix<int>& col_ind, std::initializer_list<int>);
+    // MatView submat(int i, std::initializer_list<int>);
+    // MatView submat(std::initializer_list<int>, int j);
+
+    // submat chooses A(ib:ie, jb:je) whereas block chooses A(i:i+m, j:j+n)
+    MatView block(int i, int j, int m, int n);
+
+    // MatView rows_from(const Matrix<int>& col_ind, int j)
+
+    MatView rows(int ib, int ie);
+    MatView rows(int i);
+    MatView rows(std::initializer_list<int> list, int from = 1);
+    MatView cols(int jb, int je);
+    MatView cols(int j);
+    MatView cols(std::initializer_list<int> list);
 
 };
 
@@ -495,3 +507,9 @@ void mut_diag(Matrix<T>& A, UnaryFn f, int diag = 0) {
     }
 }
 
+template <class T>
+std::pair<int, int> convert_vector_indices_to_ij(const Matrix<T>& mat, int n) {
+    int i = ((n  - 1) / mat.n) + 1;
+    int j = (n - 1) % mat.n + 1;
+    return std::make_pair<int, int>(std::move(i), std::move(j));
+}

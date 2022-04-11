@@ -252,20 +252,20 @@ Matrix<T> Matrix<T>::operator()(const Matrix<int> ind) {
 }
 
 template <class T>
-View<T> Matrix<T>::operator()(const Matrix<int>& row_ind, const Matrix<int>& col_ind) {
-    View<T> v{*this, row_ind, col_ind};
+typename Matrix<T>::MatView Matrix<T>::operator()(const Matrix<int>& row_ind, const Matrix<int>& col_ind) {
+    MatView v{*this, row_ind, col_ind};
     return v;
 }
 
 template <class T>
-View<T> Matrix<T>::operator()(int i, const Matrix<int>& col_ind) {
-    View<T> v{*this, Matrix<int>::val(1, 1, i), col_ind};
+typename Matrix<T>::MatView Matrix<T>::operator()(int i, const Matrix<int>& col_ind) {
+    MatView v{*this, Matrix<int>::val(1, 1, i), col_ind};
     return v;
 }
 
 template <class T>
-View<T> Matrix<T>::operator()(const Matrix<int>& row_ind, int j) {
-    View<T> v{*this, row_ind, Matrix<int>::val(1, 1, j)};
+typename Matrix<T>::MatView Matrix<T>::operator()(const Matrix<int>& row_ind, int j) {
+    MatView v{*this, row_ind, Matrix<int>::val(1, 1, j)};
     return v;
 }
 
@@ -441,7 +441,7 @@ Matrix<T> Matrix<T>::kronecker_product(const Matrix& rhs) const {
     // I think I need a function to set a block matrix..
     auto set_block = [&] (int i, int j) {
 
-        View<T> block{out, ejovo::seq<int>(i, i + rhs.m - 1), ejovo::seq<int>(j, j + rhs.n - 1)}; // construct the block view
+        MatView block{out, ejovo::seq<int>(i, i + rhs.m - 1), ejovo::seq<int>(j, j + rhs.n - 1)}; // construct the block view
         block = rhs * this->operator[](block_rowmaj_pos);
 
     };
@@ -544,6 +544,13 @@ template <class T>
 Matrix<T> Matrix<T>::zeros(int m, int n) {
 
     Matrix zero(m, n);
+    zero.fill(0);
+    return zero;
+}
+
+template <class T>
+Matrix<T> Matrix<T>::zeros(const Matrix& mat) {
+    Matrix zero{mat.m, mat.n};
     zero.fill(0);
     return zero;
 }
@@ -832,6 +839,20 @@ Matrix<T> Matrix<T>::get_row(int i) const {
 }
 
 // template <class T>
+// bool Matrix<T>::is_diagonally_dominant() const {
+
+//     // Iterate along the rows
+//     for (int i = 1; i <= this->m; i++) {
+
+//         if ()
+
+//     }
+
+//     return true;
+
+// }
+
+// template <class T>
 // using ScalarFn = T (* ) (T);
 
 // functions
@@ -960,6 +981,15 @@ T Matrix<T>::reduce(std::function<T(T, T)> f, T init) const {
 template <class T>
 T Matrix<T>::sum() const {
     return ejovo::sum(*this);
+}
+
+template <class T>
+T Matrix<T>::sum_abs() const {
+    T abs_sum = 0;
+    this->loop([&] (T x) {
+        abs_sum += ejovo::abs(x);
+    });
+    return abs_sum;
 }
 
 template <class T>
@@ -1092,14 +1122,14 @@ Matrix<bool> Matrix<T>::test(std::function<bool(T)> pred) const {
  *!                           View functions
  *========================================================================**/
 template <class T>
-View<T> Matrix<T>::view_row(int i) {
-    View<T> v{*this, Matrix<int>::val(1, 1, i), ejovo::seq(this->n)};
+typename Matrix<T>::MatView Matrix<T>::view_row(int i) {
+    MatView v{*this, Matrix<int>::val(1, 1, i), ejovo::seq(this->n)};
     return v;
 }
 
 template <class T>
-View<T> Matrix<T>::view_col(int j) {
-    View<T> v{*this, ejovo::seq(this->n), Matrix<int>::val(1, 1, j)};
+typename Matrix<T>::MatView Matrix<T>::view_col(int j) {
+    MatView v{*this, ejovo::seq(this->n), Matrix<int>::val(1, 1, j)};
     return v;
 }
 
@@ -1261,67 +1291,67 @@ typename Matrix<T>::BoolView& Matrix<T>::BoolView::operator=(T val) {
 }
 // TODO validate the indices of the submatrix
 template <class T>
-View<T> Matrix<T>::submat(const Matrix<int>& row_ind, const Matrix<int>& col_ind) {
+typename Matrix<T>::MatView Matrix<T>::submat(const Matrix<int>& row_ind, const Matrix<int>& col_ind) {
     return this->operator()(row_ind, col_ind);
 }
 
 template <class T>
-View<T> Matrix<T>::submat(int ib, int ie, int jb, int je) {
+typename Matrix<T>::MatView Matrix<T>::submat(int ib, int ie, int jb, int je) {
     return this->operator()(ejovo::seq<int>(ib, ie), ejovo::seq<int>(jb, je));
 }
 
 // A({1, 3}, {1, 4}) === A(1:3, 1:4)
 template <class T>
-View<T> Matrix<T>::submat(std::initializer_list<int> list_1, std::initializer_list<int> list_2) {
+typename Matrix<T>::MatView Matrix<T>::submat(std::initializer_list<int> list_1, std::initializer_list<int> list_2) {
     return this->operator()(Matrix<int>::from(list_1), Matrix<int>::from(list_2));
 }
 
 template <class T>
-View<T> Matrix<T>::submat(std::initializer_list<int> list, const Matrix<int>& col_ind) {
+typename Matrix<T>::MatView Matrix<T>::submat(std::initializer_list<int> list, const Matrix<int>& col_ind) {
     return this->operator()(Matrix<int>::from(list), col_ind);
 }
 
 template <class T>
-View<T> Matrix<T>::submat(const Matrix<int>& row_ind, std::initializer_list<int> list) {
+typename Matrix<T>::MatView Matrix<T>::submat(const Matrix<int>& row_ind, std::initializer_list<int> list) {
     return this->operator()(row_ind, Matrix<int>::from(list));
 }
 
 
 // A.rows(1, 4) === A(1:4,:)
 template <class T>
-View<T> Matrix<T>::rows(int ib, int ie) {
+typename Matrix<T>::MatView Matrix<T>::rows(int ib, int ie) {
     return this->submat(ib, ie, 1, this->n);
 }
 
 template <class T>
-View<T> Matrix<T>::rows(std::initializer_list<int> list, int from) {
+typename Matrix<T>::MatView Matrix<T>::rows(std::initializer_list<int> list, int from) {
     return this->submat(Matrix<int>::from(list), ejovo::seq<int>(from, this->n));
 }
 
 template <class T>
-View<T> Matrix<T>::rows(int ib) {
+typename Matrix<T>::MatView Matrix<T>::rows(int ib) {
     return this->rows(ib, ib);
 }
 
 // A.cols (1, 3) == A(:, 1:3)
 
 template <class T>
-View<T> Matrix<T>::cols(int jb, int je) {
+typename Matrix<T>::MatView Matrix<T>::cols(int jb, int je) {
     return this->submat(1, this->m, jb, je);
 }
 
 template <class T>
-View<T> Matrix<T>::cols(int jb) {
+typename Matrix<T>::MatView Matrix<T>::cols(int jb) {
     return this->cols(jb, jb);
 }
 
 template <class T>
-View<T> Matrix<T>::cols(std::initializer_list<int> list) {
+typename Matrix<T>::MatView Matrix<T>::cols(std::initializer_list<int> list) {
     return this->submat(ejovo::seq<int>(1, this->m), Matrix<int>::from(list));
 }
 
 template <class T>
-View<T> Matrix<T>::block(int i, int j, int m, int n) {
+typename Matrix<T>::MatView Matrix<T>::block(int i, int j, int m, int n) {
     return this->submat(i, i + m - 1, j, j + n - 1);
 }
 
@@ -1352,4 +1382,25 @@ std::tuple<Matrix<T>, Matrix<T>> Matrix<T>::lu() const {
 
 }
 
+template <class T>
+Matrix<T>& Matrix<T>::swap(int ai, int bi) {
+    T temp = this->at(ai);
+    this->at(ai) = this->at(bi);
+    this->at(bi) = temp;
+    return *this;
+}
 
+/**========================================================================
+ *!                           RowView stuff
+ *========================================================================**/
+template <class T>
+typename Matrix<T>::RowView Matrix<T>::get_row_view(int i) {
+    RowView rv {*this, i};
+    return rv;
+}
+
+template <class T>
+typename Matrix<T>::ColView Matrix<T>::get_col_view(int j) {
+    ColView cv {*this, j};
+    return cv;
+}

@@ -21,20 +21,6 @@ View<T>::View(Matrix<T>& mat, const Matrix<int> row_ind, const Matrix<int> col_i
     , n{col_ind.size()}
 {};
 
-// template <class T>
-// View<T>::View()
-//     : mat{0, 0}
-//     , row_ind{Matrix<int>::null()}
-//     , col_ind{Matrix<int>::null()}
-//     , m{0}
-//     , n{0}
-// {
-
-//     mat = Matrix<T>::zeros(1);
-
-// };
-
-
 template <class T>
 View<T>& View<T>::loop_ij(std::function<T(int, int)> f) {
     for (int i = 1; i <= this->m; i++) {
@@ -194,7 +180,7 @@ View<T>& View<T>::operator/=(T val) {
 }
 
 template <class T>
-View<T>& View<T>::assign_op(const Matrix<T>& mat, std::function<T(T, T)> ass_op) {
+View<T>& View<T>::assign_op(const Matrix<T>& mat, std::function<void(T&, T&)> ass_op) {
     // check if they are able to add
     if (this->m != mat.m || this->n != mat.n) {
         std::cerr << "Matrix operands are not compatible\n";
@@ -209,22 +195,22 @@ View<T>& View<T>::assign_op(const Matrix<T>& mat, std::function<T(T, T)> ass_op)
 
 template <class T>
 View<T>& View<T>::operator+=(const Matrix<T>& mat) {
-    return this->assign_op(mat, ejovo::plus_eq<T>);
+    return this->assign_op(mat, ejovo::plus_eq<T, T>);
 }
 
 template <class T>
 View<T>& View<T>::operator-=(const Matrix<T>& mat) {
-    return this->assign_op(mat, ejovo::minus_eq<T>);
+    return this->assign_op(mat, ejovo::minus_eq<T, T>);
 }
 
 template <class T>
 View<T>& View<T>::operator*=(const Matrix<T>& mat) {
-    return this->assign_op(mat, ejovo::times_eq<T>);
+    return this->assign_op(mat, ejovo::times_eq<T, T>);
 }
 
 template <class T>
 View<T>& View<T>::operator/=(const Matrix<T>& mat) {
-    return this->assign_op(mat, ejovo::divide_eq<T>);
+    return this->assign_op(mat, ejovo::divide_eq<T, T>);
 }
 
 template <class T>
@@ -247,20 +233,21 @@ View<T>& View<T>::assign_op(View<T> view, std::function<void(T&, T&)> ass_op) {
 
 template <class T>
 View<T>& View<T>::operator +=(View<T> view) {
-    return this->assign_op(view, ejovo::plus_eq<T>);
+    // std::cout << "Calling assign_op\n";
+    return this->assign_op(view, ejovo::plus_eq<T, T>);
 }
 
 template <class T>
 View<T>& View<T>::operator -=(View<T> view) {
-    return this->assign_op(view, ejovo::minus_eq<T>);
+    return this->assign_op(view, ejovo::minus_eq<T, T>);
 }
 
 template <class T>
 View<T>& View<T>::operator *=(View<T> view) {
-    return this->assign_op(view, ejovo::times_eq<T>);
+    return this->assign_op(view, ejovo::times_eq<T, T>);
 }
 
 template <class T>
 View<T>& View<T>::operator /=(View<T> view) {
-    return this->assign_op(view, ejovo::divide_eq<T>);
+    return this->assign_op(view, ejovo::divide_eq<T, T>);
 }
