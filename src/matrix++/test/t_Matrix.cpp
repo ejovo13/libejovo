@@ -6,6 +6,8 @@
 // #include "matplot.h"
 // #include "matplotlibcpp.h"
 
+void t_quad();
+
 int main() {
 
     auto m = Matrix<double>::ij(4, 8);
@@ -144,6 +146,60 @@ int main() {
     auto my_hyper_1000 = rhyper(10000, 8, 10, 5);
     my_hyper_1000.print_lin();
 
+    t_quad();
+
 
     return 0;
+}
+
+void t_quad() {
+
+
+    double a = 0;
+    double b = 1;
+
+    auto interv = ejovo::discrete::midpoints(a, b);
+
+    interv.print();
+
+    auto f = [&] (double x) {
+        return x;
+    };
+
+    auto F = [&] (double x) {
+        return (x * x) / 2;
+    };
+
+    std::cout << "F(b) - F(a) -> " << F(b) - F(a) << "\n";
+    // std::cout << "quad::midpoint(a, b, f, 1) -> " << ejovo::quad::midpoint<double, double>(a, b, f, 1) << "\n";
+
+    // for (int i = 1; i <= 100; i++) {
+
+    //     std::cout << "quad::midpoint(a, b, f, " << i << ") -> " << ejovo::quad::midpoint<double, double>(a, b, f, i) << "\n";
+    // }
+
+
+    std::cout << "quad::trapezoid(a, b, f, " << 1 << ") -> " << ejovo::quad::trapezoid<double, double>(a, b, f, 1) << "\n";
+    std::cout << "quad::trapezoid(a, b, f, " << 2 << ") -> " << ejovo::quad::trapezoid<double, double>(a, b, f, 2) << "\n";
+    std::cout << "quad::trapezoid(a, b, f, " << 3 << ") -> " << ejovo::quad::trapezoid<double, double>(a, b, f, 3) << "\n";
+
+    ejovo::discrete::midpoints(a, b, 1).print();
+    ejovo::discrete::midpoints(a, b, 2).print();
+
+    auto fx = std::function<double(const double&)>([&] (double x) {
+        return x;
+    });
+
+    double k = 5;
+
+    auto g = fx + k;
+
+    std::cout << g(10) << std::endl;
+
+
+
+
+
+
+
 }

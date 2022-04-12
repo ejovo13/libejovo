@@ -9,6 +9,128 @@
 #include <climits>
 #include "Xoshiro.hpp"
 #include <map>
+#include <functional>
+
+// Let's get crazy and start overloading function operators!!!
+/**========================================================================
+ *!                           binop(f, g)
+ *========================================================================**/
+template <class X, class Y>
+std::function<Y(const X&)> operator+(std::function<Y(const X&)> f, std::function<Y(const X&)> g) {
+    return [&] (const X& x) {
+        return f(x) + g(x);
+    };
+}
+
+template <class X, class Y>
+std::function<Y(const X&)> operator-(std::function<Y(const X&)> f, std::function<Y(const X&)> g) {
+    return [&] (const X& x) {
+        return f(x) - g(x);
+    };
+}
+
+template <class X, class Y>
+std::function<Y(const X&)> operator*(std::function<Y(const X&)> f, std::function<Y(const X&)> g) {
+    return [&] (const X& x) {
+        return f(x) * g(x);
+    };
+}
+
+template <class X, class Y>
+std::function<Y(const X&)> operator/(std::function<Y(const X&)> f, std::function<Y(const X&)> g) {
+    return [&] (const X& x) {
+        return f(x) / g(x);
+    };
+}
+
+/**========================================================================
+ *!                           binop(f, scalar)
+ *========================================================================**/
+template <class X, class Y>
+std::function<Y(const X&)> operator+(std::function<Y(const X&)> f, const Y& y) {
+    return [&] (const X& x) {
+        return f(x) + y;
+    };
+}
+
+template <class X, class Y>
+std::function<Y(const X&)> operator+(const Y& y, std::function<Y(const X&)> f) {
+    return [&] (const X& x) {
+        return y + f(x);
+    };
+}
+
+template <class X, class Y>
+std::function<Y(const X&)> operator-(std::function<Y(const X&)> f, const Y& y) {
+    return [&] (const X& x) {
+        return f(x) - y;
+    };
+}
+
+template <class X, class Y>
+std::function<Y(const X&)> operator-(const Y& y, std::function<Y(const X&)> f) {
+    return [&] (const X& x) {
+        return y - f(x);
+    };
+}
+
+template <class X, class Y>
+std::function<Y(const X&)> operator*(std::function<Y(const X&)> f, const Y& y) {
+    return [&] (const X& x) {
+        return f(x) * y;
+    };
+}
+
+template <class X, class Y>
+std::function<Y(const X&)> operator*(const Y& y, std::function<Y(const X&)> f) {
+    return [&] (const X& x) {
+        return y * f(x);
+    };
+}
+
+template <class X, class Y>
+std::function<Y(const X&)> operator/(std::function<Y(const X&)> f, const Y& y) {
+    return [&] (const X& x) {
+        return f(x) / y;
+    };
+}
+
+template <class X, class Y>
+std::function<Y(const X&)> operator/(const Y& y, std::function<Y(const X&)> f) {
+    return [&] (const X& x) {
+        return y / f(x);
+    };
+}
+
+
+/**========================================================================
+ *!                           Boolean Function Operators
+ *========================================================================**/
+// Boolean function operators!!!!!
+template <class X>
+std::function<bool(const X&)> operator&&(std::function<bool(const X&)> f, std::function<bool(const X&)> g) {
+    return [&] (const X& x) {
+        return f(x) && g(x);
+    };
+}
+
+template <class X>
+std::function<bool(const X&)> operator||(std::function<bool(const X&)> f, std::function<bool(const X&)> g) {
+    return [&] (const X& x) {
+        return f(x) || g(x);
+    };
+}
+
+template <class X>
+std::function<bool(const X&)> operator!(std::function<bool(const X&)> f) {
+    return [&] (const X& x) {
+        return !f(x);
+    };
+}
+
+
+
+
 
 namespace ejovo {
 
@@ -283,6 +405,18 @@ namespace ejovo {
                 return x >= rhs;
             };
         }
+
+        template <class X>
+        std::function<bool(X)> filter(std::function<bool(X)>) {
+
+            // This function seems wack but it has a purpose.
+            // consider the call to
+            // m | filter(lt(10))
+
+        }
+
+
+        // filter
 
 
 
@@ -669,5 +803,76 @@ namespace opti {
         }
 
     }
+
+};
+
+namespace ejovo {
+
+    namespace discrete {
+
+        // n is the number of SUBINTERVALS to have | * | * | has n = 2.
+        template <class X>
+        Matrix<X> midpoints(const X& a, const X& b, int n = 100) {
+
+            if (n <= 0) return Matrix<X>::null();
+            if (n == 1) return Matrix<X>::val(1, 1, (b - a) / 2);
+
+            X dx = (b - a) / n;
+            return ejovo::linspace(a + (dx / 2), b - (dx / 2), n);
+
+        }
+
+    };
+
+};
+
+namespace ejovo {
+
+    namespace quad {
+
+
+        // Accept a single variate (double?) function and compute its integral over an interval
+
+        // In this case a discretization is anything that is iterable... -> Eventually I could be using concepts here
+        template <class X, class Y>
+        Y midpoint(const X& a, const X& b, std::function<Y(X)> fn, int n = 100) {
+            // Discretize the interval into n sub intervals
+            if (n == 1) {
+                X dx = b - a;
+                X xi = (b - a) / 2;
+                return dx * fn(xi);
+            }
+
+            Matrix<X> interv = ejovo::discrete::midpoints(a, b, n); // equdistant intervals
+            X dx = interv(2) - interv(1);
+
+            return dx * ejovo::sum(interv.map(fn));
+        }
+
+
+        // once again, n is the number of subproblems that this is divided into
+        template <class X, class Y>
+        Y trapezoid(const X& a, const X& b, std::function<Y(X)> fn, int n = 100) {
+
+            // for n intervals, I need n + 1 points.
+            if (n <= 0) return nan("");
+            if (n == 1) return 0.5 * (fn(a) + fn(b)) / (b - a);
+
+            Matrix<X> interv = ejovo::linspace(a, b, n + 1);
+            X dx = interv(2) - interv(1);
+
+            X left = fn(interv(1));
+            X right = fn(interv(n + 1));
+            X mid = interv(ejovo::seq(2, n)).map(fn).sum();
+
+            return (dx / 2) * (left + 2 * mid + right);
+        }
+
+
+
+    };
+
+
+
 
 };
