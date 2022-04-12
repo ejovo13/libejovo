@@ -21,8 +21,15 @@ public:
     Matrix& matrix() const override;
     T& operator()(int n) const override;
     T& operator()(int i, int j) const override;
-    T& at(int n) const override;
-    T& at(int i, int j) const override;
+
+    VecView& assign(const T&, std::function<void(T&, const T&)>);
+    VecView& assign(const Matrix&, std::function<void(T&, const T&)>);
+    VecView& assign(const VecView&, std::function<void(T&, const T&)>);
+
+    VecView& operator=(const T&);
+    VecView& operator=(const Matrix&);
+    VecView& operator=(const VecView&);
+
 
 private:
 
@@ -74,9 +81,6 @@ Matrix<T>& Matrix<T>::VecView::matrix() const {
     return this->mat;
 }
 
-// convert vector indices to i, j indices.
-
-
 template <class T>
 T& Matrix<T>::VecView::operator()(int n) const {
     return mat(true_ind(n));
@@ -88,12 +92,43 @@ T& Matrix<T>::VecView::operator()(int i, int j) const {
 }
 
 template <class T>
-T& Matrix<T>::VecView::at(int i) const {
-    return mat(true_ind(i));
+// template <class U>
+typename Matrix<T>::VecView& Matrix<T>::VecView::assign(const T& scalar, std::function<void(T&, const T&)> ass_op) {
+    this->loop_ij([&] (int i, int j) {
+        ass_op(this->at(i, j), scalar);
+    });
+    return *this;
 }
 
 template <class T>
-T& Matrix<T>::VecView::at(int i, int j) const {
-    return mat(true_ind(i, j));
+typename Matrix<T>::VecView& Matrix<T>::VecView::operator=(const T& val) {
+    return this->assign(val, ejovo::id_eq<T, T>);
 }
 
+template <class T>
+// template <class U>
+typename Matrix<T>::VecView& Matrix<T>::VecView::assign(const Matrix<T>& mat, std::function<void(T&, const T&)> ass_op) {
+    this->loop_ij([&] (int i, int j) {
+        ass_op(this->at(i, j), mat(i, j));
+    });
+    return *this;
+}
+
+template <class T>
+typename Matrix<T>::VecView& Matrix<T>::VecView::operator=(const Matrix<T>& mat) {
+    return this->assign(mat, ejovo::id_eq<T, T>);
+}
+
+template <class T>
+// template <class U>
+typename Matrix<T>::VecView& Matrix<T>::VecView::assign(const VecView& rv, std::function<void(T&, const T&)> ass_op) {
+    this->loop_ij([&] (int i, int j) {
+        ass_op(this->at(i, j), rv(i, j));
+    });
+    return *this;
+}
+
+template <class T>
+typename Matrix<T>::VecView& Matrix<T>::VecView::operator=(const VecView& rv) {
+    return this->assign(rv, ejovo::id_eq<T, T>);
+}

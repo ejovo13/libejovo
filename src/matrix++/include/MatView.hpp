@@ -29,8 +29,13 @@ public:
     T& operator()(int n) const override;
     T& operator()(int i, int j) const override;
 
-    MatView& operator=(MatView&);
-    MatView& operator=(MatView&&);
+    MatView& assign(const T&, std::function<void(T&, const T&)>);
+    MatView& assign(const Matrix&, std::function<void(T&, const T&)>);
+    MatView& assign(const MatView&, std::function<void(T&, const T&)>);
+
+    MatView& operator=(const T&);
+    MatView& operator=(const Matrix&);
+    MatView& operator=(const MatView&);
     // template <class U>
     // MatView& operator=(const Matrix<T>& x) {
     //     return this->assign(x, ejovo::id_eq<T, T>);
@@ -105,11 +110,43 @@ T& Matrix<T>::MatView::operator()(int n) const {
 }
 
 template <class T>
-typename Matrix<T>::MatView& Matrix<T>::MatView::operator=(MatView& view) {
-    this->assign(view, ejovo::id_eq<T, T>);
+// template <class U>
+typename Matrix<T>::MatView& Matrix<T>::MatView::assign(const T& scalar, std::function<void(T&, const T&)> ass_op) {
+    this->loop_ij([&] (int i, int j) {
+        ass_op(this->at(i, j), scalar);
+    });
+    return *this;
 }
 
 template <class T>
-typename Matrix<T>::MatView& Matrix<T>::MatView::operator=(MatView&& view) {
-    this->assign(view, ejovo::id_eq<T, T>);
+typename Matrix<T>::MatView& Matrix<T>::MatView::operator=(const T& val) {
+    return this->assign(val, ejovo::id_eq<T, T>);
+}
+
+template <class T>
+// template <class U>
+typename Matrix<T>::MatView& Matrix<T>::MatView::assign(const Matrix<T>& mat, std::function<void(T&, const T&)> ass_op) {
+    this->loop_ij([&] (int i, int j) {
+        ass_op(this->at(i, j), mat(i, j));
+    });
+    return *this;
+}
+
+template <class T>
+typename Matrix<T>::MatView& Matrix<T>::MatView::operator=(const Matrix<T>& mat) {
+    return this->assign(mat, ejovo::id_eq<T, T>);
+}
+
+template <class T>
+// template <class U>
+typename Matrix<T>::MatView& Matrix<T>::MatView::assign(const MatView& rv, std::function<void(T&, const T&)> ass_op) {
+    this->loop_ij([&] (int i, int j) {
+        ass_op(this->at(i, j), rv(i, j));
+    });
+    return *this;
+}
+
+template <class T>
+typename Matrix<T>::MatView& Matrix<T>::MatView::operator=(const MatView& rv) {
+    return this->assign(rv, ejovo::id_eq<T, T>);
 }

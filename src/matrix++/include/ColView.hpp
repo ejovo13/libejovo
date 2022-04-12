@@ -26,11 +26,20 @@ public:
     // T& at(int n) override;
     // T& at(int i, int j) override;
 
+    ColView& assign(const T&, std::function<void(T&, const T&)>);
+    ColView& assign(const Matrix&, std::function<void(T&, const T&)>);
+    ColView& assign(const ColView&, std::function<void(T&, const T&)>);
+
+    ColView& operator=(const T&);
+    ColView& operator=(const Matrix&);
+    ColView& operator=(const ColView&);
+
     std::string to_string() const;
 
     ColView(Matrix& mat, int i);
     ColView(Matrix& mat, int i, int jb);
     ColView(Matrix& mat, int i, int jb, int je);
+    ColView(ColView&& cv);
 
 private:
 
@@ -63,6 +72,14 @@ Matrix<T>::ColView::ColView(Matrix& mat, int j, int ib, int ie)
     , ib{ib}
     , ie{ie}
     , mat{mat}
+{};
+
+template <class T>
+Matrix<T>::ColView::ColView(ColView&& cv)
+    : j{cv.j}
+    , ib{cv.ib}
+    , ie{cv.ie}
+    , mat{cv.mat}
 {};
 
 template <class T>
@@ -115,4 +132,46 @@ T& Matrix<T>::ColView::operator()(int i, int j) const {
 template <class T>
 Matrix<T>& Matrix<T>::ColView::matrix() const {
     return this->mat;
+}
+
+template <class T>
+// template <class U>
+typename Matrix<T>::ColView& Matrix<T>::ColView::assign(const T& scalar, std::function<void(T&, const T&)> ass_op) {
+    this->loop_ij([&] (int i, int j) {
+        ass_op(this->at(i, j), scalar);
+    });
+    return *this;
+}
+
+template <class T>
+typename Matrix<T>::ColView& Matrix<T>::ColView::operator=(const T& val) {
+    return this->assign(val, ejovo::id_eq<T, T>);
+}
+
+template <class T>
+// template <class U>
+typename Matrix<T>::ColView& Matrix<T>::ColView::assign(const Matrix<T>& mat, std::function<void(T&, const T&)> ass_op) {
+    this->loop_ij([&] (int i, int j) {
+        ass_op(this->at(i, j), mat(i, j));
+    });
+    return *this;
+}
+
+template <class T>
+typename Matrix<T>::ColView& Matrix<T>::ColView::operator=(const Matrix<T>& mat) {
+    return this->assign(mat, ejovo::id_eq<T, T>);
+}
+
+template <class T>
+// template <class U>
+typename Matrix<T>::ColView& Matrix<T>::ColView::assign(const ColView& rv, std::function<void(T&, const T&)> ass_op) {
+    this->loop_ij([&] (int i, int j) {
+        ass_op(this->at(i, j), rv(i, j));
+    });
+    return *this;
+}
+
+template <class T>
+typename Matrix<T>::ColView& Matrix<T>::ColView::operator=(const ColView& rv) {
+    return this->assign(rv, ejovo::id_eq<T, T>);
 }

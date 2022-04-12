@@ -4,6 +4,108 @@
 
 #include "matrix.hpp"
 #include <initializer_list>
+#include <cstdint>
+#include <sys/random.h>
+#include <climits>
+#include "Xoshiro.hpp"
+#include <map>
+
+namespace ejovo {
+
+    namespace rng {
+
+        Xoshiro xoroshiro {};
+
+    };
+
+    uint64_t n_choose_k(uint64_t n, uint64_t k) {
+
+        static std::map<std::pair<uint64_t, uint64_t>, uint64_t> values;
+        using nk_map = std::map<std::pair<uint64_t, uint64_t>, uint64_t>;
+
+        if (n == k || k == 0 || n == 0) return 1;
+        if (n == 1) return 1;
+
+        auto pair = std::make_pair<uint64_t, uint64_t>(std::move(n), std::move(k));
+
+        nk_map::iterator iter = values.find(pair);
+        if (iter == values.end()) {
+            return values[pair] = n_choose_k(n - 1, k) + n_choose_k(n - 1, k - 1);
+            // return n_choose_k(n - 1, k) + n_choose_k(n - 1, k - 1); // Non-memoization is CRAZYYYY long
+        } else {
+            return iter->second;
+        }
+    }
+
+    // template <>
+    Matrix<double> runif(int n, double a = 0, double b = 1) {
+        // ejovo::rng::xoroshiro.unifd(a, b);
+
+        // verify that n is greater than 0
+        if (n == 0) return Matrix<double>::null();
+
+        Matrix<double> out(1, n);
+        out.loop_i([&] (int i) {
+            out(i) = ejovo::rng::xoroshiro.unifd(a, b);
+        });
+
+        return out;
+    }
+
+    // template <>
+    Matrix<double> rnorm(int n, double mean = 0, double sd = 1) {
+        // ejovo::rng::xoroshiro.unifd(a, b);
+
+        // verify that n is greater than 0
+        if (n == 0) return Matrix<double>::null();
+
+        Matrix<double> out(1, n);
+        out.loop_i([&] (int i) {
+            out(i) = ejovo::rng::xoroshiro.norm(mean, sd);
+        });
+
+        return out;
+    }
+
+        // template <>
+    Matrix<double> rexp(int n, double rate = 1) {
+        // ejovo::rng::xoroshiro.unifd(a, b);
+
+        // verify that n is greater than 0
+        if (n == 0) return Matrix<double>::null();
+
+        Matrix<double> out(1, n);
+        out.loop_i([&] (int i) {
+            out(i) = ejovo::rng::xoroshiro.exp(rate);
+        });
+
+        return out;
+    }
+
+    Matrix<double> rbinom(int n, int size, double p = 0.5) {
+
+        if (n == 0) return Matrix<double>::null();
+
+        Matrix<double> out(1, n);
+        out.loop_i([&] (int i) {
+            out(i) = ejovo::rng::xoroshiro.binom(size, p);
+        });
+
+        return out;
+    }
+
+    // k observations
+    double dbinom(int k, int size, double p = 0.5) {
+        return (double) n_choose_k(size, k) * std::pow(p, k) * std::pow(1 - p, size - k);
+    }
+
+};
+
+
+
+
+
+
 
 /**========================================================================
  *!                           Ejovo namespace
@@ -31,12 +133,20 @@ namespace trig {
 
 }
 
+
+
 namespace ejovo {
 
     template <class T>
     T id (T x) {
         return x;
     }
+
+    template <class T, class U>
+    T plus(const T& a, const U& b) {
+        return a + b;
+    }
+
 
     // named functions of +=, -=, /=, and *= operators
     template <class T, class U>
@@ -92,6 +202,69 @@ namespace ejovo {
     template <class T> T abs(T x) {
         return x < 0 ? -x : x;
     }
+
+    // Function OPERATOR
+    namespace factory {
+
+        template <class T>
+        std::function<bool(T)> NOT(std::function<bool(T)> fn) {
+            return [&] (T x) {
+                return !fn(x);
+            };
+        }
+
+        template <class T>
+        std::function<bool(T)> AND(std::function<bool(T)> a, std::function<bool(T)> b) {
+            return [&] (T x) {
+                return a(x) && b(x);
+            };
+        }
+
+        template <class T>
+        std::function<bool(T)> OR(std::function<bool(T)> a, std::function<bool(T)> b) {
+            return [&] (T x) {
+                return a(x) || b(x);
+            };
+        }
+
+        template <class T>
+        std::function<bool(T)> XOR(std::function<bool(T)> a, std::function<bool(T)> b) {
+            return [&] (T x) {
+                return a(x) != b(x);
+            };
+        }
+
+        template <class T>
+        std::function<bool(T)> lt(const T& rhs) {
+            return [&] (T x) {
+                return x < rhs;
+            };
+        }
+
+        template <class T>
+        std::function<bool(T)> gt(const T& rhs) {
+            return [&] (T x) {
+                return x > rhs;
+            };
+        }
+
+        template <class T>
+        std::function<bool(T)> leq(const T& rhs) {
+            return [&] (T x) {
+                return x <= rhs;
+            };
+        }
+
+        template <class T>
+        std::function<bool(T)> geq(const T& rhs) {
+            return [&] (T x) {
+                return x >= rhs;
+            };
+        }
+
+
+
+    };
 
     template <class T>
     Matrix<T> vec(std::initializer_list<T> list) {
@@ -152,6 +325,28 @@ namespace ejovo {
         return mat_copy;
     }
 
+    template <class T>
+    std::vector<T> map(const std::vector<T>& vec, std::function<T(T)> f) {
+        std::vector<T> copy {vec};
+        int i = 0;
+        for (auto el : vec) {
+            copy[i] = f(el);
+            i++;
+        }
+        return copy;
+    }
+
+    template <class T>
+    void print(const std::vector<T>& vec) {
+        int n = vec.size();
+        std::cout << "{";
+
+        for (auto el : vec) {
+            std::cout << el << ", ";
+        }
+
+        std::cout << "}\n";
+    }
 
 
     template<class T, class BinaryFn>
@@ -193,6 +388,22 @@ namespace ejovo {
         return reduce(mat, [] (auto x, auto y) {return x > y ? x : y;});
     }
 
+    namespace scalar {
+
+        template <class T>
+        T max(const T& a, const T& b) {
+            return a > b ? a : b;
+        }
+
+        template <class T>
+        T min(const T& a, const T& b) {
+            return a < b ? a : b;
+        }
+
+    };
+
+
+
     template<class T>
     Matrix<T> pow(const Matrix<T>& mat, int n) {
         return map(mat, [&] (auto x) {return std::pow(x, n);});
@@ -214,7 +425,7 @@ namespace ejovo {
     template <class T>
     Matrix<T> seq(T start, T end) {
         const int len_seq = (end - start) + 1;
-        Matrix<int> out{len_seq};
+        Matrix<T> out{len_seq};
         out.fill(0);
         loop_i(out, [&] (int i) {
             out(i) = start + (i - 1);

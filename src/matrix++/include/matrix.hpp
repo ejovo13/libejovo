@@ -9,11 +9,16 @@
 #include <initializer_list>
 #include <string>
 
+#include "Xoshiro.hpp"
+
 // template <class T>
 // class View;
 
 // template <class T>
 // class ConstView;
+
+ejovo::rng::Xoshiro g_XOSHIRO {};
+
 
 template <class T = double>
 class Matrix {
@@ -22,6 +27,7 @@ class Matrix {
 
     int m;
     int n;
+    static ejovo::rng::Xoshiro& xoroshiro;
 
     std::unique_ptr<T[]> data;
 
@@ -49,7 +55,8 @@ class Matrix {
     std::unique_ptr<T[]> copyData() const;
 
     int size() const;
-    void print() const;
+    const Matrix& print() const;
+    const Matrix& print_lin() const;
     void fill(T val);
     void reset(); // set data to nullptr, m and n to 0.
 
@@ -76,10 +83,15 @@ class Matrix {
 
     // void to_vector(); // Computing the size of the matrix, change the elements so that the matrix is a col vector;
     // void to_rowvec();
-    Matrix& to_col();
-    Matrix& to_vec();
-    Matrix& to_row();
-    Matrix& to_null();
+    Matrix& reshape_row();
+    Matrix& reshape_col();
+    Matrix& reshape_vec();
+
+    std::vector<T> to_vector();
+    template <class U>
+    static Matrix from(const std::vector<U>& vec);
+
+    // Matrix& to_null();
 
     // ConstView<T> view_row(int i) const;
     // ConstView<T> view_col(int j) const;
@@ -260,6 +272,20 @@ class Matrix {
     static Matrix<T> from(std::initializer_list<T>);
     static Matrix<T> from(std::initializer_list<T>, int m, int n);
 
+
+    /**========================================================================
+     *!                     Matrices with random elements
+     *========================================================================**/
+    static Matrix<T> rand(int n, double min = 0, double max = 1);
+    static Matrix<T> rand(int m, int n);
+    static Matrix<T> rand(int m, int n, double min, double max);
+    // static Matrix<T> randi();
+
+    // static Matrix<T> runif(int n, double a = 0, double b = 1);
+
+
+
+
     // static Matrix<T> householder
     // static Matrix<T> vec(int n);
 
@@ -282,9 +308,16 @@ class Matrix {
 
     // void loop_if(std::function<bool(T)> predicate); // f: T -> Bool thus this function is a predicate!!
 
+    Matrix accumulate(std::function<T(const T&, const T&)> bin_op, T init = 0) const;
+    Matrix accumulate(std::function<T(const T&, const T&, int)> ter_op, T init = 0) const;
+    Matrix cumsum() const;
+    Matrix cumavg() const;
+    Matrix cummin() const;
+    Matrix cummax() const;
 
 
     Matrix map(std::function<T(T)> f) const; // returns a Matrix that's the same size as this
+    template <class U> Matrix<U> map(std::function<U(T)> f) const;
 
     // Apply a function if the predicate of an ELEMENT is true
     Matrix map_if(std::function<T(T)> f, std::function<bool(T)> predicate) const;
@@ -305,6 +338,7 @@ class Matrix {
 
     T reduce(std::function<T(T, T)> f, T init = 0) const;
     T sum() const;
+    // Matrix cumsum() ocnst;
     T sum_abs() const;
     T mean() const;
     T prod() const;
@@ -337,7 +371,6 @@ class Matrix {
     Matrix operator()(const Matrix<int>& ind) const;
 
 
-    Matrix<bool> operator!() const;
 
     Matrix<bool> binop_k(std::function<bool(T, T)> binop, const T& k) const;
 
@@ -353,25 +386,44 @@ class Matrix {
     // test a condition, returning a logical matrix
     Matrix<bool> test(std::function<bool(T)> pred) const;
 
-    Matrix<int> which() const;
     Matrix<int> which(const Matrix<bool>& mask) const;
+
+    /**========================================================================
+     *!                           Matrix<bool> functions
+     *========================================================================**/
+    Matrix<bool> operator!() const;
+    Matrix<bool> where(std::function<bool(T)> pred) const; // return a mask where the condition is true
+    Matrix<int> which() const; // return a vector of vector indices
+    Matrix<int> which(std::function<bool(T)> pred) const;
+
+    template <class U> U sum() const; // Allow a bool Matrix to call Matrix<bool>::sum<int>() -> int
+    int count() const; // Count the elements of Matrix<T> that evaluate to true in a boolean expression
+    int count(std::function<bool(T)> pred) const;
+
+    bool any() const;
+    bool any(std::function<bool(T)> pred) const;
+
+    bool all() const;
+    bool all(std::function<bool(T)> pred) const;
+
 
 
     class BoolView;
     class ConstBoolView;
 
 
-    BoolView operator()(const Matrix<bool>& mask);
-    BoolView operator[](const Matrix<bool>& mask);
 
 
-    ConstBoolView operator()(const Matrix<bool>& mask) const;
 
     class AbsView;
     class RowView;
     class ColView;
     class VecView; // 1 Dimensional view indexed by a single array of vector indices
     class MatView;
+
+    VecView operator()(const Matrix<bool>& mask);
+    VecView operator[](const Matrix<bool>& mask);
+    ConstBoolView operator()(const Matrix<bool>& mask) const;
 
     MatView view_row(int i);
     MatView view_col(int j);

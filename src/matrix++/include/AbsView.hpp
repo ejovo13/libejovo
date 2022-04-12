@@ -31,7 +31,6 @@ public:
     bool valid_bounds(int i, int j);
     void print();
 
-
     // template <class Fn>
     // AbsView& loop(std::function<T(T)>);
     virtual AbsView& loop(std::function<void(T)>);
@@ -41,28 +40,32 @@ public:
     virtual AbsView& mutate(std::function<T(T)>);
     // AbsView& mutate(std::function<T(T)>);
 
+    // These Three assignment operators WORK!!!
+    // virtual AbsView& assign(Matrix&& mat, std::function<void(T&, const T&)> ass_op);
     virtual AbsView& assign(const Matrix& mat, std::function<void(T&, const T&)> ass_op);
-    virtual AbsView& assign(Matrix&& mat, std::function<void(T&, const T&)> ass_op);
-    virtual AbsView& assign(T& scalar, std::function<void(T&, const T&)> ass_op);
-    virtual AbsView& assign(AbsView& view, std::function<void(T&, const T&)> ass_op);
+    virtual AbsView& assign(const T& scalar, std::function<void(T&, const T&)> ass_op);
+    virtual AbsView& assign(const AbsView& view, std::function<void(T&, const T&)> ass_op); // use const AbsView to bind with any type..
 
+    // Once we get to the actual overload though, we are having non-stop problems....
     // virtual AbsView& operator=(const AbsView& view);
-    virtual AbsView& operator=(const Matrix& mat);
-    virtual AbsView& operator=(Matrix mat);
-    virtual AbsView& operator=(Matrix&& mat);
-    virtual AbsView& operator=(AbsView&& view);
+    virtual AbsView& operator=(const Matrix& mat) = 0;
+    virtual AbsView& operator=(const AbsView& view);
+    virtual AbsView& operator=(const T& scalar) = 0;
+    // virtual AbsView& operator=(T scalar);
+    // virtual AbsView& operator=(double x);
+    // virtual AbsView& operator=(Matrix mat);
+    // virtual AbsView& operator=(Matrix&& mat);
+    // virtual AbsView& operator=(AbsView& view);
 
     // template <class U> AbsView& operator=(const U& scalar);
-    virtual AbsView& operator=(T& scalar);
-    virtual AbsView& operator=(typename Matrix<T>::AbsView& view);
 
     virtual AbsView& operator+=(const Matrix& mat);
     virtual AbsView& operator+=(const T& scalar);
-    virtual AbsView& operator+=(AbsView& view);
+    virtual AbsView& operator+=(const AbsView& view);
 
     virtual AbsView& operator-=(const Matrix& mat);
     virtual AbsView& operator-=(const T& scalar);
-    virtual AbsView& operator-=(AbsView& view);
+    virtual AbsView& operator-=(const AbsView& view);
 
     virtual AbsView& operator*=(const T& scalar);
     virtual AbsView& operator/=(const T& scalar);
@@ -154,19 +157,31 @@ typename Matrix<T>::AbsView& Matrix<T>::AbsView::operator=(const Matrix<T>& mat)
 }
 
 template <class T>
-typename Matrix<T>::AbsView& Matrix<T>::AbsView::operator=(Matrix<T> mat) {
-    return this->assign(mat, ejovo::id_eq<T, T>);
-}
-
-template <class T>
-typename Matrix<T>::AbsView& Matrix<T>::AbsView::operator=(Matrix<T>&& mat) {
-    return this->assign(mat, ejovo::id_eq<T, T>);
-}
-
-template <class T>
-typename Matrix<T>::AbsView& Matrix<T>::AbsView::operator=(AbsView& view) {
+typename Matrix<T>::AbsView& Matrix<T>::AbsView::operator=(const AbsView& view) {
     return this->assign(view, ejovo::id_eq<T, T>);
 }
+
+template <class T>
+typename Matrix<T>::AbsView& Matrix<T>::AbsView::operator=(const T& scalar) {
+    return this->assign(scalar, ejovo::id_eq<T, T>);
+}
+
+// template <class T>
+// typename Matrix<T>::AbsView& Matrix<T>::AbsView::operator=(Matrix<T> mat) {
+//     return this->assign(mat, ejovo::id_eq<T, T>);
+// }
+
+// template <class T>
+// typename Matrix<T>::AbsView& Matrix<T>::AbsView::operator=(Matrix<T>&& mat) {
+//     return this->assign(mat, ejovo::id_eq<T, T>);
+// }
+
+// template <class T>
+// typename Matrix<T>::AbsView& Matrix<T>::AbsView::operator=(AbsView&& view) {
+//     // Check if this matrix is empty
+
+//     return this->assign(view, ejovo::id_eq<T, T>);
+// }
 
 // template <class T>
 // template <class U>
@@ -175,10 +190,6 @@ typename Matrix<T>::AbsView& Matrix<T>::AbsView::operator=(AbsView& view) {
 // }
 
 
-template <class T>
-typename Matrix<T>::AbsView& Matrix<T>::AbsView::operator=(T& scalar) {
-    return this->assign(scalar, ejovo::id_eq<T, T>);
-}
 
 
 /**============================================
@@ -198,7 +209,7 @@ typename Matrix<T>::AbsView& Matrix<T>::AbsView::operator+=(const Matrix<T>& mat
 
 
 template <class T>
-typename Matrix<T>::AbsView& Matrix<T>::AbsView::operator+=(AbsView& view) {
+typename Matrix<T>::AbsView& Matrix<T>::AbsView::operator+=(const AbsView& view) {
     return this->assign(view, ejovo::plus_eq<T, T>);
 }
 
@@ -216,7 +227,7 @@ typename Matrix<T>::AbsView& Matrix<T>::AbsView::operator-=(const Matrix& mat) {
 }
 
 template <class T>
-typename Matrix<T>::AbsView& Matrix<T>::AbsView::operator-=(AbsView& view) {
+typename Matrix<T>::AbsView& Matrix<T>::AbsView::operator-=(const AbsView& view) {
     return this->assign(view, ejovo::minus_eq<T, T>);
 }
 
@@ -279,7 +290,7 @@ typename Matrix<T>::AbsView& Matrix<T>::AbsView::mutate(std::function<T(T)> fn) 
 
 template <class T>
 // template <class U>
-typename Matrix<T>::AbsView& Matrix<T>::AbsView::assign(T& scalar, std::function<void(T&, const T&)> ass_op) {
+typename Matrix<T>::AbsView& Matrix<T>::AbsView::assign(const T& scalar, std::function<void(T&, const T&)> ass_op) {
     this->loop_ij([&] (int i, int j) {
         ass_op(this->at(i, j), scalar);
     });
@@ -299,21 +310,21 @@ typename Matrix<T>::AbsView& Matrix<T>::AbsView::assign(const Matrix& mat, std::
     return *this;
 }
 
-template <class T>
-typename Matrix<T>::AbsView& Matrix<T>::AbsView::assign(Matrix&& mat, std::function<void(T&, const T&)> ass_op) {
-    if (this->nrows() != mat.m || this->ncols() != mat.n) {
-        std::cerr << "Matrix operands are not compatible\n";
-        return *this;
-    }
+// template <class T>
+// typename Matrix<T>::AbsView& Matrix<T>::AbsView::assign(Matrix&& mat, std::function<void(T&, const T&)> ass_op) {
+//     if (this->nrows() != mat.m || this->ncols() != mat.n) {
+//         std::cerr << "Matrix operands are not compatible\n";
+//         return *this;
+//     }
 
-    this->loop_ij([&] (int i, int j) {
-        ass_op(this->at(i, j), mat(i, j));
-    });
-    return *this;
-}
+//     this->loop_ij([&] (int i, int j) {
+//         ass_op(this->at(i, j), mat(i, j));
+//     });
+//     return *this;
+// }
 
 template <class T>
-typename Matrix<T>::AbsView& Matrix<T>::AbsView::assign(AbsView& view, std::function<void(T&, const T&)> ass_op) {
+typename Matrix<T>::AbsView& Matrix<T>::AbsView::assign(const AbsView& view, std::function<void(T&, const T&)> ass_op) {
     if (this->nrows() != view.nrows() || this->ncols() != view.ncols()) {
         std::cerr << "Matrix operands are not compatible\n";
         return *this;

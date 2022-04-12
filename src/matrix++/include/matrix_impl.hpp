@@ -2,7 +2,7 @@
 #pragma once
 
 #include "ejovo.hpp"
-#include "view.hpp"
+// #include "view.hpp"
 #include <initializer_list>
 
 // This file is like the .cpp counterpart of matrix.hpp, although since we are dealing with a
@@ -66,6 +66,19 @@ Matrix<T> Matrix<T>::from(std::initializer_list<T> list, int m, int n) {
     return out;
 }
 
+/**========================================================================
+ *!                           Random Matrices
+ *========================================================================**/
+template <class T>
+ejovo::rng::Xoshiro& Matrix<T>::xoroshiro = g_XOSHIRO;
+
+// template <class T>
+// Matrix<T> Matrix<T>
+
+
+
+
+
 template <class T> std::unique_ptr<T[]> Matrix<T>::copyData() const {
     int n = this->size();
 
@@ -81,7 +94,7 @@ template <class T> Matrix<T>::Matrix(const Matrix& rhs) : m{rhs.m}, n{rhs.n} {
 
 template <class T>
 Matrix<T>& Matrix<T>::operator=(const Matrix& rhs) {
-    std::cerr << "Performing copy assignment\n";
+    // std::cerr << "Performing copy assignment\n";
     if (this == &rhs)
         return *this;
 
@@ -288,7 +301,7 @@ int Matrix<T>::size() const {
 }
 
 template <class T>
-void Matrix<T>::print() const {
+const Matrix<T>& Matrix<T>::print() const {
 
     std::cout << this->m << " x " << this->n << " matrix\n";
 
@@ -301,6 +314,41 @@ void Matrix<T>::print() const {
 
         std::cout << this->operator()(i, this->n) << "|\n";
     }
+
+    return *this;
+}
+
+template <class T>
+const Matrix<T>& Matrix<T>::print_lin() const {
+
+    if (this->size() == 0) {
+        std::cerr << "Empty matrix trying to call Matrix<T>::print_lin()";
+        return *this;
+    }
+
+    // Check if this is a matrix, a column vector, or a row vector..
+    if (this->is_colvec()) {
+        std::cout << "Column vector with n: " << this->size() << "\n";
+        std::cout << "Euclidean norm: ";
+    } else if (this->is_rowvec()) {
+        std::cout << "Row vector with n: " << this->size() << "\n";
+        std::cout << "Euclidiean norm: ";
+    } else {
+        std::cout << "Matrix with shape: " << this->m << " x " << this->n << "\n";
+        std::cout << "Frobenius norm: ";
+    }
+
+    std::cout << this->norm() << std::endl;
+
+    std::cout << "sum:     " << this->sum() << std::endl;
+    std::cout << "mean:    " << this->mean() << std::endl;
+    std::cout << "min:     " << this->min()  << std::endl;
+    std::cout << "max:     " << this->max()  << std::endl;
+    std::cout << "sd:      " << this->sd()  << std::endl;
+    std::cout << "var:     " << this->var()  << std::endl;
+
+    return *this;
+
 }
 
 template <class T>
@@ -704,35 +752,35 @@ Matrix<T>& Matrix<T>::reshape(int m, int n) {
 
 
 template <class T>
-Matrix<T>& Matrix<T>::to_row() {
+Matrix<T>& Matrix<T>::reshape_row() {
     this->reshape(1, this->size());
     return *this;
 }
 
 template <class T>
-Matrix<T>& Matrix<T>::to_col() {
+Matrix<T>& Matrix<T>::reshape_col() {
     this->reshape(this->size(), 1);
     return *this;
 }
 
 template <class T>
-Matrix<T>& Matrix<T>::to_vec() {
-    this->to_col();
+Matrix<T>& Matrix<T>::reshape_vec() {
+    this->reshape_col();
     return *this;
 }
 
 template <class T>
-Matrix<T>& Matrix<T>::to_null() {
+Matrix<T>& Matrix<T>::nullify() {
     this->m = 0;
     this->n = 0;
     this->data = nullptr;
     return *this;
 }
 
-template <class T>
-Matrix<T>& Matrix<T>::nullify() {
-    return this->to_null();
-}
+// template <class T>
+// Matrix<T>& Matrix<T>::nullify() {
+//     return this->to_null();
+// }
 
 template <class T>
 Matrix<T> Matrix<T>::as_vector() {
@@ -752,7 +800,27 @@ Matrix<T> Matrix<T>::as_rowvec() {
     out.to_row();
 }
 
+template <class T>
+std::vector<T> Matrix<T>::to_vector() {
+    std::vector<T> out (this->size());
+    this->loop_i([&] (int i) {
+        out[i - 1] = this->operator()(i);
+    });
+    return out;
+}
 
+template <class T>
+template <class U>
+Matrix<T> Matrix<T>::from(const std::vector<U>& vec) {
+    int n = vec.size();
+    Matrix out {1, n};
+    int i = 1;
+    for (auto el : vec) {
+        out(i) = el;
+        i++;
+    }
+    return out;
+}
 
 
 
@@ -940,6 +1008,59 @@ Matrix<T> Matrix<T>::map(std::function<T(T)> f) const {
 }
 
 template <class T>
+template <class U>
+Matrix<U> Matrix<T>::map(std::function<U(T)> f) const {
+    Matrix<U> out (this->m, this->n);
+    out.loop_i([&] (int i) {
+        out(i) = f(this->operator()(i));
+    });
+    return out;
+}
+
+template <class T>
+Matrix<T> Matrix<T>::accumulate(std::function<T(const T&, const T&)> bin_op, T init) const {
+    Matrix<T> out (1, this->size());
+    out(1) = this->operator()(1);
+    for (int i = 2; i <= out.size(); i++) {
+        out(i) = bin_op(out(i - 1), this->operator()(i));
+    }
+    return out;
+}
+
+// ternary operator of the for ter_op(lhs, rhs, i)
+template <class T>
+Matrix<T> Matrix<T>::accumulate(std::function<T(const T&, const T&, int)> ter_op, T init) const {
+    Matrix<T> out (1, this->size());
+    out(1) = this->operator()(1);
+    for (int i = 2; i <= out.size(); i++) {
+        out(i) = ter_op(out(i - 1), this->operator()(i), i);
+    }
+    return out;
+}
+
+template <class T>
+Matrix<T> Matrix<T>::cumavg() const {
+    return this->accumulate([&] (T prev, T next, int i) {
+        return ((prev * (i - 1)) + next) / i;
+    });
+}
+
+template <class T>
+Matrix<T> Matrix<T>::cumsum() const {
+    return this->accumulate(ejovo::plus<T, T>);
+}
+
+template <class T>
+Matrix<T> Matrix<T>::cummax() const {
+    return this->accumulate(ejovo::scalar::max<T>);
+}
+
+template <class T>
+Matrix<T> Matrix<T>::cummin() const {
+    return this->accumulate(ejovo::scalar::min<T>);
+}
+
+template <class T>
 Matrix<T> Matrix<T>::filter(std::function<bool(T)> predicate) const {
     return ejovo::filter(*this, predicate);
 }
@@ -978,9 +1099,73 @@ T Matrix<T>::reduce(std::function<T(T, T)> f, T init) const {
     return ejovo::reduce(*this, f, init);
 }
 
+template <>
+template <>
+int Matrix<bool>::sum() const {
+    int sum = 0;
+    this->loop([&] (auto x) {
+        if (x) sum ++;
+    });
+    return sum;
+}
+
+template <class T>
+template <class U>
+U Matrix<T>::sum() const = delete;
+
 template <class T>
 T Matrix<T>::sum() const {
     return ejovo::sum(*this);
+}
+
+template <class T>
+int Matrix<T>::count() const {
+    int cnt = 0;
+    this->loop([&] (auto x) {
+        if (x) cnt ++;
+    });
+    return cnt;
+}
+
+template <class T>
+int Matrix<T>::count(std::function<bool(T)> pred) const {
+    int cnt = 0;
+    this->loop([&] (auto x) {
+        if (pred(x)) cnt ++;
+    });
+    return cnt;
+}
+
+template <class T>
+bool Matrix<T>::any() const {
+    for (int i = 1; i <= this->size(); i++) {
+        if (this->operator()(i)) return true;
+    }
+    return false;
+}
+
+template <class T>
+bool Matrix<T>::any(std::function<bool(T)> pred) const {
+    for (int i = 1; i <= this->size(); i++) {
+        if (pred(this->operator()(i))) return true;
+    }
+    return false;
+}
+
+template <class T>
+bool Matrix<T>::all() const {
+    for (int i = 1; i <= this->size(); i++) {
+        if (! (this->operator()(i))) return false;
+    }
+    return true;
+}
+
+template <class T>
+bool Matrix<T>::all(std::function<bool(T)> pred) const {
+    for (int i = 1; i <= this->size(); i++) {
+        if (!pred(this->operator()(i))) return false; //
+    }
+    return true;
 }
 
 template <class T>
@@ -1204,6 +1389,16 @@ Matrix<int> Matrix<bool>::which() const {
     return out;
 }
 
+// where returns a mask visually showing where the elements are true
+template<class T>
+Matrix<bool> Matrix<T>::where(std::function<bool(T)> pred) const {
+    Matrix<bool> out {this->m, this->n};
+    out.loop_i([&] (int i) {
+        out(i) = pred(this->operator()(i));
+    });
+    return out;
+}
+
 // return the VECTOR indices where the mask is TRUE
 template <class T>
 Matrix<int> Matrix<T>::which(const Matrix<bool>& mask) const{
@@ -1214,18 +1409,25 @@ Matrix<int> Matrix<T>::which(const Matrix<bool>& mask) const{
     return mask.which();
 }
 
+// return the VECTOR indices where the mask is TRUE
+template <class T>
+Matrix<int> Matrix<T>::which(std::function<bool(T)> pred) const{
+    return this->where(pred).which();
+}
+
+
 
 template <class T>
-typename Matrix<T>::BoolView Matrix<T>::operator()(const Matrix<bool>& mask) {
+typename Matrix<T>::VecView Matrix<T>::operator()(const Matrix<bool>& mask) {
     // When given a mask, create a new BoolView.
-    BoolView out{*this, mask};
+    VecView out{*this, mask};
     return out;
 }
 
 template <class T>
-typename Matrix<T>::BoolView Matrix<T>::operator[](const Matrix<bool>& mask) {
+typename Matrix<T>::VecView Matrix<T>::operator[](const Matrix<bool>& mask) {
     // When given a mask, create a new BoolView.
-    BoolView out{*this, mask};
+    VecView out{*this, mask};
     return out;
 }
 
