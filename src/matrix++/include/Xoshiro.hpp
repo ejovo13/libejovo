@@ -31,10 +31,12 @@ namespace ejovo {
 
             int unif(int a, int b);
             double unifd(double a, double e);
+            // double unif(); // Return X ~ U(0, 1)
             double norm();
             double norm(double mean, double sd);
             double exp(double rate = 1);
             int binom(int size, double p = 0.5);
+            int hyper(int ndraws, int N, int K);
 
 
 
@@ -115,6 +117,8 @@ namespace ejovo {
             return x * spread + a;
         }
 
+        // double Xoshir
+
         double Xoshiro::norm() {
 
             double u1 = this->unifd(0, 1);
@@ -143,6 +147,30 @@ namespace ejovo {
             int count = 0;
             for (int i = 0; i < size; i++) {
                 if (this->next_double() <= p) count++;
+            }
+            return count;
+        }
+
+            // int hyper(int ndraws, int N, int K);
+        // n draws, return the number of successes with population N and successful elements K
+        int Xoshiro::hyper(int ndraws, int N, int K) {
+            // std::cout << "Calculating hyper with ndraws: " << ndraws << ", N: " << N << ", K: " << K << "\n";
+            int count = 0;
+            double p = 0;
+            for (int i = 0; i < ndraws; i++) {
+
+                p = (double) K / N;
+
+                // std::cout << "calculated p: " << p << " == " << K << "/" << N << std::endl;
+
+                if (this->next_double() < p) {
+                    // std::cout << "Success, decrementing K\n";
+                    count ++;
+                    K --; // don't replace the element if we have a success
+                } else {
+                    // std::cout << "Failure, decrememnting N\n";
+                }
+                N --; // Reduce the number of total elements, no matter which ball is pulled
             }
             return count;
         }

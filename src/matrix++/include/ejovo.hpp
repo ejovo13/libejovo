@@ -99,6 +99,28 @@ namespace ejovo {
         return (double) n_choose_k(size, k) * std::pow(p, k) * std::pow(1 - p, size - k);
     }
 
+
+
+    // Hypergeometric distribution.
+    // Numer of successes (k) in n draws, total population N, items that have positive quality K
+    double dhyper(int k, int n, int N, int K) {
+        return ((double) (n_choose_k(K, k) * n_choose_k(N - K, n - k)) / n_choose_k(N, n));
+    }
+
+    Matrix<double> rhyper(int n, int ndraws, int N, int K) {
+
+        if (n == 0) return Matrix<double>::null();
+
+        Matrix<double> out(1, n);
+        out.loop_i([&] (int i) {
+            out(i) = ejovo::rng::xoroshiro.hyper(ndraws, N, K);
+        });
+
+        return out;
+
+    }
+
+
 };
 
 

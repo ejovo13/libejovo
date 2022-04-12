@@ -106,7 +106,7 @@ int main() {
 
     my_x = ejovo::runif(0).print();
 
-    int N = 1E5;
+    int N = 1E3;
 
     // auto u = runif(N);
     // auto x = rexp(N, 1);
@@ -133,6 +133,16 @@ int main() {
     my_seq.cumavg().print();
     my_seq.cummax().print();
     my_seq.cummin().print();
+
+    // std::cout << dhyper();
+    std::cout << dhyper(1, 1, 2, 1) << "\n";
+
+    auto my_hyper = rhyper(10, 8, 10, 5);
+
+    my_hyper.print();
+
+    auto my_hyper_1000 = rhyper(10000, 8, 10, 5);
+    my_hyper_1000.print_lin();
 
 
     return 0;
