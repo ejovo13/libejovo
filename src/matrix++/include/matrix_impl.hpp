@@ -1318,6 +1318,51 @@ typename Matrix<T>::MatView Matrix<T>::view_col(int j) {
     return v;
 }
 
+template <class X>
+typename Matrix<X>::VecView Matrix<X>::vecview(const Matrix<bool>& mask) {
+    VecView v(*this, mask);
+    return v;
+}
+
+template <class X>
+typename Matrix<X>::VecView Matrix<X>::vecview(const Matrix<int>& ind) {
+    VecView v(*this, ind);
+    return v;
+}
+
+template <class X>
+typename Matrix<X>::VecView Matrix<X>::vecview(std::function<bool(X)> pred) {
+    VecView v(*this, this->where(pred));
+    return v;
+}
+
+
+/**========================================================================
+ *!                           Random functions
+ *========================================================================**/
+template <class T>
+Matrix<T> Matrix<T>::rand() {
+    // std::cerr << "What the fuck?\n";
+    return Matrix<T>::rand(10, 0.0, 1.0);
+}
+
+template <class T>
+Matrix<T> Matrix<T>::rand(int n, double min, double max) {
+    Matrix out (1, n);
+    out.loop_i([&] (int i) { out(i) = g_XOSHIRO.unifd(min, max); });
+    return out;
+}
+
+template <class T>
+Matrix<T> Matrix<T>::rand(int m, int n) {
+    return Matrix<T>::rand(m * n).reshape(m, n);
+}
+
+// template <class T>
+// Matrix<T> rand(int m, int n, double min, double max) {
+
+// }
+
 
 /**========================================================================
  *!                           Logical indexing type functions

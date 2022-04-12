@@ -41,6 +41,11 @@ public:
     //     return this->assign(x, ejovo::id_eq<T, T>);
     // }
 
+    // VecView get_row_view(int i = 1);
+    // VecView get_col_view(int j = 1);
+
+
+
 
 private:
 
@@ -106,7 +111,8 @@ T& Matrix<T>::MatView::operator()(int i, int j) const {
 template <class T>
 T& Matrix<T>::MatView::operator()(int n) const {
     std::pair<int, int> pair = this->ind_to_ij(n);
-    return mat(row_ind(std::get<0>(pair), std::get<1>(pair)));
+    std::cout << "Converted " << n << " to (" << std::get<0>(pair) << ", " << std::get<1>(pair) << ")\n";
+    return mat(row_ind(std::get<0>(pair)), col_ind(std::get<1>(pair)));
 }
 
 template <class T>

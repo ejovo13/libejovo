@@ -276,7 +276,8 @@ class Matrix {
     /**========================================================================
      *!                     Matrices with random elements
      *========================================================================**/
-    static Matrix<T> rand(int n, double min = 0, double max = 1);
+    static Matrix<T> rand();
+    static Matrix<T> rand(int n, double min = 0, double max = 20);
     static Matrix<T> rand(int m, int n);
     static Matrix<T> rand(int m, int n, double min, double max);
     // static Matrix<T> randi();
@@ -428,6 +429,9 @@ class Matrix {
     MatView view_row(int i);
     MatView view_col(int j);
 
+    VecView vecview(const Matrix<bool>& mask);
+    VecView vecview(const Matrix<int>& ind);
+    VecView vecview(std::function<bool(T)> pred);
     RowView get_row_view(int i);
     ColView get_col_view(int j);
 

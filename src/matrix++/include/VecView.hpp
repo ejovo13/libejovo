@@ -14,6 +14,7 @@ public:
     VecView(Matrix& mat);
     VecView(Matrix& mat, const Matrix<bool> mask);
     VecView(Matrix& mat, const Matrix<int> true_ind); // vector indices
+    VecView(Matrix& mat, std::function<bool(T)> pred);
 
     int nrows() const override;
     int ncols() const override;
@@ -29,6 +30,9 @@ public:
     VecView& operator=(const T&);
     VecView& operator=(const Matrix&);
     VecView& operator=(const VecView&);
+
+    // return a new vec view
+    VecView filter(std::function<bool(T)> f);
 
 
 private:
@@ -58,6 +62,12 @@ Matrix<T>::VecView::VecView(Matrix<T>& mat, const Matrix<bool> mask)
 template <class T>
 Matrix<T>::VecView::VecView(Matrix<T>& mat, const Matrix<int> true_ind)
     : true_ind{true_ind}
+    , mat{mat}
+{};
+
+template <class T>
+Matrix<T>::VecView::VecView(Matrix<T>& mat, std::function<bool(T)> pred)
+    : true_ind{mat.where(pred).which()}
     , mat{mat}
 {};
 
@@ -131,4 +141,15 @@ typename Matrix<T>::VecView& Matrix<T>::VecView::assign(const VecView& rv, std::
 template <class T>
 typename Matrix<T>::VecView& Matrix<T>::VecView::operator=(const VecView& rv) {
     return this->assign(rv, ejovo::id_eq<T, T>);
+}
+
+template <class T>
+typename Matrix<T>::VecView Matrix<T>::VecView::filter(std::function<bool(T)> f) {
+    // all I have to do is filter the ind element...
+    Matrix ind = this->true_ind.filter([&] (int i) {
+        return f(this->mat(i));
+    });
+
+    VecView out (this->mat, ind);
+    return out;
 }

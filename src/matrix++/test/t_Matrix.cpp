@@ -196,10 +196,30 @@ void t_quad() {
 
     std::cout << g(10) << std::endl;
 
+    Matrix<double>::rand().print();
+    // auto mx = Matrix<double>::rand(10);
 
+    // auto mv =
 
+    ejovo::runif(100).print_lin();
+    Matrix<double>::rand(100).print_lin();
 
+    Matrix<int>::rand(10, 10).print();
 
+    auto m = Matrix<int>::rand(10, 10);
 
+    using namespace ejovo::factory;
+
+    // auto mv = m | lt<int>(10) | gt<int>(3);
+    auto mv = m | AND(lt<int>(10), gt<int>(5));
+
+    auto mvp = m.vecview(AND(gt(10), even<int>));
+
+    // auto mv_f = mv.filter(gt<int>(5));
+    mv.print();
+    mvp.print();
+
+    // m.print();
+    // mv.print();
 
 }

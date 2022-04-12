@@ -102,6 +102,20 @@ std::function<Y(const X&)> operator/(const Y& y, std::function<Y(const X&)> f) {
     };
 }
 
+// m | ejovo::pipe::filter( lt(10) );
+template <class X>
+typename Matrix<X>::VecView operator|(Matrix<X>& lhs, std::function<bool(X)> pred) {
+    typename Matrix<X>::VecView out (lhs, pred);
+    return out;
+}
+
+template <class X>
+typename Matrix<X>::VecView operator|(typename Matrix<X>::VecView& lhs, std::function<bool(X)> pred) {
+    // loop through the lhs extracting the elements that are true.
+    Matrix<int> new_ind = lhs.filter(pred);
+
+}
+
 
 /**========================================================================
  *!                           Boolean Function Operators
@@ -407,12 +421,22 @@ namespace ejovo {
         }
 
         template <class X>
-        std::function<bool(X)> filter(std::function<bool(X)>) {
+        std::function<bool(X)> filter(std::function<bool(X)> f) {
 
             // This function seems wack but it has a purpose.
             // consider the call to
-            // m | filter(lt(10))
+            //     m | filter(lt(10));
+            // then we need to construct a std::function<bool(X)>
+            // that is really just the passed in function...
 
+            // However, this is simply to express intent. We could also simply call
+            //     m | lt(10);
+            return f;
+        }
+
+        template <class X>
+        bool even(X x) {
+            return x % 2 == 0;
         }
 
 
@@ -423,11 +447,16 @@ namespace ejovo {
     };
 
     template <class T>
-    Matrix<T> vec(std::initializer_list<T> list) {
+    Matrix<T> vec(std::initializer_list<T> list, bool col = true) {
         // Get the length of this list
         int n = list.size();
         int i = 1;
-        Matrix<T> out{1, n};
+
+        Matrix<T> out;
+
+        if (col) out = Matrix<T>::zeros(n, 1);
+        else out = Matrix<T>::zeros(1, n);
+
         for (auto x : list) {
             out(i) = x;
             i++;
@@ -795,14 +824,98 @@ namespace opti {
         T x = x0;
         T err = ejovo::abs(g(x) - x);
 
-        while (ejovo::abs(err) < eps && i < max_it) {
+        std::cout << "err: " << err << std::endl;
+
+        while (err > eps && i < max_it) {
 
             x = g(x);
 
             i++;
+            err = ejovo::abs(g(x) - x);
         }
 
+        Matrix<T> out (1, 1);
+        out(1) = x;
+
+        std::cout << "Fixed point method run with " << i << " iterations\n";
+
+        return out;
     }
+
+
+    // Use euler's method for differential equations
+
+
+
+
+
+
+
+};
+
+namespace ejovo {
+
+    namespace diffyq {
+
+
+        // Use euler's method for differential equations
+        // need the function, need an initial condition
+
+        // f_tu = [] (double t, double u) { return cos(t); }; // dy/dt = cos(t), u(t) = sin(t)
+
+        template <class X>
+        // using X so that we can pass a vector in as an argument
+        Matrix<X> euler_explicit(std::function<X(double, X)> f, X u0, double t0, double tf, int n = 1000) {
+
+            //
+            auto time = ejovo::linspace<double>(t0, tf, n);
+            auto diffs = time.diff();
+
+            Matrix<X> u (1, n);
+            u(1) = u0;
+
+            // u.rows({1}, 2).print();
+            // u.get_row_view(1, 1, 4).print();
+
+            u.rows({1}, 2).loop_i([&] (int i) {
+                u(i + 1) = u(i) + diffs(i) * f(time(i), u(i));
+            });
+
+            return u;
+
+        }
+
+        template <class X>
+        // using X so that we can pass a vector in as an argument
+        Matrix<X> euler_explicit(std::function<Matrix<X>(double, Matrix<X>)> f, Matrix<X> u0, double t0, double tf, int n = 1000) {
+
+            //
+            auto time = ejovo::linspace<double>(t0, tf, n);
+            auto diffs = time.diff();
+
+            Matrix<X> u (u0.size(), n);
+            u.cols({1}) = u0.reshape_col();
+
+            std::cerr << "u0 set to: ";
+            u.cols({1}).print();
+
+            // u.rows({1}, 2).print();
+            // u.get_row_view(1, 1, 4).print();
+
+            u.rows({1}, 2).loop_i([&] (int i) {
+                u.cols({i + 1}) = u.col(i) + diffs(i) * f(time(i), u.col(i));
+            });
+
+            return u;
+
+        }
+
+
+
+
+    };
+
+
 
 };
 
