@@ -358,6 +358,10 @@ class Matrix {
     T pnorm(int p) const;
     T norm() const;
 
+    Matrix normalized() const;
+    Matrix& normalize();
+
+
     Matrix clone() const;
 
     // repeat columns. Sends a vector v to [v ... v_n]
