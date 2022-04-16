@@ -10,6 +10,7 @@
 #include <string>
 
 #include "Xoshiro.hpp"
+#include "Grid1D.hpp"
 
 // template <class T>
 // class View;
@@ -21,9 +22,15 @@ ejovo::rng::Xoshiro g_XOSHIRO {};
 
 
 template <class T = double>
-class Matrix {
+class Matrix : public ejovo::Grid1D<T> {
 
-    public:
+public:
+
+
+
+
+
+
 
     int m;
     int n;
