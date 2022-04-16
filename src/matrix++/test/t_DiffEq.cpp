@@ -91,8 +91,10 @@ int main() {
 
     auto t = ejovo::linspace<double>(a, b, n);
 
-    ejovo::plot(t, ut, "diff");
-    ejovo::plot(x, y, "exp");
+    // ejovo::plot(t, ut, "diff");
+    // ejovo::plot(x, y, "exp");
+
+
 
 
     return 0;

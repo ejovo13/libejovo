@@ -1134,3 +1134,35 @@ ggsave(')" + filename + ".png" + R"(', p, device = 'png')
 
 
 };
+
+
+
+
+namespace ejovo {
+
+    namespace prob {
+
+        namespace pdf {
+
+            std::function<double(double)> gauss(double mu,  double sigma) {
+                return [&] (double x) {
+                    return (1.0 / (sigma * sqrt(trig::two_pi))) * exp(((x - mu) / sigma) * ((x - mu) / sigma) * -0.5);
+                };
+            }
+
+            std::function<double(double)> gauss() {
+                return [&] (double x) {
+                    return (1.0 / sqrt(trig::two_pi)) * exp(-0.5 * (x * x));
+                };
+            }
+
+        };
+
+
+    };
+
+
+
+
+
+};
