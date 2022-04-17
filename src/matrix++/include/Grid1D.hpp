@@ -47,6 +47,16 @@ namespace ejovo {
 
     };
 
+    // namespace unop {
+
+    //     template <class X>
+    //     bool pos(const X& x) {
+    //         return pos > 0;
+    //     }
+
+
+    // };
+
     double log_base(double base, double x) {
         return (std::log(x) / std::log(base));
     }
@@ -75,20 +85,20 @@ public:
      *!                           Virtual Functions
      *========================================================================**/
     virtual T& operator[](int i) = 0; // 0-based indexing
-    virtual T& operator()(int i) = 0; // 1-based indexing M(1) is the first element
-    virtual T& at(int i) = 0;         // 1-based indexing with bounds checking
-
     const virtual T& operator[](int i) const = 0;
-    const virtual T& operator()(int i) const = 0;
-    const virtual T& at(int i) const = 0; // at actually goes ahead and verifies whether or not the bounds are legit
     virtual std::size_t size() const = 0;
+
+
+    T& at(int i);         // 1-based indexing with bounds checking
+    T& operator()(int i); // 1-based indexing M(1) is the first element
+    const T& at(int i) const; // at actually goes ahead and verifies whether or not the bounds are legit
+    const T& operator()(int i) const;
 
     /**========================================================================
      *!                           First, Last
      *========================================================================**/
     T& first();
     T& last();
-
     const T& first() const;
     const T& last() const;
 
@@ -105,6 +115,8 @@ public:
      *========================================================================**/
     Grid1D& operator=(const Grid1D& rhs);
 
+    bool operator==(const Grid1D& rhs);
+
     /**========================================================================
      *!                           Mutating functions
      *========================================================================**/
@@ -119,6 +131,7 @@ public:
     Grid1D& loop(loop_fn f);
     const Grid1D& loop(loop_fn_const f) const;
     Grid1D& loop_i(loop_ind_fn f);
+    const Grid1D& loop_i(loop_ind_fn f) const;
     Grid1D& swap(int ai, int bi);
 
     /**========================================================================
@@ -163,6 +176,29 @@ public:
 /**========================================================================
  *!                           Implementation of Grid1D
  *========================================================================**/
+// 1-based indexing without checking bounds
+template <class T>
+T& Grid1D<T>::operator()(int i) {
+    return this->operator[](i - 1);
+}
+
+template <class T>
+const T& Grid1D<T>::operator()(int i) const {
+    return this->operator[](i - 1);
+}
+
+template <class T>
+T& Grid1D<T>::at(int i) {
+    if (!(this->is_valid_bound(i))) throw "Error out of bounds";
+    return this->operator[](i - 1);
+}
+
+template <class T>
+const T& Grid1D<T>::at(int i) const {
+    if (!(this->is_valid_bound(i))) throw "Error out of bounds";
+    return this->operator[](i - 1);
+}
+
 template <class T>
 T& Grid1D<T>::first() {
     return this->operator()(1);
@@ -206,8 +242,20 @@ Grid1D<T>& Grid1D<T>::operator=(const Grid1D& rhs) {
 }
 
 template <class T>
+bool Grid1D<T>::operator==(const Grid1D& rhs) {
+    if (this->isnt_same_size(rhs)) return false;
+    const std::size_t n = rhs.size();
+
+    for (std::size_t i = 1; i <= n; i++) {
+        if (this->operator()(i) != rhs(i)) return false;
+    }
+
+    return true;
+}
+
+template <class T>
 Grid1D<T>& Grid1D<T>::fill(const T& value) {
-    this->loop_i([&] (int i) { this->operator()(i) = value; } );
+    return this->loop_i([&] (int i) { this->operator()(i) = value; } );
 }
 
 template <class T>
@@ -253,6 +301,15 @@ Grid1D<T>& Grid1D<T>::loop_i(loop_ind_fn f) {
 }
 
 template <class T>
+const Grid1D<T>& Grid1D<T>::loop_i(loop_ind_fn f) const {
+    const std::size_t n = this->size();
+    for (std::size_t i = 1; i <= n; i++) {
+        f(i);
+    }
+    return *this;
+}
+
+template <class T>
 Grid1D<T>& Grid1D<T>::swap(int ai, int bi) {
     if (this->is_valid_bound(ai) && this->is_valid_bound(bi)) {
         const T& temp = this->operator()(ai);
@@ -290,6 +347,7 @@ Grid1D<T>& Grid1D<T>::print() {
 template <class T>
 T Grid1D<T>::reduce(binary_op f, T init) const {
     this->loop([&] (auto x) { init = f(init, x); } );
+    return init;
 }
 
 template <class T>
@@ -315,12 +373,12 @@ T Grid1D<T>::prod() const {
 
 template <class T>
 T Grid1D<T>::min() const {
-    return this->reduce(ejovo::binop::min<T, T>, this->first());
+    return this->reduce(ejovo::binop::min<T>, this->first());
 }
 
 template <class T>
 T Grid1D<T>::max() const {
-    return this->reduce(ejovo::binop::max<T, T>, this->last());
+    return this->reduce(ejovo::binop::max<T>, this->last());
 }
 
 template <class T>
@@ -339,15 +397,15 @@ T Grid1D<T>::var(bool population) const {
         out += a * a;
     });
 
-    if (population) return out / (this->size() + 1);
-    else return out / this->size();
+    if (population) return out / (this->size());
+    else return out / (this->size() - 1);
 }
 
 template <class T>
 T Grid1D<T>::pnorm(int p) const {
 
-    T p_sum = this->reduce([&] (auto acc, auto x) {
-        std::pow(x, p);
+    T p_sum = this->reduce([&] (T acc, T x) {
+        return acc + std::pow(x, p);
     });
 
     return kthRoot(p_sum, p);
@@ -443,9 +501,5 @@ bool Grid1D<T>::none(predicate pred) const {
 
     return true;
 }
-
-
-
-
 
 };

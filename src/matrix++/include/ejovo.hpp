@@ -13,6 +13,7 @@
 #include <fstream>
 #include <cstdio>
 #include <cstdlib>
+#include "Grid2D.hpp"
 
 // Let's get crazy and start overloading function operators!!!
 /**========================================================================
@@ -184,8 +185,8 @@ namespace ejovo {
         if (n == 0) return Matrix<double>::null();
 
         Matrix<double> out(1, n);
-        out.loop_i([&] (int i) {
-            out(i) = ejovo::rng::xoroshiro.unifd(a, b);
+        out.loop([&] (double& x) {
+            x = ejovo::rng::xoroshiro.unifd(a, b);
         });
 
         return out;
@@ -199,8 +200,8 @@ namespace ejovo {
         if (n == 0) return Matrix<double>::null();
 
         Matrix<double> out(1, n);
-        out.loop_i([&] (int i) {
-            out(i) = ejovo::rng::xoroshiro.norm(mean, sd);
+        out.loop([&] (double& x) {
+            x = ejovo::rng::xoroshiro.norm(mean, sd);
         });
 
         return out;
@@ -214,8 +215,8 @@ namespace ejovo {
         if (n == 0) return Matrix<double>::null();
 
         Matrix<double> out(1, n);
-        out.loop_i([&] (int i) {
-            out(i) = ejovo::rng::xoroshiro.exp(rate);
+        out.loop([&] (double& x) {
+            x = ejovo::rng::xoroshiro.exp(rate);
         });
 
         return out;
@@ -226,8 +227,8 @@ namespace ejovo {
         if (n == 0) return Matrix<double>::null();
 
         Matrix<double> out(1, n);
-        out.loop_i([&] (int i) {
-            out(i) = ejovo::rng::xoroshiro.binom(size, p);
+        out.loop([&] (double& x) {
+            x = ejovo::rng::xoroshiro.binom(size, p);
         });
 
         return out;
@@ -251,8 +252,8 @@ namespace ejovo {
         if (n == 0) return Matrix<double>::null();
 
         Matrix<double> out(1, n);
-        out.loop_i([&] (int i) {
-            out(i) = ejovo::rng::xoroshiro.hyper(ndraws, N, K);
+        out.loop([&] (double& x) {
+            x = ejovo::rng::xoroshiro.hyper(ndraws, N, K);
         });
 
         return out;
@@ -442,6 +443,20 @@ namespace ejovo {
             return x % 2 == 0;
         }
 
+        template <class X>
+        std::function<X(X)> times(const X& rhs) {
+            return [&] (X x) {
+                return x * rhs;
+            };
+        }
+
+        template <class X>
+        std::function<X(X)> divides(const X& rhs) {
+            return [&] (X x) {
+                return x / rhs;
+            };
+        }
+
 
         // filter
 
@@ -468,13 +483,13 @@ namespace ejovo {
     }
 
     // this is expensive and computes TWO logarithms
-    double log_base(double base, double x) {
-        return (log(x) / log(base));
-    }
+    // double log_base(double base, double x) {
+    //     return (log(x) / log(base));
+    // }
 
-    double kthRoot(double n, int k) {
-        return std::pow(k, (1.0 / k) * (log_base(k, n)));
-    }
+    // double kthRoot(double n, int k) {
+    //     return std::pow(k, (1.0 / k) * (log_base(k, n)));
+    // }
 
     template <class T> Matrix<T> abs(Matrix<T> m) {
         return m.abs();
@@ -632,8 +647,8 @@ namespace ejovo {
         const int len_seq = (end - start) + 1;
         Matrix<int> out{len_seq};
         out.fill(0);
-        loop_i(out, [&] (int i) {
-            out(i) = start + (i - 1);
+        out.loop([&] (int& x) {
+            x = start + (x - 1);
         });
         return out;
     }
@@ -857,65 +872,65 @@ namespace opti {
 
 namespace ejovo {
 
-    namespace diffyq {
+    // namespace diffyq {
 
 
-        // Use euler's method for differential equations
-        // need the function, need an initial condition
+    //     // Use euler's method for differential equations
+    //     // need the function, need an initial condition
 
-        // f_tu = [] (double t, double u) { return cos(t); }; // dy/dt = cos(t), u(t) = sin(t)
+    //     // f_tu = [] (double t, double u) { return cos(t); }; // dy/dt = cos(t), u(t) = sin(t)
 
-        template <class X>
-        // using X so that we can pass a vector in as an argument
-        Matrix<X> euler_explicit(std::function<X(double, X)> f, X u0, double t0, double tf, int n = 1000) {
+    //     template <class X>
+    //     // using X so that we can pass a vector in as an argument
+    //     Matrix<X> euler_explicit(std::function<X(double, X)> f, X u0, double t0, double tf, int n = 1000) {
 
-            //
-            auto time = ejovo::linspace<double>(t0, tf, n);
-            auto diffs = time.diff();
+    //         //
+    //         auto time = ejovo::linspace<double>(t0, tf, n);
+    //         auto diffs = time.diff();
 
-            Matrix<X> u (1, n);
-            u(1) = u0;
+    //         Matrix<X> u (1, n);
+    //         u(1) = u0;
 
-            // u.rows({1}, 2).print();
-            // u.get_row_view(1, 1, 4).print();
+    //         // u.rows({1}, 2).print();
+    //         // u.get_row_view(1, 1, 4).print();
 
-            u.rows({1}, 2).loop_i([&] (int i) {
-                u(i + 1) = u(i) + diffs(i) * f(time(i), u(i));
-            });
+    //         u.rows({1}, 2).loop_i([&] (int i) {
+    //             u(i + 1) = u(i) + diffs(i) * f(time(i), u(i));
+    //         });
 
-            return u;
+    //         return u;
 
-        }
+    //     }
 
-        template <class X>
-        // using X so that we can pass a vector in as an argument
-        Matrix<X> euler_explicit(std::function<Matrix<X>(double, Matrix<X>)> f, Matrix<X> u0, double t0, double tf, int n = 1000) {
+    //     template <class X>
+    //     // using X so that we can pass a vector in as an argument
+    //     Matrix<X> euler_explicit(std::function<Matrix<X>(double, Matrix<X>)> f, Matrix<X> u0, double t0, double tf, int n = 1000) {
 
-            //
-            auto time = ejovo::linspace<double>(t0, tf, n);
-            auto diffs = time.diff();
+    //         //
+    //         auto time = ejovo::linspace<double>(t0, tf, n);
+    //         auto diffs = time.diff();
 
-            Matrix<X> u (u0.size(), n);
-            u.cols({1}) = u0.reshape_col();
+    //         Matrix<X> u (u0.size(), n);
+    //         u.cols({1}) = u0.reshape_col();
 
-            std::cerr << "u0 set to: ";
-            u.cols({1}).print();
+    //         std::cerr << "u0 set to: ";
+    //         u.cols({1}).print();
 
-            // u.rows({1}, 2).print();
-            // u.get_row_view(1, 1, 4).print();
+    //         // u.rows({1}, 2).print();
+    //         // u.get_row_view(1, 1, 4).print();
 
-            u.rows({1}, 2).loop_i([&] (int i) {
-                u.cols({i + 1}) = u.col(i) + diffs(i) * f(time(i), u.col(i));
-            });
+    //         u.rows({1}, 2).loop_i([&] (int i) {
+    //             u.cols({i + 1}) = u.col(i) + diffs(i) * f(time(i), u.col(i));
+    //         });
 
-            return u;
+    //         return u;
 
-        }
-
-
+    //     }
 
 
-    };
+
+
+    // };
 
 
 
