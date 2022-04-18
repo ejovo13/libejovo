@@ -27,9 +27,13 @@ class Matrix : public ejovo::Grid2D<T> {
 
 public:
 
+    /**============================================
+     *!               Fields
+     *=============================================**/
     std::size_t m;
     std::size_t n;
     static ejovo::rng::Xoshiro& xoroshiro;
+    std::unique_ptr<T[]> data;
 
     /**============================================
      *!    Grid1D Pure Virtual Functions
@@ -43,16 +47,18 @@ public:
     std::size_t ncol() const override;
     std::size_t nrow() const override;
 
-    // Overloads that need to be explicitly included
+    /**============================================
+     *!               Using Overloads
+     *=============================================**/
     using ejovo::Grid1D<T>::at;
     using ejovo::Grid1D<T>::operator();
     using ejovo::Grid2D<T>::at;
     using ejovo::Grid2D<T>::operator();
     using ejovo::Grid1D<T>::sum;
 
-    std::unique_ptr<T[]> data;
-
-    //======= constructors
+    /**============================================
+     *!               Constructors
+     *=============================================**/
     Matrix();
     Matrix(int m); // create a column vector
     Matrix(int m, int n);
@@ -132,12 +138,13 @@ public:
      *!                           Binary operations
      *========================================================================**/
     // Take the dot product as if we were VECTORS
-    T dot(const Matrix& rhs) const;
+    // T dot(const Matrix& rhs) const;
+    using ejovo::Grid1D<T>::dot;
     T dot(const Matrix& rhs, int i, int j) const; // dot the ith of this row with the jth column of rhs
-    T inner_product(const Matrix& rhs) const;
-    Matrix outer_product(const Matrix& rhs) const; // must be two vectors...
+    // T inner_product(const Matrix& rhs) const;
+    // Matrix outer_product(const Matrix& rhs) const; // must be two vectors...
     Matrix kronecker_product(const Matrix& rhs) const;
-    Matrix hadamard_product(const Matrix& rhs) const; // element wise multiplication
+    // Matrix hadamard_product(const Matrix& rhs) const; // element wise multiplication
 
 
     //* Matrix Moperators
@@ -243,14 +250,14 @@ public:
     /**========================================================================
      *!                           Inquiry functions
      *========================================================================**/
-    bool is_square() const;
-    bool is_vector() const; // return true if one of the dimensions are 1
-    bool is_colvec() const;
-    bool is_rowvec() const;
+    // bool is_square() const;
+    // bool is_vector() const; // return true if one of the dimensions are 1
+    // bool is_colvec() const;
+    // bool is_rowvec() const;
     bool is_null() const;
     bool is_diagonally_dominant() const;
 
-    int mindim() const;
+    // int mindim() const;
 
     /**========================================================================
      *!                           Static functions
@@ -535,21 +542,21 @@ private:
  *!                           Looping functions
  *========================================================================**/
 // loop elements i, j and set i, j according to what f(i, j) returns
-template <class T, class BinaryFn>
-void loop_ij(Matrix<T>& A, BinaryFn f) {
-    for (int i = 1; i <= A.m; i++) {
-        for (int j = 1; j <= A.n; j++) {
-            f(i, j);
-        }
-    }
-}
+// template <class T, class BinaryFn>
+// void loop_ij(Matrix<T>& A, BinaryFn f) {
+//     for (int i = 1; i <= A.m; i++) {
+//         for (int j = 1; j <= A.n; j++) {
+//             f(i, j);
+//         }
+//     }
+// }
 
-template <class T, class UnaryFn>
-void loop_i(Matrix<T>& A, UnaryFn f) {
-    for (int i = 1; i <= A.size(); i++) {
-        f(i);
-    }
-}
+// template <class T, class UnaryFn>
+// void loop_i(Matrix<T>& A, UnaryFn f) {
+//     for (int i = 1; i <= A.size(); i++) {
+//         f(i);
+//     }
+// }
 
 //! THIS IS NOT THE PROPER BEHAVIOR of the diagonal!!!
 template <class T, class UnaryFn>
@@ -576,19 +583,19 @@ void loop_col(Matrix<T>& A, BinaryFn f, int j = 1) {
 }
 
 //! WARNING These anonymous functions MUST RETURN T
-template <class T, class UnaryFn>
-void mut_col(Matrix<T>& A, UnaryFn f, int j = 1) {
-    for (int i = 1; i <= A.m; i++) {
-        A(i, j) = f(A(i, j));
-    }
-}
+// template <class T, class UnaryFn>
+// void mut_col(Matrix<T>& A, UnaryFn f, int j = 1) {
+//     for (int i = 1; i <= A.m; i++) {
+//         A(i, j) = f(A(i, j));
+//     }
+// }
 
-template <class T, class UnaryFn>
-void mut_row(Matrix<T>& A, UnaryFn f, int i = 1) {
-    for (int j = 1; j <= A.n; j++) {
-        A(i, j) = f(A(i, j));
-    }
-}
+// template <class T, class UnaryFn>
+// void mut_row(Matrix<T>& A, UnaryFn f, int i = 1) {
+//     for (int j = 1; j <= A.n; j++) {
+//         A(i, j) = f(A(i, j));
+//     }
+// }
 
 template <class T, class UnaryFn>
 void mut_diag(Matrix<T>& A, UnaryFn f, int diag = 0) {
@@ -597,9 +604,9 @@ void mut_diag(Matrix<T>& A, UnaryFn f, int diag = 0) {
     }
 }
 
-template <class T>
-std::pair<int, int> convert_vector_indices_to_ij(const Matrix<T>& mat, int n) {
-    int i = ((n  - 1) / mat.n) + 1;
-    int j = (n - 1) % mat.n + 1;
-    return std::make_pair<int, int>(std::move(i), std::move(j));
-}
+// template <class T>
+// std::pair<int, int> convert_vector_indices_to_ij(const Matrix<T>& mat, int n) {
+//     int i = ((n  - 1) / mat.n) + 1;
+//     int j = (n - 1) % mat.n + 1;
+//     return std::make_pair<int, int>(std::move(i), std::move(j));
+// }

@@ -83,5 +83,13 @@ int main() {
     m.repcol(10).print();
     m.reprow(10).print();
 
+    std::cout << "Dot product:" << m.repcol(10).dot(m.reprow(10)) << std::endl;
+
+    m.outer_product(m).print();
+
+    m.repcol(10).hadamard_product(m.reprow(10)).print();
+
+    m.hadamard_product(m).print();
+
     return 0;
 }

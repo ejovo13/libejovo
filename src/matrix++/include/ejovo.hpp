@@ -410,7 +410,7 @@ namespace ejovo {
 
         Matrix<T> lin{n};
 
-        loop_i(lin, [&] (int i) {lin(i) = start + (i - 1) * diff;});
+        lin.loop_i([&] (int i) {lin(i) = start + (i - 1) * diff;});
         return lin;
     }
 
@@ -430,7 +430,7 @@ namespace ejovo {
         Matrix mat_copy = mat;
         // std::cout << "Created copy:\n";
         // mat_copy.print();
-        loop_i(mat_copy, [&] (int i) {mat_copy(i) = f(mat(i));});
+        mat_copy.loop_i([&] (int i) {mat_copy(i) = f(mat(i));});
         return mat_copy;
     }
 
@@ -527,7 +527,7 @@ namespace ejovo {
     template <class T = int>
     Matrix<T> seq(int n) {
         Matrix<T> out{n};
-        loop_i(out, [&] (int i) {out(i) = i;});
+        out.loop_i([&] (int i) {out(i) = i;});
         return out;
     }
 
@@ -536,7 +536,7 @@ namespace ejovo {
         const int len_seq = (end - start) + 1;
         Matrix<T> out{len_seq};
         out.fill(0);
-        loop_i(out, [&] (int i) {
+        out.loop_i([&] (int i) {
             out(i) = start + (i - 1);
         });
         return out;
@@ -545,7 +545,7 @@ namespace ejovo {
     // Make a sequence from 1 to n
     // Matrix<int> seq(int n) {
     //     Matrix<int> out{n};
-    //     loop_i(out, [&] (int i) {out(i) = i;});
+    //     out.loop_i(, [&] (int i) {out(i) = i;});
     //     return out;
     // }
 
@@ -584,14 +584,14 @@ namespace ejovo {
     Matrix<T> filter(Matrix<T> mat, Predicate f) {
         // make one pass to count how many times the result is true
         int count = 0;
-        loop_i(mat, [&] (int i) {
+        mat.loop_i([&] (int i) {
             if (f(mat(i))) count ++;
         });
 
         Matrix<T> out{count};
 
         int out_i = 1;
-        loop_i(mat, [&] (int i) {
+        mat.loop_i([&] (int i) {
             if (f(mat(i))) {
                 out(out_i) = mat(i);
                 out_i ++;

@@ -58,6 +58,7 @@ public:
     bool is_col() const; // Check if ncol == 1
     bool is_row() const; // check if nrow == 1
     bool is_vec() const; // Return true if ncol == 1 or nrow == 1
+    std::size_t mindim() const;
 
     /**========================================================================
      *!                           Looping functions
@@ -235,6 +236,10 @@ Grid2D<T>& Grid2D<T>::mut_row(loop_fn f, int i) {
     }
 }
 
+template <class T>
+std::size_t Grid2D<T>::mindim() const {
+    return this->nrow() < this->ncol() ? this->nrow() : this->ncol();
+}
 
 
 

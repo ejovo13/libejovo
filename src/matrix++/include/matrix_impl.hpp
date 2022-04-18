@@ -412,10 +412,10 @@ const Matrix<T>& Matrix<T>::print_lin() const {
     }
 
     // Check if this is a matrix, a column vector, or a row vector..
-    if (this->is_colvec()) {
+    if (this->is_col()) {
         std::cout << "Column vector with n: " << this->size() << "\n";
         std::cout << "Euclidean norm: ";
-    } else if (this->is_rowvec()) {
+    } else if (this->is_row()) {
         std::cout << "Row vector with n: " << this->size() << "\n";
         std::cout << "Euclidiean norm: ";
     } else {
@@ -533,11 +533,11 @@ Matrix<T>& Matrix<T>::operator%=(const Matrix& rhs) {
     return *this;
 }
 
-template <class T>
-T Matrix<T>::dot(const Matrix& rhs) const {
-    auto had_res = *this % rhs;
-    return ejovo::sum(had_res);
-}
+// template <class T>
+// T Matrix<T>::dot(const Matrix& rhs) const {
+//     auto had_res = *this % rhs;
+//     return ejovo::sum(had_res);
+// }
 
 template <class T>
 T Matrix<T>::dot(const Matrix& rhs, int i, int j) const {
@@ -549,20 +549,20 @@ T Matrix<T>::dot(const Matrix& rhs, int i, int j) const {
     return total;
 }
 
-template <class T>
-T Matrix<T>::inner_product(const Matrix& rhs) const {
-    return this->dot(rhs);
-}
+// template <class T>
+// T Matrix<T>::inner_product(const Matrix& rhs) const {
+//     return this->dot(rhs);
+// }
 
-template <class T>
-Matrix<T> Matrix<T>::outer_product(const Matrix& rhs) const {
-    // Treat these as two vectors
-    Matrix out{this->size(), rhs.size()};
-    out.loop_ij([&] (int i, int j) {
-        out(i, j) = (this->at(i)) * (rhs(j));
-    });
-    return out;
-}
+// template <class T>
+// Matrix<T> Matrix<T>::outer_product(const Matrix& rhs) const {
+//     // Treat these as two vectors
+//     Matrix out{this->size(), rhs.size()};
+//     out.loop_ij([&] (int i, int j) {
+//         out(i, j) = (this->at(i)) * (rhs(j));
+//     });
+//     return out;
+// }
 
 template <class T>
 Matrix<T> Matrix<T>::kronecker_product(const Matrix& rhs) const {
@@ -590,11 +590,11 @@ Matrix<T> Matrix<T>::kronecker_product(const Matrix& rhs) const {
     return out;
 }
 
-template <class T>
-Matrix<T> Matrix<T>::hadamard_product(const Matrix& rhs) const {
-    // element-wise multiplication
-    return *this % rhs;
-}
+// template <class T>
+// Matrix<T> Matrix<T>::hadamard_product(const Matrix& rhs) const {
+//     // element-wise multiplication
+//     return *this % rhs;
+// }
 
 // Matrix multiplication!!!
 template <class T>
@@ -650,10 +650,7 @@ template <class T> Matrix<T>::Matrix(Matrix&& rhs) : m{rhs.m}, n{rhs.n} {
  *!                           Inquiry functions
  *========================================================================**/
 
-template <class T>
-int Matrix<T>::mindim() const {
-    return this->m < this->n ? this->m : this->n;
-}
+
 
 
 /**========================================================================
@@ -915,26 +912,26 @@ Matrix<T> Matrix<T>::from(const std::vector<U>& vec) {
 /**========================================================================
  *!                           Inquiry functions
  *========================================================================**/
-template <class T>
-bool Matrix<T>::is_square() const {
-    return this->m == this->n;
-}
+// template <class T>
+// bool Matrix<T>::is_square() const {
+//     return this->m == this->n;
+// }
 
 // Eventual I should just have a parent class that is a vector
-template <class T>
-bool Matrix<T>::is_vector() const {
-    return this->m == 1 || this->n == 1;
-}
+// template <class T>
+// bool Matrix<T>::is_vector() const {
+//     return this->m == 1 || this->n == 1;
+// }
 
-template <class T>
-bool Matrix<T>::is_colvec() const {
-    return this->n == 1;
-}
+// template <class T>
+// bool Matrix<T>::is_colvec() const {
+//     return this->n == 1;
+// }
 
-template <class T>
-bool Matrix<T>::is_rowvec() const {
-    return this->m == 1;
-}
+// template <class T>
+// bool Matrix<T>::is_rowvec() const {
+//     return this->m == 1;
+// }
 
 template <class T>
 bool Matrix<T>::is_null() const {

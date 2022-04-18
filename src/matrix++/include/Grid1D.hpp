@@ -327,12 +327,12 @@ public:
     /**========================================================================
      *!                           Binary operations
      *========================================================================**/
-    // T dot(const Grid1D) const;
-    // // T dot(const Matrix& rhs, int i, int j) const; // dot the ith of this row with the jth column of rhs
-    // T inner_product(const Matrix& rhs) const;
-    // Matrix outer_product(const Matrix& rhs) const; // must be two vectors...
+    T dot(const Grid1D& rhs) const;
+    // T dot(const Matrix& rhs, int i, int j) const; // dot the ith of this row with the jth column of rhs
+    T inner_product(const Grid1D& rhs) const;
+    Matrix<T> outer_product(const Grid1D& rhs) const; // must be two vectors...
     // Matrix kronecker_product(const Matrix& rhs) const;
-    // Matrix hadamard_product(const Matrix& rhs) const; // element wise multiplication
+    Matrix<T> hadamard_product(const Grid1D& rhs) const; // element wise multiplication
 
 
 
@@ -783,6 +783,37 @@ Matrix<T> Grid1D<T>::reprow(int n) const {
 
 }
 
+template <class T>
+T Grid1D<T>::dot(const Grid1D& rhs) const {
+    if (this->isnt_same_size(rhs)) throw "Grids are not the same size, unable to dot";
+    T total = 0;
+    for (int i = 1; i <= this->size(); i++) {
+        total += this->operator()(i) * rhs(i);
+    }
+    return total;
+}
 
+template <class T>
+T Grid1D<T>::inner_product(const Grid1D& rhs) const {
+    return this->dot(rhs);
+}
+
+template <class T>
+Matrix<T> Grid1D<T>::outer_product(const Grid1D& rhs) const {
+    // Treat these as two vectors
+    Matrix out{this->size(), rhs.size()};
+    out.loop_ij([&] (int i, int j) {
+        out(i, j) = (this->at(i)) * (rhs(j));
+    });
+    return out;
+}
+
+template <class T>
+Matrix<T> Grid1D<T>::hadamard_product(const Grid1D& rhs) const {
+    if (this->isnt_same_size(rhs)) throw "Grids are not the same size, unable to compute the Hadamard product";
+    auto out = this->to_matrix();
+    out.loop_i([&] (int i) { out(i) *= rhs(i); } );
+    return out;
+}
 
 };
