@@ -261,25 +261,25 @@ const T& Matrix<T>::operator[](int i) const {
 //     });
 // }
 
-template <class T>
-Matrix<T> Matrix<T>::rep_col(int n) const {
-    // create a new matrix that is this VECTOR repeated vertically n times.
-    Matrix out{this->size(), n}; // create n columns.
+// template <class T>
+// Matrix<T> Matrix<T>::rep_col(int n) const {
+//     // create a new matrix that is this VECTOR repeated vertically n times.
+//     Matrix out{this->size(), n}; // create n columns.
 
-    return out.loop_ij([&] (int i, int j) {
-        return this->at(i);
-    });
-}
+//     return out.loop_ij([&] (int i, int j) {
+//         return this->at(i);
+//     });
+// }
 
-template <class T>
-Matrix<T> Matrix<T>::rep_row(int n) const {
-    // create a new matrix that is this VECTOR repeated horizontally n times.
-    Matrix out{n, this->size()};
+// template <class T>
+// Matrix<T> Matrix<T>::rep_row(int n) const {
+//     // create a new matrix that is this VECTOR repeated horizontally n times.
+//     Matrix out{n, this->size()};
 
-    return out.loop_ij([&] (int i, int j) {
-        return this->at(j);
-    });
-}
+//     return out.loop_ij([&] (int i, int j) {
+//         return this->at(j);
+//     });
+// }
 
 
     // for (int j = 1; j <= out.n; j++) {
@@ -617,22 +617,22 @@ Matrix<T> Matrix<T>::operator*(const Matrix&rhs) const {
     return out;
 }
 
-template <class T>
-Matrix<T> Matrix<T>::diff() const {
-    // create matrix that is smaller
-    Matrix out{this->size() - 1};
-    for (int i = 0; i < out.size(); i++) {
-        out[i] = this->operator[](i + 1) - this->operator[](i);
-    }
-    return out;
-}
+// template <class T>
+// Matrix<T> Matrix<T>::diff() const {
+//     // create matrix that is smaller
+//     Matrix out{this->size() - 1};
+//     for (int i = 0; i < out.size(); i++) {
+//         out[i] = this->operator[](i + 1) - this->operator[](i);
+//     }
+//     return out;
+// }
 
-template <class T>
-Matrix<T> Matrix<T>::abs() const {
-    return ejovo::map(*this, [&] (auto x) {
-        return ejovo::abs(x);
-    });
-}
+// template <class T>
+// Matrix<T> Matrix<T>::abs() const {
+//     return ejovo::map(*this, [&] (auto x) {
+//         return ejovo::abs(x);
+//     });
+// }
 
 
 template <class T> Matrix<T>::Matrix(Matrix&& rhs) : m{rhs.m}, n{rhs.n} {
@@ -941,39 +941,39 @@ bool Matrix<T>::is_null() const {
     return this->data == nullptr;
 }
 
-template <class T>
-bool Matrix<T>::can_mult_b(const Matrix &rhs) const {
-    return this->n == rhs.m;
-}
+// template <class T>
+// bool Matrix<T>::can_mult_b(const Matrix &rhs) const {
+//     return this->n == rhs.m;
+// }
 
-template <class T>
-bool Matrix<T>::cant_mult_b(const Matrix &rhs) const {
-    return !(this->can_mult_b(rhs));
-}
+// template <class T>
+// bool Matrix<T>::cant_mult_b(const Matrix &rhs) const {
+//     return !(this->can_mult_b(rhs));
+// }
 
-template <class T>
-template <class U>
-bool Matrix<T>::is_same_size(const Matrix<U> &rhs) const {
-    return this->size() == rhs.size();
-}
+// template <class T>
+// template <class U>
+// bool Matrix<T>::is_same_size(const Matrix<U> &rhs) const {
+//     return this->size() == rhs.size();
+// }
 
-template <class T>
-template <class U>
-bool Matrix<T>::isnt_same_size(const Matrix<U> &rhs) const {
-    return !this->is_same_size(rhs);
-}
+// template <class T>
+// template <class U>
+// bool Matrix<T>::isnt_same_size(const Matrix<U> &rhs) const {
+//     return !this->is_same_size(rhs);
+// }
 
-template <class T>
-template <class U>
-bool Matrix<T>::is_same_shape(const Matrix<U> &rhs) const {
-    return this->m == rhs.m && this->n == rhs.n;
-}
+// template <class T>
+// template <class U>
+// bool Matrix<T>::is_same_shape(const Matrix<U> &rhs) const {
+//     return this->m == rhs.m && this->n == rhs.n;
+// }
 
-template <class T>
-template <class U>
-bool Matrix<T>::isnt_same_shape(const Matrix<U> &rhs) const {
-    return !this->is_same_shape(rhs);
-}
+// template <class T>
+// template <class U>
+// bool Matrix<T>::isnt_same_shape(const Matrix<U> &rhs) const {
+//     return !this->is_same_shape(rhs);
+// }
 
 template <class T>
 bool Matrix<T>::can_add_b(const Matrix &rhs) const {
@@ -1046,15 +1046,15 @@ namespace std {
 //     return *this;
 // }
 
-template <class T>
-Matrix<T>& Matrix<T>::loop_ij(std::function<T(int, int)> f) {
-    for (int i = 1; i <= this->m; i++) {
-        for (int j = 1; j <= this->n; j++) {
-            this->at(i, j) = f(i, j);
-        }
-    }
-    return *this;
-}
+// template <class T>
+// Matrix<T>& Matrix<T>::loop_ij(std::function<T(int, int)> f) {
+//     for (int i = 1; i <= this->m; i++) {
+//         for (int j = 1; j <= this->n; j++) {
+//             this->at(i, j) = f(i, j);
+//         }
+//     }
+//     return *this;
+// }
 
 // template <class T>
 // const Matrix<T>& Matrix<T>::loop(std::function<void(T)> f) const {
@@ -1073,24 +1073,24 @@ Matrix<T>& Matrix<T>::loop_ij(std::function<T(int, int)> f) {
 // }
 
 // No more mutations
-template <class T>
-const Matrix<T>& Matrix<T>::loop_ij(std::function<void(int, int)> f) const {
-    for (int i = 1; i <= this->m; i++) {
-        for (int j = 1; j <= this->n; j++) {
-            f(i, j);
-        }
-    }
-    return *this;
-}
+// template <class T>
+// const Matrix<T>& Matrix<T>::loop_ij(std::function<void(int, int)> f) const {
+//     for (int i = 1; i <= this->m; i++) {
+//         for (int j = 1; j <= this->n; j++) {
+//             f(i, j);
+//         }
+//     }
+//     return *this;
+// }
 
 
 /**========================================================================
  *!                           Ejovo interface
  *========================================================================**/
-template <class T>
-Matrix<T> Matrix<T>::map(std::function<T(T)> f) const {
-    return ejovo::map(*this, f);
-}
+// template <class T>
+// Matrix<T> Matrix<T>::map(std::function<T(T)> f) const {
+//     return ejovo::map(*this, f);
+// }
 
 template <class T>
 template <class U>
@@ -1145,15 +1145,15 @@ Matrix<T> Matrix<T>::cummin() const {
     return this->accumulate(ejovo::scalar::min<T>);
 }
 
-template <class T>
-Matrix<T> Matrix<T>::filter(std::function<bool(T)> predicate) const {
-    return ejovo::filter(*this, predicate);
-}
+// template <class T>
+// Matrix<T> Matrix<T>::filter(std::function<bool(T)> predicate) const {
+//     return ejovo::filter(*this, predicate);
+// }
 
-template <class T>
-Matrix<T> Matrix<T>::map_if(std::function<T(T)> f, std::function<bool(T)> predicate) const {
-    return this.filter(predicate).map(f);
-}
+// template <class T>
+// Matrix<T> Matrix<T>::map_if(std::function<T(T)> f, std::function<bool(T)> predicate) const {
+//     return this.filter(predicate).map(f);
+// }
 
 // template <class T>
 // Matrix<T>& Matrix<T>::mutate(std::function<T(T)> f) {
@@ -1184,19 +1184,19 @@ Matrix<T> Matrix<T>::map_if(std::function<T(T)> f, std::function<bool(T)> predic
 //     return ejovo::reduce(*this, f, init);
 // }
 
-// template <>
-// template <>
-// int Matrix<bool>::sum() const {
-//     int sum = 0;
-//     this->loop([&] (auto x) {
-//         if (x) sum ++;
-//     });
-//     return sum;
-// }
+template <>
+template <>
+int Matrix<bool>::sum() const {
+    int sum = 0;
+    this->loop([&] (auto x) {
+        if (x) sum ++;
+    });
+    return sum;
+}
 
-// template <class T>
-// template <class U>
-// U Matrix<T>::sum() const = delete;
+template <class T>
+template <class U>
+U Matrix<T>::sum() const = delete;
 
 // template <class T>
 // T Matrix<T>::sum() const {
@@ -1292,31 +1292,31 @@ Matrix<T> Matrix<T>::map_if(std::function<T(T)> f, std::function<bool(T)> predic
 //     return ejovo::var(*this, population);
 // }
 
-template <class T>
-Matrix<T> Matrix<T>::sqrt() const {
-    return this->map([&] (auto x) {
-        return std::sqrt(x);
-    });
-}
+// template <class T>
+// Matrix<T> Matrix<T>::sqrt() const {
+//     return this->map([&] (auto x) {
+//         return std::sqrt(x);
+//     });
+// }
 
-template <class T>
-Matrix<T> Matrix<T>::cbrt() const {
-    return this->map([&] (auto x) {
-        return ejovo::kthRoot(x, 3);
-    });
-}
+// template <class T>
+// Matrix<T> Matrix<T>::cbrt() const {
+//     return this->map([&] (auto x) {
+//         return ejovo::kthRoot(x, 3);
+//     });
+// }
 
-template<class T>
-Matrix<T> Matrix<T>::pow(int k) const {
-    return this->map([&] (auto x) {
-        return std::pow(x, k);
-    });
-}
+// template<class T>
+// Matrix<T> Matrix<T>::pow(int k) const {
+//     return this->map([&] (auto x) {
+//         return std::pow(x, k);
+//     });
+// }
 
-template<class T>
-Matrix<T> Matrix<T>::sqrd() const {
-    return this->pow(2);
-}
+// template<class T>
+// Matrix<T> Matrix<T>::sqrd() const {
+//     return this->pow(2);
+// }
 
 template <class T>
 Matrix<T> Matrix<T>::filter_lt(T val) const {
@@ -1434,6 +1434,13 @@ Matrix<T> Matrix<T>::rand() {
 template <class T>
 Matrix<T> Matrix<T>::rand(int n, double min, double max) {
     Matrix out (1, n);
+    out.loop_i([&] (int i) { out(i) = g_XOSHIRO.unifd(min, max); });
+    return out;
+}
+
+template <class T>
+Matrix<T> Matrix<T>::rand(int m, int n,  double min, double max) {
+    Matrix out (m, n);
     out.loop_i([&] (int i) { out(i) = g_XOSHIRO.unifd(min, max); });
     return out;
 }

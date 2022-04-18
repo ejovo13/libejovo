@@ -47,6 +47,10 @@ namespace ejovo {
 
     };
 
+    template <class T> T abs(T x) {
+        return x < 0 ? -x : x;
+    }
+
     // namespace unop {
 
     //     template <class X>
@@ -58,13 +62,125 @@ namespace ejovo {
     // };
 
     double log_base(double base, double x) {
-        return (std::log(x) / std::log(base));
+        return (::std::log(x) / ::std::log(base));
     }
 
     double kthRoot(double n, int k) {
-        return std::pow(k, (1.0 / k) * (log_base(k, n)));
+        return ::std::pow(k, (1.0 / k) * (log_base(k, n)));
     }
 
+    namespace factory {
+
+        template <class T, int K>
+        std::function<T(T)> pow(T x) {
+            return [&] (T x) {
+                return std::pow(x, K);
+            };
+        }
+
+        template <class T, int N>
+        std::function<T(T)> nroot(T x) {
+            return [&] (T x) {
+                return ejovo::kthRoot(x, N);
+            };
+        }
+
+        template <class T>
+        std::function<bool(T)> NOT(std::function<bool(T)> fn) {
+            return [&] (T x) {
+                return !fn(x);
+            };
+        }
+
+        template <class T>
+        std::function<bool(T)> AND(std::function<bool(T)> a, std::function<bool(T)> b) {
+            return [&] (T x) {
+                return a(x) && b(x);
+            };
+        }
+
+        template <class T>
+        std::function<bool(T)> OR(std::function<bool(T)> a, std::function<bool(T)> b) {
+            return [&] (T x) {
+                return a(x) || b(x);
+            };
+        }
+
+        template <class T>
+        std::function<bool(T)> XOR(std::function<bool(T)> a, std::function<bool(T)> b) {
+            return [&] (T x) {
+                return a(x) != b(x);
+            };
+        }
+
+        template <class T>
+        std::function<bool(T)> lt(const T& rhs) {
+            return [&] (T x) {
+                return x < rhs;
+            };
+        }
+
+        template <class T>
+        std::function<bool(T)> gt(const T& rhs) {
+            return [&] (T x) {
+                return x > rhs;
+            };
+        }
+
+        template <class T>
+        std::function<bool(T)> leq(const T& rhs) {
+            return [&] (T x) {
+                return x <= rhs;
+            };
+        }
+
+        template <class T>
+        std::function<bool(T)> geq(const T& rhs) {
+            return [&] (T x) {
+                return x >= rhs;
+            };
+        }
+
+        template <class X>
+        std::function<bool(X)> filter(std::function<bool(X)> f) {
+
+            // This function seems wack but it has a purpose.
+            // consider the call to
+            //     m | filter(lt(10));
+            // then we need to construct a std::function<bool(X)>
+            // that is really just the passed in function...
+
+            // However, this is simply to express intent. We could also simply call
+            //     m | lt(10);
+            return f;
+        }
+
+        template <class X>
+        bool even(X x) {
+            return x % 2 == 0;
+        }
+
+        template <class X>
+        std::function<X(X)> times(const X& rhs) {
+            return [&] (X x) {
+                return x * rhs;
+            };
+        }
+
+        template <class X>
+        std::function<X(X)> divides(const X& rhs) {
+            return [&] (X x) {
+                return x / rhs;
+            };
+        }
+    };
+
+};
+
+template <class T> class Matrix;
+
+
+namespace ejovo {
 
 template <class T>
 class Grid1D {
@@ -88,6 +204,12 @@ public:
     const virtual T& operator[](int i) const = 0;
     virtual std::size_t size() const = 0;
 
+    /**========================================================================
+     *!                      Virtual Concept Functions
+     *========================================================================**/
+    virtual Matrix<T> to_matrix()  const = 0;
+    virtual Matrix<T> new_matrix(int n) const = 0;
+
 
     T& at(int i);         // 1-based indexing with bounds checking
     T& operator()(int i); // 1-based indexing M(1) is the first element
@@ -106,8 +228,8 @@ public:
     /**========================================================================
      *!                           Inquiry Functions
      *========================================================================**/
-    bool is_same_size(const Grid1D& rhs) const;
-    bool isnt_same_size(const Grid1D& rhs) const;
+    template <class U> bool is_same_size(const Grid1D<U>& rhs) const;
+    template <class U> bool isnt_same_size(const Grid1D<U>& rhs) const;
     bool is_valid_bound(int i) const; // Check if i is a valid 1-based indexing bound.
 
     /**========================================================================
@@ -129,16 +251,18 @@ public:
      *!                           Looping Functions
      *========================================================================**/
     Grid1D& loop(loop_fn f);
-    const Grid1D& loop(loop_fn_const f) const;
     Grid1D& loop_i(loop_ind_fn f);
-    const Grid1D& loop_i(loop_ind_fn f) const;
     Grid1D& swap(int ai, int bi);
+
+    const Grid1D& loop(loop_fn_const f) const;
+    const Grid1D& loop_i(loop_ind_fn f) const;
 
     /**========================================================================
      *!                           Printing Functions
      *========================================================================**/
     Grid1D& print();
     Grid1D& print_lin();
+
     const Grid1D& print() const;
     const Grid1D& print_lin() const;
 
@@ -169,6 +293,48 @@ public:
     bool all(predicate pred) const;
     bool none() const;
     bool none(predicate pred) const;
+
+    /**========================================================================
+     *!                Functional Programming Concrete Return Types
+     *========================================================================**/
+    Matrix<T> map(unary_op fn) const;
+    // virtual template<class U> Matrix<U> map(std::function<U(T)> fn);
+    Matrix<T> map_if(unary_op fn, predicate pred) const;
+    Matrix<T> filter(predicate pred) const;
+    Matrix<T> diff() const; // outputs a row vector of differences
+    Matrix<T> abs() const;
+
+    /**========================================================================
+     *!                           Power Operations
+     *========================================================================**/
+    Matrix<T> sqrt() const;
+    Matrix<T> cbrt() const;
+    Matrix<T> nth_root() const;
+
+    Matrix<T> pow(int k) const;
+    Matrix<T> sqrd() const;
+    Matrix<T> cubd() const;
+
+    Matrix<T> normalized(int p = 2) const;
+    Grid1D& normalize(int p = 2);
+
+    /**========================================================================
+     *!                           Repeat Operations
+     *========================================================================**/
+    Matrix<T> repcol(int n) const;
+    Matrix<T> reprow(int n) const;
+
+    /**========================================================================
+     *!                           Binary operations
+     *========================================================================**/
+    // T dot(const Grid1D) const;
+    // // T dot(const Matrix& rhs, int i, int j) const; // dot the ith of this row with the jth column of rhs
+    // T inner_product(const Matrix& rhs) const;
+    // Matrix outer_product(const Matrix& rhs) const; // must be two vectors...
+    // Matrix kronecker_product(const Matrix& rhs) const;
+    // Matrix hadamard_product(const Matrix& rhs) const; // element wise multiplication
+
+
 
 };
 
@@ -220,12 +386,14 @@ const T& Grid1D<T>::last() const {
 }
 
 template <class T>
-bool Grid1D<T>::is_same_size(const Grid1D& rhs) const {
+template <class U>
+bool Grid1D<T>::is_same_size(const Grid1D<U>& rhs) const {
     return this->size() == rhs.size();
 }
 
 template <class T>
-bool Grid1D<T>::isnt_same_size(const Grid1D& rhs) const {
+template <class U>
+bool Grid1D<T>::isnt_same_size(const Grid1D<U>& rhs) const {
     return this->size() != rhs.size();
 }
 
@@ -383,7 +551,7 @@ T Grid1D<T>::max() const {
 
 template <class T>
 T Grid1D<T>::sd(bool population) const {
-    return sqrt(this->var(population));
+    return std::sqrt(this->var(population));
 }
 
 template <class T>
@@ -501,5 +669,120 @@ bool Grid1D<T>::none(predicate pred) const {
 
     return true;
 }
+
+template <class T>
+Matrix<T> Grid1D<T>::map(unary_op fn) const {
+    auto out = this->to_matrix();
+    out.mutate(fn);
+    return out;
+}
+
+template <class T>
+Matrix<T> Grid1D<T>::map_if(unary_op fn, predicate pred) const {
+    int c = this->count(pred);
+
+    auto out = this->new_matrix(c);
+    out.mutate(fn);
+
+    return out;
+}
+
+template <class T>
+Matrix<T> Grid1D<T>::filter(predicate pred) const {
+    int c = this->count(pred);
+
+    auto out = this->new_matrix(c);
+    int out_i = 1;
+    this->loop([&] (auto x) {
+        if (pred(x)) {
+            out(out_i) = x;
+            out_i++;
+        }
+    });
+}
+
+template <class T>
+Matrix<T> Grid1D<T>::diff() const {
+
+    Matrix<T> out{1, this->size() - 1};
+    for (int i = 0; i < out.size(); i++) {
+        out[i] = this->operator[](i + 1) - this->operator[](i);
+    }
+    return out;
+}
+
+template <class T>
+Matrix<T> Grid1D<T>::abs() const {
+    return this->map(ejovo::abs<T>);
+}
+
+template <class T>
+Matrix<T> Grid1D<T>::sqrt() const {
+    return this->map([&] (auto x) { return std::sqrt(x); } );
+}
+
+template <class T>
+Matrix<T> Grid1D<T>::cbrt() const {
+    // return this->map(ejovo::factory::nroot<T, 3>);
+    return this->map([&] (auto x) { return ejovo::kthRoot(x, 3); } );
+}
+
+template <class T>
+Matrix<T> Grid1D<T>::pow(int k) const {
+    return this->map(ejovo::factory::pow<T, k>);
+}
+
+template <class T>
+Matrix<T> Grid1D<T>::sqrd() const {
+    return this->map([&] (auto x) { return x * x; } );
+}
+
+template <class T>
+Matrix<T> Grid1D<T>::cubd() const {
+    return this->map([&] (auto x) { return x * x * x; } );
+}
+
+template <class T>
+Matrix<T> Grid1D<T>::normalized(int p) const {
+    T nrm = this->pnorm(p);
+    return this->map([&] (auto x) { return x / nrm; } );
+}
+
+// normalize the elements of the one dimensional array.
+template <class T>
+Grid1D<T>& Grid1D<T>::normalize(int p) {
+    T nrm = this->pnorm(p);
+    return this->mutate([&] (auto x) { return x / nrm; } );
+}
+
+// this might be able to be taken care of with mem copy?
+// or is iterating fine?
+template <class T>
+Matrix<T> Grid1D<T>::repcol(int n) const {
+
+    Matrix<T> out (this->size(), n);
+
+    out.loop_ij([&] (int i, int j) {
+        out(i, j) = this->operator()(i);
+    } );
+
+    return out;
+
+}
+
+template <class T>
+Matrix<T> Grid1D<T>::reprow(int n) const {
+
+    Matrix<T> out (n, this->size());
+
+    out.loop_ij([&] (int i, int j) {
+        out(i, j) = this->operator()(j);
+    } );
+
+    return out;
+
+}
+
+
 
 };

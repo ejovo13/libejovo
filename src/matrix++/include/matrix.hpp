@@ -43,10 +43,12 @@ public:
     std::size_t ncol() const override;
     std::size_t nrow() const override;
 
+    // Overloads that need to be explicitly included
     using ejovo::Grid1D<T>::at;
     using ejovo::Grid1D<T>::operator();
     using ejovo::Grid2D<T>::at;
     using ejovo::Grid2D<T>::operator();
+    using ejovo::Grid1D<T>::sum;
 
     std::unique_ptr<T[]> data;
 
@@ -85,12 +87,12 @@ public:
     Matrix as_colvec(); // just a call to as_vector
     Matrix as_rowvec();
 
-    template <class U> bool is_same_size(const Matrix<U> &rhs) const;
-    template <class U> bool isnt_same_size(const Matrix<U> &rhs) const;
-    template <class U> bool is_same_shape(const Matrix<U> &rhs) const;
-    template <class U> bool isnt_same_shape(const Matrix<U> &rhs) const;
-    bool can_mult_b(const Matrix &rhs) const;
-    bool cant_mult_b(const Matrix &rhs) const;
+    // template <class U> bool is_same_size(const Matrix<U> &rhs) const;
+    // template <class U> bool isnt_same_size(const Matrix<U> &rhs) const;
+    // template <class U> bool is_same_shape(const Matrix<U> &rhs) const;
+    // template <class U> bool isnt_same_shape(const Matrix<U> &rhs) const;
+    // bool can_mult_b(const Matrix &rhs) const;
+    // bool cant_mult_b(const Matrix &rhs) const;
     bool can_add_b(const Matrix &rhs) const;
     bool cant_add_b(const Matrix &rhs) const;
 
@@ -115,8 +117,8 @@ public:
 
     Matrix& nullify();
 
-    Matrix diff() const; // return the back elements minus the front elements
-    Matrix abs() const;
+    // Matrix diff() const; // return the back elements minus the front elements
+    // Matrix abs() const;
 
 
 
@@ -304,11 +306,11 @@ public:
     // Loop mutators based on the element, (i), or (i, j);
     // Matrix& loop(std::function<T(T)> f); // f: T -> T thus this function is assumed to be SETTING ELEMENTS!!!! Call f and set this->to the results
     // Matrix& loop_i(std::function<T(int)> f);
-    Matrix& loop_ij(std::function<T(int, int)> f);
+    // Matrix& loop_ij(std::function<T(int, int)> f);
 
     // const Matrix& loop(std::function<void(T)> f) const;
     // const Matrix& loop_i(std::function<void(int)> f) const; // f: T -> void thus this function can really do whatever the f we want. Call f without overwriting this, looping over the elements as if this were a vector
-    const Matrix& loop_ij(std::function<void(int, int)> f) const; // Do something with (i, j)
+    // const Matrix& loop_ij(std::function<void(int, int)> f) const; // Do something with (i, j)
 
     // Swap the vector elements M(ai) and M(bi)
     Matrix& swap(int ai, int bi);
@@ -325,14 +327,15 @@ public:
     Matrix cummax() const;
 
 
-    Matrix map(std::function<T(T)> f) const; // returns a Matrix that's the same size as this
+    // Matrix map(std::function<T(T)> f) const; // returns a Matrix that's the same size as this
+    using ejovo::Grid1D<T>::map;
     template <class U> Matrix<U> map(std::function<U(T)> f) const;
 
     // Apply a function if the predicate of an ELEMENT is true
-    Matrix map_if(std::function<T(T)> f, std::function<bool(T)> predicate) const;
+    // Matrix map_if(std::function<T(T)> f, std::function<bool(T)> predicate) const;
 
 
-    Matrix filter(std::function<bool(T)> predicate) const; // returns a VECTOR!!!!!!!
+    // Matrix filter(std::function<bool(T)> predicate) const; // returns a VECTOR!!!!!!!
 
     Matrix filter_lt(T val) const;
     Matrix filter_leq(T val) const;
@@ -355,25 +358,38 @@ public:
     // T sd(bool population = true) const; // default to the population sd
     // T var(bool population = true) const;
 
-    Matrix sqrt() const;
-    Matrix cbrt() const;
-    Matrix kth_root() const;
+    // Matrix sqrt() const;
+    // Matrix cbrt() const;
+    // Matrix kth_root() const;
 
-    Matrix pow(int k) const;
-    Matrix sqrd() const;
+    // Matrix pow(int k) const;
+    // Matrix sqrd() const;
 
-    // T pnorm(int p) const;
-    // T norm() const;
+    // // T pnorm(int p) const;
+    // // T norm() const;
 
-    Matrix normalized() const;
-    Matrix& normalize();
+    // Matrix normalized() const;
+    // Matrix& normalize();
 
 
     Matrix clone() const;
 
+    Matrix to_matrix() const override {
+        return this->clone();
+    }
+
+    Matrix new_matrix(int __m, int __n) const {
+        return this->zeros(__m, __n);
+    }
+
+    Matrix new_matrix(int __n) const override {
+        return this->zeros(1, __n);
+    }
+
+
     // repeat columns. Sends a vector v to [v ... v_n]
-    Matrix rep_col(int n) const;
-    Matrix rep_row(int n) const;
+    // Matrix rep_col(int n) const;
+    // Matrix rep_row(int n) const;
 
 
     /**========================================================================
@@ -408,7 +424,7 @@ public:
     Matrix<int> which() const; // return a vector of vector indices
     Matrix<int> which(std::function<bool(T)> pred) const;
 
-    // template <class U> U sum() const; // Allow a bool Matrix to call Matrix<bool>::sum<int>() -> int
+    template <class U> U sum() const; // Allow a bool Matrix to call Matrix<bool>::sum<int>() -> int
     // int count() const; // Count the elements of Matrix<T> that evaluate to true in a boolean expression
     // int count(std::function<bool(T)> pred) const;
 
@@ -470,6 +486,13 @@ public:
     MatView cols(int jb, int je);
     MatView cols(int j);
     MatView cols(std::initializer_list<int> list);
+
+    /**========================================================================
+     *!                           Crazy Concepts Stuff
+     *========================================================================**/
+
+
+
 
 };
 
