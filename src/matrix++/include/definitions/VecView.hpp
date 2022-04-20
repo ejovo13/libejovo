@@ -109,7 +109,7 @@ typename Matrix<T>::VecView& Matrix<T>::VecView::operator=(const VecView& rv) {
 template <class T>
 typename Matrix<T>::VecView Matrix<T>::VecView::filter(std::function<bool(T)> f) {
     // all I have to do is filter the ind element...
-    Matrix ind = this->true_ind.filter([&] (int i) {
+    Matrix<int> ind = this->true_ind.filter([&] (int i) {
         return f(this->mat(i));
     });
 

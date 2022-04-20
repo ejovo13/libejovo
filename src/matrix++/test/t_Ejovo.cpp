@@ -190,7 +190,7 @@ int main() {
 
     auto erfx = get_erf_matlab();
 
-    erfx.print_lin();
+    erfx.summary();
 
     x = linspace(-3, 3, 1000);
 
@@ -198,7 +198,8 @@ int main() {
     auto erf_mid_200 = x.map(ejovo::quad::erf::midpoint<200>);
     auto erf_mid_300 = x.map(ejovo::quad::erf::midpoint<300>);
 
-    (erfx - erf_mid_100).print_lin();
+    (erfx - erf_mid_100).summary();
+    (erfx - erf_mid_200).summary();
 
     linspace(1, 30).print();
 

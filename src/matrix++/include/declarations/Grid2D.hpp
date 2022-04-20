@@ -17,7 +17,8 @@ public:
     using ejovo::Grid1D<T>::loop_fn_const;
     using ejovo::Grid1D<T>::loop_ind_fn;
     using loop_ij_fn = std::function<void(int, int)>;
-    using loop_fn = std::function<T(T)>;
+    using loop_fn = std::function<void(T)>;
+    using mutate_fn = std::function<void(T)>;
 
     using ejovo::Grid1D<T>::at;
     using ejovo::Grid1D<T>::operator();
@@ -64,29 +65,24 @@ public:
      *!                           Looping functions
      *========================================================================**/
     Grid2D& loop_ij(loop_ij_fn fn);
+
     const Grid2D& loop_ij(loop_ij_fn fn) const;
+
+    Grid2D& loop_diag(loop_fn fn);
+    const Grid2D& loop_diag(loop_fn fn) const;
 
     /**========================================================================
      *!                           Mutate Functions
      *========================================================================**/
-    Grid2D& mut_row(loop_fn fn, int i = 1);
-    Grid2D& mut_col(loop_fn fn, int j = 1);
-    Grid2D& mut_diag(loop_fn fn, int d = 0);
+    Grid2D& mut_row(mutate_fn fn, int i = 1);
+    Grid2D& mut_col(mutate_fn fn, int j = 1);
+    Grid2D& mut_diag(mutate_fn fn, int d = 0);
 
 
 private:
 
     bool col_major = true;
 
-
-
-
-
-
-
 };
-
-
-
 
 };

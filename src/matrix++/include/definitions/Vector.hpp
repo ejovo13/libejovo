@@ -1,7 +1,7 @@
 #pragma once
 
 #include "declarations/Vector.hpp"
-#include "declarations/Xoshiro.hpp"
+// #include "declarations/Xoshiro.hpp"
 
 namespace ejovo {
 
@@ -69,7 +69,18 @@ Matrix<T> Vector<T>::to_matrix() const {
 
 template <class T>
 Matrix<T> Vector<T>::new_matrix(int n) const {
+    if (col) {
+        Matrix<T> out(n, 1);
+        return out;
+    } else {
+        Matrix<T> out(1, n);
+        return out;
+    }
+}
 
+template <class T>
+std::size_t Vector<T>::size() const {
+    return n;
 }
 
 
@@ -123,6 +134,66 @@ const Vector<T>& Vector<T>::print_row() const {
 
 }
 
+template <class T>
+const Vector<T>& Vector<T>::summary() const {
+
+    if (this->size() == 0) {
+        std::cerr << "Empty vector\n";
+        return *this;
+    }
+
+    // Check if this is a matrix, a column vector, or a row vector..
+    if (col) {
+        std::cout << "Column vector with n: " << this->size() << "\n";
+        std::cout << "Euclidean norm: ";
+    } else {
+        std::cout << "Row vector with n: " << this->size() << "\n";
+        std::cout << "Euclidiean norm: ";
+    }
+
+    std::cout << this->norm() << std::endl;
+
+    std::cout << "sum:     " << this->sum() << std::endl;
+    std::cout << "mean:    " << this->mean() << std::endl;
+    std::cout << "min:     " << this->min()  << std::endl;
+    std::cout << "max:     " << this->max()  << std::endl;
+    std::cout << "sd:      " << this->sd()  << std::endl;
+    std::cout << "var:     " << this->var()  << std::endl;
+
+    return *this;
+
+}
+
+template <class T>
+Vector<T>& Vector<T>::summary() {
+
+    if (this->size() == 0) {
+        std::cerr << "Empty vector\n";
+        return *this;
+    }
+
+    // Check if this is a matrix, a column vector, or a row vector..
+    if (col) {
+        std::cout << "Column vector with n: " << this->size() << "\n";
+        std::cout << "Euclidean norm: ";
+    } else {
+        std::cout << "Row vector with n: " << this->size() << "\n";
+        std::cout << "Euclidiean norm: ";
+    }
+
+    std::cout << this->norm() << std::endl;
+
+    std::cout << "sum:     " << this->sum() << std::endl;
+    std::cout << "mean:    " << this->mean() << std::endl;
+    std::cout << "min:     " << this->min()  << std::endl;
+    std::cout << "max:     " << this->max()  << std::endl;
+    std::cout << "sd:      " << this->sd()  << std::endl;
+    std::cout << "var:     " << this->var()  << std::endl;
+
+    return *this;
+
+}
+
 /**========================================================================
  *!                           Transpose functions
  *========================================================================**/
@@ -137,44 +208,26 @@ template <class T>
 Vector<T> Vector<T>::transpose() const {
     return this->t();
 }
-// template <class T>
-// Matrix<T> Matrix<T>::from(std::initializer_list<T> list) {
-//     int n = list.size();
-//     Matrix<T> out{1, n};
-//     int i = 1;
-//     for (auto el : list) {
-//         out(i) = el;
-//         i++;
-//     }
-//     return out;
-// }
-
-// template <class T>
-// Matrix<T> Matrix<T>::from(std::initializer_list<T> list, int m, int n) {
-//     int n_el = list.size();
-//     Matrix<T> out;
-
-//     if (n_el == m * n) {
-//         out = Matrix<T>::zeros(m, n);
-//     } else {
-//         out = Matrix<T>::zeros(1, n_el);
-//     }
-
-//     int i = 1;
-//     for (auto el : list) {
-//         out(i) = el;
-//         i++;
-//     }
-//     return out;
-// }
-
-
 
 template <class T>
-ejovo::rng::Xoshiro& Vector<T>::xoroshiro = g_XOSHIRO;
+Vector<T> Vector<T>::from(std::initializer_list<T> list, bool col) {
+    int n = list.size();
+    Vector out(n, col);
+    int i = 1;
+    for (auto el : list) {
+        out(i) = el;
+        i++;
+    }
+    return out;
+}
+
+template <class T>
+ejovo::rng::Xoshiro& Vector<T>::xoroshiro = ejovo::rng::g_XOSHIRO;
 
 template <class T> std::unique_ptr<T[]> Vector<T>::copy_data() const {
     // this->print();
+    if(!data) return nullptr; // If data is nullptr, return nullptr
+
     auto ptr = new T[n]; // allocate the proper space
     memcpy(ptr, this->data.get(), n * sizeof(T)); // copy the data on over
     return std::unique_ptr<T[]>(ptr);
@@ -182,4 +235,3 @@ template <class T> std::unique_ptr<T[]> Vector<T>::copy_data() const {
 
 };
 
-};

@@ -4,11 +4,6 @@
 
 namespace ejovo {
 
-#pragma once
-
-#include "ejovo.hpp"
-#include "matrix.hpp"
-
 template <class T>
 class Matrix<T>::RowView : public AbsView {
 

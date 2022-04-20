@@ -1,9 +1,11 @@
 #pragma once
 
-#include "../include/libejovo.hpp"
+#include "libejovo.hpp"
 
 // Return the values of the erf as computed by matlab over the discretization
 // -3, 3, 1000
+namespace ejovo {
+
 Matrix<double> get_erf_matlab() {
     return Matrix<double>::from({
 
@@ -11,3 +13,5 @@ Matrix<double> get_erf_matlab() {
 
     }, 1000, 1);
 }
+
+};

@@ -2,6 +2,8 @@
 
 #include "declarations/Grid1D.hpp"
 
+#include "ejovo/operations.hpp"
+
 namespace ejovo {
 
 /**========================================================================

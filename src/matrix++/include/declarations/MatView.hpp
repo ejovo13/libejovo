@@ -1,8 +1,5 @@
 #pragma once
 
-#include "ejovo.hpp"
-#include "matrix.hpp"
-#include "matrix_impl.hpp"
 #include "AbsView.hpp"
 
 namespace ejovo {

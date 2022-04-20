@@ -7,8 +7,13 @@ int main() {
 
     std::cout << "Hi\n";
 
-    Vector<double> v;
-    v.print();
+    Vector<double> vcol(10, true);
+    Vector<double> vrow(10, false);
+    vcol.print();
+    vrow.print();
+
+    // Implement logical routines for a
+
 
     return 0;
 }

@@ -2,6 +2,10 @@
 
 #include "declarations/Matrix.hpp"
 
+// #include "ejovo/rng/Xoshiro.hpp"
+#include "ejovo/rng/rng.hpp"
+#include "ejovo/core.hpp"
+
 namespace ejovo {
 
 template <class T>
@@ -25,7 +29,11 @@ std::size_t Matrix<T>::ncol() const {
 /**========================================================================
  *!                           Constructors
  *========================================================================**/
-template <class T> Matrix<T>::Matrix() : m{0}, n{0} { this->data = nullptr; }
+template <class T> Matrix<T>::Matrix()
+    : m{0}
+    , n{0}
+    , data{nullptr}
+{}
 
 template <class T> void Matrix<T>::reset() {
     this->m = 0;
@@ -39,6 +47,30 @@ template <class T> Matrix<T>::Matrix(int n) : m{1}, n{n} {
 
 template <class T> Matrix<T>::Matrix(int m, int n) : m{m}, n{n} {
     this->data = std::unique_ptr<T[]>(new T [m * n]);
+}
+
+template <class T> Matrix<T>::Matrix(const Vector<T>& rhs) {
+    if (rhs.col) {
+        this->m = rhs.size();
+        this->n = 1;
+    } else {
+        this->m = 1;
+        this->n = rhs.size();
+    }
+    this->data = rhs.copy_data();
+}
+
+template <class T> Matrix<T>::Matrix(Vector<T>&& rhs) {
+    if (rhs.col) {
+        this->m = rhs.size();
+        this->n = 1;
+    } else {
+        this->m = 1;
+        this->n = rhs.size();
+    }
+    this->data = std::move(rhs.data);
+
+    rhs.reset();
 }
 
 template <class T>
@@ -76,7 +108,7 @@ Matrix<T> Matrix<T>::from(std::initializer_list<T> list, int m, int n) {
  *!                           Random Matrices
  *========================================================================**/
 template <class T>
-ejovo::rng::Xoshiro& Matrix<T>::xoroshiro = g_XOSHIRO;
+ejovo::rng::Xoshiro& Matrix<T>::xoroshiro = ejovo::rng::g_XOSHIRO;
 
 template <class T> std::unique_ptr<T[]> Matrix<T>::copyData() const {
     int n = this->size();
@@ -139,7 +171,7 @@ Matrix<T> Matrix<T>::operator()(const Matrix<int>& ind) {
     // Assume all the indices are legitamete
     const int n = this->size();
     // check the bounds
-    auto valid_ind = ejovo::filter(ind, [&] (int x) {
+    auto valid_ind = ind.filter([&] (int x) {
         return x >= 1 && x <= n;
     });
 
@@ -195,7 +227,7 @@ const Matrix<T>& Matrix<T>::print() const {
 }
 
 template <class T>
-const Matrix<T>& Matrix<T>::print_lin() const {
+const Matrix<T>& Matrix<T>::summary() const {
 
     if (this->size() == 0) {
         std::cerr << "Empty matrix trying to call Matrix<T>::print_lin()";
@@ -364,7 +396,7 @@ Matrix<T> Matrix<T>::kronecker_product(const Matrix& rhs) const {
 template <class T>
 Matrix<T> Matrix<T>::operator*(const Matrix&rhs) const {
 
-    if (this->cant_mult_b(rhs)) {
+    if (this->cant_mult(rhs)) {
         std::cerr << "Can't multiply matrices\n";
         return zeros(1);
     }
@@ -496,8 +528,8 @@ template <class T>
 Matrix<T> Matrix<T>::id(int n) {
     // take 1 as the identity element...
     Matrix out = zeros(n, n);
-    loop_diag(out, [&] (int d) {
-        out(d, d) = 1;
+    out.loop_diag([&] (auto d) {
+        d = 1;
     });
 
     return out;
@@ -619,19 +651,19 @@ Matrix<T>& Matrix<T>::nullify() {
 template <class T>
 Matrix<T> Matrix<T>::as_vector() {
     Matrix out{*this}; // copy this matrix
-    out.to_vec();
+    out.reshape_vec();
 }
 
 template <class T>
 Matrix<T> Matrix<T>::as_colvec() {
     Matrix out{*this}; // copy this matrix
-    out.to_col();
+    out.reshape_col();
 }
 
 template <class T>
 Matrix<T> Matrix<T>::as_rowvec() {
     Matrix out{*this}; // copy this matrix
-    out.to_row();
+    out.reshape_row();
 }
 
 template <class T>
@@ -750,33 +782,33 @@ template <class T>
 template <class U>
 U Matrix<T>::sum() const = delete;
 
-template <class T>
-Matrix<T> Matrix<T>::filter_lt(T val) const {
-    return this->filter([&] (T x) {
-        return x < val;
-    });
-}
+// template <class T>
+// Matrix<T> Matrix<T>::filter_lt(T val) const {
+//     return this->filter([&] (T x) {
+//         return x < val;
+//     });
+// }
 
-template <class T>
-Matrix<T> Matrix<T>::filter_leq(T val) const {
-    return this->filter([&] (T x) {
-        return x <= val;
-    });
-}
+// template <class T>
+// Matrix<T> Matrix<T>::filter_leq(T val) const {
+//     return this->filter([&] (T x) {
+//         return x <= val;
+//     });
+// }
 
-template <class T>
-Matrix<T> Matrix<T>::filter_gt(T val) const {
-    return this->filter([&] (T x) {
-        return x > val;
-    });
-}
+// template <class T>
+// Matrix<T> Matrix<T>::filter_gt(T val) const {
+//     return this->filter([&] (T x) {
+//         return x > val;
+//     });
+// }
 
-template <class T>
-Matrix<T> Matrix<T>::filter_geq(T val) const {
-    return this->filter([&] (T x) {
-        x >= val;
-    });
-}
+// template <class T>
+// Matrix<T> Matrix<T>::filter_geq(T val) const {
+//     return this->filter([&] (T x) {
+//         x >= val;
+//     });
+// }
 
 template <class T>
 Matrix<T> Matrix<T>::clone() const {
@@ -801,13 +833,13 @@ Matrix<bool> Matrix<T>::test(std::function<bool(T)> pred) const {
  *========================================================================**/
 template <class T>
 typename Matrix<T>::MatView Matrix<T>::view_row(int i) {
-    MatView v{*this, Matrix<int>::val(1, 1, i), ejovo::seq(this->n)};
+    MatView v (*this, Matrix<int>::val(1, 1, i), ejovo::seq<int>(this->n));
     return v;
 }
 
 template <class T>
 typename Matrix<T>::MatView Matrix<T>::view_col(int j) {
-    MatView v{*this, ejovo::seq(this->n), Matrix<int>::val(1, 1, j)};
+    MatView v (*this, ejovo::seq<int>(this->n), Matrix<int>::val(1, 1, j));
     return v;
 }
 
@@ -841,14 +873,14 @@ Matrix<T> Matrix<T>::rand() {
 template <class T>
 Matrix<T> Matrix<T>::rand(int n, double min, double max) {
     Matrix out (1, n);
-    out.loop_i([&] (int i) { out(i) = g_XOSHIRO.unifd(min, max); });
+    out.loop_i([&] (int i) { out(i) = ejovo::rng::g_XOSHIRO.unifd(min, max); });
     return out;
 }
 
 template <class T>
 Matrix<T> Matrix<T>::rand(int m, int n,  double min, double max) {
     Matrix out (m, n);
-    out.loop_i([&] (int i) { out(i) = g_XOSHIRO.unifd(min, max); });
+    out.loop_i([&] (int i) { out(i) = ejovo::rng::g_XOSHIRO.unifd(min, max); });
     return out;
 }
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "RowView.hpp"
+#include "declarations/RowView.hpp"
 
 namespace ejovo {
 

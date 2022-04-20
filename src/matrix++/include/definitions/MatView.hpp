@@ -1,14 +1,14 @@
 #pragma once
 
-#include "AbsView.hpp"
+#include "declarations/AbsView.hpp"
 
 namespace ejovo {
 
 template <class T>
 Matrix<T>::MatView::MatView(Matrix& mat)
     : mat{mat}
-    , row_ind{ejovo::seq(mat.m)}
-    , col_ind{ejovo::seq(mat.n)}
+    , row_ind(ejovo::seq<int>(mat.m))
+    , col_ind(ejovo::seq<int>(mat.n))
 {};
 
 template <class T>
@@ -20,11 +20,11 @@ Matrix<T>::MatView::MatView(Matrix& mat, const Matrix<int> row_ind, const Matrix
 
 template <class T>
 Matrix<T>::MatView::MatView(typename Matrix<T>::MatView& view)
-    // : mat{view.mat}
-    : row_ind{view.row_ind}
+    : mat{view.mat}
+    , row_ind{view.row_ind}
     , col_ind{view.col_ind}
 {
-    mat = view.mat; // point to the same place, but dont copy?
+    // mat = view.mat; // point to the same place, but dont copy?
 };
 
 template <class T>

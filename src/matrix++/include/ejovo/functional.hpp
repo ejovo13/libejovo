@@ -1,5 +1,8 @@
 #pragma once
 
+// This file contains functions that operator on functions and also those that adopt a functional approach to
+// programming like the map and filter functions
+
 #include <functional>
 
 #include "declarations/Matrix.hpp"
@@ -140,12 +143,40 @@ namespace ejovo {
     namespace functional {
 
 
-
-
-
-
-
-
+    template <class T>
+    T id(T x) {
+        return x;
     }
+
+    template <class T>
+    class ScalarFn {
+
+        public:
+
+        // a scalar function takes a t and returns a t
+        ScalarFn();
+        ScalarFn(std::function<T(T)> fn);
+
+        T operator()(T x) {
+            return fn(x);
+        }
+
+        Matrix<T> operator()(Matrix<T> x) {
+            return ejovo::map(x, fn);
+        }
+
+        private:
+
+        std::function<T(T)> fn;
+    };
+
+    template <class T>
+    ScalarFn<T>::ScalarFn(): fn{id<T>} {};
+
+    template <class T>
+    ScalarFn<T>::ScalarFn(std::function<T(T)> __fn) : fn{__fn} {};
+
+
+    };
 
 };

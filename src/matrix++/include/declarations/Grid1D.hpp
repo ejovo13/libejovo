@@ -3,6 +3,7 @@
 #include <iostream>
 #include <functional>
 #include <cmath>
+#include <cstddef>
 
 // Abstract class to implement the common behavior that is associated with a 1 dimensional vector
 namespace ejovo {
@@ -22,10 +23,12 @@ namespace ejovo {
 
 };
 
-template <class T> class Matrix;
 
 
 namespace ejovo {
+
+template <class T> class Matrix; // Forward declaration to Return Matrix type
+template <class T> class Vector;
 
 template <class T>
 class Grid1D {
@@ -180,6 +183,10 @@ public:
     // Matrix kronecker_product(const Matrix& rhs) const;
     Matrix<T> hadamard_product(const Grid1D& rhs) const; // element wise multiplication
 
+    // /**========================================================================
+    //  *!                           Runif Functions
+    //  *========================================================================**/
+    // Vector<T>
 
 
 };

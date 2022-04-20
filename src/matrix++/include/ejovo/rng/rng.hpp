@@ -1,6 +1,11 @@
 #pragma once
 
-#include <utility>
+#include <map>
+
+#include "types.hpp"
+#include "Xoshiro.hpp"
+#include "ejovo/quadrature.hpp"
+
 
 
 namespace ejovo {
@@ -115,6 +120,41 @@ namespace ejovo {
         });
 
         return out;
+
+    }
+
+    template <int N = 1000>
+    double erf(double x) {
+    return ejovo::quad::erf::gausslegendre<N>(x);
+    }
+
+    double pnorm(double x) {
+
+        double root2 = std::sqrt(2.0);
+
+        // return 0.5 * (1 + ejovo::quad::erf::midpoint<50>(x / root2));
+        return 0.5 * (1 + ejovo::erf<1000>(x / root2));
+        // return 0.5 * (1 + ejovo::erf<50>(x / root2));
+
+    }
+
+    double pnorm_2(double x) {
+
+        double root2 = std::sqrt(2.0);
+
+        // return 0.5 * (1 + ejovo::quad::erf::midpoint<50>(x / root2));
+        return 0.5 * (1 + ejovo::quad::erf::gausslegendre_2<1000>(x / root2));
+        // return 0.5 * (1 + ejovo::erf<50>(x / root2));
+
+    }
+
+    double pnorm_mid(double x) {
+
+        double root2 = std::sqrt(2.0);
+
+        return 0.5 * (1 + ejovo::quad::erf::midpoint<100>(x / root2));
+        // return 0.5 * (1 + ejovo::quad::erf::gausslegendre<50>(x / root2));
+        // return 0.5 * (1 + ejovo::erf<50>(x / root2));
 
     }
 

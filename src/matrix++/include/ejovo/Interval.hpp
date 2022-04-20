@@ -4,11 +4,11 @@
 #pragma once
 
 #include <functional>
-#include "matrix.hpp"
-#include "ejovo.hpp"
-#include "matrix_impl.hpp"
 
-namespace functions {
+#include "types.hpp"
+#include "core.hpp"
+
+namespace ejovo {
 
     template <class T = double>
     class Interval {

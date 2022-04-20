@@ -175,13 +175,9 @@ namespace ejovo {
             return count;
         }
 
+        // create a global Xoshiro
+        Xoshiro g_XOSHIRO{};
+
     };
-
-
-
-
-
-
-
 
 };

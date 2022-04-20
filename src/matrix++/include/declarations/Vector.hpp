@@ -5,13 +5,6 @@
 
 namespace ejovo {
 
-#pragma once
-
-#include "Grid1D.hpp"
-
-namespace ejovo {
-
-
 
 template <class T>
 class Vector : public Grid1D<T> {
@@ -35,8 +28,9 @@ public:
     /**========================================================================
      *!                      Virtual Concept Functions
      *========================================================================**/
-    Matrix<T> to_matrix()  const;
-    Matrix<T> new_matrix(int n) const;
+    Matrix<T> to_matrix() const override;
+    Matrix<T> new_matrix(int n) const override;
+    std::size_t size() const override;
 
     std::unique_ptr<T[]> copy_data() const;
 
@@ -53,6 +47,11 @@ public:
     Vector(Vector&& x);      // move data
 
     /**============================================
+     *!               From
+     *=============================================**/
+    Vector from(std::initializer_list<T> list, bool col = true);
+
+    /**============================================
      *!               Transpose functions
      *=============================================**/
     Vector t() const; // Maybe one of these should just change the flag instead of returning a new vec
@@ -66,9 +65,10 @@ public:
     const Vector& print_col() const;
     const Vector& print_row() const;
 
+    const Vector& summary() const;
+    Vector& summary();
+
 
 };
-
-
 
 };

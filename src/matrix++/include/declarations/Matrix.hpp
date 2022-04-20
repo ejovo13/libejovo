@@ -1,18 +1,25 @@
 #pragma once
 
 #include <memory>
-#include <iostream>
-#include <cstring>
-#include <cmath>
-#include <vector>
 #include <functional>
 #include <initializer_list>
-#include <string>
+#include <vector>
 
+// #include <iostream>
+#include <cstring>
+// #include <cmath>
+// #include <string>
+
+#include "ejovo/rng/Xoshiro.hpp"
 #include "Grid1D.hpp"
 #include "Grid2D.hpp"
 
+
 namespace ejovo {
+
+// Forward declaration of the vector class so that we can create some simple conversion
+// functions
+// template <class T> class Vector;
 
 template <class T = double>
 class Matrix : public Grid2D<T> {
@@ -57,9 +64,11 @@ public:
     Matrix(const Matrix& rhs);
     Matrix(Matrix&& rhs);
 
-    Matrix(const Vector<T>& rhs);
-    Matrix(Vector<T>&& rhs);
+    Matrix(const Vector<T>& rhs); // Go ahead and copy the data
+    Matrix(Vector<T>&& rhs); // Simply transfer the data
+
     // Matrix(std::initializer_list<T> list);
+    // Matrix<const
 
     /**========================================================================
      *!                           From functions
@@ -76,7 +85,7 @@ public:
     std::unique_ptr<T[]> copyData() const;
 
     const Matrix& print() const;
-    const Matrix& print_lin() const;
+    const Matrix& summary() const;
     // void fill(T val);
     void reset(); // set data to nullptr, m and n to 0.
 
@@ -284,10 +293,10 @@ public:
 
     // Matrix filter(std::function<bool(T)> predicate) const; // returns a VECTOR!!!!!!!
 
-    Matrix filter_lt(T val) const;
-    Matrix filter_leq(T val) const;
-    Matrix filter_gt(T val) const;
-    Matrix filter_geq(T val) const;
+    // Matrix filter_lt(T val) const;
+    // Matrix filter_leq(T val) const;
+    // Matrix filter_gt(T val) const;
+    // Matrix filter_geq(T val) const;
 
 
     Matrix clone() const;

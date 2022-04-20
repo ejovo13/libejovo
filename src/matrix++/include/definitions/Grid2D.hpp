@@ -86,7 +86,7 @@ bool Grid2D<T>::can_mult(const Grid2D<U> &rhs) const {
 template <class T>
 template <class U>
 bool Grid2D<T>::cant_mult(const Grid2D<U> &rhs) const {
-    return !(this->can_mult_b(rhs));
+    return !(this->can_mult(rhs));
 }
 
 template <class T>
@@ -130,6 +130,30 @@ const Grid2D<T>& Grid2D<T>::loop_ij(loop_ij_fn fn) const {
             fn(i, j);
         }
     }
+
+    return *this;
+}
+
+template <class T>
+Grid2D<T>& Grid2D<T>::loop_diag(loop_fn f) {
+
+    auto lim_dim = this->mindim();
+
+    for (std::size_t d = 1; d <= lim_dim; d++) {
+        f(this->operator()(d, d));
+    };
+
+    return *this;
+}
+
+template <class T>
+const Grid2D<T>& Grid2D<T>::loop_diag(loop_fn f) const {
+
+    auto lim_dim = this->mindim();
+
+    for (std::size_t d = 1; d <= lim_dim; d++) {
+        f(d, d);
+    };
 
     return *this;
 }
