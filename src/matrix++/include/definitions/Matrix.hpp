@@ -1,16 +1,8 @@
-
 #pragma once
 
-#include "ejovo.hpp"
-// #include "view.hpp"
-#include <initializer_list>
+#include "declarations/Matrix.hpp"
 
-#include "matrix.hpp"
-#include "Grid1D.hpp"
-#include "Grid2D.hpp"
-
-// This file is like the .cpp counterpart of matrix.hpp, although since we are dealing with a
-// template library we are forced to keep this in a header file that will be included.
+namespace ejovo {
 
 template <class T>
 std::size_t Matrix<T>::nrow() const {
@@ -399,6 +391,17 @@ template <class T> Matrix<T>::Matrix(Matrix&& rhs) : m{rhs.m}, n{rhs.n} {
     rhs.m = 0;
     rhs.n = 0;
 }
+
+// template <class T> Matrix<T>::Matrix(const Vector<T>& rhs) : m{rhs.m}, n{rhs.n} {
+
+//     this->data = std::move(rhs.data);
+//     this->m = rhs.m;
+//     this->n = rhs.n;
+
+//     rhs.data = nullptr;
+//     rhs.m = 0;
+//     rhs.n = 0;
+// }
 
 /**========================================================================
  *!                           Inquiry functions
@@ -1077,3 +1080,5 @@ typename Matrix<T>::ColView Matrix<T>::get_col_view(int j) {
     ColView cv {*this, j};
     return cv;
 }
+
+};

@@ -9,21 +9,13 @@
 #include <initializer_list>
 #include <string>
 
-#include "Xoshiro.hpp"
 #include "Grid1D.hpp"
 #include "Grid2D.hpp"
 
-// template <class T>
-// class View;
-
-// template <class T>
-// class ConstView;
-
-ejovo::rng::Xoshiro g_XOSHIRO {};
-
+namespace ejovo {
 
 template <class T = double>
-class Matrix : public ejovo::Grid2D<T> {
+class Matrix : public Grid2D<T> {
 
 public:
 
@@ -64,6 +56,9 @@ public:
     Matrix(int m, int n);
     Matrix(const Matrix& rhs);
     Matrix(Matrix&& rhs);
+
+    Matrix(const Vector<T>& rhs);
+    Matrix(Vector<T>&& rhs);
     // Matrix(std::initializer_list<T> list);
 
     /**========================================================================
@@ -394,115 +389,7 @@ public:
      *!                           Crazy Concepts Stuff
      *========================================================================**/
 
-
+};
 
 
 };
-
-// Definition of the BoolView class
-
-// template <class T>
-// class Matrix<T>::BoolView {
-
-// public:
-
-//     Matrix<int> true_ind;
-
-//     int m;
-//     int n;
-
-//     BoolView(Matrix<T>& mat);
-//     BoolView(Matrix<T>& mat, const Matrix<bool> mask);
-//     BoolView(Matrix<T>& mat, const Matrix<int> true_ind); // vector indices
-
-//     BoolView& loop_i(std::function<void(int)> f);
-
-//     T& operator()(int i);
-//     T& at(int i);
-
-//     BoolView& operator=(T val);
-//     // BoolView& operator=(const Matrix<T>& mat);
-
-
-// private:
-
-//     Matrix<T>& mat;
-
-
-
-
-// };
-
-
-/**========================================================================
- *!                           Looping functions
- *========================================================================**/
-// loop elements i, j and set i, j according to what f(i, j) returns
-// template <class T, class BinaryFn>
-// void loop_ij(Matrix<T>& A, BinaryFn f) {
-//     for (int i = 1; i <= A.m; i++) {
-//         for (int j = 1; j <= A.n; j++) {
-//             f(i, j);
-//         }
-//     }
-// }
-
-// template <class T, class UnaryFn>
-// void loop_i(Matrix<T>& A, UnaryFn f) {
-//     for (int i = 1; i <= A.size(); i++) {
-//         f(i);
-//     }
-// }
-
-//! THIS IS NOT THE PROPER BEHAVIOR of the diagonal!!!
-template <class T, class UnaryFn>
-void loop_diag(Matrix<T>& A, UnaryFn f, int diag = 0) {
-    for (int d = 1 + diag; d <= A.mindim(); d++) {
-        f(d);
-    }
-}
-
-template <class T, class BinaryFn>
-void loop_row(Matrix<T>& A, BinaryFn f, int i = 1) {
-    for (int j = 1; j <= A.n; j++) {
-        f(i, j);
-    }
-}
-
-// loop through i, j of a given row. Use mutate_col if you want to
-// set the contents of a row given a UnaryFn that operates on those elements
-template <class T, class BinaryFn>
-void loop_col(Matrix<T>& A, BinaryFn f, int j = 1) {
-    for (int i = 1; i <= A.m; i++) {
-        f(i, j);
-    }
-}
-
-//! WARNING These anonymous functions MUST RETURN T
-// template <class T, class UnaryFn>
-// void mut_col(Matrix<T>& A, UnaryFn f, int j = 1) {
-//     for (int i = 1; i <= A.m; i++) {
-//         A(i, j) = f(A(i, j));
-//     }
-// }
-
-// template <class T, class UnaryFn>
-// void mut_row(Matrix<T>& A, UnaryFn f, int i = 1) {
-//     for (int j = 1; j <= A.n; j++) {
-//         A(i, j) = f(A(i, j));
-//     }
-// }
-
-template <class T, class UnaryFn>
-void mut_diag(Matrix<T>& A, UnaryFn f, int diag = 0) {
-    for (int d = 1 + diag; d <= A.mindim(); d++) {
-        A(d, d) = f(A(d, d));
-    }
-}
-
-// template <class T>
-// std::pair<int, int> convert_vector_indices_to_ij(const Matrix<T>& mat, int n) {
-//     int i = ((n  - 1) / mat.n) + 1;
-//     int j = (n - 1) % mat.n + 1;
-//     return std::make_pair<int, int>(std::move(i), std::move(j));
-// }

@@ -10,3 +10,4 @@
 #include "RowView.hpp"
 #include "ColView.hpp"
 #include "VecView.hpp"
+#include "Vector.hpp"

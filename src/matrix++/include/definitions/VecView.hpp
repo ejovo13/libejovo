@@ -1,45 +1,8 @@
 #pragma once
 
-#include "ejovo.hpp"
-#include "matrix.hpp"
+#include "declarations/VecView.hpp"
 
-template <class T>
-class Matrix<T>::VecView : public AbsView {
-
-public:
-
-    // Bare minimum info needed to store a matrix
-    Matrix<int> true_ind;
-
-    VecView(Matrix& mat);
-    VecView(Matrix& mat, const Matrix<bool> mask);
-    VecView(Matrix& mat, const Matrix<int> true_ind); // vector indices
-    VecView(Matrix& mat, std::function<bool(T)> pred);
-
-    int nrows() const override;
-    int ncols() const override;
-    std::string to_string() const override;
-    Matrix& matrix() const override;
-    T& operator()(int n) const override;
-    T& operator()(int i, int j) const override;
-
-    VecView& assign(const T&, std::function<void(T&, const T&)>);
-    VecView& assign(const Matrix&, std::function<void(T&, const T&)>);
-    VecView& assign(const VecView&, std::function<void(T&, const T&)>);
-
-    VecView& operator=(const T&);
-    VecView& operator=(const Matrix&);
-    VecView& operator=(const VecView&);
-
-    // return a new vec view
-    VecView filter(std::function<bool(T)> f);
-
-
-private:
-
-    Matrix<T>& mat;
-
-};
+namespace ejovo {
 
 /**========================================================================
  *!                           Class Template Type Members
@@ -153,3 +116,5 @@ typename Matrix<T>::VecView Matrix<T>::VecView::filter(std::function<bool(T)> f)
     VecView out (this->mat, ind);
     return out;
 }
+
+};
