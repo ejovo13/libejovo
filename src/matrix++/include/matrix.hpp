@@ -93,12 +93,6 @@ public:
     Matrix as_colvec(); // just a call to as_vector
     Matrix as_rowvec();
 
-    // template <class U> bool is_same_size(const Matrix<U> &rhs) const;
-    // template <class U> bool isnt_same_size(const Matrix<U> &rhs) const;
-    // template <class U> bool is_same_shape(const Matrix<U> &rhs) const;
-    // template <class U> bool isnt_same_shape(const Matrix<U> &rhs) const;
-    // bool can_mult_b(const Matrix &rhs) const;
-    // bool cant_mult_b(const Matrix &rhs) const;
     bool can_add_b(const Matrix &rhs) const;
     bool cant_add_b(const Matrix &rhs) const;
 
@@ -116,18 +110,7 @@ public:
     template <class U>
     static Matrix from(const std::vector<U>& vec);
 
-    // Matrix& to_null();
-
-    // ConstView<T> view_row(int i) const;
-    // ConstView<T> view_col(int j) const;
-
     Matrix& nullify();
-
-    // Matrix diff() const; // return the back elements minus the front elements
-    // Matrix abs() const;
-
-
-
 
     // interpret the indices as INTEGERS and
     Matrix operator()(const Matrix<int>& ind);
@@ -141,11 +124,7 @@ public:
     // T dot(const Matrix& rhs) const;
     using ejovo::Grid1D<T>::dot;
     T dot(const Matrix& rhs, int i, int j) const; // dot the ith of this row with the jth column of rhs
-    // T inner_product(const Matrix& rhs) const;
-    // Matrix outer_product(const Matrix& rhs) const; // must be two vectors...
     Matrix kronecker_product(const Matrix& rhs) const;
-    // Matrix hadamard_product(const Matrix& rhs) const; // element wise multiplication
-
 
     //* Matrix Moperators
     Matrix& operator+=(const Matrix& rhs);
@@ -176,10 +155,6 @@ public:
         rhs += scalar;
         return rhs;
     }
-
-    // friend Matrix operator+(const T scalar )
-
-    // Matrix& operator-=(const Matrix& rhs);
 
     // these values are passed in by  copy
     friend Matrix operator-(Matrix lhs, const Matrix rhs) {
@@ -224,11 +199,6 @@ public:
         return lhs;
     }
 
-
-    // fried Matrix operator-(Mat)
-
-
-
     // matrix transpose
     Matrix t() const;
     Matrix transpose() const;
@@ -250,14 +220,8 @@ public:
     /**========================================================================
      *!                           Inquiry functions
      *========================================================================**/
-    // bool is_square() const;
-    // bool is_vector() const; // return true if one of the dimensions are 1
-    // bool is_colvec() const;
-    // bool is_rowvec() const;
     bool is_null() const;
     bool is_diagonally_dominant() const;
-
-    // int mindim() const;
 
     /**========================================================================
      *!                           Static functions
@@ -299,10 +263,6 @@ public:
     static Matrix<T> rand(int m, int n, double min, double max);
     // static Matrix<T> randi();
 
-    // static Matrix<T> runif(int n, double a = 0, double b = 1);
-
-
-
 
     // static Matrix<T> householder
     // static Matrix<T> vec(int n);
@@ -310,21 +270,6 @@ public:
     /**========================================================================
      *!                           Matrix interface to ejovo functions
      *========================================================================**/
-    // Loop mutators based on the element, (i), or (i, j);
-    // Matrix& loop(std::function<T(T)> f); // f: T -> T thus this function is assumed to be SETTING ELEMENTS!!!! Call f and set this->to the results
-    // Matrix& loop_i(std::function<T(int)> f);
-    // Matrix& loop_ij(std::function<T(int, int)> f);
-
-    // const Matrix& loop(std::function<void(T)> f) const;
-    // const Matrix& loop_i(std::function<void(int)> f) const; // f: T -> void thus this function can really do whatever the f we want. Call f without overwriting this, looping over the elements as if this were a vector
-    // const Matrix& loop_ij(std::function<void(int, int)> f) const; // Do something with (i, j)
-
-    // Swap the vector elements M(ai) and M(bi)
-    Matrix& swap(int ai, int bi);
-
-
-
-    // void loop_if(std::function<bool(T)> predicate); // f: T -> Bool thus this function is a predicate!!
 
     Matrix accumulate(std::function<T(const T&, const T&)> bin_op, T init = 0) const;
     Matrix accumulate(std::function<T(const T&, const T&, int)> ter_op, T init = 0) const;
@@ -350,35 +295,6 @@ public:
     Matrix filter_geq(T val) const;
 
 
-    // Matrix& mutate(std::function<T(T)> f); // Mutating in place, not const
-    // Matrix& mutate_if(std::function<T(T)> f, std::function<bool(T)> predicate);
-
-    // Matrix& fill_if(T val, std::function<bool(T)> predicate);
-
-    // T reduce(std::function<T(T, T)> f, T init = 0) const;
-    // T sum() const;
-    // T sum_abs() const;
-    // T mean() const;
-    // T prod() const;
-    // T min() const;
-    // T max() const;
-    // T sd(bool population = true) const; // default to the population sd
-    // T var(bool population = true) const;
-
-    // Matrix sqrt() const;
-    // Matrix cbrt() const;
-    // Matrix kth_root() const;
-
-    // Matrix pow(int k) const;
-    // Matrix sqrd() const;
-
-    // // T pnorm(int p) const;
-    // // T norm() const;
-
-    // Matrix normalized() const;
-    // Matrix& normalize();
-
-
     Matrix clone() const;
 
     Matrix to_matrix() const override {
@@ -394,19 +310,12 @@ public:
     }
 
 
-    // repeat columns. Sends a vector v to [v ... v_n]
-    // Matrix rep_col(int n) const;
-    // Matrix rep_row(int n) const;
-
 
     /**========================================================================
      *!                           Logical indexing type functions
      *========================================================================**/
     // Let's start off with indexing with a SINGLE vector.
     // Matrix operator()(const Matrix<int>& ind) const;
-
-
-
     Matrix<bool> binop_k(std::function<bool(T, T)> binop, const T& k) const;
 
     Matrix<bool> operator<(const T& rhs) const;
@@ -432,23 +341,10 @@ public:
     Matrix<int> which(std::function<bool(T)> pred) const;
 
     template <class U> U sum() const; // Allow a bool Matrix to call Matrix<bool>::sum<int>() -> int
-    // int count() const; // Count the elements of Matrix<T> that evaluate to true in a boolean expression
-    // int count(std::function<bool(T)> pred) const;
-
-    // bool any() const;
-    // bool any(std::function<bool(T)> pred) const;
-
-    // bool all() const;
-    // bool all(std::function<bool(T)> pred) const;
 
 
-
-    class BoolView;
-    class ConstBoolView;
-
-
-
-
+    // class BoolView;
+    // class ConstBoolView;
 
     class AbsView;
     class RowView;
@@ -505,37 +401,37 @@ public:
 
 // Definition of the BoolView class
 
-template <class T>
-class Matrix<T>::BoolView {
+// template <class T>
+// class Matrix<T>::BoolView {
 
-public:
+// public:
 
-    Matrix<int> true_ind;
+//     Matrix<int> true_ind;
 
-    int m;
-    int n;
+//     int m;
+//     int n;
 
-    BoolView(Matrix<T>& mat);
-    BoolView(Matrix<T>& mat, const Matrix<bool> mask);
-    BoolView(Matrix<T>& mat, const Matrix<int> true_ind); // vector indices
+//     BoolView(Matrix<T>& mat);
+//     BoolView(Matrix<T>& mat, const Matrix<bool> mask);
+//     BoolView(Matrix<T>& mat, const Matrix<int> true_ind); // vector indices
 
-    BoolView& loop_i(std::function<void(int)> f);
+//     BoolView& loop_i(std::function<void(int)> f);
 
-    T& operator()(int i);
-    T& at(int i);
+//     T& operator()(int i);
+//     T& at(int i);
 
-    BoolView& operator=(T val);
-    // BoolView& operator=(const Matrix<T>& mat);
-
-
-private:
-
-    Matrix<T>& mat;
+//     BoolView& operator=(T val);
+//     // BoolView& operator=(const Matrix<T>& mat);
 
 
+// private:
+
+//     Matrix<T>& mat;
 
 
-};
+
+
+// };
 
 
 /**========================================================================

@@ -22,62 +22,6 @@ std::size_t Matrix<T>::ncol() const {
     return this->n;
 }
 
-// For some reason, I'm being forced to overload the functions for the
-// const Matrix<T>. I dont understand why as in my Grid2D and Grid1D
-// ABC I have versions of the at and operator() that are const.
-// What the fuck.
-/**========================================================================
- *!                           Bullshit overloads
- *========================================================================**/
-// template <class T>
-// const T& Matrix<T>::operator()(int i) const {
-//     return this->operator[](i - 1);
-// }
-
-// template <class T>
-// const T& Matrix<T>::operator()(int i, int j) const {
-//     return this->operator[](this->to_i(i, j) - 1);
-// }
-
-// template <class T>
-// T& Matrix<T>::operator()(int i, int j) {
-//     return this->operator[](this->to_i(i, j) - 1);
-// }
-
-// template <class T>
-// T& Matrix<T>::operator()(int i) {
-//     return this->operator[](i - 1);
-// }
-
-// template <class T>
-// const T& Matrix<T>::at(int i) const {
-//     return this->operator[](i - 1);
-// }
-
-// template <class T>
-// const T& Matrix<T>::at(int i, int j) const {
-//     return this->operator[](this->to_i(i, j) - 1);
-// }
-
-// template <class T>
-// T& Matrix<T>::at(int i, int j) {
-//     return this->operator[](this->to_i(i, j) - 1);
-// }
-
-// template <class T>
-// T& Matrix<T>::at(int i) {
-//     return this->operator[](i - 1);
-// }
-
-// const T& at(int i) const;
-// const T& at(int i, int j) const;
-
-
-// T& at(int i);
-// T& at(int i, int j);
-
-
-
 /**========================================================================
  *!                           Trigonometric functions
  *========================================================================**/
@@ -142,13 +86,6 @@ Matrix<T> Matrix<T>::from(std::initializer_list<T> list, int m, int n) {
 template <class T>
 ejovo::rng::Xoshiro& Matrix<T>::xoroshiro = g_XOSHIRO;
 
-// template <class T>
-// Matrix<T> Matrix<T>
-
-
-
-
-
 template <class T> std::unique_ptr<T[]> Matrix<T>::copyData() const {
     int n = this->size();
 
@@ -175,22 +112,6 @@ Matrix<T>& Matrix<T>::operator=(const Matrix& rhs) {
     return *this;
 }
 
-// template <class T>
-// Matrix<T>& Matrix<T>::operator+=(const Matrix& rhs) {
-
-//     // check if the matrices are compatible for matrix addition.
-//     if (!this->canAddB(rhs)) {
-//         std::cerr << "Can't add two matrices\n";
-//         return *this;
-//     }
-
-//     loop_i(rhs, [&] (int i) {
-//         this->at(i) += rhs(i);
-//     });
-
-//     return *this;
-// }
-
 template <class T>
 Matrix<T>& Matrix<T>::operator=(Matrix&& rhs) {
     // std::cerr << "Performing move assignment =\n";
@@ -207,12 +128,6 @@ Matrix<T>& Matrix<T>::operator=(Matrix&& rhs) {
     return *this;
 }
 
-// template <class T>
-// Matrix<T>& Matrix<T>::operator=(const Matrix rhs) {
-//     std::swap(data, rhs.data);
-//     return *this;
-// }
-
 /**========================================================================
  *!                           Indexing operators
  *========================================================================**/
@@ -226,94 +141,6 @@ const T& Matrix<T>::operator[](int i) const {
     return (this->data)[i];
 }
 
-// template <class T>
-// T& Matrix<T>::operator()(int i) {
-//     return (this->data)[i - 1];
-// }
-
-// template <class T>
-// T& Matrix<T>::operator()(int i, int j) {
-//     return this->operator()(i*this->n + j  - this->n);
-// }
-
-// template <class T>
-// const T& Matrix<T>::operator()(int i) const {
-//     return (this->data)[i - 1];
-// }
-
-// template <class T>
-// const T& Matrix<T>::operator()(int i, int j) const {
-//     return this->operator()(i*this->n + j - this->n);
-// }
-
-// // todo
-// template <class T>
-// this should return a VIEW
-// Matrix<T> Matrix<T>::operator()(const Matrix<int>& ind) const {
-//     // let's count how many valid bounds there are....
-//     auto valid_bounds = [&] (int i) {
-//         return i >= 1 && i <= this.size();
-//     };
-
-//     int n_valid = ind.filter(valid_bounds).size();
-//     ind.map([&] (int i) {
-//         return this->at(i);
-//     });
-// }
-
-// template <class T>
-// Matrix<T> Matrix<T>::rep_col(int n) const {
-//     // create a new matrix that is this VECTOR repeated vertically n times.
-//     Matrix out{this->size(), n}; // create n columns.
-
-//     return out.loop_ij([&] (int i, int j) {
-//         return this->at(i);
-//     });
-// }
-
-// template <class T>
-// Matrix<T> Matrix<T>::rep_row(int n) const {
-//     // create a new matrix that is this VECTOR repeated horizontally n times.
-//     Matrix out{n, this->size()};
-
-//     return out.loop_ij([&] (int i, int j) {
-//         return this->at(j);
-//     });
-// }
-
-
-    // for (int j = 1; j <= out.n; j++) {
-    //     for (int i = 1; i <= out.m; i++) {
-    //         out(i, j) = this->at(i)
-    //     }
-    // }
-
-
-// template <class T>
-// T& Matrix<T>::at(int i) {
-//     return this->operator()(i);
-// }
-
-// template <class T>
-// T& Matrix<T>::at(int i, int j) {
-//     return this->operator()(i, j);
-// }
-
-// // template <class T>
-// // const T& Matrix<T>::at(int i) const {
-// //     return this->operator()(i);
-// // }
-
-// template <class T>
-// const T& Matrix<T>::at(int i, int j) const {
-//     return this->operator()(i, j);
-// }
-
-// template <class T>
-// T& Matrix<T>::at(int i) {
-//     return this->operator()(i);
-// }
-
 // extract the specified integers
 template <class T>
 Matrix<T> Matrix<T>::operator()(const Matrix<int>& ind) {
@@ -326,25 +153,6 @@ Matrix<T> Matrix<T>::operator()(const Matrix<int>& ind) {
 
     // now extract those valid indices
     Matrix<T> out (valid_ind.size()); // create a mutable Matrix
-    const Matrix<double> yot (1, 2);  // create a const Matrix
-
-    // =================== This code fails ====================//
-    // - If I dont specifically provide access functions for a
-    // - const matrix, which makes no fucking sense
-
-    out(1, 2); // good
-    out.at(1, 2); // good
-    out(1);  // good
-    out.operator()(1, 2); // good
-    out.operator()(1); // good
-
-    yot.size(); // no problem
-    yot.first(); // no problem
-
-    yot(1);      // error
-    yot.at(1);   // error
-    yot(1, 2);   // error
-    yot.at(1, 2);// error
 
     valid_ind.loop_i([&] (int i) {
         out(i) = this->at(ind(i));
@@ -376,15 +184,6 @@ typename Matrix<T>::MatView Matrix<T>::operator()(const Matrix<int>& row_ind, in
 /**========================================================================
  *!                           Mutations
  *========================================================================**/
-// template <class T>
-// void Matrix<T>::fill(T val) {
-//     for (int i = 0; i < this->size(); i++) {
-//         this->operator()(i + 1) = val;
-//         // std::cout << "filling i: " << i << "\n";
-//     }
-// }
-
-
 template <class T>
 const Matrix<T>& Matrix<T>::print() const {
 
@@ -533,12 +332,6 @@ Matrix<T>& Matrix<T>::operator%=(const Matrix& rhs) {
     return *this;
 }
 
-// template <class T>
-// T Matrix<T>::dot(const Matrix& rhs) const {
-//     auto had_res = *this % rhs;
-//     return ejovo::sum(had_res);
-// }
-
 template <class T>
 T Matrix<T>::dot(const Matrix& rhs, int i, int j) const {
     // we are assuming that the sizes are legit
@@ -548,21 +341,6 @@ T Matrix<T>::dot(const Matrix& rhs, int i, int j) const {
     }
     return total;
 }
-
-// template <class T>
-// T Matrix<T>::inner_product(const Matrix& rhs) const {
-//     return this->dot(rhs);
-// }
-
-// template <class T>
-// Matrix<T> Matrix<T>::outer_product(const Matrix& rhs) const {
-//     // Treat these as two vectors
-//     Matrix out{this->size(), rhs.size()};
-//     out.loop_ij([&] (int i, int j) {
-//         out(i, j) = (this->at(i)) * (rhs(j));
-//     });
-//     return out;
-// }
 
 template <class T>
 Matrix<T> Matrix<T>::kronecker_product(const Matrix& rhs) const {
@@ -590,12 +368,6 @@ Matrix<T> Matrix<T>::kronecker_product(const Matrix& rhs) const {
     return out;
 }
 
-// template <class T>
-// Matrix<T> Matrix<T>::hadamard_product(const Matrix& rhs) const {
-//     // element-wise multiplication
-//     return *this % rhs;
-// }
-
 // Matrix multiplication!!!
 template <class T>
 Matrix<T> Matrix<T>::operator*(const Matrix&rhs) const {
@@ -616,24 +388,6 @@ Matrix<T> Matrix<T>::operator*(const Matrix&rhs) const {
     }
     return out;
 }
-
-// template <class T>
-// Matrix<T> Matrix<T>::diff() const {
-//     // create matrix that is smaller
-//     Matrix out{this->size() - 1};
-//     for (int i = 0; i < out.size(); i++) {
-//         out[i] = this->operator[](i + 1) - this->operator[](i);
-//     }
-//     return out;
-// }
-
-// template <class T>
-// Matrix<T> Matrix<T>::abs() const {
-//     return ejovo::map(*this, [&] (auto x) {
-//         return ejovo::abs(x);
-//     });
-// }
-
 
 template <class T> Matrix<T>::Matrix(Matrix&& rhs) : m{rhs.m}, n{rhs.n} {
 
@@ -859,11 +613,6 @@ Matrix<T>& Matrix<T>::nullify() {
     return *this;
 }
 
-// template <class T>
-// Matrix<T>& Matrix<T>::nullify() {
-//     return this->to_null();
-// }
-
 template <class T>
 Matrix<T> Matrix<T>::as_vector() {
     Matrix out{*this}; // copy this matrix
@@ -904,73 +653,13 @@ Matrix<T> Matrix<T>::from(const std::vector<U>& vec) {
     return out;
 }
 
-
-
-
-
-
 /**========================================================================
  *!                           Inquiry functions
  *========================================================================**/
-// template <class T>
-// bool Matrix<T>::is_square() const {
-//     return this->m == this->n;
-// }
-
-// Eventual I should just have a parent class that is a vector
-// template <class T>
-// bool Matrix<T>::is_vector() const {
-//     return this->m == 1 || this->n == 1;
-// }
-
-// template <class T>
-// bool Matrix<T>::is_colvec() const {
-//     return this->n == 1;
-// }
-
-// template <class T>
-// bool Matrix<T>::is_rowvec() const {
-//     return this->m == 1;
-// }
-
 template <class T>
 bool Matrix<T>::is_null() const {
     return this->data == nullptr;
 }
-
-// template <class T>
-// bool Matrix<T>::can_mult_b(const Matrix &rhs) const {
-//     return this->n == rhs.m;
-// }
-
-// template <class T>
-// bool Matrix<T>::cant_mult_b(const Matrix &rhs) const {
-//     return !(this->can_mult_b(rhs));
-// }
-
-// template <class T>
-// template <class U>
-// bool Matrix<T>::is_same_size(const Matrix<U> &rhs) const {
-//     return this->size() == rhs.size();
-// }
-
-// template <class T>
-// template <class U>
-// bool Matrix<T>::isnt_same_size(const Matrix<U> &rhs) const {
-//     return !this->is_same_size(rhs);
-// }
-
-// template <class T>
-// template <class U>
-// bool Matrix<T>::is_same_shape(const Matrix<U> &rhs) const {
-//     return this->m == rhs.m && this->n == rhs.n;
-// }
-
-// template <class T>
-// template <class U>
-// bool Matrix<T>::isnt_same_shape(const Matrix<U> &rhs) const {
-//     return !this->is_same_shape(rhs);
-// }
 
 template <class T>
 bool Matrix<T>::can_add_b(const Matrix &rhs) const {
@@ -988,107 +677,9 @@ Matrix<T> Matrix<T>::get_row(int i) const {
 
 }
 
-// template <class T>
-// bool Matrix<T>::is_diagonally_dominant() const {
-
-//     // Iterate along the rows
-//     for (int i = 1; i <= this->m; i++) {
-
-//         if ()
-
-//     }
-
-//     return true;
-
-// }
-
-// template <class T>
-// using ScalarFn = T (* ) (T);
-
-// functions
-
-
-/**========================================================================
- *!                           Functional style things
- *========================================================================**/
-
-namespace std {
-    double power(double __x, double __y) {
-        return pow(__x, __y);
-    }
-}
-
-
-/**========================================================================
- *!                           Statistics functions
- *========================================================================**/
-
-
-/**========================================================================
- *!                           Looping functions
- *========================================================================**/
-// template <class T>
-// Matrix<T>& Matrix<T>::loop(std::function<T(T)> f) {
-//     for (int i = 1; i <= this->size(); i++) {
-//         this->at(i) = f(this->at(i));
-//     }
-//     return *this;
-// }
-
-// template <class T>
-// Matrix<T>& Matrix<T>::loop_i(std::function<T(int)> f) {
-//     for (int i = 1; i <= this->size(); i++) {
-//         this->at(i) = f(i);
-//     }
-//     return *this;
-// }
-
-// template <class T>
-// Matrix<T>& Matrix<T>::loop_ij(std::function<T(int, int)> f) {
-//     for (int i = 1; i <= this->m; i++) {
-//         for (int j = 1; j <= this->n; j++) {
-//             this->at(i, j) = f(i, j);
-//         }
-//     }
-//     return *this;
-// }
-
-// template <class T>
-// const Matrix<T>& Matrix<T>::loop(std::function<void(T)> f) const {
-//     for (int i = 1; i <= this->size(); i++) {
-//         f(this->at(i));
-//     }
-//     return *this;
-// }
-
-// template <class T>
-// const Matrix<T>& Matrix<T>::loop_i(std::function<void(int)> f) const {
-//     for (int i = 1; i <= this->size(); i++) {
-//         f(i);
-//     }
-//     return *this;
-// }
-
-// No more mutations
-// template <class T>
-// const Matrix<T>& Matrix<T>::loop_ij(std::function<void(int, int)> f) const {
-//     for (int i = 1; i <= this->m; i++) {
-//         for (int j = 1; j <= this->n; j++) {
-//             f(i, j);
-//         }
-//     }
-//     return *this;
-// }
-
-
 /**========================================================================
  *!                           Ejovo interface
  *========================================================================**/
-// template <class T>
-// Matrix<T> Matrix<T>::map(std::function<T(T)> f) const {
-//     return ejovo::map(*this, f);
-// }
-
 template <class T>
 template <class U>
 Matrix<U> Matrix<T>::map(std::function<U(T)> f) const {
@@ -1142,45 +733,6 @@ Matrix<T> Matrix<T>::cummin() const {
     return this->accumulate(ejovo::scalar::min<T>);
 }
 
-// template <class T>
-// Matrix<T> Matrix<T>::filter(std::function<bool(T)> predicate) const {
-//     return ejovo::filter(*this, predicate);
-// }
-
-// template <class T>
-// Matrix<T> Matrix<T>::map_if(std::function<T(T)> f, std::function<bool(T)> predicate) const {
-//     return this.filter(predicate).map(f);
-// }
-
-// template <class T>
-// Matrix<T>& Matrix<T>::mutate(std::function<T(T)> f) {
-//     return ejovo::mutate(*this, f);
-// }
-
-// template <class T>
-// Matrix<T>& Matrix<T>::mutate_if(std::function<T(T)> f, std::function<bool(T)> predicate) {
-//     // loop through the whole matrix, element-wise
-//     this->loop([&] (T x) {
-//         if (predicate(x)) return f(x);
-//         else return x;
-//     });
-//     return *this;
-// }
-
-// template <class T>
-// Matrix<T>& Matrix<T>::fill_if(T val, std::function<bool(T)> predicate) {
-//     this->loop([&] (T x) {
-//         if (predicate(x)) return val;
-//         else return x;
-//     });
-//     return *this;
-// }
-
-// template <class T>
-// T Matrix<T>::reduce(std::function<T(T, T)> f, T init) const {
-//     return ejovo::reduce(*this, f, init);
-// }
-
 template <>
 template <>
 int Matrix<bool>::sum() const {
@@ -1194,126 +746,6 @@ int Matrix<bool>::sum() const {
 template <class T>
 template <class U>
 U Matrix<T>::sum() const = delete;
-
-// template <class T>
-// T Matrix<T>::sum() const {
-//     return ejovo::sum(*this);
-// }
-
-// template <class T>
-// int Matrix<T>::count() const {
-//     int cnt = 0;
-//     this->loop([&] (auto x) {
-//         if (x) cnt ++;
-//     });
-//     return cnt;
-// }
-
-// template <class T>
-// int Matrix<T>::count(std::function<bool(T)> pred) const {
-//     int cnt = 0;
-//     this->loop([&] (auto x) {
-//         if (pred(x)) cnt ++;
-//     });
-//     return cnt;
-// }
-
-// template <class T>
-// bool Matrix<T>::any() const {
-//     for (int i = 1; i <= this->size(); i++) {
-//         if (this->operator()(i)) return true;
-//     }
-//     return false;
-// }
-
-// template <class T>
-// bool Matrix<T>::any(std::function<bool(T)> pred) const {
-//     for (int i = 1; i <= this->size(); i++) {
-//         if (pred(this->operator()(i))) return true;
-//     }
-//     return false;
-// }
-
-// template <class T>
-// bool Matrix<T>::all() const {
-//     for (int i = 1; i <= this->size(); i++) {
-//         if (! (this->operator()(i))) return false;
-//     }
-//     return true;
-// }
-
-// template <class T>
-// bool Matrix<T>::all(std::function<bool(T)> pred) const {
-//     for (int i = 1; i <= this->size(); i++) {
-//         if (!pred(this->operator()(i))) return false; //
-//     }
-//     return true;
-// }
-
-// template <class T>
-// T Matrix<T>::sum_abs() const {
-//     T abs_sum = 0;
-//     this->loop([&] (T x) {
-//         abs_sum += ejovo::abs(x);
-//     });
-//     return abs_sum;
-// }
-
-// template <class T>
-// T Matrix<T>::mean() const {
-//     return ejovo::mean(*this);
-// }
-
-// template <class T>
-// T Matrix<T>::prod() const {
-//     return ejovo::prod(*this);
-// }
-
-// template <class T>
-// T Matrix<T>::min() const {
-//     return ejovo::min(*this);
-// }
-
-// template <class T>
-// T Matrix<T>::max() const {
-//     return ejovo::max(*this);
-// }
-
-// template <class T>
-// T Matrix<T>::sd(bool population) const {
-//     return ejovo::sd(*this, population);
-// }
-
-// template <class T>
-// T Matrix<T>::var(bool population) const {
-//     return ejovo::var(*this, population);
-// }
-
-// template <class T>
-// Matrix<T> Matrix<T>::sqrt() const {
-//     return this->map([&] (auto x) {
-//         return std::sqrt(x);
-//     });
-// }
-
-// template <class T>
-// Matrix<T> Matrix<T>::cbrt() const {
-//     return this->map([&] (auto x) {
-//         return ejovo::kthRoot(x, 3);
-//     });
-// }
-
-// template<class T>
-// Matrix<T> Matrix<T>::pow(int k) const {
-//     return this->map([&] (auto x) {
-//         return std::pow(x, k);
-//     });
-// }
-
-// template<class T>
-// Matrix<T> Matrix<T>::sqrd() const {
-//     return this->pow(2);
-// }
 
 template <class T>
 Matrix<T> Matrix<T>::filter_lt(T val) const {
@@ -1343,16 +775,6 @@ Matrix<T> Matrix<T>::filter_geq(T val) const {
     });
 }
 
-// template <class T>
-// T Matrix<T>::pnorm(int p) const {
-//     return ejovo::kthRoot(this->pow(p).sum(), p);
-// }
-
-// template <class T>
-// T Matrix<T>::norm() const {
-//     return this->pnorm(2);
-// }
-
 template <class T>
 Matrix<T> Matrix<T>::clone() const {
     Matrix out {*this}; // copy constructor
@@ -1369,20 +791,6 @@ Matrix<bool> Matrix<T>::test(std::function<bool(T)> pred) const {
 
     return logical;
 }
-
-
-
-
-// template <class T>
-// Matrix<T> Matrix<T>::map(std::function<T(T)> f) const {
-//     return ejovo::map(this*, f);
-// }
-
-// template <class T>
-// Matrix<T> Matrix<T>::map(std::function<T(T)> f) const {
-//     return ejovo::map(this*, f);
-// }
-
 
 
 /**========================================================================
@@ -1424,7 +832,6 @@ typename Matrix<X>::VecView Matrix<X>::vecview(std::function<bool(X)> pred) {
  *========================================================================**/
 template <class T>
 Matrix<T> Matrix<T>::rand() {
-    // std::cerr << "What the fuck?\n";
     return Matrix<T>::rand(10, 0.0, 1.0);
 }
 
@@ -1549,8 +956,6 @@ Matrix<int> Matrix<T>::which(std::function<bool(T)> pred) const{
     return this->where(pred).which();
 }
 
-
-
 template <class T>
 typename Matrix<T>::VecView Matrix<T>::operator()(const Matrix<bool>& mask) {
     // When given a mask, create a new BoolView.
@@ -1565,66 +970,6 @@ typename Matrix<T>::VecView Matrix<T>::operator[](const Matrix<bool>& mask) {
     return out;
 }
 
-
-
-// template <class T>
-// typename Mat
-
-
-/**========================================================================
- *!                           Class Template Type Members
- *========================================================================**/
-/**======================
- *!    Constructors
- *========================**/
-template <class T>
-Matrix<T>::BoolView::BoolView(Matrix<T>& mat)
-    : m{mat.m}
-    , n{mat.n}
-    , true_ind{ejovo::seq<int>(mat.size())}
-    , mat{mat}
-{};
-
-template <class T>
-Matrix<T>::BoolView::BoolView(Matrix<T>& mat, const Matrix<bool> mask)
-    : m{mat.m}
-    , n{mat.n}
-    , true_ind{mat.which(mask)}
-    , mat{mat}
-{};
-
-template <class T>
-Matrix<T>::BoolView::BoolView(Matrix<T>& mat, const Matrix<int> true_ind)
-    : m{mat.m}
-    , n{mat.n}
-    , true_ind{true_ind}
-    , mat{mat}
-{};
-
-template <class T>
-typename Matrix<T>::BoolView& Matrix<T>::BoolView::loop_i(std::function<void(int)> f) {
-    this->true_ind.loop_i(f);
-    return *this;
-}
-
-template <class T>
-T& Matrix<T>::BoolView::operator()(int i) {
-    return mat(true_ind(i));
-}
-
-template <class T>
-T& Matrix<T>::BoolView::at(int i) {
-    return mat(true_ind(i));
-}
-
-template <class T>
-typename Matrix<T>::BoolView& Matrix<T>::BoolView::operator=(T val) {
-    std::cerr << "Called BoolView operator=\n";
-    this->loop_i([&] (int i) {
-        this->at(i) = val;
-    });
-    return *this;
-}
 // TODO validate the indices of the submatrix
 template <class T>
 typename Matrix<T>::MatView Matrix<T>::submat(const Matrix<int>& row_ind, const Matrix<int>& col_ind) {
@@ -1716,14 +1061,6 @@ std::tuple<Matrix<T>, Matrix<T>> Matrix<T>::lu() const {
 
     return std::make_tuple<Matrix<T>, Matrix<T>>(std::move(L), std::move(U));
 
-}
-
-template <class T>
-Matrix<T>& Matrix<T>::swap(int ai, int bi) {
-    T temp = this->at(ai);
-    this->at(ai) = this->at(bi);
-    this->at(bi) = temp;
-    return *this;
 }
 
 /**========================================================================

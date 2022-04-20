@@ -62,7 +62,7 @@ int main() {
 
     // std::cout << "z1.data: " << z1.data.get() << "\n";
     // std::cout << "z1.data[0]: " << z1.data[0] << "\n";
-    auto h = ejovo::linspace<double>(0, 10);
+    auto h = ejovo::linspace(0, 10);
     auto i = ejovo::linspace<int>(1, 10, 10);
 
     auto i2 = ejovo::map(i, [] (int x) {return x * 2;});
@@ -161,7 +161,7 @@ int main() {
 
     t_prod.print();
 
-    Matrix<double> space = linspace<double>(1, 10, 10);
+    Matrix<double> space = linspace(1, 10, 10);
     space.print();
     printf("Differences:\n");
     space.diff().print();
@@ -190,7 +190,7 @@ int main() {
 
     std::cout << "test_fn2 applied to x: " << x << " " << test_fn2(x) << "\n";
 
-    auto my_x = linspace<double>(1, 10, 10);
+    auto my_x = linspace(1, 10, 10);
     auto my_y = test_fn2(my_x);
 
     my_y.print();
@@ -199,7 +199,7 @@ int main() {
     root.print();
 
 
-    auto X = linspace<double>(-trig::pi, trig::pi,  10000);
+    auto X = linspace(-trig::pi, trig::pi,  10000);
 
     auto cosx = cos(X);
     auto sinx = sin(X);
@@ -218,7 +218,7 @@ int main() {
     Hilb.print();
 
     auto t_new = Matrix<double>::zeros(2, 5).to_vec();
-    auto t_lin = linspace<double>(1, 10, 10).reshape(2, 5);
+    auto t_lin = linspace(1, 10, 10).reshape(2, 5);
     t_new.print();
     t_lin.print();
 

@@ -70,7 +70,7 @@ int main() {
 
     // Test out generating and executing R code
 
-    auto x = ejovo::linspace<double>(-10, 4);
+    auto x = ejovo::linspace(-10, 4);
     auto y = x.map([&] (auto x) { return exp(x);});
 
 
@@ -89,7 +89,7 @@ int main() {
     // x.print();
 
 
-    auto t = ejovo::linspace<double>(a, b, n);
+    auto t = ejovo::linspace(a, b, n);
 
     // ejovo::plot(t, ut, "diff");
     // ejovo::plot(x, y, "exp");

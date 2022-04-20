@@ -60,7 +60,7 @@ int main() {
 
     m.which(geq(10)).print();
 
-    auto lin = ejovo::linspace<double>(1, 10);
+    auto lin = ejovo::linspace(1, 10);
 
 
 

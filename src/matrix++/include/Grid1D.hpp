@@ -71,6 +71,11 @@ namespace ejovo {
 
     namespace factory {
 
+        // template <class X, int N>
+        // std::function<X(X)> mono(const X& x) {
+        //     return [&] (auto _x) { return std::pow(_x, N); };
+        // }
+
         template <class T, int K>
         std::function<T(T)> pow(T x) {
             return [&] (T x) {
@@ -173,6 +178,9 @@ namespace ejovo {
                 return x / rhs;
             };
         }
+
+        // template <class X>
+        // std::function<X(X)>
     };
 
 };
@@ -261,10 +269,10 @@ public:
      *!                           Printing Functions
      *========================================================================**/
     Grid1D& print();
-    Grid1D& print_lin();
+    // Grid1D& print_lin();
 
     const Grid1D& print() const;
-    const Grid1D& print_lin() const;
+    // const Grid1D& print_lin() const;
 
     /**========================================================================
      *!                           Statistical Routines
@@ -302,6 +310,7 @@ public:
     Matrix<T> map_if(unary_op fn, predicate pred) const;
     Matrix<T> filter(predicate pred) const;
     Matrix<T> diff() const; // outputs a row vector of differences
+    Matrix<T> midpoints() const; // return the midpoints of adjacent elements
     Matrix<T> abs() const;
 
     /**========================================================================
@@ -712,6 +721,16 @@ Matrix<T> Grid1D<T>::diff() const {
 }
 
 template <class T>
+Matrix<T> Grid1D<T>::midpoints() const {
+
+    Matrix<T> out (1, this->size() - 1);
+    out.loop_i([&] (int i) {
+        out(i) = (this->operator()(i) + this->operator()(i + 1)) / 2.0;
+    });
+    return out;
+}
+
+template <class T>
 Matrix<T> Grid1D<T>::abs() const {
     return this->map(ejovo::abs<T>);
 }
@@ -729,7 +748,7 @@ Matrix<T> Grid1D<T>::cbrt() const {
 
 template <class T>
 Matrix<T> Grid1D<T>::pow(int k) const {
-    return this->map(ejovo::factory::pow<T, k>);
+    return this->map([&] (auto x) { return std::pow(x, k); } );
 }
 
 template <class T>

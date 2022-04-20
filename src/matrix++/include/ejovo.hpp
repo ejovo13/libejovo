@@ -208,6 +208,11 @@ namespace ejovo {
         return out;
     }
 
+
+    // double pnorm(double x, double mean, double sd) {
+
+    // }
+
         // template <>
     Matrix<double> rexp(int n, double rate = 1) {
         // ejovo::rng::xoroshiro.unifd(a, b);
@@ -402,17 +407,27 @@ namespace ejovo {
     }
 
     // template <class T> Matrix<T>
+    Matrix<double> linspace(double start, double end, int n = 100) {
 
-    template<class T = double>
-    Matrix<T> linspace(T start, T end, int n = 100) {
+        double diff = (end - start) / (n - 1);
 
-        T diff = (end - start) / (n - 1);
-
-        Matrix<T> lin{n};
+        Matrix<double> lin{n};
 
         lin.loop_i([&] (int i) {lin(i) = start + (i - 1) * diff;});
         return lin;
+
     }
+
+    // template<class T = double>
+    // Matrix<T> linspace(T start, T end, int n = 100) {
+
+    //     T diff = (end - start) / (n - 1);
+
+    //     Matrix<T> lin{n};
+
+    //     lin.loop_i([&] (int i) {lin(i) = start + (i - 1) * diff;});
+    //     return lin;
+    // }
 
     template <class T = double>
     Matrix<T> logspace(T start_exp, T end_exp, int n = 50, T base = 10) {
@@ -518,14 +533,16 @@ namespace ejovo {
         return map(mat, [&] (auto x) {return std::pow(x, n);});
     }
 
-    template<class T>
-    T pnorm(const Matrix<T>& mat, int p = 2) {
-        auto mat_pow = pow(mat, p);
-        return sum(mat_pow);
-    }
+
+
+    // template<class T>
+    // T pnorm(const Matrix<T>& mat, int p = 2) {
+    //     auto mat_pow = pow(mat, p);
+    //     return sum(mat_pow);
+    // }
 
     template <class T = int>
-    Matrix<T> seq(int n) {
+    Matrix<T> seq(T n) {
         Matrix<T> out{n};
         out.loop_i([&] (int i) {out(i) = i;});
         return out;
@@ -558,6 +575,31 @@ namespace ejovo {
         });
         return out;
     }
+
+
+    Matrix<double> seq(int start, int end, double diff) {
+        if( ((end - start) / diff) < 0 ) throw "Wrong sign";
+
+        const int len_seq = 1 + abs((end - start) / diff);
+        Matrix<double> out(1, len_seq);
+        out.loop_i([&] (int i) {
+            out(i) = start + (i - 1) * diff;
+        });
+        return out;
+    }
+
+    // template <class T>
+    // Matrix<T> seq(T start, T end, T diff) {
+
+    //     if( ((end - start) / diff) < 0 ) throw "Wrong sign";
+
+    //     const int len_seq = 1 + abs((end - start) / diff);
+    //     Matrix<T> out(1, len_seq);
+    //     out.loop_i([&] (int i) {
+    //         out(i) = start + (i - 1) * diff;
+    //     });
+    //     return out;
+    // }
 
     template<class T>
     T mean(const Matrix<T>& mat) {
@@ -651,23 +693,79 @@ namespace ejovo {
 
 };
 
+/**========================================================================
+ *!                           Mappable functions
+ *========================================================================**/
 namespace ejovo {
 
+    // C++ 20 gang shit
+    template <class T>
+    concept Mappable = requires (Grid1D<T> t, std::function<T(T)> f) {
+        {t.map(f)} -> std::same_as<Matrix<T>>;
+    };
+
     // I want to  add a numeric restriction to this
-    template <class T>
-    Matrix<T> cos(Matrix<T> x) {
-        return map(x, trig::cos<T>);
+    template <Mappable M>
+    auto cos(M m) {
+        return m.map(trig::cos<double>);
     }
 
-    template <class T>
-    Matrix<T> sin(Matrix<T> x) {
-        return map(x, trig::sin<T>);
+    template <Mappable M>
+    auto sin(M m) {
+        return m.map(trig::sin<double>);
     }
 
-    template <class T>
-    Matrix<T> tan(Matrix<T> x) {
-        return map(x, trig::tan<T>);
+    template <Mappable M>
+    auto tan(M m) {
+        return m.map(trig::tan<double>);
     }
+
+    template <Mappable M>
+    auto log(M m) {
+        return m.map(::log);
+    }
+
+    template <Mappable M>
+    auto exp(M m) {
+        return m.map(::exp);
+    }
+
+    template <Mappable M>
+    auto asin(M m) {
+        return m.map(::asin);
+    }
+
+    template <Mappable M>
+    auto acos(M m) {
+        return m.map(::acos);
+    }
+
+    template <Mappable M>
+    auto atan(M m) {
+        return m.map(::atan);
+    }
+
+    template <Mappable M>
+    auto tanh(M m) {
+        return m.map(::tanh);
+    }
+
+    template <Mappable M>
+    auto cosh(M m) {
+        return m.map(::cosh);
+    }
+
+    template <Mappable M>
+    auto sinh(M m) {
+        return m.map(::sinh);
+    }
+
+    template <Mappable M>
+    auto pow(M m, int k) {
+        return m.map(ejovo::factory::pow<double, k>);
+    }
+
+
 
 };
 
@@ -791,7 +889,7 @@ namespace ejovo {
         Matrix<X> euler_explicit(std::function<X(double, X)> f, X u0, double t0, double tf, int n = 1000) {
 
             //
-            auto time = ejovo::linspace<double>(t0, tf, n);
+            auto time = ejovo::linspace(t0, tf, n);
             auto diffs = time.diff();
 
             Matrix<X> u (1, n);
@@ -813,7 +911,7 @@ namespace ejovo {
         Matrix<X> euler_explicit(std::function<Matrix<X>(double, Matrix<X>)> f, Matrix<X> u0, double t0, double tf, int n = 1000) {
 
             //
-            auto time = ejovo::linspace<double>(t0, tf, n);
+            auto time = ejovo::linspace(t0, tf, n);
             auto diffs = time.diff();
 
             Matrix<X> u (u0.size(), n);
@@ -904,9 +1002,146 @@ namespace ejovo {
             return (dx / 2) * (left + 2 * mid + right);
         }
 
+        template <class X, class Y>
+        Y simpson(const X& a, const X& b, std::function<Y(X)> fn, int n = 100) {
+
+
+
+
+
+        }
+
+        template <class X, class Y>
+        Y gauss_legendre(const X& a, const X& b, std::function<Y(X)> fn, int n = 100) {
+
+            // Let's implement a 5 point method!!!
+            double x0_off = 0;
+            double x12_off = 0.538469310105683;
+            double x34_off = 0.906179845938664;
+
+            double w0 = 0.568888888888889;
+            double w12 = 0.478628670499366;
+            double w34 = 0.236926885056189;
+
+            // Get the midpoints, and the offsets.
+            double dx = (b - a) / n;
+
+            // I could be more efficient and only store X0, applying the same function on
+            // all of the points
+            auto X0 = ejovo::linspace(a + dx / 2.0, b - dx / 2.0, n);
+            auto X1 = X0 + 0.5 * x12_off;
+            auto X2 = X0 - 0.5 * x12_off;
+            auto X3 = X0 + 0.5 * x34_off;
+            auto X4 = X0 - 0.5 * x34_off;
+
+            // Apply the function in place, not duplicating the X variables.
+            X0.mutate(fn);
+            X1.mutate(fn);
+            X2.mutate(fn);
+            X3.mutate(fn);
+            X4.mutate(fn);
+
+            return 0.5 * dx * (w0 * X0.sum() + w12 * (X1.sum() + X2.sum()) + w34 * (X3.sum() + X4.sum()));
+
+        }
+
+        template <class X, class Y>
+        Y gauss_legendre_2(const X& a, const X& b, std::function<Y(X)> fn, int n = 100) {
+
+            // Let's implement a 5 point method!!!
+            double x01_off = 1.0 / sqrt(3.0);
+
+            // Get the midpoints, and the offsets.
+            double dx = (b - a) / n;
+
+            if (n == 1) {
+                auto mid = (b + a) / 2;
+                auto x0 = mid + x01_off;
+                auto x1 = mid - x01_off;
+
+                return 0.5 * dx * (fn(x0) + fn(x1));
+            }
+
+            // I could be more efficient and only store X0, applying the same function on
+            // all of the points
+            auto mid = ejovo::linspace(a + dx / 2.0, b - dx / 2.0, n);
+
+            auto X0 = mid + 0.5 * x01_off;
+            auto X1 = mid - 0.5 * x01_off;
+
+            // Apply the function in place, not duplicating the X variables.
+            X0.mutate(fn);
+            X1.mutate(fn);
+
+            return 0.5 * dx * (X0.sum() +  X1.sum());
+
+        }
+
+        // different implementations of the error function
+        namespace erf {
+
+            template <int N = 1000>
+            double midpoint(double x) {
+                constexpr double coeff = 2.0 / std::sqrt(trig::pi);
+                double trap = ejovo::quad::midpoint<double, double>(0,
+                                        x,
+                                        [&] (double x) { return std::exp(- (x * x)); },
+                                        N);
+                return coeff * trap;
+            }
+
+            template <int N = 1000>
+            double trapezoid(double x) {
+                constexpr double coeff = 2.0 / std::sqrt(trig::pi);
+                double trap = ejovo::quad::trapezoid<double, double>(0,
+                                          x,
+                                         std::function<double(double)>([&] (double x) { return std::exp(- (x * x)); }),
+                                          N);
+                return coeff * trap;
+            }
+
+            template <int N = 1000>
+            double gausslegendre(double x) {
+                constexpr double coeff = 2.0 / std::sqrt(trig::pi);
+
+                double trap = ejovo::quad::gauss_legendre<double, double>(0,
+                                                    x,
+                                                    std::function<double(double)>([&] (double x) { return std::exp(- (x * x)); }),
+                                                    N);
+
+
+                return coeff * trap;
+            }
+
+            template <int N = 1000>
+            double gausslegendre_2(double x) {
+                constexpr double coeff = 2.0 / std::sqrt(trig::pi);
+
+                double trap = ejovo::quad::gauss_legendre_2<double, double>(0,
+                                                    x,
+                                                    std::function<double(double)>([&] (double x) { return std::exp(- (x * x)); }),
+                                                    N);
+
+
+                return coeff * trap;
+            }
+
+        };
+
+
+        // // Use different quadrature rules to approximate the value of the error function
+        // template <int N = 1000>
+        // double erf(double x) {
+        //     return ejovo::erf::gausslegendre<N>(x);
+        // }
 
 
     };
+
+template <int N = 1000>
+double erf(double x) {
+    return ejovo::quad::erf::gausslegendre<N>(x);
+}
 
     /**========================================================================
      *!                           R interface
@@ -1067,21 +1302,64 @@ namespace ejovo {
 
             std::function<double(double)> gauss(double mu,  double sigma) {
                 return [&] (double x) {
-                    return (1.0 / (sigma * sqrt(trig::two_pi))) * exp(((x - mu) / sigma) * ((x - mu) / sigma) * -0.5);
+                    return (1.0 / (sigma * sqrt(trig::two_pi))) * std::exp(((x - mu) / sigma) * ((x - mu) / sigma) * -0.5);
                 };
             }
 
             std::function<double(double)> gauss() {
                 return [&] (double x) {
-                    return (1.0 / sqrt(trig::two_pi)) * exp(-0.5 * (x * x));
+                    return (1.0 / sqrt(trig::two_pi)) * std::exp(-0.5 * (x * x));
                 };
             }
 
         };
 
 
+        double erf(double x) {
+
+            double sqrt_pi = sqrt(trig::pi);
+            constexpr double two_fif = 2.0 / 15.0;
+
+            double num = two_fif * x * (49140.0 + (x * x) * (3570.0 + (x * x) * (739)));
+            double den = sqrt_pi * (3276 + (x * x) * (1330 + (x * x) * (165)));
+
+            return num / den;
+        }
+
+
+
     };
 
+
+    double pnorm(double x) {
+
+        double root2 = std::sqrt(2.0);
+
+        // return 0.5 * (1 + ejovo::quad::erf::midpoint<50>(x / root2));
+        return 0.5 * (1 + ejovo::erf<1000>(x / root2));
+        // return 0.5 * (1 + ejovo::erf<50>(x / root2));
+
+    }
+
+    double pnorm_2(double x) {
+
+        double root2 = std::sqrt(2.0);
+
+        // return 0.5 * (1 + ejovo::quad::erf::midpoint<50>(x / root2));
+        return 0.5 * (1 + ejovo::quad::erf::gausslegendre_2<1000>(x / root2));
+        // return 0.5 * (1 + ejovo::erf<50>(x / root2));
+
+    }
+
+    double pnorm_mid(double x) {
+
+        double root2 = std::sqrt(2.0);
+
+        return 0.5 * (1 + ejovo::quad::erf::midpoint<100>(x / root2));
+        // return 0.5 * (1 + ejovo::quad::erf::gausslegendre<50>(x / root2));
+        // return 0.5 * (1 + ejovo::erf<50>(x / root2));
+
+    }
 
 
 
