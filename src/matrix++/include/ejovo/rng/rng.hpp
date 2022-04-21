@@ -16,6 +16,7 @@ namespace ejovo {
 
     };
 
+    // Memoized version of nCk
     uint64_t n_choose_k(uint64_t n, uint64_t k) {
 
         static std::map<std::pair<uint64_t, uint64_t>, uint64_t> values;

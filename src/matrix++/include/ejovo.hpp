@@ -12,7 +12,7 @@
 // #include "ejovo/Interval.hpp"
 // #include "ejovo/operations.hpp"
 // #include "ejovo/optimisation.hpp"
-// #include "ejovo/plot.hpp"
+#include "ejovo/plot.hpp"
 // #include "ejovo/prob.hpp"
 // #include "ejovo/quadrature.hpp"
 // #include "ejovo/trig.hpp"

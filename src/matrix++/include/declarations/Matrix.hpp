@@ -93,9 +93,9 @@ public:
      *!                           Transformations
      *========================================================================**/
     // create a new matrix whose data is a copy
-    Matrix as_vector(); // return a copy of this data in column form
-    Matrix as_colvec(); // just a call to as_vector
-    Matrix as_rowvec();
+    Matrix as_vector() const; // return a copy of this data in column form
+    Matrix as_colvec() const; // just a call to as_vector
+    Matrix as_rowvec() const;
 
     bool can_add_b(const Matrix &rhs) const;
     bool cant_add_b(const Matrix &rhs) const;

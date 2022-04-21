@@ -172,6 +172,8 @@ int main() {
     auto gl2 = x.map(ejovo::pnorm_2);
     auto mid = x.map(ejovo::pnorm_mid);
 
+    // ejovo::plot(x, gl);
+
     printf("\nGauss legendre pnorm: \n");
     gl.print();
 
@@ -193,15 +195,52 @@ int main() {
     erfx.summary();
 
     x = linspace(-3, 3, 1000);
+    // x = chebynodes()
 
     auto erf_mid_100 = x.map(ejovo::quad::erf::midpoint<100>);
     auto erf_mid_200 = x.map(ejovo::quad::erf::midpoint<200>);
     auto erf_mid_300 = x.map(ejovo::quad::erf::midpoint<300>);
 
-    (erfx - erf_mid_100).summary();
-    (erfx - erf_mid_200).summary();
+    auto erf_gauss_100 = x.map(ejovo::quad::erf::gausslegendre<100>);
+    auto erf_gauss_200 = x.map(ejovo::quad::erf::gausslegendre<200>);
+    auto erf_gauss_300 = x.map(ejovo::quad::erf::gausslegendre<300>);
 
-    linspace(1, 30).print();
+    auto erf_gauss2_100 = x.map(ejovo::quad::erf::gausslegendre_2<100>);
+    auto erf_gauss2_200 = x.map(ejovo::quad::erf::gausslegendre_2<200>);
+    auto erf_gauss2_300 = x.map(ejovo::quad::erf::gausslegendre_2<300>);
+
+
+
+    // (erfx - erf_mid_100).summary();
+    // (erfx - erf_mid_200).summary();
+    // (erfx - erf_mid_300).summary();
+
+    std::cout << "Norm(erf - erf_gauss_100): " << (erfx - erf_gauss_100).norm() << std::endl;
+    std::cout << "Norm(erf - erf_gauss_200): " << (erfx - erf_gauss_200).norm() << std::endl;
+    std::cout << "Norm(erf - erf_gauss_300): " << (erfx - erf_gauss_300).norm() << std::endl;
+
+    std::cout << "Norm(erf - erf_gauss_100): " << (erfx - erf_gauss2_100).norm() << std::endl;
+    std::cout << "Norm(erf - erf_gauss_200): " << (erfx - erf_gauss2_200).norm() << std::endl;
+    std::cout << "Norm(erf - erf_gauss_300): " << (erfx - erf_gauss2_300).norm() << std::endl;
+
+    std::cout << "Norm(erf - erf_mid_100): " << (erfx - erf_mid_100).norm() << std::endl;
+    std::cout << "Norm(erf - erf_mid_200): " << (erfx - erf_mid_200).norm() << std::endl;
+    std::cout << "Norm(erf - erf_mid_300): " << (erfx - erf_mid_300).norm() << std::endl;
+
+    // linspace(1, 30).print();
+
+
+    // auto fn = [&] (double x, double y) { return x * x + y * x - 3 * y; };
+    // auto fn = [&] (double x, double y) { return (1 - x) * (1 - x) + 10 * (y - x * x) * (y - x * x); };
+    // auto fn = [&] (double x, double y) { return x * x + y * y; };
+    // auto fn = [&] (double x, double y) { return (x - 0.5) * x + x * (y + 0.75) * (y - 0.75); };
+    // From TP5
+    // auto fn = [&] (double x, double y) { return (x - 4) * (x - 4) + 2 * (y - 3) * (y - 3) + x * y; };
+
+    // const auto& [xx, yy] = meshgrid(linspace(1, 4, 50)); // sweet new syntax
+    // contour(xx, yy, std::function<double (double, double)>(fn), "tp5", "seq(7.5, 18, 1.5)", 8, 7);
+    // contour(xx, yy, std::function<double (double, double)>(fn), "circle", "log( * seq(-1, 10, 0.3))");
+
 
     return 0;
 }

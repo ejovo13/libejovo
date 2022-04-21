@@ -469,7 +469,7 @@ Matrix<T> Matrix<T>::zeros(int m, int n) {
 
 template <class T>
 Matrix<T> Matrix<T>::zeros(const Matrix& mat) {
-    Matrix zero{mat.m, mat.n};
+    Matrix zero (mat.m, mat.n);
     zero.fill(0);
     return zero;
 }
@@ -649,21 +649,24 @@ Matrix<T>& Matrix<T>::nullify() {
 }
 
 template <class T>
-Matrix<T> Matrix<T>::as_vector() {
+Matrix<T> Matrix<T>::as_vector() const {
     Matrix out{*this}; // copy this matrix
     out.reshape_vec();
+    return out;
 }
 
 template <class T>
-Matrix<T> Matrix<T>::as_colvec() {
+Matrix<T> Matrix<T>::as_colvec() const {
     Matrix out{*this}; // copy this matrix
     out.reshape_col();
+    return out;
 }
 
 template <class T>
-Matrix<T> Matrix<T>::as_rowvec() {
+Matrix<T> Matrix<T>::as_rowvec() const {
     Matrix out{*this}; // copy this matrix
     out.reshape_row();
+    return out;
 }
 
 template <class T>

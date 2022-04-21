@@ -147,8 +147,20 @@ std::tuple<Matrix<T>, Matrix<T>> meshgrid(const Matrix<T>& u, const Matrix<T>& v
     // Matrix m1 = Matrix<T>::zeros(u.size(), v.size());
     // Matrix m2 = m1.clone();
 
-    Matrix m1 = u.rep_col(v.size());
-    Matrix m2 = v.rep_row(u.size());
+    Matrix m1 = u.repcol(v.size());
+    Matrix m2 = v.reprow(u.size());
+
+    return std::make_tuple(m1, m2);
+}
+
+template <class T>
+std::tuple<Matrix<T>, Matrix<T>> meshgrid(const Matrix<T>& u) {
+
+    // Matrix m1 = Matrix<T>::zeros(u.size(), v.size());
+    // Matrix m2 = m1.clone();
+
+    Matrix m1 = u.repcol(u.size());
+    Matrix m2 = u.reprow(u.size());
 
     return std::make_tuple(m1, m2);
 }
