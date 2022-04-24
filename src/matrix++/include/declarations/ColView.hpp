@@ -23,19 +23,7 @@ public:
 
     Matrix& matrix() const;
 
-    // T& operator()(int n) const override;
-    // T& operator()(int i, int j) const override;
-
-    // T& at(int n) override;
-    // T& at(int i, int j) override;
-
-    // ColView& assign(const T&, std::function<void(T&, const T&)>);
-    // ColView& assign(const Matrix&, std::function<void(T&, const T&)>);
-    // ColView& assign(const ColView&, std::function<void(T&, const T&)>);
-
     using AbsView::operator=;
-    // ColView& operator=(const T&);
-    // ColView& operator=(const Matrix&);
     ColView& operator=(const ColView&);
 
     std::string to_string() const;

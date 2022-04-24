@@ -7,6 +7,7 @@
 
 #include "declarations/Matrix.hpp"
 
+
 // Let's get crazy and start overloading function operators!!!
 /**========================================================================
  *!                           binop(f, g)
@@ -101,14 +102,14 @@ std::function<Y(const X&)> operator/(const Y& y, std::function<Y(const X&)> f) {
 // m | ejovo::pipe::filter( lt(10) );
 template <class X>
 typename ejovo::Matrix<X>::VecView operator|(ejovo::Matrix<X>& lhs, std::function<bool(X)> pred) {
-    typename Matrix<X>::VecView out (lhs, pred);
+    typename ejovo::Matrix<X>::VecView out (lhs, pred);
     return out;
 }
 
 template <class X>
 typename ejovo::Matrix<X>::VecView operator|(typename ejovo::Matrix<X>::VecView& lhs, std::function<bool(X)> pred) {
     // loop through the lhs extracting the elements that are true.
-    Matrix<int> new_ind = lhs.filter(pred);
+    ejovo::Matrix<int> new_ind = lhs.filter(pred);
 
 }
 

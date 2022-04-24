@@ -9,7 +9,7 @@ namespace ejovo {
     constexpr int MAX_ITERATIONS = 1E5;
     constexpr double EPS = 1E-10;
 
-    using namespace functions;
+    // using namespace functions;
 
     // implement newtons method
     template <class T>

@@ -148,7 +148,7 @@ namespace ejovo {
         double root2 = std::sqrt(2.0);
 
         // return 0.5 * (1 + ejovo::quad::erf::midpoint<50>(x / root2));
-        return 0.5 * (1 + ejovo::erf<1000>(x / root2));
+        return 0.5 * (1 + ejovo::erf<100>(x / root2));
         // return 0.5 * (1 + ejovo::erf<50>(x / root2));
 
     }

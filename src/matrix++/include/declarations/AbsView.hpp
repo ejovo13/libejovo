@@ -21,36 +21,11 @@ class Matrix<T>::AbsView : public Grid2D<T> {
 
 public:
 
-    // AbsView(Matrix &m);
-    // virtual int nrow() const = 0;
-    // virtual int ncol() const = 0;
     virtual std::string to_string() const = 0;
     virtual Matrix& matrix() const = 0;
-    // virtual T& operator()(int i) const = 0; // Don't check bounds!!
-    // virtual T& operator()(int i, int j) const = 0; // Don't check bounds!!
-
-    // virtual T& at(int i) = 0; // check bounds!!
-    // virtual T& at(int i, int j) = 0; // check bounds!!
-    // T& at(int i); // check bounds!!
-    // T& at(int i, int j); // check bounds!!
 
     T* get_ptr(); // get a pointer to the underlying data of the matrix
-    // int size();
-    // bool valid_bounds(int i);
-    // bool valid_bounds(int i, int j);
-    // AbsView& print() override;
 
-    // template <class Fn>
-    // AbsView& loop(std::function<T(T)>);
-    // virtual AbsView& loop(std::function<void(T)>);
-    // virtual AbsView& loop_i(std::function<void(int)>);
-    // virtual AbsView& loop_ij(std::function<void(int, int)>);
-
-    // virtual AbsView& mutate(std::function<T(T)>);
-    // AbsView& mutate(std::function<T(T)>);
-
-    // These Three assignment operators WORK!!!
-    // virtual AbsView& assign(Matrix&& mat, std::function<void(T&, const T&)> ass_op);
     virtual AbsView& assign(const Matrix& mat, std::function<void(T&, const T&)> ass_op);
     virtual AbsView& assign(const T& scalar, std::function<void(T&, const T&)> ass_op);
     virtual AbsView& assign(const AbsView& view, std::function<void(T&, const T&)> ass_op); // use const AbsView to bind with any type..
@@ -60,14 +35,6 @@ public:
     virtual AbsView& operator=(const Matrix& mat);
     virtual AbsView& operator=(const AbsView& view);
     virtual AbsView& operator=(const T& scalar);
-    // template <class U> AbsView& operator=(const U& scalar);
-    // virtual AbsView& operator=(T scalar);
-    // virtual AbsView& operator=(double x);
-    // virtual AbsView& operator=(Matrix mat);
-    // virtual AbsView& operator=(Matrix&& mat);
-    // virtual AbsView& operator=(AbsView& view);
-
-    // template <class U> AbsView& operator=(const U& scalar);
 
     virtual AbsView& operator+=(const Matrix& mat);
     virtual AbsView& operator+=(const T& scalar);
@@ -129,13 +96,6 @@ public:
     }
 
     std::pair<int, int> ind_to_ij(int n) const;
-
-    // Matrix<T> &mat = Matrix<T>::null();
-
-private:
-
-protected:
-
 
 };
 

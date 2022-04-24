@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cassert>
 #include "libejovo.hpp"
 
 // Return the values of the erf as computed by matlab over the discretization

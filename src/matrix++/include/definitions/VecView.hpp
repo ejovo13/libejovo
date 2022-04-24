@@ -54,53 +54,6 @@ Matrix<T>& Matrix<T>::VecView::matrix() const {
     return this->mat;
 }
 
-// template <class T>
-// T& Matrix<T>::VecView::operator()(int n) const {
-//     return mat(true_ind(n));
-// }
-
-// template <class T>
-// T& Matrix<T>::VecView::operator()(int i, int j) const {
-//     return mat(true_ind(i, j));
-// }
-
-// template <class T>
-// // template <class U>
-// typename Matrix<T>::VecView& Matrix<T>::VecView::assign(const T& scalar, std::function<void(T&, const T&)> ass_op) {
-//     this->loop_ij([&] (int i, int j) {
-//         ass_op(this->at(i, j), scalar);
-//     });
-//     return *this;
-// }
-
-// template <class T>
-// typename Matrix<T>::VecView& Matrix<T>::VecView::operator=(const T& val) {
-//     return this->assign(val, ejovo::id_eq<T, T>);
-// }
-
-// template <class T>
-// // template <class U>
-// typename Matrix<T>::VecView& Matrix<T>::VecView::assign(const Matrix<T>& mat, std::function<void(T&, const T&)> ass_op) {
-//     this->loop_ij([&] (int i, int j) {
-//         ass_op(this->at(i, j), mat(i, j));
-//     });
-//     return *this;
-// }
-
-// template <class T>
-// typename Matrix<T>::VecView& Matrix<T>::VecView::operator=(const Matrix<T>& mat) {
-//     return this->assign(mat, ejovo::id_eq<T, T>);
-// }
-
-// template <class T>
-// // template <class U>
-// typename Matrix<T>::VecView& Matrix<T>::VecView::assign(const VecView& rv, std::function<void(T&, const T&)> ass_op) {
-//     this->loop_ij([&] (int i, int j) {
-//         ass_op(this->at(i, j), rv(i, j));
-//     });
-//     return *this;
-// }
-
 template <class T>
 typename Matrix<T>::VecView& Matrix<T>::VecView::operator=(const VecView& rv) {
     this->assign(rv, ejovo::id_eq<T, T>);

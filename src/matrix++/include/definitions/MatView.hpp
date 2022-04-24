@@ -66,60 +66,6 @@ Matrix<T>& Matrix<T>::MatView::matrix() const {
     return mat;
 }
 
-// template <class T>
-// Matrix<T>& Matrix<T>::MatView::matrix() const {
-//     return mat;
-// }
-
-// template <class T>
-// T& Matrix<T>::MatView::operator()(int i, int j) const {
-//     return mat(row_ind(i), col_ind(j));
-// }
-
-// template <class T>
-// T& Matrix<T>::MatView::operator()(int n) const {
-//     std::pair<int, int> pair = this->ind_to_ij(n);
-//     std::cout << "Converted " << n << " to (" << std::get<0>(pair) << ", " << std::get<1>(pair) << ")\n";
-//     return mat(row_ind(std::get<0>(pair)), col_ind(std::get<1>(pair)));
-// }
-
-// template <class T>
-// // template <class U>
-// typename Matrix<T>::MatView& Matrix<T>::MatView::assign(const T& scalar, std::function<void(T&, const T&)> ass_op) {
-//     this->loop_ij([&] (int i, int j) {
-//         ass_op(this->at(i, j), scalar);
-//     });
-//     return *this;
-// }
-
-// template <class T>
-// typename Matrix<T>::MatView& Matrix<T>::MatView::operator=(const T& val) {
-//     return this->assign(val, ejovo::id_eq<T, T>);
-// }
-
-// template <class T>
-// // template <class U>
-// typename Matrix<T>::MatView& Matrix<T>::MatView::assign(const Matrix<T>& mat, std::function<void(T&, const T&)> ass_op) {
-//     this->loop_ij([&] (int i, int j) {
-//         ass_op(this->at(i, j), mat(i, j));
-//     });
-//     return *this;
-// }
-
-// template <class T>
-// typename Matrix<T>::MatView& Matrix<T>::MatView::operator=(const Matrix<T>& mat) {
-//     return this->assign(mat, ejovo::id_eq<T, T>);
-// }
-
-// template <class T>
-// // template <class U>
-// typename Matrix<T>::MatView& Matrix<T>::MatView::assign(const MatView& rv, std::function<void(T&, const T&)> ass_op) {
-//     this->loop_ij([&] (int i, int j) {
-//         ass_op(this->at(i, j), rv(i, j));
-//     });
-//     return *this;
-// }
-
 template <class T>
 typename Matrix<T>::MatView& Matrix<T>::MatView::operator=(const MatView& rv) {
     this->assign(rv, ejovo::id_eq<T, T>);

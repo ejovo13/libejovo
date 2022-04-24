@@ -1,10 +1,9 @@
-#include "libejovo.hpp"
-// #include "matplot/matplot.h"
-
-#include <cassert>
+#include "ejovotest.hpp"
 // #include "sciplot/sciplot.hpp"
 // #include "matplot.h"
 // #include "matplotlibcpp.h"
+
+using namespace ejovo;
 
 void t_quad();
 
@@ -68,8 +67,8 @@ int main() {
 
     auto from_v = Matrix<double>::from(v).print();
 
-    from_v.print_lin();
-
+    // from_v.summary();
+    from_v.summary();
     // using namespace matplot;
 
     // std::vector<double> x = matplot::linspace(-trig::pi, trig::pi);
@@ -114,13 +113,13 @@ int main() {
     // auto x = rexp(N, 1);
     // auto n = rnorm(N);
 
-    // u.print_lin();
-    // x.print_lin();
-    // n.print_lin();
+    // u.summary();
+    // x.summary();
+    // n.summary();
 
     std::cout << n_choose_k(500, 249) << "\n";
 
-    auto bin = rbinom(N, 10, 0.3).print_lin();
+    auto bin = rbinom(N, 10, 0.3).summary();
 
     auto bin_p = seq(0, 10).map<double>([&] (auto k) {
         return dbinom(k, 10, 0.3);
@@ -144,7 +143,7 @@ int main() {
     my_hyper.print();
 
     auto my_hyper_1000 = rhyper(10000, 8, 10, 5);
-    my_hyper_1000.print_lin();
+    my_hyper_1000.summary();
 
     t_quad();
 
@@ -201,8 +200,8 @@ void t_quad() {
 
     // auto mv =
 
-    ejovo::runif(100).print_lin();
-    Matrix<double>::rand(100).print_lin();
+    ejovo::runif(100).summary();
+    Matrix<double>::rand(100).summary();
 
     Matrix<int>::rand(10, 10).print();
 

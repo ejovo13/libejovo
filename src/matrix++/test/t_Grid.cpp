@@ -1,17 +1,10 @@
-#include "Grid1D.hpp"
-#include "Grid2D.hpp"
-#include "matrix.hpp"
-#include "matrix_impl.hpp"
-// #include "ejovo.hpp"
-#include <cassert>
-
-#include <iostream>
+#include "ejovotest.hpp"
 
 void t_Matrix();
 
+using namespace ejovo;
 int main() {
 
-    using namespace ejovo;
 
     std::cout << "Hello world\n";
 

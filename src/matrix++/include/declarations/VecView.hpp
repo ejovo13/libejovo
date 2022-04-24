@@ -21,24 +21,15 @@ public:
     std::size_t ncol() const override;
     std::string to_string() const override;
     Matrix& matrix() const override;
-    // T& operator()(int n) const override;
-    // T& operator()(int i, int j) const override;
 
     T& operator[] (int i) const override;
     T& operator[] (int i) override;
 
-    // VecView& assign(const T&, std::function<void(T&, const T&)>);
-    // VecView& assign(const Matrix&, std::function<void(T&, const T&)>);
-    // VecView& assign(const VecView&, std::function<void(T&, const T&)>);
-
     using AbsView::operator=;
-    // VecView& operator=(const T&);
-    // VecView& operator=(const Matrix&);
     VecView& operator=(const VecView&);
 
     // return a new vec view
     VecView filter(std::function<bool(T)> f);
-
 
 private:
 
