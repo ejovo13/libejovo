@@ -36,9 +36,7 @@ namespace ejovo {
         }
     }
 
-    // template <>
     Matrix<double> runif(int n, double a = 0, double b = 1) {
-        // ejovo::rng::xoroshiro.unifd(a, b);
 
         // verify that n is greater than 0
         if (n == 0) return Matrix<double>::null();
@@ -51,9 +49,7 @@ namespace ejovo {
         return out;
     }
 
-    // template <>
     Matrix<double> rnorm(int n, double mean = 0, double sd = 1) {
-        // ejovo::rng::xoroshiro.unifd(a, b);
 
         // verify that n is greater than 0
         if (n == 0) return Matrix<double>::null();
@@ -66,14 +62,7 @@ namespace ejovo {
         return out;
     }
 
-
-    // double pnorm(double x, double mean, double sd) {
-
-    // }
-
-        // template <>
     Matrix<double> rexp(int n, double rate = 1) {
-        // ejovo::rng::xoroshiro.unifd(a, b);
 
         // verify that n is greater than 0
         if (n == 0) return Matrix<double>::null();
@@ -117,8 +106,6 @@ namespace ejovo {
         return (double) n_choose_k(size, k) * std::pow(p, k) * std::pow(1 - p, size - k);
     }
 
-
-
     // Hypergeometric distribution.
     // Numer of successes (k) in n draws, total population N, items that have positive quality K
     double dhyper(int k, int n, int N, int K) {
@@ -140,36 +127,27 @@ namespace ejovo {
 
     template <int N = 1000>
     double erf(double x) {
-    return ejovo::quad::erf::gausslegendre<N>(x);
+        return ejovo::quad::erf::gausslegendre<N>(x);
     }
 
     double pnorm(double x) {
 
         double root2 = std::sqrt(2.0);
-
-        // return 0.5 * (1 + ejovo::quad::erf::midpoint<50>(x / root2));
-        return 0.5 * (1 + ejovo::erf<100>(x / root2));
-        // return 0.5 * (1 + ejovo::erf<50>(x / root2));
+        return 0.5 * (1 + ejovo::erf<2>(x / root2));
 
     }
 
     double pnorm_2(double x) {
 
         double root2 = std::sqrt(2.0);
-
-        // return 0.5 * (1 + ejovo::quad::erf::midpoint<50>(x / root2));
         return 0.5 * (1 + ejovo::quad::erf::gausslegendre_2<1000>(x / root2));
-        // return 0.5 * (1 + ejovo::erf<50>(x / root2));
 
     }
 
     double pnorm_mid(double x) {
 
         double root2 = std::sqrt(2.0);
-
         return 0.5 * (1 + ejovo::quad::erf::midpoint<100>(x / root2));
-        // return 0.5 * (1 + ejovo::quad::erf::gausslegendre<50>(x / root2));
-        // return 0.5 * (1 + ejovo::erf<50>(x / root2));
 
     }
 
@@ -201,8 +179,5 @@ namespace ejovo {
 
         return counts.map<double>([&] (auto x) { return x / (double) total; });
     }
-
-
-
 
 };

@@ -125,6 +125,13 @@ namespace ejovo {
             };
         }
 
+        template <class X>
+        std::function<int(X)> indicator(const X& a, const X& b) {
+            return [&] (X x) {
+                return x >= a && x <= b;
+            };
+        }
+
     };
 
 };

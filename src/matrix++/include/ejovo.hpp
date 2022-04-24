@@ -17,3 +17,4 @@
 #include "ejovo/quadrature.hpp"
 #include "ejovo/trig.hpp"
 #include "ejovo/rng/mcmc.hpp"
+#include "ejovo/monte_carlo.hpp"

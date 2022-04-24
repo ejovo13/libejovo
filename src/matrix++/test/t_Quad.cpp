@@ -19,8 +19,8 @@ int main() {
     // try between -1 and 1...
 
     auto p = ejovo::quad::midpoint<double>(-1, 0, gauss, 10000);
-    auto pg = ejovo::quad::gauss_legendre<double>(-1, 0, gauss, 10000);
-    auto pg2 = ejovo::quad::gauss_legendre_2<double>(-1, 0, gauss, 10000);
+    auto pg = ejovo::quad::gauss_legendre<double>(-1, 0, gauss, 2);
+    auto pg2 = ejovo::quad::gauss_legendre_2<double>(-1, 0, gauss, 2);
 
 
     std::cout << "P(-1 <= X <= 0): " << p << std::endl;
