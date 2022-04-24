@@ -20,10 +20,12 @@ int main() {
 
     auto p = ejovo::quad::midpoint<double>(-1, 0, gauss, 10000);
     auto pg = ejovo::quad::gauss_legendre<double>(-1, 0, gauss, 10000);
+    auto pg2 = ejovo::quad::gauss_legendre_2<double>(-1, 0, gauss, 10000);
 
 
     std::cout << "P(-1 <= X <= 0): " << p << std::endl;
     std::cout << "P(-1 <= X <= 0): " << pg << std::endl;
+    std::cout << "P(-1 <= X <= 0): " << pg2 << std::endl;
 
     std::cout << "P(-1 <= X <= 0): " << ejovo::pnorm(0) - ejovo::pnorm(-1) << std::endl;
 
