@@ -36,5 +36,8 @@ int main() {
 
     // std::cout << "mean: " << rnorm(100000).mean() << "\n";
 
+    // std::vector<int> my_vec_FUNCTION();
+    // std::vector<int> my_vec_OBJECT{};
+
     return 0;
 }

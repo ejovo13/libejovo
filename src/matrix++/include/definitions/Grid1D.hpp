@@ -172,8 +172,17 @@ const Grid1D<T>& Grid1D<T>::print() const {
 template <class T>
 Grid1D<T>& Grid1D<T>::print() {
 
-    this->print();
+    const std::size_t n = this->size();
+    std::cout << "Vector with length: " << n << "\n";
+
+    std::cout << "{";
+    for (int i = 1; i < n; i++) {
+        std::cout << this->operator()(i) << ", ";
+    }
+    std::cout << this->last() << "}\n";
+
     return *this;
+
 }
 
 // TODO print_lin
@@ -358,7 +367,7 @@ template <class T>
 Matrix<T> Grid1D<T>::filter(predicate pred) const {
     int c = this->count(pred);
 
-    auto out = this->new_matrix(c);
+    auto out = this->zeros(c, false);
     int out_i = 1;
     this->loop([&] (auto x) {
         if (pred(x)) {
@@ -492,6 +501,20 @@ Matrix<T> Grid1D<T>::hadamard_product(const Grid1D& rhs) const {
     out.loop_i([&] (int i) { out(i) *= rhs(i); } );
     return out;
 }
+
+template <class T>
+Matrix<T> Grid1D<T>::zeros(bool col) const {
+    if (col) return Matrix<T>::zeros(this->size(), 1);
+    else return Matrix<T>::zeros(1, this->size());
+}
+
+template <class T>
+Matrix<T> Grid1D<T>::zeros(int n, bool col) const {
+    if (col) return Matrix<T>::zeros(n, 1);
+    else return Matrix<T>::zeros(1, n);
+}
+
+
 
 
 };

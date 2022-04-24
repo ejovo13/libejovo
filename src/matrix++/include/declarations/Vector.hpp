@@ -29,7 +29,7 @@ public:
      *!                      Virtual Concept Functions
      *========================================================================**/
     Matrix<T> to_matrix() const override;
-    Matrix<T> new_matrix(int n) const override;
+    // Matrix<T> new_matrix(int n) const override;
     std::size_t size() const override;
 
     std::unique_ptr<T[]> copy_data() const;

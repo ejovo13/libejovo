@@ -11,7 +11,7 @@
 namespace ejovo {
 
 // Until futher notice, A MarkovChain is comprised of a single transition matrix T and a default
-// state space X \in {1, ... , mat.nrows()}
+// state space X \in {1, ... , mat.nrow()}
 class MarkovChain {
 
     using mat = Matrix<double>;

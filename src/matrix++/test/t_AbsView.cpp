@@ -7,6 +7,8 @@ void t_ColView();
 void t_MatView();
 void t_VecView();
 
+using namespace ejovo;
+
 
 int main() {
 
@@ -37,6 +39,24 @@ void t_RowView() {
 
     Matrix<double>::RowView rv(m, 1);
 
+    rv.mat.print();
+    std::cout << "rv.i = " << rv.i << ", rv.jb = " << rv.jb << ", rv.je: " << rv.je << "\n";
+
+    std::cout << "mat(i, jb + 0): " << rv.mat(rv.i, rv.jb) << ", rv.size(): " << rv.size() << "\n";
+    std::cout << "rv[0]: " << rv[0] << std::endl;
+    std::cout << "rv[1]: " << rv[1] << std::endl;
+    std::cout << "rv[2]: " << rv[2] << std::endl;
+    std::cout << "rv[3]: " << rv[3] << std::endl;
+    std::cout << "rv[4]: " << rv[4] << std::endl;
+
+    std::cout << "rv.at[1]: " << rv.at(1) << std::endl;
+    std::cout << "rv.at[2]: " << rv.at(2) << std::endl;
+    std::cout << "rv.at[3]: " << rv.at(3) << std::endl;
+    std::cout << "rv.at[4]: " << rv.at(4) << std::endl;
+    std::cout << "rv.at[5]: " << rv.at(5) << std::endl;
+
+    rv.print();
+
     rv = 10.0; // Unless I overload the operator = and assign for a RowView, this line becomes problematic!!!
     rv = Matrix<double>::zeros(1, 10); // fails
     rv = m.get_row_view(2); // fails
@@ -61,6 +81,8 @@ void t_RowView() {
     rv /= 5;
 
     m.print();
+
+    std::cout << "t_RowView passed\n";
 
 }
 
@@ -93,6 +115,8 @@ void t_ColView() {
 
     m.print();
 
+    std::cout << "t_ColView passed\n";
+
 }
 
 void t_VecView() {
@@ -107,6 +131,7 @@ void t_VecView() {
     bv.print();
 
     bv = 10;
+    bv = 10.0;
 
     m.print();
 

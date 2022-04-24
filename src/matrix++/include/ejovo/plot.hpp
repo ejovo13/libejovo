@@ -16,7 +16,7 @@ public:
 
     std::vector<Matrix<T>> cols;
     std::vector<std::string> col_names; // This better be the same size as cols...
-    std::size_t nrows;
+    std::size_t nrow;
 
 
     // Have a vector of matrices
@@ -35,7 +35,7 @@ private:
 };
 
 // template <class T>
-// Dataframe<T>::Dataframe(std::initializer_list<Matrix<T>> data, std::initializer_list<std::string> names) : cols{}, cols_names{}, nrows{0} {
+// Dataframe<T>::Dataframe(std::initializer_list<Matrix<T>> data, std::initializer_list<std::string> names) : cols{}, cols_names{}, nrow{0} {
 
 //     int len_mat = list.begin()->size();
 //     int n_added = 0;
@@ -46,7 +46,7 @@ private:
 //         n_added ++;
 //     }
 
-//     nrows = n_added;
+//     nrow = n_added;
 
 // }
 
@@ -55,7 +55,7 @@ template<typename NumericType>
 concept Numeric = std::is_arithmetic<NumericType>::value;
 
 template <class T>
-Dataframe<T>::Dataframe(std::vector<Matrix<T>> data, std::vector<std::string> names) : cols{data}, col_names{names}, nrows{data.begin()->size()} {}
+Dataframe<T>::Dataframe(std::vector<Matrix<T>> data, std::vector<std::string> names) : cols{data}, col_names{names}, nrow{data.begin()->size()} {}
 
 template <Numeric T>
 Dataframe<T> df(std::initializer_list<Matrix<T>> data, std::initializer_list<std::string> names) {
@@ -86,24 +86,24 @@ bool Dataframe<T>::to_csv(const std::string filename) {
     std::ofstream my_file;
 
     my_file.open(filename);
-    const int ncols = cols.size();
+    const int ncol = cols.size();
 
-    for (int i = 0; i < ncols - 1; i++) {
+    for (int i = 0; i < ncol - 1; i++) {
         my_file << col_names.at(i) << ",";
     }
 
-    my_file << col_names.at(ncols - 1) << "\n";
+    my_file << col_names.at(ncol - 1) << "\n";
 
     // iterate through length of the elements of mat
-    for (int i = 1; i <= nrows; i++) {
+    for (int i = 1; i <= nrow; i++) {
 
         // Now add a row
-        for (int j = 0; j < ncols - 1; j++) {
+        for (int j = 0; j < ncol - 1; j++) {
 
             my_file << cols.at(j).at(i) << ",";
         }
 
-        my_file << cols.at(ncols - 1).at(i) << "\n";
+        my_file << cols.at(ncol - 1).at(i) << "\n";
     }
 
     my_file.close();

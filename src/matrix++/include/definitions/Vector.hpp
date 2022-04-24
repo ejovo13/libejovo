@@ -67,16 +67,16 @@ Matrix<T> Vector<T>::to_matrix() const {
     return out;
 }
 
-template <class T>
-Matrix<T> Vector<T>::new_matrix(int n) const {
-    if (col) {
-        Matrix<T> out(n, 1);
-        return out;
-    } else {
-        Matrix<T> out(1, n);
-        return out;
-    }
-}
+// template <class T>
+// Matrix<T> Vector<T>::new_matrix(int n) const {
+//     if (col) {
+//         Matrix<T> out(n, 1);
+//         return out;
+//     } else {
+//         Matrix<T> out(1, n);
+//         return out;
+//     }
+// }
 
 template <class T>
 std::size_t Vector<T>::size() const {

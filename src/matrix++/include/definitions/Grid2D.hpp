@@ -29,6 +29,11 @@ std::pair<int, int> Grid2D<T>::to_ij(int n, bool col_major) const {
     }
 }
 
+// template <class T>
+// Matrix<T> Grid2D<T>::new_matrix(int m, int n) {
+    // return Matrix<T>::zero
+// }
+
 // take i,j coordinates and translate to vector coordinates
 template <class T>
 int Grid2D<T>::to_i(int i, int j, bool col_major) const {
@@ -194,6 +199,11 @@ Grid2D<T>& Grid2D<T>::mut_row(mutate_fn f, int i) {
 template <class T>
 std::size_t Grid2D<T>::mindim() const {
     return this->nrow() < this->ncol() ? this->nrow() : this->ncol();
+}
+
+template <class T>
+Matrix<T> Grid2D<T>::zeros() const {
+    return Matrix<T>::zeros(this->nrow(), this->ncol());
 }
 
 };

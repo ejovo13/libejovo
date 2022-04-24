@@ -16,30 +16,34 @@ public:
     Matrix& matrix() const override;
     std::string to_string() const override;
 
-    int nrows() const override;
-    int ncols() const override;
+    std::size_t nrow() const override;
+    std::size_t ncol() const override;
 
-    T& operator()(int i) const override;
-    T& operator()(int i, int j) const override;
+    T& operator[](int i) const override;
+    T& operator[](int i) override;
+
+    // T& operator()(int i) const override;
+    // T& operator()(int i, int j) const override;
     // T& at(int i) override;
     // T& at(int i, int j) override;
 
-    RowView& assign(const T&, std::function<void(T&, const T&)>);
-    RowView& assign(const Matrix&, std::function<void(T&, const T&)>);
-    RowView& assign(const RowView&, std::function<void(T&, const T&)>);
+    // RowView& assign(const T&, std::function<void(T&, const T&)>);
+    // RowView& assign(const Matrix&, std::function<void(T&, const T&)>);
+    // RowView& assign(const RowView&, std::function<void(T&, const T&)>);
+    // using AbsView::assign;
 
-    RowView& operator=(const T&);
-    RowView& operator=(const Matrix&);
+    using AbsView::operator=;
     RowView& operator=(const RowView&);
+
+    // RowView& operator=(const T&);
+    // RowView& operator=(const Matrix&);
 
     RowView(Matrix& mat, int i);
     RowView(Matrix& mat, int i, int jb);
     RowView(Matrix& mat, int i, int jb, int je);
     RowView(RowView&& rv);
 
-private:
-
-    Matrix& mat = Matrix::null();
+    Matrix<T>& mat;
 
 };
 

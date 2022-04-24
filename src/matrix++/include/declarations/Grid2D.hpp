@@ -34,6 +34,12 @@ public:
      *========================================================================**/
     virtual std::size_t size() const override;
 
+    /**========================================================================
+     *!                           Grid1D Extensions
+     *========================================================================**/
+    // using ejovo::Grid1D<T>::new_matrix;
+    // Matrix<T> new_matrix(int m, int n);
+
 
     /**========================================================================
      *!                           Indexing
@@ -47,8 +53,8 @@ public:
     T& at_col_major(int i);
 
 
-    std::pair<int, int> to_ij(int n, bool col_major = true) const; // Take a vector index
-    int to_i(int i, int j, bool col_major = true) const; // Take a vector index
+    virtual std::pair<int, int> to_ij(int n, bool col_major = true) const; // Take a vector index
+    virtual int to_i(int i, int j, bool col_major = true) const; // Take a vector index
 
     /**========================================================================
      *!                           Inquiry Functions
@@ -81,6 +87,9 @@ public:
     Grid2D& mut_row(mutate_fn fn, int i = 1);
     Grid2D& mut_col(mutate_fn fn, int j = 1);
     Grid2D& mut_diag(mutate_fn fn, int d = 0);
+
+    Matrix<T> zeros() const;
+    Matrix<T> zeros(int m, int n) const;
 
 
 private:

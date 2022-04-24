@@ -312,7 +312,7 @@ public:
         return this->zeros(__m, __n);
     }
 
-    Matrix new_matrix(int __n) const override {
+    Matrix new_matrix(int __n) const {
         return this->zeros(1, __n);
     }
 

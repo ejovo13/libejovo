@@ -56,7 +56,7 @@ public:
      *!                      Virtual Concept Functions
      *========================================================================**/
     virtual Matrix<T> to_matrix()  const = 0;
-    virtual Matrix<T> new_matrix(int n) const = 0;
+    // virtual Matrix<T> new_matrix(int n) const = 0;
 
 
     T& at(int i);         // 1-based indexing with bounds checking
@@ -187,6 +187,10 @@ public:
     //  *!                           Runif Functions
     //  *========================================================================**/
     // Vector<T>
+
+    Matrix<T> zeros(bool col = true) const;
+    Matrix<T> zeros(int n, bool col = true) const;
+
 
 
 };
