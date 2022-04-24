@@ -6,6 +6,7 @@
 # add_executable(t_Grid t_Grid.cpp)
 add_executable(t_Ejovo t_Ejovo.cpp)
 add_executable(t_Vector t_Vector.cpp)
+add_executable(t_mcmc t_MCMC.cpp)
 
 
 # add_executable(t_Min t_Min.cpp)
@@ -18,6 +19,7 @@ add_executable(t_Vector t_Vector.cpp)
 # target_link_libraries(t_Grid PUBLIC matrix++)
 target_link_libraries(t_Ejovo PUBLIC matrix++)
 target_link_libraries(t_Vector PUBLIC matrix++)
+target_link_libraries(t_mcmc PUBLIC matrix++)
 # target_link_libraries(t_Min PUBLIC matrix++)
 
 

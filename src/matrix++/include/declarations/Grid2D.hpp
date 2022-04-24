@@ -17,7 +17,7 @@ public:
     using ejovo::Grid1D<T>::loop_fn_const;
     using ejovo::Grid1D<T>::loop_ind_fn;
     using loop_ij_fn = std::function<void(int, int)>;
-    using loop_fn = std::function<void(T)>;
+    using loop_fn = std::function<void(T&)>;
     using mutate_fn = std::function<void(T)>;
 
     using ejovo::Grid1D<T>::at;
@@ -42,6 +42,10 @@ public:
     T& at(int i, int j); // Check bounds
     const T& operator()(int i, int j) const;
     const T& at(int i, int j) const;
+
+    T& at_row_major(int i);
+    T& at_col_major(int i);
+
 
     std::pair<int, int> to_ij(int n, bool col_major = true) const; // Take a vector index
     int to_i(int i, int j, bool col_major = true) const; // Take a vector index

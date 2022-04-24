@@ -5,6 +5,7 @@
 #include <sys/random.h>
 #include <climits>
 #include <cmath>
+#include "types.hpp"
 
 namespace ejovo {
 
@@ -37,6 +38,9 @@ namespace ejovo {
             double exp(double rate = 1);
             int binom(int size, double p = 0.5);
             int hyper(int ndraws, int N, int K);
+            bool bernouilli(double p = 0.5); // return true or false
+            template <class T> int categorical(const Grid1D<T>& p); // return an integer i from 1 to k representing the category of the p(i)
+            int categorical(std::vector<double> p); // For now we will assume that the probabilites are not sorted.
 
 
 
@@ -174,6 +178,31 @@ namespace ejovo {
             }
             return count;
         }
+
+        bool Xoshiro::bernouilli(double p) {
+            return unifd(0, 1) <= p;
+        }
+
+        // return a number between 1 and p.size()
+        template <class T>
+        int Xoshiro::categorical(const Grid1D<T>& p) {
+
+            // iterate along the elements of the matrix (hopefully sorted...)
+            // and return the integer of the corresponding division that it falls in
+            // | p1 |   p2   |p3|     p4     |, where all the probabilites are ASSUMED
+            // to add up to one.
+            double x = unifd(0, 1);
+            double acc = 0;
+
+            for (int i = 1; i <= p.size(); i++) {
+                acc += p(i);
+                if (x < acc) return i;
+            }
+
+            return 0;
+        }
+
+
 
         // create a global Xoshiro
         Xoshiro g_XOSHIRO{};

@@ -74,19 +74,31 @@ template <class T> Matrix<T>::Matrix(Vector<T>&& rhs) {
 }
 
 template <class T>
-Matrix<T> Matrix<T>::from(std::initializer_list<T> list) {
+Matrix<T> Matrix<T>::from(std::initializer_list<T> list, bool by_row) {
     int n = list.size();
     Matrix<T> out{1, n};
     int i = 1;
-    for (auto el : list) {
-        out(i) = el;
-        i++;
+
+    if (by_row) {
+
+        for (auto el : list) {
+            out.at_row_major(i) = el;
+            i++;
+        }
+
+    } else {
+
+        for (auto el : list) {
+            out.at_col_major(i) = el;
+            i++;
+        }
     }
+
     return out;
 }
 
 template <class T>
-Matrix<T> Matrix<T>::from(std::initializer_list<T> list, int m, int n) {
+Matrix<T> Matrix<T>::from(std::initializer_list<T> list, int m, int n, bool by_row) {
     int n_el = list.size();
     Matrix<T> out;
 
@@ -97,9 +109,20 @@ Matrix<T> Matrix<T>::from(std::initializer_list<T> list, int m, int n) {
     }
 
     int i = 1;
-    for (auto el : list) {
-        out(i) = el;
-        i++;
+
+    if (by_row) {
+
+        for (auto el : list) {
+            out.at_row_major(i) = el;
+            i++;
+        }
+
+    } else {
+
+        for (auto el : list) {
+            out.at_col_major(i) = el;
+            i++;
+        }
     }
     return out;
 }
@@ -107,8 +130,8 @@ Matrix<T> Matrix<T>::from(std::initializer_list<T> list, int m, int n) {
 /**========================================================================
  *!                           Random Matrices
  *========================================================================**/
-template <class T>
-ejovo::rng::Xoshiro& Matrix<T>::xoroshiro = ejovo::rng::g_XOSHIRO;
+// template <class T>
+// ejovo::rng::Xoshiro& Matrix<T>::xoroshiro = ejovo::rng::g_XOSHIRO;
 
 template <class T> std::unique_ptr<T[]> Matrix<T>::copyData() const {
     int n = this->size();
@@ -413,6 +436,23 @@ Matrix<T> Matrix<T>::operator*(const Matrix&rhs) const {
     return out;
 }
 
+template <class T>
+Matrix<T> Matrix<T>::operator^(int k) const {
+
+    if (!this->is_square()) throw "Cannot take the power of non square matrix";
+    if (k < 0) return Matrix<T>::null();
+    if (k == 0) return Matrix<T>::id(n);
+    if (k == 1) return *this;
+
+    Matrix<T> out (*this);
+
+    for (int i = 2; i <= k; i++) {
+        out = out * *this;
+    }
+
+    return out;
+}
+
 template <class T> Matrix<T>::Matrix(Matrix&& rhs) : m{rhs.m}, n{rhs.n} {
 
     this->data = std::move(rhs.data);
@@ -528,7 +568,7 @@ template <class T>
 Matrix<T> Matrix<T>::id(int n) {
     // take 1 as the identity element...
     Matrix out = zeros(n, n);
-    out.loop_diag([&] (auto d) {
+    out.loop_diag([&] (auto& d) {
         d = 1;
     });
 
@@ -680,14 +720,26 @@ std::vector<T> Matrix<T>::to_vector() {
 
 template <class T>
 template <class U>
-Matrix<T> Matrix<T>::from(const std::vector<U>& vec) {
+Matrix<T> Matrix<T>::from(const std::vector<U>& vec, bool by_row) {
     int n = vec.size();
     Matrix out {1, n};
     int i = 1;
-    for (auto el : vec) {
-        out(i) = el;
-        i++;
+
+    if (by_row) {
+
+        for (auto el : vec) {
+            out.at_row_major(i) = el;
+            i++;
+        }
+
+    } else {
+
+        for (auto el : vec) {
+            out.at_col_major(i) = el;
+            i++;
+        }
     }
+
     return out;
 }
 
@@ -711,8 +763,13 @@ bool Matrix<T>::cant_add_b(const Matrix &rhs) const {
 
 template <class T>
 Matrix<T> Matrix<T>::get_row(int i) const {
-    Matrix row_i {this->m};
+    Matrix row_i (1, this->m);
 
+    for (int j = 1; j <= this->m; j++) {
+        row_i(j) = this->operator()(i, j);
+    }
+
+    return row_i;
 }
 
 /**========================================================================

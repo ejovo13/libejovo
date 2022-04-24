@@ -16,3 +16,4 @@
 // #include "ejovo/prob.hpp"
 // #include "ejovo/quadrature.hpp"
 // #include "ejovo/trig.hpp"
+#include "ejovo/rng/mcmc.hpp"

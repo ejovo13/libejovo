@@ -47,6 +47,19 @@ const T& Grid2D<T>::at(int i, int j) const {
 }
 
 template <class T>
+T& Grid2D<T>::at_row_major(int i) {
+    auto pair = to_ij(i, false);
+    return this->operator()(std::get<0>(pair), std::get<1>(pair));
+}
+
+template <class T>
+T& Grid2D<T>::at_col_major(int i) {
+    auto pair = to_ij(i, true);
+    return this->operator()(std::get<0>(pair), std::get<1>(pair));
+}
+
+
+template <class T>
 const T& Grid2D<T>::operator()(int i, int j) const {
     return this->operator[](this->to_i(i, j) - 1);
 }
@@ -80,7 +93,7 @@ bool Grid2D<T>::isnt_same_shape(const Grid2D<U>& rhs) const {
 template <class T>
 template <class U>
 bool Grid2D<T>::can_mult(const Grid2D<U> &rhs) const {
-    return this->ncol() == this->nrow();
+    return this->ncol() == rhs.nrow();
 }
 
 template <class T>
@@ -152,14 +165,14 @@ const Grid2D<T>& Grid2D<T>::loop_diag(loop_fn f) const {
     auto lim_dim = this->mindim();
 
     for (std::size_t d = 1; d <= lim_dim; d++) {
-        f(d, d);
+        f(this->operator()(d, d));
     };
 
     return *this;
 }
 
 template <class T>
-Grid2D<T>& Grid2D<T>::mut_col(loop_fn f, int j) {
+Grid2D<T>& Grid2D<T>::mut_col(mutate_fn f, int j) {
 
     const auto m = this->nrow();
 
@@ -169,7 +182,7 @@ Grid2D<T>& Grid2D<T>::mut_col(loop_fn f, int j) {
 }
 
 template <class T>
-Grid2D<T>& Grid2D<T>::mut_row(loop_fn f, int i) {
+Grid2D<T>& Grid2D<T>::mut_row(mutate_fn f, int i) {
 
     const auto n = this->ncol();
 

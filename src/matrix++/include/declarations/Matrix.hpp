@@ -31,7 +31,7 @@ public:
      *=============================================**/
     std::size_t m;
     std::size_t n;
-    static ejovo::rng::Xoshiro& xoroshiro;
+    // static ejovo::rng::Xoshiro& xoroshiro;
     std::unique_ptr<T[]> data;
 
     /**============================================
@@ -112,7 +112,7 @@ public:
 
     std::vector<T> to_vector();
     template <class U>
-    static Matrix from(const std::vector<U>& vec);
+    static Matrix from(const std::vector<U>& vec, bool by_row = false);
 
     Matrix& nullify();
 
@@ -144,6 +144,9 @@ public:
 
     Matrix operator-() const;
     Matrix operator*(const Matrix& rhs) const;
+    // using Grid
+    // Matrix dot(const Matrix& rhs) const;
+    Matrix operator^(int k) const;
 
     friend Matrix operator+(Matrix lhs, const Matrix rhs) {
         lhs += rhs;
@@ -254,8 +257,8 @@ public:
     static Matrix<T> row(int n, T val);
     static Matrix<T> col(int n); // Create a new zeros col vector
     static Matrix<T> col(int n, T val);
-    static Matrix<T> from(std::initializer_list<T>);
-    static Matrix<T> from(std::initializer_list<T>, int m, int n);
+    static Matrix<T> from(std::initializer_list<T>, bool by_row = false);
+    static Matrix<T> from(std::initializer_list<T>, int m, int n, bool by_row = false);
 
 
     /**========================================================================

@@ -98,6 +98,20 @@ namespace ejovo {
         return out;
     }
 
+    // random variable of the categorical distribution
+    Matrix<int> rcat(int n, const Matrix<double>& p) {
+
+        if (n == 0) return Matrix<int>::null();
+
+        Matrix<int> out(1, n);
+        out.loop([&] (int& x) {
+            x = ejovo::rng::xoroshiro.categorical<double>(p);
+        });
+
+        return out;
+
+    }
+
     // k observations
     double dbinom(int k, int size, double p = 0.5) {
         return (double) n_choose_k(size, k) * std::pow(p, k) * std::pow(1 - p, size - k);
@@ -158,5 +172,37 @@ namespace ejovo {
         // return 0.5 * (1 + ejovo::erf<50>(x / root2));
 
     }
+
+    // Take in discrete bins (for example ejovo::seq(10)) and count
+    // the number of times each
+    Matrix<int> histogram_counts_discrete(const Grid1D<int>& obs, const Grid1D<int>& bins) {
+
+        // Traverse through the observations.
+        Matrix<int> counts = Matrix<int>::zeros(1, bins.size());
+
+        // loop through the observations
+        obs.loop([&] (const auto& x) {
+            // and find the appropriate bin
+            for (int i = 1; i <= bins.size(); i++) {
+                if (x == bins(i)) {
+                    counts(i) ++;
+                    break;
+                }
+            }
+        });
+
+        return counts;
+    }
+
+    Matrix<double> histogram_freq_discrete(const Matrix<int>& obs, const Matrix<int>& bins) {
+
+        Matrix<int> counts = histogram_counts_discrete(obs, bins);
+        int total = counts.sum();
+
+        return counts.map<double>([&] (auto x) { return x / (double) total; });
+    }
+
+
+
 
 };
