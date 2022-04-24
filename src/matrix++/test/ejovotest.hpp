@@ -15,4 +15,6 @@ Matrix<double> get_erf_matlab() {
     }, 1, 1000);
 }
 
+// std::function<double (double)>
+
 };

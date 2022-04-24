@@ -60,24 +60,35 @@ namespace ejovo {
     Y gauss_legendre(const X& a, const X& b, std::function<Y(X)> fn, int n = 100) {
 
         // Let's implement a 5 point method!!!
+        double dx = (b - a) / n;
+
         double x0_off = 0;
-        double x12_off = 0.538469310105683;
-        double x34_off = 0.906179845938664;
+        double x12_off = 0.538469310105683 * (dx / 2.0); // if dx = 2 ([-1, 1]), we want x1 to end up at 0.53846931
+        double x34_off = 0.906179845938664 * (dx / 2.0);
 
         double w0 = 0.568888888888889;
         double w12 = 0.478628670499366;
         double w34 = 0.236926885056189;
 
+        if (n == 1) {
+            auto x0 = (b + a) / 2;
+            auto x1 = x0 + x12_off;
+            auto x2 = x0 - x12_off;
+            auto x3 = x0 + x34_off;
+            auto x4 = x0 - x34_off;
+
+            return 0.5 * dx * (w0 * fn(x0) + w12 * (fn(x1) + fn(x2)) + w34 * (fn(x3) + fn(x4)));
+        }
+
         // Get the midpoints, and the offsets.
-        double dx = (b - a) / n;
 
         // I could be more efficient and only store X0, applying the same function on
         // all of the points
         auto X0 = ejovo::linspace(a + dx / 2.0, b - dx / 2.0, n);
-        auto X1 = X0 + 0.5 * x12_off;
-        auto X2 = X0 - 0.5 * x12_off;
-        auto X3 = X0 + 0.5 * x34_off;
-        auto X4 = X0 - 0.5 * x34_off;
+        auto X1 = X0 + x12_off;
+        auto X2 = X0 - x12_off;
+        auto X3 = X0 + x34_off;
+        auto X4 = X0 - x34_off;
 
         // Apply the function in place, not duplicating the X variables.
         X0.mutate(fn);
@@ -93,12 +104,12 @@ namespace ejovo {
     template <class X, class Y>
     Y gauss_legendre_2(const X& a, const X& b, std::function<Y(X)> fn, int n = 100) {
 
-        // Let's implement a 5 point method!!!
-        double x01_off = 1.0 / sqrt(3.0);
+        // Implementation of 2 point method
+
+        double dx = (b - a) / n;
+        double x01_off = (1.0 / sqrt(3.0)) * (dx / 2.0);
 
         // Get the midpoints, and the offsets.
-        double dx = (b - a) / n;
-
         if (n == 1) {
             auto mid = (b + a) / 2;
             auto x0 = mid + x01_off;
@@ -111,8 +122,8 @@ namespace ejovo {
         // all of the points
         auto mid = ejovo::linspace(a + dx / 2.0, b - dx / 2.0, n);
 
-        auto X0 = mid + 0.5 * x01_off;
-        auto X1 = mid - 0.5 * x01_off;
+        auto X0 = mid + x01_off;
+        auto X1 = mid - x01_off;
 
         // Apply the function in place, not duplicating the X variables.
         X0.mutate(fn);

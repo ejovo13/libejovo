@@ -201,10 +201,19 @@ int main() {
     auto erf_mid_200 = x.map(ejovo::quad::erf::midpoint<200>);
     auto erf_mid_300 = x.map(ejovo::quad::erf::midpoint<300>);
 
+    auto erf_gauss_1 = x.map(ejovo::quad::erf::gausslegendre<1>);
+    auto erf_gauss_2 = x.map(ejovo::quad::erf::gausslegendre<2>);
+    auto erf_gauss_10 = x.map(ejovo::quad::erf::gausslegendre<10>);
+    auto erf_gauss_50 = x.map(ejovo::quad::erf::gausslegendre<50>);
     auto erf_gauss_100 = x.map(ejovo::quad::erf::gausslegendre<100>);
     auto erf_gauss_200 = x.map(ejovo::quad::erf::gausslegendre<200>);
     auto erf_gauss_300 = x.map(ejovo::quad::erf::gausslegendre<300>);
 
+    auto erf_gauss2_1 = x.map(ejovo::quad::erf::gausslegendre_2<1>);
+    auto erf_gauss2_2 = x.map(ejovo::quad::erf::gausslegendre_2<2>);
+    auto erf_gauss2_3 = x.map(ejovo::quad::erf::gausslegendre_2<3>);
+    auto erf_gauss2_4 = x.map(ejovo::quad::erf::gausslegendre_2<4>);
+    auto erf_gauss2_5 = x.map(ejovo::quad::erf::gausslegendre_2<5>);
     auto erf_gauss2_100 = x.map(ejovo::quad::erf::gausslegendre_2<100>);
     auto erf_gauss2_200 = x.map(ejovo::quad::erf::gausslegendre_2<200>);
     auto erf_gauss2_300 = x.map(ejovo::quad::erf::gausslegendre_2<300>);
@@ -215,13 +224,22 @@ int main() {
     // (erfx - erf_mid_200).summary();
     // (erfx - erf_mid_300).summary();
 
+    std::cout << "Norm(erf - erf_gauss_1): " << (erfx - erf_gauss_1).norm() << std::endl;
+    std::cout << "Norm(erf - erf_gauss_2): " << (erfx - erf_gauss_2).norm() << std::endl;
+    std::cout << "Norm(erf - erf_gauss_10): " << (erfx - erf_gauss_10).norm() << std::endl;
+    std::cout << "Norm(erf - erf_gauss_50): " << (erfx - erf_gauss_50).norm() << std::endl;
     std::cout << "Norm(erf - erf_gauss_100): " << (erfx - erf_gauss_100).norm() << std::endl;
     std::cout << "Norm(erf - erf_gauss_200): " << (erfx - erf_gauss_200).norm() << std::endl;
     std::cout << "Norm(erf - erf_gauss_300): " << (erfx - erf_gauss_300).norm() << std::endl;
 
-    std::cout << "Norm(erf - erf_gauss_100): " << (erfx - erf_gauss2_100).norm() << std::endl;
-    std::cout << "Norm(erf - erf_gauss_200): " << (erfx - erf_gauss2_200).norm() << std::endl;
-    std::cout << "Norm(erf - erf_gauss_300): " << (erfx - erf_gauss2_300).norm() << std::endl;
+    std::cout << "Norm(erf - erf_gauss2_1): " << (erfx - erf_gauss2_1).norm() << std::endl;
+    std::cout << "Norm(erf - erf_gauss2_2): " << (erfx - erf_gauss2_2).norm() << std::endl;
+    std::cout << "Norm(erf - erf_gauss2_3): " << (erfx - erf_gauss2_3).norm() << std::endl;
+    std::cout << "Norm(erf - erf_gauss2_4): " << (erfx - erf_gauss2_4).norm() << std::endl;
+    std::cout << "Norm(erf - erf_gauss2_5): " << (erfx - erf_gauss2_5).norm() << std::endl;
+    std::cout << "Norm(erf - erf_gauss2_100): " << (erfx - erf_gauss2_100).norm() << std::endl;
+    std::cout << "Norm(erf - erf_gauss2_200): " << (erfx - erf_gauss2_200).norm() << std::endl;
+    std::cout << "Norm(erf - erf_gauss2_300): " << (erfx - erf_gauss2_300).norm() << std::endl;
 
     std::cout << "Norm(erf - erf_mid_100): " << (erfx - erf_mid_100).norm() << std::endl;
     std::cout << "Norm(erf - erf_mid_200): " << (erfx - erf_mid_200).norm() << std::endl;
