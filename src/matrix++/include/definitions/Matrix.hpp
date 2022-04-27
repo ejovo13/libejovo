@@ -838,9 +838,9 @@ int Matrix<bool>::sum() const {
     return sum;
 }
 
-template <class T>
-template <class U>
-U Matrix<T>::sum() const = delete;
+// template <class T>
+// template <class U>
+// U Matrix<T>::sum() const = delete;
 
 // template <class T>
 // Matrix<T> Matrix<T>::filter_lt(T val) const {

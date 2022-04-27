@@ -51,13 +51,13 @@ private:
 // }
 
 // random Numeric concept
-template<typename NumericType>
-concept Numeric = std::is_arithmetic<NumericType>::value;
+// template<typename NumericType>
+// concept Numeric = std::is_arithmetic<NumericType>::value;
 
 template <class T>
 Dataframe<T>::Dataframe(std::vector<Matrix<T>> data, std::vector<std::string> names) : cols{data}, col_names{names}, nrow{data.begin()->size()} {}
 
-template <Numeric T>
+template <class T>
 Dataframe<T> df(std::initializer_list<Matrix<T>> data, std::initializer_list<std::string> names) {
 
     // check to make sure that all of the vectors have the same size

@@ -138,7 +138,7 @@ namespace ejovo {
 
         template <int N = 1000>
         double midpoint(double x) {
-            constexpr double coeff = 2.0 / std::sqrt(trig::pi);
+            double coeff = 2.0 / std::sqrt(trig::pi);
             double trap = ejovo::quad::midpoint<double, double>(0,
                                     x,
                                     [&] (double x) { return std::exp(- (x * x)); },
@@ -158,7 +158,7 @@ namespace ejovo {
 
         template <int N = 1000>
         double gausslegendre(double x) {
-            constexpr double coeff = 2.0 / std::sqrt(trig::pi);
+            double coeff = 2.0 / std::sqrt(trig::pi);
 
             double trap = ejovo::quad::gauss_legendre<double, double>(0,
                                                 x,
@@ -171,7 +171,7 @@ namespace ejovo {
 
         template <int N = 1000>
         double gausslegendre_2(double x) {
-            constexpr double coeff = 2.0 / std::sqrt(trig::pi);
+            double coeff = 2.0 / std::sqrt(trig::pi);
 
             double trap = ejovo::quad::gauss_legendre_2<double, double>(0,
                                                 x,

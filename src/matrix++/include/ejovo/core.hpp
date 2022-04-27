@@ -168,72 +168,72 @@ std::tuple<Matrix<T>, Matrix<T>> meshgrid(const Matrix<T>& u) {
 /**========================================================================
  *!                           Mappable functions
  *========================================================================**/
-// C++ 20 gang shit
-template <class T>
-concept Mappable = requires (Grid1D<T> t, std::function<T(T)> f) {
-    {t.map(f)} -> std::same_as<Matrix<T>>;
-};
+// // C++ 20 gang shit
+// template <class T>
+// concept Mappable = requires (Grid1D<T> t, std::function<T(T)> f) {
+//     {t.map(f)} -> std::same_as<Matrix<T>>;
+// };
 
-// I want to  add a numeric restriction to this
-template <Mappable M>
-auto cos(M m) {
-    return m.map(trig::cos<double>);
-}
+// // I want to  add a numeric restriction to this
+// template <Mappable M>
+// auto cos(M m) {
+//     return m.map(trig::cos<double>);
+// }
 
-template <Mappable M>
-auto sin(M m) {
-    return m.map(trig::sin<double>);
-}
+// template <Mappable M>
+// auto sin(M m) {
+//     return m.map(trig::sin<double>);
+// }
 
-template <Mappable M>
-auto tan(M m) {
-    return m.map(trig::tan<double>);
-}
+// template <Mappable M>
+// auto tan(M m) {
+//     return m.map(trig::tan<double>);
+// }
 
-template <Mappable M>
-auto log(M m) {
-    return m.map(::log);
-}
+// template <Mappable M>
+// auto log(M m) {
+//     return m.map(::log);
+// }
 
-template <Mappable M>
-auto exp(M m) {
-    return m.map(::exp);
-}
+// template <Mappable M>
+// auto exp(M m) {
+//     return m.map(::exp);
+// }
 
-template <Mappable M>
-auto asin(M m) {
-    return m.map(::asin);
-}
+// template <Mappable M>
+// auto asin(M m) {
+//     return m.map(::asin);
+// }
 
-template <Mappable M>
-auto acos(M m) {
-    return m.map(::acos);
-}
+// template <Mappable M>
+// auto acos(M m) {
+//     return m.map(::acos);
+// }
 
-template <Mappable M>
-auto atan(M m) {
-    return m.map(::atan);
-}
+// template <Mappable M>
+// auto atan(M m) {
+//     return m.map(::atan);
+// }
 
-template <Mappable M>
-auto tanh(M m) {
-    return m.map(::tanh);
-}
+// template <Mappable M>
+// auto tanh(M m) {
+//     return m.map(::tanh);
+// }
 
-template <Mappable M>
-auto cosh(M m) {
-    return m.map(::cosh);
-}
+// template <Mappable M>
+// auto cosh(M m) {
+//     return m.map(::cosh);
+// }
 
-template <Mappable M>
-auto sinh(M m) {
-    return m.map(::sinh);
-}
+// template <Mappable M>
+// auto sinh(M m) {
+//     return m.map(::sinh);
+// }
 
-template <Mappable M>
-auto pow(M m, int k) {
-    return m.map(ejovo::factory::pow<double, k>);
-}
+// template <Mappable M>
+// auto pow(M m, int k) {
+//     return m.map(ejovo::factory::pow<double, k>);
+// }
 
 template <class T>
 T id (T x) {

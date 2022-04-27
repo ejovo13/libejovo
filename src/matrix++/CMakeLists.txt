@@ -10,7 +10,9 @@ include(FindGnuplot)
 
 enable_language(CXX)
 set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+# set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+enable_language(CUDA)
 
 add_library(matrix++ INTERFACE)
 
@@ -32,6 +34,8 @@ add_compile_options(-Wno-narrowing)
 # add_subdirectory(matplotlib-cpp)
 # add_subdirectory(matplotplusplus)
 add_subdirectory(${PROJ_TEST})
+
+add_subdirectory(src)
 
 
 # add_executable(t_abs_view t_AbsView.cpp)

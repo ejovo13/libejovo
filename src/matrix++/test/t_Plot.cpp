@@ -4,8 +4,10 @@ int main() {
 
     using namespace ejovo;
 
-    auto x = linspace(-trig::pi, trig::pi, 1000);
-    auto sinx = x.map([&] (auto x) { return sin(x); });
+    auto x = linspace(0, trig::two_pi, 1000);
+    auto cosx = x.map(trig::cos<double>);
+
+    plot(x, cosx, "Cosine");
     // auto cosx = x.map([&] (auto x) { return cos(x); });
     // auto tanx = x.map([&] (auto x) { return tan(x); });
 
