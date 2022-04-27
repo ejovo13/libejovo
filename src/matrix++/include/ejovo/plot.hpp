@@ -236,6 +236,34 @@ bool contour(Matrix<double> x, Matrix<double> y, Matrix<double> z, std::string f
 
 }
 
+// bool contour(Matrix<double> x, Matrix<double> y, Matrix<double> z, std::string filename = "test", std::string rexp_breaks = "", int width = 5, int height = 5, std::string units = "cm") {
+
+//     if (x.isnt_same_shape(y) || x.isnt_same_shape(z)) return false;
+
+//     // Coerce these matrices into vectors that can be used in the data frame.
+//     std::string csv_file = filename + ".csv";
+//     std::string r_file   = filename + "_temp.r";
+
+//     x.reshape_col();
+//     y.reshape_col();
+//     z.reshape_col();
+
+//     auto df = ejovo::df({x, y, z}, {"x", "y", "z"});
+
+//     df.to_csv(csv_file);
+
+//     std::ofstream my_file;
+
+//     my_file.open(r_file);
+//     my_file << ejovo::create_contour_plot_breaks(filename, rexp_breaks);
+//     my_file.close();
+
+//     system((std::string("Rscript ") + filename + "_temp.r").c_str());
+//     remove(r_file.c_str());
+//     remove(csv_file.c_str());
+
+// }
+
 bool contour(Matrix<double> x, Matrix<double> y, std::function<double (double, double)> f, std::string filename = "test", std::string rexp_breaks = "", int width = 5, int height = 5, std::string units = "cm") {
 
     if (x.isnt_same_shape(y)) return false;

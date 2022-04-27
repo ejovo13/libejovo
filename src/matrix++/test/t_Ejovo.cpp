@@ -127,7 +127,7 @@ int main() {
 
     // plot(x, x.map(ejovo::quad::erf), "quad_err");
 
-    auto x = linspace(-5, 5, 500);
+    auto x = linspace<double>(-5, 5, 500);
     // auto y = x.map(ejovo::pnorm);
 
     // plot(x, y, "pnorm");
@@ -166,7 +166,7 @@ int main() {
     // // test difference between erf implementations
     // // get true error function value.
     // x = linspace(-4, 4, 100);
-    x = linspace(-4, 4, 100);
+    x = linspace<double>(-4, 4, 100);
 
     auto gl = x.map(ejovo::pnorm);
     auto gl2 = x.map(ejovo::pnorm_2);
@@ -194,7 +194,7 @@ int main() {
 
     erfx.summary();
 
-    x = linspace(-3, 3, 1000);
+    x = linspace<double>(-3, 3, 1000);
     // x = chebynodes()
 
     auto erf_mid_100 = x.map(ejovo::quad::erf::midpoint<100>);

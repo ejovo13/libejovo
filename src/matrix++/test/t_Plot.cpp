@@ -4,7 +4,7 @@ int main() {
 
     using namespace ejovo;
 
-    auto x = linspace(0, trig::two_pi, 1000);
+    auto x = linspace<double>(0, trig::two_pi, 1000);
     auto cosx = x.map(trig::cos<double>);
 
     plot(x, cosx, "Cosine");
@@ -30,7 +30,7 @@ int main() {
 
     auto norm_pdf = ejovo::prob::pdf::gauss();
 
-    x = linspace(-4, 4, 100);
+    x = linspace<double>(-4, 4, 100);
     auto y = x.map(norm_pdf);
 
     // y.print();

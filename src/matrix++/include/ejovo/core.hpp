@@ -336,28 +336,30 @@ template <class T> Matrix<T> abs(Matrix<T> m) {
     return m.abs();
 }
 
-// template <class T> Matrix<T>
-Matrix<double> linspace(double start, double end, int n = 100) {
+// template <>
+// Matrix<double> linspace(double start, double end, int n) {
 
-    double diff = (end - start) / (n - 1);
+//     double diff = (end - start) / (n - 1);
 
-    Matrix<double> lin (1, n);
-
-    lin.loop_i([&] (int i) {lin(i) = start + (i - 1) * diff;});
-    return lin;
-
-}
-
-// template<class T = double>
-// Matrix<T> linspace(T start, T end, int n = 100) {
-
-//     T diff = (end - start) / (n - 1);
-
-//     Matrix<T> lin{n};
+//     Matrix<double> lin (1, n);
 
 //     lin.loop_i([&] (int i) {lin(i) = start + (i - 1) * diff;});
 //     return lin;
+
 // }
+
+template<class T = double>
+Matrix<T> linspace(T start, T end, int n = 100) {
+
+    T diff = (end - start) / (n - 1);
+
+    Matrix<T> lin{n};
+
+    lin.loop_i([&] (int i) {lin(i) = start + (i - 1) * diff;});
+    return lin;
+}
+
+
 
 template <class T = double>
 Matrix<T> logspace(T start_exp, T end_exp, int n = 50, T base = 10) {
@@ -388,6 +390,17 @@ std::vector<T> map(const std::vector<T>& vec, std::function<T(T)> f) {
         i++;
     }
     return copy;
+}
+
+template <class T>
+Matrix<T> map2(const Matrix<T>& A, const Matrix<T>& B, std::function<T (T, T)> f) {
+
+    Matrix mat_copy = A;
+    mat_copy.loop_i([&] (int i) {
+        mat_copy(i) = f(A(i), B(i));
+    });
+
+    return mat_copy;
 }
 
 template <class T>
