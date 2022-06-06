@@ -370,7 +370,11 @@ public:
     VecView vecview(const Matrix<int>& ind);
     VecView vecview(std::function<bool(T)> pred);
     RowView get_row_view(int i);
+    RowView get_row_view(int i, int jb);
+    RowView get_row_view(int i, int jb, int je);
     ColView get_col_view(int j);
+    ColView get_col_view(int j, int ib);
+    ColView get_col_view(int j, int ib, int ie);
 
     // View<T> operator()(const Matrix<int>& row_ind) const;
     MatView operator()(const Matrix<int>& row_ind, const Matrix<int>& col_ind);

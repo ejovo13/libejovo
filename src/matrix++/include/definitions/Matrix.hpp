@@ -1168,8 +1168,34 @@ typename Matrix<T>::RowView Matrix<T>::get_row_view(int i) {
 }
 
 template <class T>
+typename Matrix<T>::RowView Matrix<T>::get_row_view(int i, int jb) {
+    RowView rv (*this, i, jb);
+    return rv;
+}
+
+template <class T>
+typename Matrix<T>::RowView Matrix<T>::get_row_view(int i, int jb, int je) {
+    RowView rv (*this, i, jb, je);
+    return rv;
+}
+
+
+
+template <class T>
 typename Matrix<T>::ColView Matrix<T>::get_col_view(int j) {
     ColView cv {*this, j};
+    return cv;
+}
+
+template <class T>
+typename Matrix<T>::ColView Matrix<T>::get_col_view(int j, int ib) {
+    ColView cv (*this, j, ib);
+    return cv;
+}
+
+template <class T>
+typename Matrix<T>::ColView Matrix<T>::get_col_view(int j, int ib, int ie) {
+    ColView cv (*this, j, ib, ie);
     return cv;
 }
 

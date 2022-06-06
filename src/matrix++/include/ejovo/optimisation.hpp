@@ -60,6 +60,15 @@ namespace ejovo {
         return out;
     }
 
+    // transform ta,b(x_hat) to change the constrained optimisation problem to an unconstrained problem
+    template <class X>
+    std::function<X(X)> transform_ab(X a, X b) {
+        return [&] (X x_hat) {
+            return (b + a) / 2 + ((b - a) / 2) * (2 * x_hat) / (1 + x_hat * x_hat);
+        };
+    }
+
+
     };
 
 

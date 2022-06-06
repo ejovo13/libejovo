@@ -35,5 +35,30 @@ int main() {
 
     plot(x, y, "Normal_Distribution");
 
+    auto h_x = [&] (double x) {
+        return x * sin(x);
+    };
+
+    double a = 2;
+    double b = 6;
+
+    auto t_ab = opti::transform_ab(a, b);
+
+    x = linspace(0, 15);
+    y = x.map(h_x);
+
+    auto f_t_x = functional::comp(std::function<double(double)>(h_x), t_ab);
+
+    auto long_x = linspace(-10, 10, 200);
+
+    double ftx = f_t_x(0);
+
+    std::cout << "ftx(0): " << ftx;
+    auto long_y = long_x.map(t_ab);
+
+    plot(x, y, "xsinx");
+    plot(long_x, long_y, "t_26");
+
+
     return 0;
 }

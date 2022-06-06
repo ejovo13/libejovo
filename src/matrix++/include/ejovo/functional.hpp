@@ -177,7 +177,18 @@ namespace ejovo {
     template <class T>
     ScalarFn<T>::ScalarFn(std::function<T(T)> __fn) : fn{__fn} {};
 
+    // return f o g, such that
+    // f: Y -> Z
+    // g: X -> Y
+    // f o g : X -> Z
+    template <class X, class Y, class Z>
+    std::function<Z(X)> comp(std::function<Z(Y)> f, std::function<Y(X)> g) {
+        return [&] (X x) {
+            return f(g(x));
+        };
+    }
 
     };
+
 
 };
