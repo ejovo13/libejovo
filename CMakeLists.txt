@@ -7,6 +7,8 @@ include(CTest)
 
 # enable_testing(ON)
 
+# include(GNU)
+
 set(INC ${PROJECT_SOURCE_DIR}/inc)
 set(SRC ${PROJECT_SOURCE_DIR}/src)
 set(TEST ${PROJECT_SOURCE_DIR}/test)
@@ -44,6 +46,7 @@ add_link_options(
 
 file(MAKE_DIRECTORY ${BIN})
 file(MAKE_DIRECTORY ${LIB})
+file(MAKE_DIRECTORY ${INC}/matrix)
 # file(MAKE_DIRECTORY ${})
 
 include_directories(${INC})
