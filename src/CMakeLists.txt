@@ -25,6 +25,7 @@ set (EJOVO_LIB
     ejovo_sort.c
     ejovo_comp.c
     ejovo_crypto.c
+    ejovo_list.c
     ejovo_bin.c
     ejovo_dataframe.c
 
@@ -39,10 +40,14 @@ set (EJOVO_LIB_HEADERS
     ${INC}/ejovo_input.h
     ${INC}/ejovo_matrix.h
     ${INC}/ejovo_labyrinth.h
+    ${INC}/ejovo_list.h
     ${INC}/ejovo_sort.h
     ${INC}/ejovo_comp.h
+    # ${INC}/ejovo_comp_matrix.h
     ${INC}/ejovo_crypto.h
+    ${INC}/ejovo_bin.h
     ${INC}/ejovo_dataframe.h
+    ${INC}/ejovo.h
 )
 
 set (EJOVO_MATRIX_HEADERS
