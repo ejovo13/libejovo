@@ -10,7 +10,7 @@ int main() {
 
     ejovo_seed();
 
-    DEFAULT_RNG = unif_pcg;
+    DEFAULT_RNG = unif_xoroshiro;
 
     Matrix *x = runif(10, 1, 5);
 

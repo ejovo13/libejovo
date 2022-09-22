@@ -13,9 +13,8 @@ void add_one(double *x) {
     *x = *x + 1;
 }
 
-double time_passed_rng() {
+double time_passed_xoroshiro() {
 
-    // compute the time it takes to get 1000 random numbers
     // uniformly distributed on the interval 0, 1 via
     // xoroshiro
     Clock *clock = Clock_new();
@@ -23,7 +22,7 @@ double time_passed_rng() {
 
 
     Clock_tic(clock);
-    m = Matrix_random(1, N_RAND, 0, 1);
+    m = runif_gen(N_RAND, 0, 1, unif_xoroshiro);
     Clock_toc(clock);
 
     double time = elapsed_time(clock);
@@ -35,6 +34,52 @@ double time_passed_rng() {
     return time;
 
 }
+#ifdef PCG_RANDOM
+double time_passed_pcg() {
+
+    // uniformly distributed on the interval 0, 1 via
+    // xoroshiro
+    Clock *clock = Clock_new();
+    Matrix *m;
+
+
+    Clock_tic(clock);
+    m = runif_gen(N_RAND, 0, 1, unif_pcg);
+    Clock_toc(clock);
+
+    double time = elapsed_time(clock);
+
+    fprintf(stderr, "%d", Matrix_size(m));
+
+    free(clock);
+    Matrix_free(m);
+    return time;
+
+}
+#endif
+
+// double time_passed_rng() {
+
+//     // compute the time it takes to get 1000 random numbers
+//     // uniformly distributed on the interval 0, 1 via
+//     // xoroshiro
+//     Clock *clock = Clock_new();
+//     Matrix *m;
+
+
+//     Clock_tic(clock);
+//     m = Matrix_random(1, N_RAND, 0, 1);
+//     Clock_toc(clock);
+
+//     double time = elapsed_time(clock);
+
+//     fprintf(stderr, "%d", Matrix_size(m));
+
+//     free(clock);
+//     Matrix_free(m);
+//     return time;
+
+// }
 
 // define a new function that creates a new matrix of size N 
 // and then times the operation of summing
@@ -126,8 +171,17 @@ int main() {
     // printf("Function time:\t\t %lf\n", fn_time);
 
     Clock_tic(clock);
-    Matrix *fn_time = save_doubles(time_passed_sum_fn, 10);
-    Matrix *loop_time = save_doubles(time_passed_sum_loop, 10);
+
+    const int n_tests = 100;
+
+    Matrix *fn_time = save_doubles(time_passed_sum_fn, n_tests);
+    Matrix *loop_time = save_doubles(time_passed_sum_loop, n_tests);
+
+    Matrix *xoroshiro_time = save_doubles(time_passed_xoroshiro, n_tests);
+
+    #ifdef PCG_RANDOM
+        Matrix *pcg_time = save_doubles(time_passed_pcg, n_tests);
+    #endif
     // Matrix_print(fn_time);
     Clock_toc(clock);
     // printf("Time taken to run test total: %lf\n", elapsed_time(clock));
@@ -136,13 +190,23 @@ int main() {
     printf("Mean(fn_time): %lf\n", mean(fn_time));
     printf("Mean(loop_time): %lf\n", mean(loop_time));
 
-    Matrix *rand_time = save_doubles(time_passed_rng, 100);
+    // Matrix *rand_time = save_doubles(time_passed_rng, 100);
+    // printf("Rand unifd %d times in %lf seconds\n", N_RAND, mean(rand_time));
+    // printf("Generation rate: %lf Doubles /s\n", N_RAND / mean(rand_time));
 
-    printf("Rand unifd %d times in %lf seconds\n", N_RAND, mean(rand_time));
 
+    printf("XOROSHIRO: %lf D/s\n", N_RAND / mean(xoroshiro_time));
+
+    #ifdef PCG_RANDOM
+        printf("PCG: %lf D/s\n", N_RAND / mean(pcg_time));
+    #endif
 
     Matrix_free(fn_time);
     Matrix_free(loop_time);
+    #ifdef PCG_RANDOM
+        Matrix_free(pcg_time);
+    #endif
+    Matrix_free(xoroshiro_time);
     Matrix_free(m);
     Matrix_free(b);
     free(clock);

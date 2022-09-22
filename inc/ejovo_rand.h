@@ -13,7 +13,10 @@
 #include <limits.h>
 #include <stdio.h>
 #include <string.h>
-#include "pcg_variants.h"
+
+#ifdef PCG_RANDOM
+    #include "pcg_variants.h"
+#endif
 
 #define _USE_MATH_DEFINES // acces M_PI
 #ifndef M_PI
@@ -75,7 +78,10 @@ typedef struct xoshiro256ss_state {
 } xor_rng;
 
 extern xor_rng XOSHIRO_RNG;
-extern pcg64_random_t PCG64_RNG;
+
+#ifdef PCG_RANDOM
+    extern pcg64_random_t PCG64_RNG;
+#endif
 
 // Get x in [min, max]
 /**
@@ -119,14 +125,6 @@ uint64_t rol64(uint64_t x, int k);
  */
 void seed_xoshiro256ss(struct xoshiro256ss_state * state);
 
-void seed_pcg64(pcg64_random_t *rng);
-
-uint64_t pcg64_next(pcg64_random_t *rng);
-
-double pcg64_next_double(pcg64_random_t *rng);
-
-double get_double_pcg();
-
 /**
  * Print the 256 bits of state for an xoshiro256ss_state structure
  *
@@ -151,7 +149,20 @@ extern RNG_FN DEFAULT_RNG;
  *========================================================================**/
 uint64_t unif_xoroshiro();
 
-uint64_t unif_pcg();
+#ifdef PCG_RANDOM
+
+    uint64_t unif_pcg();
+
+    void seed_pcg64(pcg64_random_t *rng);
+
+    uint64_t pcg64_next(pcg64_random_t *rng);
+
+    double pcg64_next_double(pcg64_random_t *rng);
+
+    double get_double_pcg();
+
+#endif
+
 /**========================================================================
  *!                 Distributions with RNG argument
  *========================================================================**/

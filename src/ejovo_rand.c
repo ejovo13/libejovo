@@ -19,7 +19,10 @@ uint64_t rol64(uint64_t x, int k)
 }
 
 struct xoshiro256ss_state XOSHIRO_RNG = {0, 0, 0, 0};
-pcg64_random_t PCG64_RNG;
+
+#ifdef PCG_RANDOM
+    pcg64_random_t PCG64_RNG;
+#endif
 
 //seed xoshiro generator by getting 256 random bits from the getrandom system call.
 void seed_xoshiro256ss(struct xoshiro256ss_state * state) {
@@ -49,6 +52,8 @@ void seed_xoshiro256ss(struct xoshiro256ss_state * state) {
 
 }
 
+#ifdef PCG_RANDOM
+
 void seed_pcg64(pcg64_random_t *rng) {
 
     pcg128_t seeds[2];
@@ -60,6 +65,7 @@ uint64_t pcg64_next(pcg64_random_t *rng) {
     return pcg64_random_r(rng);
 }
 
+#endif
 // if I want this shit to work on macos, I need to user a different function than get random.
 
 
@@ -104,9 +110,12 @@ uint64_t unif_xoroshiro() {
     return xoshiro256ss(&XOSHIRO_RNG);
 }
 
+
+#ifdef PCG_RANDOM
 uint64_t unif_pcg() {
     return pcg64_next(&PCG64_RNG);
 }
+#endif
 /**========================================================================
  *!                 Distributions with RNG argument
  *========================================================================**/
@@ -189,7 +198,10 @@ double expd(double rate) {
 
 void ejovo_seed() {
     seed_xoshiro256ss(&XOSHIRO_RNG);
-    seed_pcg64(&PCG64_RNG);
+
+    #ifdef PCG_RANDOM
+        seed_pcg64(&PCG64_RNG);
+    #endif
 }
 
 // Create a shuffled array with elements 1 to n

@@ -16,7 +16,15 @@ find_library(PCG_RANDOM_LIBRARY
     REQUIRED
 )
 
-message("Found library: ${PCG_RANDOM_LIBRARY}")
+if (EXISTS ${PCG_RANDOM_LIBRARY})
+    message("Found library: ${PCG_RANDOM_LIBRARY}")
+    add_compile_options(-DPCG_RANDOM=1)
+endif()
+
+
+
+
+# If we actually found the library then when compiling use the flag -D
 
 set(INC ${PROJECT_SOURCE_DIR}/inc)
 set(SRC ${PROJECT_SOURCE_DIR}/src)
@@ -41,6 +49,7 @@ add_compile_options(
     # --coverage
     # -g
     # -pg
+    -O3
 
 )
 
