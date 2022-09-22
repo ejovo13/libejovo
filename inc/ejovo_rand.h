@@ -19,6 +19,34 @@
     #define M_PI 3.14159265358979323846
 #endif
 
+/**========================================================================
+ *!                           Dependendy
+ *========================================================================**/
+// !!!!! This file depends on a pcg generator being downloaded and who's
+
+/**========================================================================
+ *!                           PCG
+ *========================================================================**/
+/// C translation of rust's implementation of the PCG64
+
+// typedef struct {
+
+//     uint64_t state[2];
+//     uint64_t increment[2];
+
+// } pcg64_t;
+
+// typedef struct {
+//     uint64_t low;
+//     uint64_t high;
+// } uint128_t;
+
+
+
+// // implement function to add a 128bit integer
+// uint64_t * u128_add(uint128_t a, uint128_t b) {
+    
+// }
 
 
 /**@file

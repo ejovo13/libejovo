@@ -9,6 +9,15 @@ include(CTest)
 
 # include(GNU)
 
+# We must have the c implementation of pcg-c installed
+# which can be found here: https://github.com/imneme/pcg-c
+find_library(PCG_RANDOM_LIBRARY
+    NAMES pcg_random 
+    REQUIRED
+)
+
+message("Found library: ${PCG_RANDOM_LIBRARY}")
+
 set(INC ${PROJECT_SOURCE_DIR}/inc)
 set(SRC ${PROJECT_SOURCE_DIR}/src)
 set(TEST ${PROJECT_SOURCE_DIR}/test)

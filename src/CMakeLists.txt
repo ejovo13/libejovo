@@ -28,6 +28,7 @@ set (EJOVO_LIB
     ejovo_list.c
     ejovo_bin.c
     ejovo_dataframe.c
+    ejovo_time.c
 
 )
 
@@ -47,6 +48,7 @@ set (EJOVO_LIB_HEADERS
     ${INC}/ejovo_crypto.h
     ${INC}/ejovo_bin.h
     ${INC}/ejovo_dataframe.h
+    ${INC}/ejovo_time.h
     ${INC}/ejovo.h
 )
 
@@ -67,6 +69,16 @@ set (EJOVO_MATRIX_HEADERS
     ${INC}/matrix/matrix.h
 )
 
+# set (PCG_HEADERS
+
+#     ${INC}/pcg/
+
+
+
+
+
+# )
+
 message("Current source: ${CMAKE_CURRENT_SOURCE_DIR}")
 message("Source: ${CMAKE_SOURCE_DIR}")
 message("Project: ${PROJECT_SOURCE_DIR}")
@@ -74,6 +86,7 @@ message("Project: ${PROJECT_SOURCE_DIR}")
 add_subdirectory(matrix)
 
 add_library(ejovo STATIC ${EJOVO_LIB} $<TARGET_OBJECTS:ejovo_matrix>)
+target_link_libraries(ejovo PUBLIC ${PCG_RANDOM_LIBRAY})
 if (NOT WIN32)
     target_link_libraries(ejovo m)
 endif()
