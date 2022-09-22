@@ -13,7 +13,7 @@ include(CTest)
 # which can be found here: https://github.com/imneme/pcg-c
 find_library(PCG_RANDOM_LIBRARY
     NAMES pcg_random 
-    REQUIRED
+    # REQUIRED
 )
 
 if (EXISTS ${PCG_RANDOM_LIBRARY})
