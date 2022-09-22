@@ -6,13 +6,14 @@
 #include <math.h>
 #include <time.h>
 #include <stdint.h>
-#ifdef linux
+#ifdef __linux__
     #include <sys/random.h>
     #include <sys/types.h>
 #endif
 #include <limits.h>
 #include <stdio.h>
 #include <string.h>
+#include "pcg_variants.h"
 
 #define _USE_MATH_DEFINES // acces M_PI
 #ifndef M_PI
@@ -20,7 +21,7 @@
 #endif
 
 /**========================================================================
- *!                           Dependendy
+ *!                           Dependency
  *========================================================================**/
 // !!!!! This file depends on a pcg generator being downloaded and who's
 
@@ -74,6 +75,7 @@ typedef struct xoshiro256ss_state {
 } xor_rng;
 
 extern xor_rng XOSHIRO_RNG;
+extern pcg64_random_t PCG64_RNG;
 
 // Get x in [min, max]
 /**
@@ -117,6 +119,14 @@ uint64_t rol64(uint64_t x, int k);
  */
 void seed_xoshiro256ss(struct xoshiro256ss_state * state);
 
+void seed_pcg64(pcg64_random_t *rng);
+
+uint64_t pcg64_next(pcg64_random_t *rng);
+
+double pcg64_next_double(pcg64_random_t *rng);
+
+double get_double_pcg();
+
 /**
  * Print the 256 bits of state for an xoshiro256ss_state structure
  *
@@ -133,17 +143,68 @@ void print_xoshiro256ss_state(struct xoshiro256ss_state * state);
 uint64_t xoshiro256ss(struct xoshiro256ss_state *state);
 
 
+typedef uint64_t (*RNG_FN) (); // return an int between [0, ULONG_MAX]
+extern RNG_FN DEFAULT_RNG;
+
+/**========================================================================
+ *!                   Different unif(0, ULONG_MAX) generators
+ *========================================================================**/
+uint64_t unif_xoroshiro();
+
+uint64_t unif_pcg();
+/**========================================================================
+ *!                 Distributions with RNG argument
+ *========================================================================**/
+double std_unifd_rng(RNG_FN rng);
+
+
+double unifd_rng(double a, double b, RNG_FN rng);
+
+
+int unifi_rng(int a, int b, RNG_FN rng);
+
+// Generate a variate that follows the standard normal distribution using the Box-Muller transform
+double std_norm_rng(RNG_FN rng);
+
+double normd_rng(double mean, double std, RNG_FN rng);
+
+/**========================================================================
+ *!                           Default generators
+ *========================================================================**/ 
+// Unif(0, 1)
+double std_unifd();
+
+// Unif(a, b)
+double unifd(double a, double b);
+
+// Discrete uniform distribution (a, b)
+int unifi(int a, int b);
+
+// Norm(0, 1)
+double std_norm();
+
+double normd(double mean, double std);
+
+
 /**
  * Get 32 bits of data from an xor_rng and interpret them as an integer
  *
  */
-int get_int_xoshiro(struct xoshiro256ss_state *state);
+int xoroshiro_get_int(struct xoshiro256ss_state *state);
 
-/**
- * Return a Integer that follows a uniform distribution [a,b]
- *
- */
-int unif(int a, int b);
+// Use the xoshiro rng to get a 
+// uint64_t unif_xoroshiro();
+
+int unifi(int a, int b);
+
+int unifi_gen(int a, int b, RNG_FN);
+
+// /**
+//  * Return a Integer that follows a uniform distribution [a,b]
+//  *
+//  */
+// int unif(int a, int b);
+
 
 /**
  * @brief Return a uniform random variabl X ~ [a, b)

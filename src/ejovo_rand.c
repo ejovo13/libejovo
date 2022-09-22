@@ -19,6 +19,7 @@ uint64_t rol64(uint64_t x, int k)
 }
 
 struct xoshiro256ss_state XOSHIRO_RNG = {0, 0, 0, 0};
+pcg64_random_t PCG64_RNG;
 
 //seed xoshiro generator by getting 256 random bits from the getrandom system call.
 void seed_xoshiro256ss(struct xoshiro256ss_state * state) {
@@ -46,6 +47,17 @@ void seed_xoshiro256ss(struct xoshiro256ss_state * state) {
     #endif
     // else, use the generic rand function to get 32 bits of data 8 times
 
+}
+
+void seed_pcg64(pcg64_random_t *rng) {
+
+    pcg128_t seeds[2];
+    getrandom((void *) seeds, 16, 0);
+    pcg64_srandom_r(rng, seeds[0], seeds[1]);
+}
+
+uint64_t pcg64_next(pcg64_random_t *rng) {
+    return pcg64_random_r(rng);
 }
 
 // if I want this shit to work on macos, I need to user a different function than get random.
@@ -76,7 +88,7 @@ uint64_t xoshiro256ss(struct xoshiro256ss_state *state)
 	return result;
 }
 
-int get_int_xoshiro(struct xoshiro256ss_state *state) {
+int xoroshiro_get_int(struct xoshiro256ss_state *state) {
 // interpret the first 32 bits of the 64 bits as an integer. - this returns a uniform X ~ [0, 2147483647]
     int *iptr = NULL;
     uint64_t bits = xoshiro256ss(state);
@@ -85,44 +97,86 @@ int get_int_xoshiro(struct xoshiro256ss_state *state) {
     // return iptr[1];
 }
 
-// get a double in the range [0, 1]
-double get_double() {
-    uint64_t val = xoshiro256ss(&XOSHIRO_RNG);
-    return (double) val / (double) ULONG_MAX; // This is how we "take the top 53 bits I think........."
+/**========================================================================
+ *!                   Different unif(0, ULONG_MAX) generators
+ *========================================================================**/
+uint64_t unif_xoroshiro() {
+    return xoshiro256ss(&XOSHIRO_RNG);
 }
 
-int unif(int a, int b) {
-// return a random variable X ~ [a, b]
-    // int = get_int_xoshiro()
-    int spread = (b - a) + 1;
-    double x = get_double(); // returns a value in [0, 1)
-
-    return (int) floor(x * spread) + (a) ; // floor(x * spread) returns a vlue in [0, spread)
+uint64_t unif_pcg() {
+    return pcg64_next(&PCG64_RNG);
+}
+/**========================================================================
+ *!                 Distributions with RNG argument
+ *========================================================================**/
+double std_unifd_rng(RNG_FN rng) {
+    uint64_t val = rng();
+    return (double) val / (double) ULONG_MAX;
 }
 
-double unifd(double a, double b) {
 
+double unifd_rng(double a, double b, RNG_FN rng) {
     double spread = (b - a);
-
-    double x = get_double(); // returns a value in [0, 1)
-
+    double x = std_unifd_rng(rng);
     return x * spread + a;
 }
 
-// Generate a variate that follows the standard normal distribution using the Box-Muller transform
-double std_norm() {
 
-    double u1 = unifd(0, 1);
-    double u2 = unifd(0, 1);
+int unifi_rng(int a, int b, RNG_FN rng) {
+    int spread = (b - a) + 1;
+    double x = std_unifd_rng(rng);
+
+    return (int) floor(x * spread) + a;
+}
+
+// Generate a variate that follows the standard normal distribution using the Box-Muller transform
+double std_norm_rng(RNG_FN rng) {
+
+    double u1 = std_unifd_rng(rng);
+    double u2 = std_unifd_rng(rng);
 
     double R = sqrt(-2 * log(u1));
 
     return R * cos(2 * M_PI * u2);
 }
 
-double normd(double mean, double std) {
-    return (std_norm() * std) + mean;
+double normd_rng(double mean, double std, RNG_FN rng) {
+    return (std_norm_rng(rng) * std) + mean;
 }
+
+/**========================================================================
+ *!                           Default generators
+ *========================================================================**/ 
+RNG_FN DEFAULT_RNG = unif_xoroshiro;
+
+// Unif(0, 1)
+double std_unifd() {
+    std_unifd_rng(DEFAULT_RNG);
+}
+
+// Unif(a, b)
+double unifd(double a, double b) {
+    unifd_rng(a, b, DEFAULT_RNG);
+}
+
+// Discrete uniform distribution (a, b)
+int unifi(int a, int b) {
+    return unifi_rng(a, b, DEFAULT_RNG);
+}
+
+// Norm(0, 1)
+double std_norm() {
+    std_norm_rng(DEFAULT_RNG);
+}
+
+double normd(double mean, double std) {
+    normd_rng(mean, std, DEFAULT_RNG);
+}
+
+/**========================================================================
+ *!                           Old implementation
+ *========================================================================**/
 
 // Get a random variable folling the exponential distribution with rate parameter \lambda
 // ~ \exp(-\x), where \ is "\lambda"
@@ -135,6 +189,7 @@ double expd(double rate) {
 
 void ejovo_seed() {
     seed_xoshiro256ss(&XOSHIRO_RNG);
+    seed_pcg64(&PCG64_RNG);
 }
 
 // Create a shuffled array with elements 1 to n
@@ -150,7 +205,7 @@ int *fischer_yates(int n) {
     int tmp;
     // now go ahead and shuffle them
     for (int j = 0, i = n - 1; i > 0; i--) {
-        j = unif(0, i);
+        j = unifi(0, i);
         int tmp = arr[j];
         arr[j] = arr[i];
         arr[i] = tmp;
