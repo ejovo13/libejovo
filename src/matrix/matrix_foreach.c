@@ -55,7 +55,7 @@ void Matrix_foreach(Matrix *__A, EDITOR __fnc) {
     }
 }
 
-void Matrix_foreach_2(Matrix *__A, Matrix *__B, EDITOR_2 __fnc) {
+void Matrix_foreach_2(Matrix *__A, const Matrix *__B, EDITOR_2 __fnc) {
 
     for (size_t i = 0; i < __A->nrows; i++) {
         for (size_t j = 0; j < __A->ncols; j++) {

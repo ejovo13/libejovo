@@ -66,12 +66,12 @@ MATRIX_TYPE Vector_last(const Vector *__v);
 /**================================================================================================
  *!                                        Vector iterator functions
  *================================================================================================**/
-MatIter Vector_begin(Vector *__v);
+MatIter Vector_begin(const Vector *__v);
 
-MatIter Vector_end(Vector *__v);
+MatIter Vector_end(const Vector *__v);
 
 // Create a new vector iter starting at the ith position
-MatIter Vector_iter(Vector *__v, size_t i);
+MatIter Vector_iter(const Vector *__v, size_t i);
 
 MATRIX_TYPE Vector_max(const Vector *__v);
 

@@ -413,7 +413,7 @@ Matrix *Matrix_get_row(const Matrix *__A, size_t __i) {
  *================================================================================================**/
 
 // Extract submatrix __A(__istart:__iend, __jstart:__jend)
-Matrix * submat(Matrix * __A, size_t __istart, size_t __iend, size_t __jstart, size_t __jend) {
+Matrix * submat(const Matrix * __A, size_t __istart, size_t __iend, size_t __jstart, size_t __jend) {
 
     // printf("Entered submat with i0: %lu if: %lu j0: %lu jf: %lu\n", __istart, __iend, __jstart, __jend);
 
@@ -442,11 +442,11 @@ Matrix * submat(Matrix * __A, size_t __istart, size_t __iend, size_t __jstart, s
 }
 
 // Alternative spelling for object-oriented approach.
-Matrix * Matrix_submat(Matrix * __A, size_t __istart, size_t __iend, size_t __jstart, size_t __jend) {
+Matrix * Matrix_submat(const Matrix * __A, size_t __istart, size_t __iend, size_t __jstart, size_t __jend) {
     return submat(__A, __istart, __iend, __jstart, __jend);
 }
 
-Matrix * Matrix_minor(Matrix * __A, size_t __irow, size_t __icol) {
+Matrix * Matrix_minor(const Matrix * __A, size_t __irow, size_t __icol) {
 
     // assert(Matrix_is_square(__A));
 

@@ -73,7 +73,7 @@ DataFrame *newDataFrame(Chain *__chain, Space *__space);
 
 int dimDataFrame(const DataFrame *__df);
 
-typedef void (* string_vector_fn) (String *, Vector *);
+typedef void (* string_vector_fn) (const String *, const Vector *);
 typedef void (* string_fn) (String *);
 typedef void (* vector_fn) (Vector *);
 

@@ -34,7 +34,7 @@ void subscalar(MATRIX_TYPE *__el, MATRIX_TYPE __k);
 
 void Matrix_foreach(Matrix *__A, EDITOR __fnc);
 
-void Matrix_foreach_2(Matrix *__A, Matrix *__B, EDITOR_2 __fnc);
+void Matrix_foreach_2(Matrix *__A, const Matrix *__B, EDITOR_2 __fnc);
 
 void Matrix_foreach_k(Matrix *__A, EDITOR_K __fnc, MATRIX_TYPE __k);
 

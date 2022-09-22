@@ -126,15 +126,15 @@ MATRIX_TYPE Vector_last(const Vector *__v) {
 /**================================================================================================
  *!                                        Vector iterator functions
  *================================================================================================**/
-MatIter Vector_begin(Vector *__v) {
+MatIter Vector_begin(const Vector *__v) {
     return MatIter_new(matacc(__v, 0, 0), 1);
 }
 
-MatIter Vector_end(Vector *__v) {
+MatIter Vector_end(const Vector *__v) {
     return MatIter_new(Vector_access(__v, Vector_size(__v)), 1);
 }
 
-MatIter Vector_iter(Vector *__v, size_t __i) {
+MatIter Vector_iter(const Vector *__v, size_t __i) {
     MatIter it = {.ptr = Vector_access(__v, __i), .ptr_diff = 1};
     return it;
 }

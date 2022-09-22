@@ -52,9 +52,9 @@ Matrix *matsetind(Matrix *__m, const Matrix *__ind, const Matrix *__val);
 
 Matrix *Matrix_set_index(const Matrix *__m, const Matrix *__ind, const Matrix *__val);
 
-Matrix *Matrix_extract_rows(const Matrix *__m, const Index *__ind);
+Matrix *Matrix_extract_rows(const Matrix *__m, Index *__ind);
 
-Matrix *Matrix_extract_cols(const Matrix *__m, const Index *__ind);
+Matrix *Matrix_extract_cols(const Matrix *__m, Index *__ind);
 
 // Take a supposed index matrix and scrub it -- making sure that all of the elements fall within
 // the appropriate columns

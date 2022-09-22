@@ -65,7 +65,7 @@ Matrix *Matrix_as_stochastic(const Matrix *__m) {
 
     // first thing I should do is apply the absolute value function to the matrix
 
-    Matrix *m_pos = map(__m, abs);
+    Matrix *m_pos = map(__m, fabs);
 
     // No I want to normalize the rows based on their sums!!
     double sum = 0;

@@ -76,7 +76,7 @@ bool is_substr(const char * __s1, const char * __s2);
  *  Delete the substring from a given string, no matter how many times it appears in the string
  *
  */
-char * del_substr(const char * const __s1, const char * const __substr);
+char * del_substr(char * const __s1, const char * const __substr);
 
 /**
  * Ecrire une fonction qui prend une expression algebrique en entree et

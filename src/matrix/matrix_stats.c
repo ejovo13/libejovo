@@ -144,7 +144,7 @@ inline MATRIX_TYPE sum(const Matrix *__m) {
     // return Matrix_iterate(__m, MatIter_sum);
     MATRIX_TYPE out = 0;
     MATRIX_TYPE *data = __m->data;
-    const n = Matrix_size(__m);
+    const size_t n = Matrix_size(__m);
     for (int i = 0; i < n; i++) {
         out += data[i];
     }
@@ -180,7 +180,7 @@ MATRIX_TYPE mean_squared(const Matrix *__m) {
 }
 
 MATRIX_TYPE prod(const Matrix *__m) {
-    return Matrix_iterate(__m, Matrix_iter_prod);
+    return Matrix_iterate(__m, MatIter_prod);
 }
 
 // Implement the `cor` function to compute the correlation coefficient between two points

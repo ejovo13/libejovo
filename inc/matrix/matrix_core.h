@@ -35,7 +35,7 @@ Matrix * matclone(const Matrix *restrict __src);
 // Catch an unnamed Matrix pointer returned from the right side and store it in the
 // __lhs_ptr. Return the __rhs
 // This Is useful for preventing memory leaks for expressions of the type A = A * B
-Matrix *Matrix_catch(Matrix **__lhs_ptr, const Matrix *__anon_rhs);
+Matrix *Matrix_catch(Matrix **__lhs_ptr, Matrix *__anon_rhs);
 
 // Used to manage memory of anonymous Matrices that are the results of intermediate operations
 // FOr example Matrix_print(Matrix_mult(a, b))
@@ -44,7 +44,7 @@ Matrix *Matrix_catch(Matrix **__lhs_ptr, const Matrix *__anon_rhs);
 // Matrix_print(Matrix_anon(Matrix_mult(a, b)));
 // and finall, at the end of the program / scope call
 // Matrix_anon_free
-Matrix *Matrix_anon(const Matrix *__anon_rhs);
+Matrix *Matrix_anon(Matrix *__anon_rhs);
 
 void Matrix_anon_free();
 

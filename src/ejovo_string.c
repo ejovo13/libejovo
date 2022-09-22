@@ -244,7 +244,7 @@ bool is_substr(const char * __s1, const char * __s2) {
     return s2_chars_in_s1 == strlen(__s2);
 }
 
-char * del_substr(const char * const __s1, const char * const __substr) {
+char * del_substr(char * const __s1, const char * const __substr) {
 
     // this sounds like a job for RECURSION!!!!!!!!!!
     size_t len_substr = strlen(__substr);
@@ -324,7 +324,7 @@ bool est_bien_parenthesee(const char * const __expr) {
                     // if the status drops below zero, return false
                     // only return true if status == 0 at the end of reading the string
 
-    for(char * p = __expr; *p != '\0'; p ++) {
+    for(const char * p = __expr; *p != '\0'; p ++) {
 
         if ( *p == '(' ) {
             status ++;

@@ -309,14 +309,14 @@ Matrix *Matrix_set_index(const Matrix *__m, const Index *__ind, const Matrix *__
     return matsetind(m, __ind, __val);
 }
 
-Matrix *Matrix_extract_rows(const Matrix *__m, const Index *__ind) {
+Matrix *Matrix_extract_rows(const Matrix *__m, Index *__ind) {
 
     // First let's figure out the size of the resulting matrix.
     // Necessarily, the output will have __m->ncols cols whereas the number of
     // rows will depend on if the passed indices are legit or not
 
     int nrows = 0;
-    const Index *ind = NULL;
+    Index *ind = NULL;
 
     bool ind_newly_allocated = false;
 
@@ -351,7 +351,7 @@ Matrix *Matrix_extract_rows(const Matrix *__m, const Index *__ind) {
     return out;
 }
 
-Matrix *Matrix_extract_cols(const Matrix *__m, const Index *__ind) {
+Matrix *Matrix_extract_cols(const Matrix *__m, Index *__ind) {
 
     // First let's figure out the size of the resulting matrix.
     // Necessarily, the output will have __m->nrows rows whereas the number of
