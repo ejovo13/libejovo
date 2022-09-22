@@ -6,7 +6,7 @@ void init_tab(int __max, int *__tab, int __n) {
 
     for (int i = 0; i < __n; i++) {
 
-        __tab[i] = unif(0, __max);
+        __tab[i] = unifi(0, __max);
 
     }
 }

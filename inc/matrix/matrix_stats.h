@@ -85,3 +85,7 @@ MATRIX_TYPE cmoment(const Vector *__v, int __k);
 MATRIX_TYPE rmoment(const Vector *__v, int __k);
 
 Vector *linear_regression(const Vector *__x, const Vector *__y);
+
+Matrix *runif(int n, double a, double b);
+
+Matrix *runif_gen(int n, double a, double b, RNG_FN rng_fn);

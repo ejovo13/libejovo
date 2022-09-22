@@ -18,6 +18,8 @@ list(APPEND TESTS
     matcopycol
     all_mat
     time
+    pcg
+    # rand
 )
 
 list(APPEND TEST_LIBS

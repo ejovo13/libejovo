@@ -55,7 +55,7 @@ Prey *Prey_new(int __x, int __y) {
     prey->d_energy = PREY_D_ENERGY;
     prey->p_reproduce = PREY_P_REPRODUCE;
     prey->p_ch_dir = PREY_P_CHDIR;
-    prey->direction = unif(0, 3);
+    prey->direction = unifi(0, 3);
 
     prey->has_acted = true;
 
@@ -273,10 +273,10 @@ size_t Prey_count(Prey *__head) {
 void Prey_ch_dir(Prey *__prey) {
 
     // We should choose a direction that is not already occupied
-    enum Direction next_dir = unif(0, 3);
+    enum Direction next_dir = unifi(0, 3);
 
     while (next_dir == __prey->direction) { // while the direction guessed hasn't changed at all,
-        next_dir = unif(0, 3);
+        next_dir = unifi(0, 3);
     }
 
     __prey->direction = next_dir;
@@ -484,7 +484,7 @@ Pred *Pred_new(int __x, int __y) {
     pred->p_reproduce = PRED_P_REPRODUCE;
     pred->p_manger = PRED_P_MANGER;
     pred->p_ch_dir = PRED_P_CHDIR;
-    pred->direction = unif(0, 3);
+    pred->direction = unifi(0, 3);
 
     pred->has_acted = true;
 
@@ -701,10 +701,10 @@ size_t Pred_count(Pred *__head) {
 void Pred_ch_dir(Pred *__pred) {
 
     // We should choose a direction that is not already occupied
-    enum Direction next_dir = unif(0, 3);
+    enum Direction next_dir = unifi(0, 3);
 
     while (next_dir == __pred->direction) { // while the direction guessed hasn't changed at all,
-        next_dir = unif(0, 3);
+        next_dir = unifi(0, 3);
     }
 
     __pred->direction = next_dir;

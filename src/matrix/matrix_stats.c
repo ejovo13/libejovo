@@ -1,4 +1,5 @@
 #include "ejovo_matrix.h"
+#include "ejovo_rand.h"
 
 // Basic statistic routines that will operate on either vectors or a pair of MatIters
 
@@ -308,4 +309,22 @@ Vector *linear_regression(const Vector *__x, const Vector *__y) {
     Matrix_reset(&lhs);
 
     return a;
+}
+
+
+Matrix *runif(int n, double a, double b) {
+    return runif_gen(n, a, b, DEFAULT_RNG);
+}
+
+
+
+Matrix *runif_gen(int n, double a, double b, RNG_FN rng_fn) {
+
+    Matrix *out = Matrix_new(1, n);
+
+    for (int i = 0; i < n; i++) {
+        out->data[i] = unifd_rng(a, b, rng_fn);
+    }
+
+    return out;
 }

@@ -377,7 +377,7 @@ Matrix *Matrix_diagonal(size_t __n) {
 
     Matrix *A = Matrix_new(__n, __n);
     for (size_t i = 0; i < __n; i++) {
-        Matrix_set(A, i, i, unif(1, 10));
+        Matrix_set(A, i, i, unifi(1, 10));
     }
 
     return A;
@@ -388,17 +388,17 @@ Matrix *Matrix_tridiagonal(size_t __n) {
 
     Matrix *A = Matrix_new(__n, __n);
 
-    matset(A, 0, 0, unif(1, 10));
-    matset(A, 0, 1, unif(1, 10));
+    matset(A, 0, 0, unifi(1, 10));
+    matset(A, 0, 1, unifi(1, 10));
 
     for (size_t i = 1; i < __n-1; i++) {
-        matset(A, i, i - 1, unif(1, 10));
-        matset(A, i, i, unif(1, 10));
-        matset(A, i, i + 1, unif(1, 10));
+        matset(A, i, i - 1, unifi(1, 10));
+        matset(A, i, i, unifi(1, 10));
+        matset(A, i, i + 1, unifi(1, 10));
     }
 
-    matset(A, __n-1, __n-2, unif(1, 10));
-    matset(A, __n-1, __n-1, unif(1, 10));
+    matset(A, __n-1, __n-2, unifi(1, 10));
+    matset(A, __n-1, __n-1, unifi(1, 10));
 
     return A;
 
@@ -419,7 +419,7 @@ Matrix * Matrix_random(size_t __nrows, size_t __ncols, int __min, int __max) {
 
     for (size_t i = 0; i < __nrows; i++) {
         for (size_t j = 0; j < __ncols; j++) {
-            matset(m, i, j, unif(__min, __max));
+            matset(m, i, j, unifi(__min, __max));
         }
     }
 

@@ -157,7 +157,7 @@ Matrix *create_checkerboard(size_t __nrows, size_t __ncols) {
         for (size_t i = 0; i < __nrows; i++) {
             for (size_t j = 0; j < __ncols; j++) {
                 // matcpyele(m, i*3, i*3 + 2, j*3, j*3 + 2, get_piece_matrix(unif(0, 10)));
-                place_piece(m, unif(0,10), i, j);
+                place_piece(m, unifi(0,10), i, j);
                 // printf("i = %lu, j = %lu\n", i, j);
             }
         }
@@ -291,7 +291,7 @@ PIECE_TYPE get_open_piece_type(DIRECTION __d) {
 
     do {
 
-        rand_piece = unif(0, 10);
+        rand_piece = unifi(0, 10);
 
     } while (! is_piece_open(rand_piece, __d));
 
@@ -305,7 +305,7 @@ PIECE_TYPE get_open_piece_type_2(DIRECTION __d1, DIRECTION __d2) {
 
     do {
 
-        rand_piece = unif(0, 10);
+        rand_piece = unifi(0, 10);
 
     } while (!is_piece_open(rand_piece, __d1) || !is_piece_open(rand_piece, __d2));
 
@@ -375,7 +375,7 @@ void choose_next_cell(Matrix *__maze, size_t *__celli_ptr, size_t *__cellj_ptr) 
 
     while (!(right_checked && left_checked && down_checked && up_checked)) {
 
-        rand_cell = unif(1, 4);
+        rand_cell = unifi(1, 4);
 
         switch (rand_cell) {
 

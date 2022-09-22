@@ -16,5 +16,7 @@
 #include "ejovo_sort.h"
 #include "ejovo_string.h"
 // #include "hw_printer.h"
+#include "ejovo_time.h"
+#include "pcg_variants.h"
 
 #endif
