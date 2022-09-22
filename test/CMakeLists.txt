@@ -17,6 +17,7 @@ list(APPEND TESTS
     computational
     matcopycol
     all_mat
+    time
 )
 
 list(APPEND TEST_LIBS
@@ -44,7 +45,8 @@ macro(ejovo_add_test TESTNAME)
     add_executable(${TEST_BIN} "${TESTNAME}.c")
     target_link_libraries(${TEST_BIN} ${TEST_LIBS})
     target_include_directories(${TEST_BIN} PUBLIC ${TEST_INC})
-    target_compile_options(${TEST_BIN} PUBLIC -g)
+    target_compile_options(${TEST_BIN} PUBLIC -g -O3)
+    # target_compile_options(${TEST_BIN} PUBLIC -g -O0)
     set_target_properties(${TEST_BIN}
         PROPERTIES
         # OUTPUT_NAME ${TESTNAME}

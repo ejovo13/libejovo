@@ -340,3 +340,14 @@ Vector *getColDF(const DataFrame *__df, int __j) {
     if (it) return it->data;
     else return NULL;
 }
+
+Vector *save_doubles(double_fn fn, int n) {
+    // Allocate a row vector of appropriate space
+    Vector *out = Matrix_new(1, n);
+
+    for (int i = 0; i < Matrix_size(out); i++) {
+        out->data[i] = fn();
+    }
+
+    return out;
+}

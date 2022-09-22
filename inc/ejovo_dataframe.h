@@ -93,3 +93,13 @@ void writeCSV(const DataFrame *__df, const char *__filename);
 // Return a pointer to the column in question
 // Columns shall be ZERO indexed
 Vector *getColDF(const DataFrame *__df, int __j);
+
+/**========================================================================
+ *!                           History functions
+ *========================================================================**/ 
+// Return a vector of doubles that is the result of some
+// function call whose return is a double and whose input is
+// null
+typedef double (*double_fn)(void);
+
+Vector *save_doubles(double_fn fn, int n);
