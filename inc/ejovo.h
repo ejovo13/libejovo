@@ -17,6 +17,10 @@
 #include "ejovo_string.h"
 // #include "hw_printer.h"
 #include "ejovo_time.h"
-#include "pcg_variants.h"
+
+#ifdef PCG_RANDOM
+    #include "pcg_variants.h"
+#endif
+
 
 #endif
