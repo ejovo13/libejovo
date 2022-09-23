@@ -44,7 +44,7 @@ add_compile_options(
     $<$<CONFIG:DEBUG>:-Og>
     # -Wno-unused-function
     # -Wno-unused-value
-    -Werror
+    # -Werror
     # -Wimplicit
     # -Wno-incompatible-pointer-types-discards-qualifiers
     # -fprofile-arcs
