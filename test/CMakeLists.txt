@@ -19,6 +19,7 @@ list(APPEND TESTS
     all_mat
     time
     pcg
+    benchmark
     # rand
 )
 
