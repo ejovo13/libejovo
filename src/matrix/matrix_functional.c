@@ -165,6 +165,7 @@ MATRIX_TYPE last(const Matrix *__m) {
     return Matrix_last(__m);
 }
 
+// return the initial part of a Vector; init([A]:An) -> [A]
 Vector *init (const Matrix *__m) {
     if (Matrix_size(__m) <= 1) return NULL;
 

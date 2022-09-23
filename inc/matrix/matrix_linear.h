@@ -33,9 +33,29 @@ double Matrix_det(const Matrix * __A);
 MATRIX_TYPE matcdr_check(const Matrix *__A, const Matrix *__B, size_t __irow, size_t __icol);
 
 // Compute the dot product without checking any indices
-MATRIX_TYPE matcdr(const Matrix *__A, const Matrix *__B, size_t __irow, size_t __icol);
+// Compute the dot product without checking any indices
+static inline MATRIX_TYPE matcdr(const Matrix *__A, const Matrix *__B, size_t __irow, size_t __icol) {
+        MATRIX_TYPE inner_product = 0;
+        for (size_t i = 0; i < __A->ncols; i++) {
+            inner_product += (matat(__A, __irow, i) * matat(__B, i, __icol));
+        }
+        return inner_product;
+}
 
-Matrix *matmul(const Matrix *__A, const Matrix *__B);
+static inline Matrix *matmul(const Matrix *__A, const Matrix *__B) {
+
+    Matrix *product = Matrix_new(__A->nrows, __B->ncols);
+
+    if (product){
+        for (size_t i = 0; i < __A->nrows; i++) {
+            for (size_t j = 0; j < __B->ncols; j++) {
+                matset(product, i, j, matcdr(__A, __B, i, j));
+            }
+        }
+    }
+
+    return product;
+}
 
 Matrix * Matrix_multiply(const Matrix *__A, const Matrix *__B);
 

@@ -4,11 +4,6 @@
 #include "ejovo_matrix.h"
 // A new typedef of "Index" is a type of Vector whose values are integers
 
-static bool is_int(double x) {
-    return x == floor(x);
-}
-
-
 // Use your functional tools to simply cast __m to a floor
 Vector *Matrix_as_index(const Matrix *__m) {
     return apply(map(__m, floor), fabs); // Ok this is neat but now I think that it actually has 0 utility...
@@ -399,38 +394,38 @@ Matrix *Matrix_extract_cols(const Matrix *__m, Index *__ind) {
  *================================================================================================**/
 
 // Return true if all of the elements in __ind are valid column indices of __m
-static bool are_col_indices_valid(const Matrix *__m, const Index *__ind) {
+// static bool are_col_indices_valid(const Matrix *__m, const Index *__ind) {
 
-    // loop through the __index vector
-    MatIter it = Matrix_begin(__ind);
-    const MatIter end = Matrix_begin(__ind);
+//     // loop through the __index vector
+//     MatIter it = Matrix_begin(__ind);
+//     const MatIter end = Matrix_begin(__ind);
 
-    for(it; !MatIter_cmp(it, end); it = MatIter_next(it)) {
+//     for(it; !MatIter_cmp(it, end); it = MatIter_next(it)) {
 
-        double val = MatIter_value(it);
-        // make sure the elements of __ind are positive, integers, and within __m's column range
-        if (val < 0 || !is_int(val) || val >= __m->ncols) return false;
-    }
+//         double val = MatIter_value(it);
+//         // make sure the elements of __ind are positive, integers, and within __m's column range
+//         if (val < 0 || !is_int(val) || val >= __m->ncols) return false;
+//     }
 
-    return true;
-}
+//     return true;
+// }
 
 // Return true if all of the elements in __ind are valid column indices of __m
-static bool are_row_indices_valid(const Matrix *__m, const Index *__ind) {
+// static bool are_row_indices_valid(const Matrix *__m, const Index *__ind) {
 
-    // loop through the __index vector
-    MatIter it = Matrix_begin(__ind);
-    const MatIter end = Matrix_begin(__ind);
+//     // loop through the __index vector
+//     MatIter it = Matrix_begin(__ind);
+//     const MatIter end = Matrix_begin(__ind);
 
-    for(it; !MatIter_cmp(it, end); it = MatIter_next(it)) {
+//     for(it; !MatIter_cmp(it, end); it = MatIter_next(it)) {
 
-        double val = MatIter_value(it);
-        // make sure the elements of __ind are positive, integers, and within __m's column range
-        if (val < 0 || !is_int(val) || val >= __m->nrows) return false;
-    }
+//         double val = MatIter_value(it);
+//         // make sure the elements of __ind are positive, integers, and within __m's column range
+//         if (val < 0 || !is_int(val) || val >= __m->nrows) return false;
+//     }
 
-    return true;
-}
+//     return true;
+// }
 
 // I want to return the index of the max or min element.
 int MatIter_max_index(MatIter begin, const MatIter end) {

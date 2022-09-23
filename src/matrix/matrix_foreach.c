@@ -2,45 +2,45 @@
 // looping through all of the columns of a matrix, in essence this file deals with iteration
 #include "ejovo_matrix.h"
 
-/**================================================================================================
- *!                                        Single functions
- *================================================================================================**/
+// /**================================================================================================
+//  *!                                        Single functions
+//  *================================================================================================**/
 
-// series of functions used to add two elements that Matrix_access pointers are pointing to
-inline void add_each(MATRIX_TYPE *__a, MATRIX_TYPE *__b) {
-    (*__a) += (*__b);
-}
+// // series of functions used to add two elements that Matrix_access pointers are pointing to
+// inline void add_each(MATRIX_TYPE *__a, MATRIX_TYPE *__b) {
+//     (*__a) += (*__b);
+// }
 
-// I'm going to want to use this for computing the LU decomposition
-inline void sub_each(MATRIX_TYPE *__a, MATRIX_TYPE *__b) {
-    (*__a) -= (*__b);
-}
+// // I'm going to want to use this for computing the LU decomposition
+// inline void sub_each(MATRIX_TYPE *__a, MATRIX_TYPE *__b) {
+//     (*__a) -= (*__b);
+// }
 
-inline void mult_each(MATRIX_TYPE *__a, MATRIX_TYPE *__b) {
-    (*__a) *= (*__b);
-}
+// inline void mult_each(MATRIX_TYPE *__a, MATRIX_TYPE *__b) {
+//     (*__a) *= (*__b);
+// }
 
-inline void div_each(MATRIX_TYPE *__a, MATRIX_TYPE *__b) {
-    (*__a) /= (*__b);
-}
+// inline void div_each(MATRIX_TYPE *__a, MATRIX_TYPE *__b) {
+//     (*__a) /= (*__b);
+// }
 
-//* Matrix times scalar
+// //* Matrix times scalar
 
-inline void multscalar(MATRIX_TYPE *__el, MATRIX_TYPE __k) {
-    (*__el) *= __k;
-}
+// inline void multscalar(MATRIX_TYPE *__el, MATRIX_TYPE __k) {
+//     (*__el) *= __k;
+// }
 
-inline void addscalar(MATRIX_TYPE *__el, MATRIX_TYPE __k) {
-    (*__el) += __k;
-}
+// inline void addscalar(MATRIX_TYPE *__el, MATRIX_TYPE __k) {
+//     (*__el) += __k;
+// }
 
-inline void divscalar(MATRIX_TYPE *__el, MATRIX_TYPE __k) {
-    (*__el) /= __k;
-}
+// inline void divscalar(MATRIX_TYPE *__el, MATRIX_TYPE __k) {
+//     (*__el) /= __k;
+// }
 
-inline void subscalar(MATRIX_TYPE *__el, MATRIX_TYPE __k) {
-    (*__el) -= __k;
-}
+// inline void subscalar(MATRIX_TYPE *__el, MATRIX_TYPE __k) {
+//     (*__el) -= __k;
+// }
 
 /**================================================================================================
  *!                                        Foreach loops

@@ -10,25 +10,62 @@
  *================================================================================================**/
 
 // perform literally 0 checks, just allocate the space for a new matrix
-Matrix *matalloc(size_t __nrows, size_t __ncols);
+// Matrix *matalloc(size_t __nrows, size_t __ncols);
+
+// perform literally 0 checks, just allocate the space for a new matrix
+static inline Matrix *matalloc(size_t __nrows, size_t __ncols) {
+
+    Matrix *x = (Matrix *) malloc(sizeof(Matrix));
+    MATRIX_TYPE *data = (MATRIX_TYPE *) malloc(sizeof(MATRIX_TYPE) * (__nrows * __ncols));
+    x->data = data;
+    x->nrows = __nrows;
+    x->ncols = __ncols;
+
+    return x;
+}
 
 Matrix *vec(double __k);
 
 Matrix *anon(int __count, ...);
 
 // low level function to literally just free both pointers
-void matfree(Matrix *__A);
+static inline void matfree(Matrix *__A) {
+    free(__A->data); // if data is null, don't call free on it!!!
+    free(__A);
+}
 
 // Free the memory associated with the matrix and then free the pointer itself
-void Matrix_free(Matrix *__A);
+static inline void Matrix_free(Matrix *__A) {
+    if (__A) {
+        if (__A->data) free(__A->data);
+        free(__A);
+    }
+}
 
 // Free the memeory and set the pointer equal to NULL
-void Matrix_reset(Matrix **__A_ptr);
+static inline void Matrix_reset(Matrix **__A_ptr) {
+    if (*__A_ptr) {
+        if ((*__A_ptr)->data) free((*__A_ptr)->data);
+        free (*__A_ptr);
+    }
+
+    *__A_ptr = NULL;
+}
 
 // Copy the bytes
 // this is a utility function and should not be used by the end user
-static bool matcpy(Matrix *restrict __dest, const Matrix *restrict __src);
+static inline bool matcpy(Matrix *restrict __dest, const Matrix *restrict __src) {
 
+    // Copy the bytes of __src->data into __dest->data
+    memcpy(__dest->data, __src->data, sizeof(MATRIX_TYPE)*(__src->nrows * __src->ncols));
+    __dest->ncols = __src->ncols;
+    __dest->nrows = __src->nrows;
+    if(__dest && __src && __dest->data) { // if all the pointers are not null, return true
+        return  true;
+    } else {
+        return false;
+    }
+}
 // copy the contents of matrix __src into __dest
 Matrix * matclone(const Matrix *restrict __src);
 

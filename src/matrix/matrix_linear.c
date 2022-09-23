@@ -114,28 +114,28 @@ MATRIX_TYPE matcdr_check(const Matrix *__A, const Matrix *__B, size_t __irow, si
 }
 
 // Compute the dot product without checking any indices
-MATRIX_TYPE matcdr(const Matrix *__A, const Matrix *__B, size_t __irow, size_t __icol) {
-        MATRIX_TYPE inner_product = 0;
-        for (size_t i = 0; i < __A->ncols; i++) {
-            inner_product += (matat(__A, __irow, i) * matat(__B, i, __icol));
-        }
-        return inner_product;
-}
+// inline MATRIX_TYPE matcdr(const Matrix *__A, const Matrix *__B, size_t __irow, size_t __icol) {
+//         MATRIX_TYPE inner_product = 0;
+//         for (size_t i = 0; i < __A->ncols; i++) {
+//             inner_product += (matat(__A, __irow, i) * matat(__B, i, __icol));
+//         }
+//         return inner_product;
+// }
 
-Matrix *matmul(const Matrix *__A, const Matrix *__B) {
+// inline Matrix *matmul(const Matrix *__A, const Matrix *__B) {
 
-    Matrix *product = Matrix_new(__A->nrows, __B->ncols);
+//     Matrix *product = Matrix_new(__A->nrows, __B->ncols);
 
-    if (product){
-        for (size_t i = 0; i < __A->nrows; i++) {
-            for (size_t j = 0; j < __B->ncols; j++) {
-                matset(product, i, j, matcdr(__A, __B, i, j));
-            }
-        }
-    }
+//     if (product){
+//         for (size_t i = 0; i < __A->nrows; i++) {
+//             for (size_t j = 0; j < __B->ncols; j++) {
+//                 matset(product, i, j, matcdr(__A, __B, i, j));
+//             }
+//         }
+//     }
 
-    return product;
-}
+//     return product;
+// }
 
 Matrix * Matrix_multiply(const Matrix *__A, const Matrix *__B) {
 
@@ -251,17 +251,24 @@ Matrix *Matrix_hadamard(const Matrix *__A, const Matrix *__B) {
 // Subtract matrix __B from __A, modifying __A in place!
 void matsub(Matrix *__A, const Matrix *__B) {
 
-    MATRIX_TYPE *a = NULL;
-    MATRIX_TYPE *b = NULL;
+    // MATRIX_TYPE *a = NULL;
+    // MATRIX_TYPE *b = NULL;
 
-    for (size_t i = 0; i < __A->nrows; i++) {
-        for (size_t j = 0; j < __A->ncols; j++) {
+    // for (size_t i = 0; i < __A->nrows; i++) {
+    //     for (size_t j = 0; j < __A->ncols; j++) {
 
-            a = matacc(__A, i, j);
-            b = matacc(__B, i, j);
+    //         a = matacc(__A, i, j);
+    //         b = matacc(__B, i, j);
 
-            *a -= *b;
-        }
+    //         *a -= *b;
+    //     }
+    // }
+
+    // We are assuming that the shape of __A and __B is the same. 
+    const size_t n = Matrix_size(__A); 
+
+    for (size_t i = 0; i < n; i++) {
+        __A->data[i] -= __B->data[i];
     }
 }
 
@@ -629,7 +636,7 @@ Vector *jacobi_iteration(const Matrix *__A, const Vector *__b, const Vector *__x
         }
 
         if (all_res_pass) {
-            printf("Breaking at %d steps\n", nsteps);
+            printf("Breaking at %ld steps\n", nsteps);
             break;
         }
 
@@ -638,7 +645,7 @@ Vector *jacobi_iteration(const Matrix *__A, const Vector *__b, const Vector *__x
 
     if (nsteps >= MAX_STEP_SIZE) perror("Jacobi iteration reached MAX_STEP_SIZE");
 
-    printf("Jacobi iteration ran for %d steps\n", nsteps);
+    printf("Jacobi iteration ran for %ld steps\n", nsteps);
 
     Matrix_free(res);
 

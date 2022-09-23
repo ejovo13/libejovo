@@ -8,25 +8,45 @@
  *!                                        Single functions
  *================================================================================================**/
 
+/**================================================================================================
+ *!                                        Single functions
+ *================================================================================================**/
+
 // series of functions used to add two elements that Matrix_access pointers are pointing to
-void add_each(MATRIX_TYPE *__a, MATRIX_TYPE *__b);
+static inline void add_each(MATRIX_TYPE *__a, MATRIX_TYPE *__b) {
+    (*__a) += (*__b);
+}
 
 // I'm going to want to use this for computing the LU decomposition
-void sub_each(MATRIX_TYPE *__a, MATRIX_TYPE *__b);
+static inline void sub_each(MATRIX_TYPE *__a, MATRIX_TYPE *__b) {
+    (*__a) -= (*__b);
+}
 
-void mult_each(MATRIX_TYPE *__a, MATRIX_TYPE *__b);
+static inline void mult_each(MATRIX_TYPE *__a, MATRIX_TYPE *__b) {
+    (*__a) *= (*__b);
+}
 
-void div_each(MATRIX_TYPE *__a, MATRIX_TYPE *__b);
+static inline void div_each(MATRIX_TYPE *__a, MATRIX_TYPE *__b) {
+    (*__a) /= (*__b);
+}
 
 //* Matrix times scalar
 
-void multscalar(MATRIX_TYPE *__el, MATRIX_TYPE __k);
+static inline void multscalar(MATRIX_TYPE *__el, MATRIX_TYPE __k) {
+    (*__el) *= __k;
+}
 
-void addscalar(MATRIX_TYPE *__el, MATRIX_TYPE __k);
+static inline void addscalar(MATRIX_TYPE *__el, MATRIX_TYPE __k) {
+    (*__el) += __k;
+}
 
-void divscalar(MATRIX_TYPE *__el, MATRIX_TYPE __k);
+static inline void divscalar(MATRIX_TYPE *__el, MATRIX_TYPE __k) {
+    (*__el) /= __k;
+}
 
-void subscalar(MATRIX_TYPE *__el, MATRIX_TYPE __k);
+static inline void subscalar(MATRIX_TYPE *__el, MATRIX_TYPE __k) {
+    (*__el) -= __k;
+}
 
 /**================================================================================================
  *!                                        Foreach loops

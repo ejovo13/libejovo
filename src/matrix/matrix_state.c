@@ -54,6 +54,6 @@ bool Matrix_is_vec(const Matrix *__A) {
 }
 
 // Return the limiting dimension of __A.
-inline size_t Matrix_rect_limit(const Matrix *__A) {
+size_t Matrix_rect_limit(const Matrix *__A) {
     return __A->nrows < __A->ncols ? __A->nrows : __A->ncols;
 }

@@ -139,16 +139,16 @@ MATRIX_TYPE mean(const Matrix *__m) {
     return Matrix_iterate(__m, MatIter_mean);
 }
 
-inline MATRIX_TYPE sum(const Matrix *__m) {
+MATRIX_TYPE sum(const Matrix *__m) {
     // return MatIter_sum(Matrix_begin(__m), Matrix_end(__m));
     // return Matrix_iterate(__m, MatIter_sum);
-    MATRIX_TYPE out = 0;
+    MATRIX_TYPE somme = 0;
     MATRIX_TYPE *data = __m->data;
     const size_t n = Matrix_size(__m);
     for (int i = 0; i < n; i++) {
-        out += data[i];
+        somme += data[i];
     }
-    return out;
+    return somme;
 }
 
 MATRIX_TYPE std(const Matrix *__m) {

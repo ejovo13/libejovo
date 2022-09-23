@@ -41,6 +41,8 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${LIB})
 add_compile_options(
 
     # -Wall
+    # -Wno-unused-function
+    # -Wno-unused-value
     # -Werror
     # -Wimplicit
     # -Wno-incompatible-pointer-types-discards-qualifiers
