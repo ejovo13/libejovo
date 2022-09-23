@@ -86,7 +86,11 @@ MATRIX_TYPE rmoment(const Vector *__v, int __k);
 
 Vector *linear_regression(const Vector *__x, const Vector *__y);
 
-Vector *logistical_regression(const Vector *__x, const Vector *__y);
+Vector *loglog_regression(const Vector *__x, const Vector *__y);
+
+Vector *least_squares(const Vector *__x, const Vector *__y, int degree);
+
+
 
 Matrix *runif(int n, double a, double b);
 

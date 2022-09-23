@@ -180,12 +180,39 @@ double compute_flops_On2(int n) {
     Clock_toc(my_clock);
     double op_time = elapsed_time(my_clock); 
     double op_per_s = (n * n) / op_time;
-    printf("%d, %lf, %lf, %.5e\n", n, init_time, op_time, op_per_s);
+    // printf("%d, %lf, %lf, %.5e\n", n, init_time, op_time, op_per_s);
     print_double_human(op_per_s);
     printf("FLOPS\n");
     free(my_clock);
 
     return op_time;
+}
+
+// Write a regression 
+void write_regression(Vector *x, Vector *y) {
+
+}
+
+// [2.4 12.5 -2.4 18.9] -> 2.4*x**0 + 12.5*x**1 + -2.4*x**2 + 18.9*x**3
+void print_polynomial(const Vector *a) {
+
+    const size_t degree = length(a) - 1;
+
+    for (int i = 0; i < degree; i++) {
+        printf("%lf*x**%d + ", a->data[i], i);
+    }
+
+    printf("%lf*x**%d\n", a->data[degree], degree);
+
+} 
+
+
+double f(double x) {
+    return 3.4 * pow(x, 3);
+}
+
+double f2(double x) {
+    return 4.5 * pow(x, 5.8) + 15.3 * pow(x, 4.3) + 2.4 * pow(x, 1.8) + 3.4 * pow(x, .5);
 }
 
 int main() {
@@ -220,11 +247,11 @@ int main() {
     Vector *N = reshape(logspace(1, 4, len), len, 1);
     Vector *op_times = Matrix_new(len, 1);
 
-    Matrix_print(N);
-    Matrix_print(op_times);
+    // Matrix_print(N);
+    // Matrix_print(op_times);
 
-    // Count the number of flops
-    printf("n, init_time, op_time, flops\n");
+    // // Count the number of flops
+    // printf("n, init_time, op_time, flops\n");
     for (int i = 0; i < length(N); i++) {
     //    compute_flops(N->data[i]); 
        op_times->data[i] = compute_flops_On2(N->data[i]); 
@@ -235,20 +262,40 @@ int main() {
 
     writeGP(df, "test_bench.gp");
 
-    Vector *x = reshape(linspace(2, 10, 100), 100, 1);
+    Vector *x = reshape(linspace(2, 100, 1000), 100, 1);
     // Vector *y = map(x, log);
-    Vector *y = Matrix_clone(x);
+    Vector *y = map(x, x_cubed);
+    // Vector *y = Matrix_clone(x);
 
-    Vector *a_lin = logistical_regression(N, op_times);
+    Vector *a_lin = loglog_regression(N, op_times);
     Vector *a_log = linear_regression(N, op_times);
-    Vector *xy_lin = linear_regression(x, y);
-    Vector *xy_log = logistical_regression(x, y);
+    // Vector *xy_lin = linear_regression(x, y);
+    // Vector *xy_log = logistical_regression(x, y);
+    Vector *x3_reg = least_squares(x, y, 3);
+    Vector *x3_log = loglog_regression(x, y);
+    Vector *fn_reg = least_squares(x, map(x, f), 3);
+    Vector *f2_log = loglog_regression(x, map(x, f2));
+    // Vector *
+
+    print_polynomial(x3_log);
+    print_polynomial(fn_reg);
+    print_polynomial(f2_log);
+
+    DataFrame *df2 = newDataFrame(newChainVar(4, "x", "y", "fx", "f2"),
+        newSpaceVar(4, x, y, map(x, f), map(x, f2)));
+
+    writeGP(df2, "test_bench2.gp");
+
+
 
 
     // Matrix_print(a_lin);
     // Matrix_print_fixed(a_log);
-    Matrix_print(xy_lin);
-    Matrix_print(xy_log);
+    // Matrix_print(xy_lin);
+    // Matrix_print(xy_log);
+    Matrix_print(x3_reg);
+    Matrix_print(x3_log);
+    Matrix_print(fn_reg);
 
     // for (int i = 0; i < length(N); i++) {
     //     printf("%d %lf\n", (int) N->data[i], op_times->data[i]);

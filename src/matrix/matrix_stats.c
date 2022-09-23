@@ -290,10 +290,12 @@ MATRIX_TYPE rmoment(const Vector *__v, int __k) {
 // Return a matrix whose elements are the coefficients a_0, a_1, a_n for an nth
 // degree polynomial
 Vector *linear_regression(const Vector *__x, const Vector *__y) {
+    return least_squares(__x, __y, 1);
+}
 
-    // We will solve the linear regression problem via the Vandermonde matrix.
+Vector *least_squares(const Vector *__x, const Vector *__y, int degree) {
 
-    Matrix *V = Matrix_vandermonde_reduced(__x, 1);
+    Matrix *V = Matrix_vandermonde_reduced(__x, degree);
     Matrix *Vt = Matrix_transpose(V);
     Vector *y_hat = Matrix_multiply(Vt, __y);
     Matrix *lhs = Matrix_multiply(Vt, V);
@@ -307,12 +309,19 @@ Vector *linear_regression(const Vector *__x, const Vector *__y) {
     Matrix_reset(&lhs);
 
     return a;
+
 }
 
-Vector *logistical_regression(const Vector *__x, const Vector *__y) {
+Vector *loglog_regression(const Vector *__x, const Vector *__y) {
 
     Matrix *logx = map(__x, log);
-    return linear_regression(logx, __y);
+    Matrix *logy = map(__y, log);
+    Vector *out = linear_regression(logx, logy);
+
+    Matrix_free(logx);
+    Matrix_free(logy);
+
+    return out;
 }
 
 
