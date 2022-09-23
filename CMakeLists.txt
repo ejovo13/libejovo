@@ -40,10 +40,11 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${LIB})
 
 add_compile_options(
 
-    # -Wall
+    $<$<CONFIG:DEBUG>:-fno-omit-frame-pointer>
+    $<$<CONFIG:DEBUG>:-Og>
     # -Wno-unused-function
     # -Wno-unused-value
-    # -Werror
+    -Werror
     # -Wimplicit
     # -Wno-incompatible-pointer-types-discards-qualifiers
     # -fprofile-arcs

@@ -176,3 +176,8 @@ void Row_addition(Matrix *__m, Index *__ind, size_t __r1, size_t __r2);
 
 // r1 = r1 + k * r2
 void Row_addition_k(Matrix *__m, Index *__ind, size_t __r1, size_t __r2, double __k);
+
+// Now that we have an inverse, vandermonde, and transpose operator, let's go ahead and compute a linear
+// regression!
+
+// Vector *linear

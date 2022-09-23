@@ -288,7 +288,7 @@ void printDataFrame(const DataFrame *__df) {
 
 }
 
-void writeCSV(const DataFrame *__df, const char *__filename) {
+void writeDelimiter(const DataFrame *__df, const char *__filename, const char delim) {
 
     if (!__df) return;
 
@@ -314,7 +314,48 @@ void writeCSV(const DataFrame *__df, const char *__filename) {
 
         while (it->next) {
 
-            fprintf(f, "%lf,", Vector_at(it->data, i));
+            fprintf(f, "%lf%c", Vector_at(it->data, i), delim);
+            it = it->next;
+        }
+        fprintf(f, "%lf\n", Vector_at(it->data, i));
+    }
+
+    fclose(f);
+
+}
+
+void writeCSV(const DataFrame *__df, const char *__filename) {
+    writeDelimiter(__df, __filename, ',');
+}
+
+void writeGP(const DataFrame *__df, const char *__filename) {
+
+    if (!__df) return;
+
+    FILE *f = fopen(__filename, "w");
+
+    // the first line is all of the strings, separated with a column
+    Chain *it = __df->chain;
+
+    fprintf(f, "#");
+    while (it->next) {
+
+        fprintf(f, "%s,", it->data->str);
+        it = it->next;
+    }
+    fprintf(f, "%s\n", it->data->str);
+
+    // now iterate through all of vectors, accessing the ith print at each point.
+
+    int size = Vector_size(__df->space->data);
+
+    for (int i = 0; i < size; i++) {
+
+        Space *it = __df->space;
+
+        while (it->next) {
+
+            fprintf(f, "%lf ", Vector_at(it->data, i));
             it = it->next;
         }
         fprintf(f, "%lf\n", Vector_at(it->data, i));

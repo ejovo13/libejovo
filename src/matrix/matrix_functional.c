@@ -110,26 +110,18 @@ Vector *filter_if_not(const Vector *__v, predicate_fn __pred) {
 // Apply a function that takes a double and returns a double to the contents of a matrix
 Matrix *map(const Matrix *__m, function fn) {
 
-    Matrix *dup = matalloc(__m->nrows, __m->ncols);
-
-    MatIter dup_it = Matrix_begin(dup);
-
-    for (MatIter it = Matrix_begin(__m); !MatIter_cmp(it, Matrix_end(__m)); it = MatIter_next(it), dup_it = MatIter_next(dup_it)) {
-        MatIter_set(dup_it, fn(MatIter_value(it)));
-    }
-
-    return dup;
+    // Matrix *dup = matalloc(__m->nrows, __m->ncols);
+    Matrix *dup = matclone(__m);
+    return apply(dup, fn);
 }
 
 // Apply a Double -> Double function to all of the elements of __m, modifying it in place.
 // Then return a pointer to __m
 Matrix *apply(Matrix *__m, function fn) {
 
-    MatIter it = Matrix_begin(__m);
-    MatIter end = Matrix_end(__m);
-
-    for (it; !MatIter_cmp(it, end); it = MatIter_next(it)) {
-        MatIter_set(it, fn(MatIter_value(it)));
+    const size_t n = Matrix_size(__m);
+    for (size_t i = 0; i < n; i++) {
+        __m->data[i] = fn(__m->data[i]);
     }
 
     return __m;

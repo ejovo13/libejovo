@@ -88,7 +88,13 @@ void printDataFrameCol(const String *__str, const Vector *__v);
 
 void printDataFrame(const DataFrame *__df);
 
+void writeDelimiter(const DataFrame *__df, const char *__filename, const char delim);
+
 void writeCSV(const DataFrame *__df, const char *__filename);
+
+// Simply write the contents of this data frame to a file, seperating the elements
+// by whitespace
+void writeGP(const DataFrame *__df, const char *__filename);
 
 // Return a pointer to the column in question
 // Columns shall be ZERO indexed

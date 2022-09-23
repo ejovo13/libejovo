@@ -15,7 +15,7 @@ Matrix *Matrix_pow(Matrix * __A, size_t __power) {
         return Matrix_clone(__A);
     }
 
-    Matrix *m = Matrix_clone(__A);
+Matrix *m = Matrix_clone(__A);
 
     for (size_t i = 2; i <= __power; i++) {
         Matrix_catch(&m, Matrix_multiply(__A, m));

@@ -162,14 +162,14 @@ void compute_flops_On(int n) {
     free(my_clock);
 }
 
-void compute_flops_On2(int n) {
+double compute_flops_On2(int n) {
 
     // Add two matrices together
     Clock *my_clock = Clock_new();
 
     Clock_tic(my_clock);
-    Matrix *a = reshape(runif(n * n, 0, 1), n, n);
-    Matrix *b = reshape(runif(n * n, 0, 1), n, n);
+    Matrix *a = Matrix_value(n, n, 3.4);
+    Matrix *b = Matrix_value(n, n, 1.3);
     
     Clock_toc(my_clock);
 
@@ -185,8 +185,7 @@ void compute_flops_On2(int n) {
     printf("FLOPS\n");
     free(my_clock);
 
-
-
+    return op_time;
 }
 
 int main() {
@@ -216,15 +215,44 @@ int main() {
     // Compute the number of addition flops by adding two row 
     // vectors of size n
     // Vector *N = logspace(1, 9, 9);
-    Vector *N = logspace(1, 4, 9);
-    Vector *times = Matrix_new(1, length(N));
+    const int len = 20;
+
+    Vector *N = reshape(logspace(1, 4, len), len, 1);
+    Vector *op_times = Matrix_new(len, 1);
+
+    Matrix_print(N);
+    Matrix_print(op_times);
 
     // Count the number of flops
     printf("n, init_time, op_time, flops\n");
     for (int i = 0; i < length(N); i++) {
     //    compute_flops(N->data[i]); 
-       compute_flops_On2(N->data[i]); 
+       op_times->data[i] = compute_flops_On2(N->data[i]); 
     }
+
+    // Now we can actually write the N values and op_times to a file
+    DataFrame *df = newDataFrame(newChainVar(2, "n", "op_times"), newSpaceVar(2, N, op_times));
+
+    writeGP(df, "test_bench.gp");
+
+    Vector *x = reshape(linspace(2, 10, 100), 100, 1);
+    // Vector *y = map(x, log);
+    Vector *y = Matrix_clone(x);
+
+    Vector *a_lin = logistical_regression(N, op_times);
+    Vector *a_log = linear_regression(N, op_times);
+    Vector *xy_lin = linear_regression(x, y);
+    Vector *xy_log = logistical_regression(x, y);
+
+
+    // Matrix_print(a_lin);
+    // Matrix_print_fixed(a_log);
+    Matrix_print(xy_lin);
+    Matrix_print(xy_log);
+
+    // for (int i = 0; i < length(N); i++) {
+    //     printf("%d %lf\n", (int) N->data[i], op_times->data[i]);
+    // }
 
 
     return 0;

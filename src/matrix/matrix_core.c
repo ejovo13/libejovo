@@ -512,7 +512,7 @@ void Matrix_print_fixed(const Matrix *__m) {
     for (size_t i = 0; i < __m->nrows; i++) {
         printf("| ");
         for (size_t j = 0; j < __m->ncols; j++) {
-            printf("%8.4lf ", Matrix_at(__m, i, j));
+            printf("%16.8lf ", Matrix_at(__m, i, j));
         }
 
         printf("|\n");

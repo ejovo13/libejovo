@@ -295,9 +295,7 @@ Vector *linear_regression(const Vector *__x, const Vector *__y) {
 
     Matrix *V = Matrix_vandermonde_reduced(__x, 1);
     Matrix *Vt = Matrix_transpose(V);
-
     Vector *y_hat = Matrix_multiply(Vt, __y);
-
     Matrix *lhs = Matrix_multiply(Vt, V);
 
     Matrix_reset(&V);
@@ -309,6 +307,12 @@ Vector *linear_regression(const Vector *__x, const Vector *__y) {
     Matrix_reset(&lhs);
 
     return a;
+}
+
+Vector *logistical_regression(const Vector *__x, const Vector *__y) {
+
+    Matrix *logx = map(__x, log);
+    return linear_regression(logx, __y);
 }
 
 
