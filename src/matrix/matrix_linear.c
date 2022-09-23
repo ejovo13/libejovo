@@ -515,26 +515,22 @@ const double EPS = 1E-10;
 
 // Return a matrix that contains the solutions tot Ax = B
 // this matrix will be null if there are no solutions/infinitely many solutions
-Matrix *gausselim(Matrix *__A, const Matrix *__B) {
+Matrix *gausselim(const Matrix *__A, const Matrix *__B) {
 
-    // if __A is not square, return NULL;
-    if (__A->ncols != __A->nrows) return NULL;
+    if (!Matrix_is_square(__A)) return NULL;
 
-    // I think that gausselim performs LU decomposition in place while modifying the right hand side which is more
-    // efficient for a single operation but not more efficient if we are going to solve Ax = b multiple times for
-    // different values of b.
+    Matrix *aug = Matrix_ccat(__A, __B);      // Create augmented matrix
+    Index *ind = range(0, __A->nrows - 1, 1); // keep track of indices to enable pivoting
 
-    // We are going to implement pivoting!
-
-    // For this testing, we are going to blatantly ignore __B.
-    Index *ind = range(0, __A->nrows - 1, 1);
-
+    /**============================================
+     *!               Row Reductions
+     *=============================================**/
     // iterate through all of the columns except for the last one
     for (size_t j = 0; j < __A->ncols - 1; j++) {
 
         // Get index of the pivot (max element) in a slightly weird way.
-        size_t pivot_index = j + Matrix_col_max_index_from_row(__A, ind->data[j], j);
-        double pivot_value = Matrix_at(__A, ind->data[pivot_index], j);
+        size_t pivot_index = j + Matrix_col_max_index_from_row(aug, ind->data[j], j);
+        double pivot_value = Matrix_at(aug, ind->data[pivot_index], j);
 
         // make sure that the pivot_index is not zero.
         if (fabs(pivot_value) < EPS) {
@@ -542,30 +538,58 @@ Matrix *gausselim(Matrix *__A, const Matrix *__B) {
             return NULL;
         }
 
-        Row_switch(__A, ind, pivot_index, j);
+        Row_switch(aug, ind, pivot_index, j);
 
-        // printf("=== Row switch: pivot = %lf, pivot_index = %d\n", pivot_value, pivot_index);
-        // printf("=== new indices: "); Vector_print_as_row(ind);
-        // Now iterate along the rows that are below the index!!
-
+        // Perform elementary row operations.
         for (size_t i = j + 1; i < __A->nrows; i++) {
 
             int row_index = ind->data[i];
+            double scalar = -Matrix_at(aug, row_index, j) / pivot_value;
+            Row_addition_k(aug, ind, i, j, scalar);
 
-            double scalar = -Matrix_at(__A, row_index, j) / pivot_value;
-            // printf("====== Scalar = %lf\n", scalar);
-
-            // Now add to this row the scalar times the pivot row.
-            Row_addition_k(__A, ind, i, j, scalar);
         }
-
-        // Matrix_print(Matrix_extract_rows(__A, ind));
     }
 
-    Matrix *a = Matrix_extract_rows(__A, ind);
-    Matrix_reset(&ind);
+    /**============================================
+     *!               Back substitution
+     *=============================================**/
+    Matrix *x = Matrix_new(__A->nrows, __B->ncols);
+    double x_ij = 0;
 
-    return a;
+    // Iterate through the columns of x
+    for (int j = 0; j < x->ncols; j++) {
+        // Traverse the indices vector backwards:
+        for (int i = x->nrows - 1; i >= 0; i--) {
+
+            x_ij = Matrix_at(aug, ind->data[i], j + __A->ncols); // Initialize xi to bi,j
+
+            for (int k = i; k < x->nrows - 1; k++) {
+                x_ij -= Matrix_at(x, k + 1, j) * Matrix_at(aug, ind->data[i], k + 1);
+            }
+
+            double den = Matrix_at(aug, ind->data[i], i);
+            Matrix_set(x, i, j, x_ij / den);
+        }
+    }
+
+    Matrix_reset(&ind);
+    Matrix_reset(&aug);
+
+    return x;
+}
+
+// Compute the inverse of a matrix via gaussian elimination
+Matrix *Matrix_inverse(const Matrix *__A) {
+
+    if (!Matrix_is_square(__A)) {
+        fprintf(stderr, "Matrix_inverse: Matrix is not square; returning NULL\n");
+        return NULL;
+    }
+    Matrix *Id = Matrix_id(__A->nrows, __A->ncols);
+    Matrix *inv = gausselim(__A, Id);
+
+    Matrix_reset(&Id);
+    return inv;
 }
 
 /**================================================================================================

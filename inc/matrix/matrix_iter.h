@@ -291,3 +291,5 @@ MatIter Matrix_col_begin_from_row(const Matrix *__A, size_t __j, size_t __i);
 MatIter Matrix_diag_end(const Matrix *__m, const int __d);
 
 MatIter Matrix_diag_begin(const Matrix *__m, const int __d);
+
+Vector *MatIter_difference(MatIter __abegin, const MatIter __aend, MatIter __bbegin);

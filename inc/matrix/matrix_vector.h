@@ -14,6 +14,8 @@ Vector *vector(int __count, ...);
 // Default to making a column vector
 Vector *Vector_new(size_t __nrows);
 
+Vector *Vector_ones(size_t __nrows);
+
 Vector *Vector_from_iter(MatIter __begin, MatIter __end);
 
 Vector *Vector_rand(size_t __nrows);
@@ -153,3 +155,7 @@ MATRIX_TYPE ColIter_norm(ColIter *__c);
 Vector *ascol(Vector *__v);
 
 Vector *asrow(Vector *__v);
+
+MATRIX_TYPE Vector_distance(const Vector *__v, const Vector *__u);
+
+Vector *Vector_difference(const Vector *__v, const Vector *__u);

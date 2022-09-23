@@ -34,6 +34,10 @@ Vector *Vector_new(size_t __nrows) {
     return Matrix_new(__nrows, 1);
 }
 
+Vector *Vector_ones(size_t __nrows) {
+    return Matrix_ones(__nrows, 1);
+}
+
 Vector *Vector_from_iter(MatIter __begin, MatIter __end) {
     size_t len = MatIter_length(__begin, __end);
     Vector *v = Vector_new(len);
@@ -41,7 +45,6 @@ Vector *Vector_from_iter(MatIter __begin, MatIter __end) {
     MatIter_row_set_iter(Vector_begin(v), Vector_end(v), __begin);
     return v;
 }
-
 
 Vector *Vector_from(const double* __arr, size_t __nrows) {
     return Matrix_from(__arr, __nrows, 1);
@@ -389,3 +392,26 @@ Vector *asrow(Vector *__v) {
 
     return __v;
 }
+
+
+// Find the difference between vectors that are the same size.
+Vector *Vector_difference(const Vector *__v, const Vector *__u) {
+    if (Matrix_size(__v) != Matrix_size(__u));
+    return MatIter_difference(Vector_begin(__v), Vector_end(__v), Vector_begin(__u));
+}
+
+// Find the EUCLIDEAN DISTANCE between two vectors. Returns -1 if the vectors are not the same size
+MATRIX_TYPE Vector_distance(const Vector *__v, const Vector *__u) {
+    Vector *diff = Vector_difference(__v, __u);
+
+    MATRIX_TYPE dist = Vector_norm(diff);
+    Matrix_reset(&diff);
+
+    return dist;
+}
+
+
+
+
+
+

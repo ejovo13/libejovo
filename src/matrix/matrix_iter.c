@@ -292,11 +292,11 @@ MatIter Matrix_col_begin_from_row(const Matrix *__A, size_t __j, size_t __i) {
 }
 
 MatIter matcolbegin(const Matrix *__A, size_t __i) {
-    return matcolpos(__A, __i, 0);
+    return matcolpos(__A, 0, __i);
 }
 
 MatIter matcolend(const Matrix *__A, size_t __i) {
-    return matcolpos(__A, __i, __A->ncols);
+    return matcolpos(__A, __A->nrows, __i);
 }
 
 MatIter matrowpos(const Matrix *__A, size_t __i, size_t __j) {
@@ -781,3 +781,24 @@ Matrix *Matrix_set_row_iter(Matrix *__m, size_t __i, MatIter __source) {
 // Matrix_add_row_iter(m, 3, it);
 
 
+// Here I want to implement some functions that deal with the distances between vectors
+// given two iterators, I want to find their difference and store it in a new vector.
+// Take a - b
+Vector *MatIter_difference(MatIter __abegin, const MatIter __aend, MatIter __bbegin) {
+
+    // Compute the length of the iterator.
+    size_t length = MatIter_length(__abegin, __aend);
+
+    Vector *out = Vector_new(length);
+
+    MatIter vout = Vector_begin(out);
+
+    for (__abegin; !MatIter_cmp(__abegin, __aend);     vout = MatIter_next(vout),
+                                                   __abegin = MatIter_next(__abegin),
+                                                   __bbegin = MatIter_next(__bbegin))
+    {
+        MatIter_set(vout, MatIter_value(__abegin) - MatIter_value(__bbegin));
+    }
+
+    return out;
+}

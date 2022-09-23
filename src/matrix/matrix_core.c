@@ -84,6 +84,11 @@ Matrix *anon(int __count, ...) {
 //     *__A_ptr = NULL;
 // }
 
+// set all of the elements of __A to 0
+Matrix *Matrix_clean(Matrix *__A) {
+    Matrix_fill(__A, 0);
+}
+
 // Copy the bytes
 // this is a utility function and should not be used by the end user
 // inline bool matcpy(Matrix *restrict __dest, const Matrix *restrict __src) {

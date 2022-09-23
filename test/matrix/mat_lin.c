@@ -11,12 +11,20 @@ void t_matlu();
 void t_Matrix_lu();
 void t_jacobi();
 void t_vandermonde();
+void t_gausselim();
+void t_gausselim_rand();
+void t_inverse();
 
 // Not all of these function have been tested for accuracy.
 // However, what is true is that none the the functions called in this test suite
 // lead to any memory leaks (at least in their current state)
 
+// TODO
+// - [] Use assert on the remaining random functions
+
 int main() {
+
+    ejovo_seed();
 
     t_mat_pow();
     t_mat_det();
@@ -29,6 +37,9 @@ int main() {
     t_Matrix_lu();
     t_jacobi();
     t_vandermonde();
+    t_gausselim();
+    t_gausselim_rand();
+    t_inverse();
 
     return 0;
 }
@@ -53,6 +64,10 @@ void t_mat_det() {
     Matrix *s = get_square();
     assert(Matrix_det(s) == 5853640);
     Matrix_free(s);
+
+    Matrix *id = Matrix_identity(3); // Anything higher than this and the complexity fucking explodes
+    assert(Matrix_det(id) == 1.0);
+    Matrix_free(id);
 }
 
 void t_matcdr_check() {
@@ -268,6 +283,7 @@ void t_vandermonde() {
     Matrix_reset(&V);
     Matrix_reset(&Vr);
     Matrix_reset(&Vr_t);
+    Matrix_reset(&v);
 
     Matrix *r = ascol(range(1, 100, 24));
 
@@ -281,5 +297,81 @@ void t_vandermonde() {
 
     Matrix_print(r);
 
+    Matrix_free(v);
+    Matrix_free(r);
+
+
+}
+
+void t_gausselim() {
+
+    Matrix *A = Matrix_id(3, 3);
+    Matrix_set(A, 1, 1, 2);
+    Matrix_set(A, 1, 2, 2);
+    Matrix_set(A, 1, 0, 3);
+    Matrix_set(A, 0, 2, 5);
+
+    Matrix_print(A);
+
+    Matrix *b = Matrix_value(3, 1, 1);
+
+    Matrix *x = gausselim(A, b);
+
+    Matrix_print(x);
+
+    Matrix *Ax = Matrix_multiply(A, x);
+
+    Matrix_print(Ax);
+
+    Matrix_reset(&A);
+    Matrix_reset(&b);
+    Matrix_reset(&x);
+    Matrix_reset(&Ax);
+
+}
+
+void t_gausselim_rand() {
+
+    Matrix *A = Matrix_random(5, 5, 1, 5);
+    Matrix *b = Matrix_ones(5, 5);
+    Matrix *x = gausselim(A, b);
+
+    Matrix *Ax = Matrix_multiply(A, x);
+
+    Matrix_print(Ax);
+
+    Matrix_reset(&A);
+    Matrix_reset(&b);
+    Matrix_reset(&x);
+    Matrix_reset(&Ax);
+
+}
+
+void t_inverse() {
+
+    Matrix *not_square = Matrix_new(10, 5);
+
+    assert(!Matrix_inverse(not_square));
+
+    Matrix *id = Matrix_id(4, 4);
+    Matrix *id_inv = Matrix_inverse(id);
+
+    assert(matcmp(id, id_inv));
+
+    // Curated so that |A| = 1
+    Matrix *A = Matrix_from((double []) {8.0, 3.0, 5.0, 2.0}, 2, 2);
+    Matrix *A_inv = Matrix_inverse(A);
+
+    Matrix *A_true_inv = Matrix_from((double []) {2.0, -3.0, -5.0, 8.0}, 2, 2);
+
+    assert(Matrix_det(A) == 1.0);
+    assert(matcmp(A_inv, A_true_inv));
+
+    Matrix_free(not_square);
+    Matrix_free(id);
+    Matrix_free(id_inv);
+    Matrix_free(A);
+    Matrix_free(A_inv);
+    Matrix_free(A_true_inv);
 
 }
