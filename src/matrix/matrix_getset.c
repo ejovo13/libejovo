@@ -588,7 +588,7 @@ void Matrix_fill_mask(Matrix *__A, Mask __mask, const MATRIX_TYPE __value) {
     Matrix_mask_k(__A, __mask, setelement, __value);
 }
 
-Matrix * Matrix_rcat(Matrix * __A, Matrix * __B) {
+Matrix *Matrix_rcat(const Matrix * __A, const Matrix * __B) {
 
     if ( __A->ncols != __B->ncols) {
         perror("Cannont row concatenate two incompatible matrices\n");
@@ -607,7 +607,7 @@ Matrix * Matrix_rcat(Matrix * __A, Matrix * __B) {
     }
 }
 
-Matrix * Matrix_ccat(Matrix * __A, Matrix * __B) {
+Matrix *Matrix_ccat(const Matrix *__A, const Matrix *__B) {
 
     if ( __A->nrows != __B->nrows) {
         perror("Cannont col concatenate two incompatible matrices\n");

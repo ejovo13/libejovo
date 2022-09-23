@@ -119,7 +119,7 @@ static inline MATRIX_TYPE Matrix_at(const Matrix *__m, size_t __i, size_t __j) {
  *!                                        Set/Get range of elements
  *================================================================================================**/
 // Copy the elements of __src into the submatrix of __dest prescribed by the start and end indices WITHOUT CHECKING THE BOUNDS
-static inline void matcpyele_unsafe(Matrix *__dest, size_t __istart, size_t __iend, size_t __jstart, size_t __jend, Matrix *__src) {
+static inline void matcpyele_unsafe(Matrix *__dest, size_t __istart, size_t __iend, size_t __jstart, size_t __jend, const Matrix *__src) {
 
     for (size_t i = __istart, irow = 0; i <= __iend; i++, irow++) {
         for (size_t j = __jstart, jcol = 0; j <= __jend; j++, jcol++) {
@@ -131,7 +131,7 @@ static inline void matcpyele_unsafe(Matrix *__dest, size_t __istart, size_t __ie
 }
 
 // Copy the matrix __src into the submatrix of __dest prescribed by the start and end indices
-static inline int matcpyele(Matrix * __dest, size_t __istart, size_t __iend, size_t __jstart, size_t __jend, Matrix * __src) {
+static inline int matcpyele(Matrix * __dest, size_t __istart, size_t __iend, size_t __jstart, size_t __jend, const Matrix * __src) {
 
     // If the submatrix is not contained in __des
     if (__iend < __istart || __jend < __jstart || __iend >= __dest->nrows || __jend >= __dest->ncols) {

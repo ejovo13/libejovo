@@ -1,6 +1,6 @@
 // showcase some iter functions
 
-#include "ejovo_matrix.h"
+#include "ejovo.h"
 
 int main() {
 

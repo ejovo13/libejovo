@@ -9,10 +9,21 @@
  *!                                        Memory and Allocation
  *================================================================================================**/
 
-// perform literally 0 checks, just allocate the space for a new matrix
-// Matrix *matalloc(size_t __nrows, size_t __ncols);
-
-// perform literally 0 checks, just allocate the space for a new matrix
+/**
+ * @brief Allocate the necessary space to store an m x n matrix.
+ *
+ * This low-level function makes two calls to malloc, one call to allocate the `Matrix *` object itself
+ * and a second call to allocate the `double *` array that stores the actual elements of our Matrix. This
+ * routine performs no sanity checks and should rarely be used by the user. Instead, it is used by other
+ * matrix constructors once the input has been validated.
+ *
+ * Furthermore, `matalloc` makes a call to malloc and **not** calloc, thus we are not even instantiating the
+ * arrays elements, we are only asking the operating system for the required space.
+ *
+ * @param m Number of rows
+ * @param n Number of columns
+ * @return Matrix* A pointer to a newly allocated Matrix object.
+ */
 static inline Matrix *matalloc(size_t __nrows, size_t __ncols) {
 
     Matrix *x = (Matrix *) malloc(sizeof(Matrix));
@@ -24,7 +35,13 @@ static inline Matrix *matalloc(size_t __nrows, size_t __ncols) {
     return x;
 }
 
-Matrix *vec(double __k);
+/**
+ * @brief Create a 1 x 1 `Matrix *` whose only element is the scalar `k`
+ *
+ * @param k
+ * @return Matrix*
+ */
+Matrix *vec(double k);
 
 Matrix *anon(int __count, ...);
 
@@ -34,7 +51,15 @@ static inline void matfree(Matrix *__A) {
     free(__A);
 }
 
-// Free the memory associated with the matrix and then free the pointer itself
+/**
+ * @brief Free all of the memory associated with A, verifying that the A and A->data are not null
+ *
+ * `Matrix_free` will free the memory pointed to by A and the underlying data as well. However, `Matrix_free` will
+ * not set the pointer to NULL after it is called, which isn't best practice. Prefer to use `Matrix_reset(&A)`, which
+ * takes a pointer to a `Matrix *`, setting the A to NULL after freeing the associated memory
+ *
+ * @param A
+ */
 static inline void Matrix_free(Matrix *__A) {
     if (__A) {
         if (__A->data) free(__A->data);
@@ -52,6 +77,7 @@ static inline void Matrix_reset(Matrix **__A_ptr) {
     *__A_ptr = NULL;
 }
 
+Matrix *Matrix_renew(Matrix *A, int m, int n);
 // Copy the bytes
 // this is a utility function and should not be used by the end user
 static inline bool matcpy(Matrix *restrict __dest, const Matrix *restrict __src) {
@@ -70,7 +96,7 @@ static inline bool matcpy(Matrix *restrict __dest, const Matrix *restrict __src)
 Matrix * matclone(const Matrix *restrict __src);
 
 // Catch an unnamed Matrix pointer returned from the right side and store it in the
-// __lhs_ptr. Return the __rhs
+// lhs_ptr. Return the rhs
 // This Is useful for preventing memory leaks for expressions of the type A = A * B
 Matrix *Matrix_catch(Matrix **__lhs_ptr, Matrix *__anon_rhs);
 
@@ -83,9 +109,10 @@ Matrix *Matrix_catch(Matrix **__lhs_ptr, Matrix *__anon_rhs);
 // Matrix_anon_free
 Matrix *Matrix_anon(Matrix *__anon_rhs);
 
+
 void Matrix_anon_free();
 
-Matrix *Matrix_transpose(const Matrix *__m);
+Matrix *Matrix_transpose(const Matrix *m);
 
 /**================================================================================================
  *!                                        Assignment Operator
@@ -93,10 +120,10 @@ Matrix *Matrix_transpose(const Matrix *__m);
 // I'd like to make the statement A = Matrix_take(A, M); allow the matrix A to point to the data
 // of matrix M, and then to free the other matrix
 
-Matrix *Matrix_shallow_copy(const Matrix *__rhs);
+Matrix *Matrix_shallow_copy(const Matrix *rhs);
 
 // This function has a FATAL FLAW since it does not deallocate the matrix that is potentially being stored in the left hand side!!
-Matrix *Matrix_take(Matrix *__rhs);
+Matrix *Matrix_take(Matrix *rhs);
 
 
 
@@ -105,78 +132,78 @@ Matrix *Matrix_take(Matrix *__rhs);
  *!                                        Matrix Constructors
  *================================================================================================**/
 
-Matrix * Matrix_new(int __nrows, int __ncols);
+Matrix * Matrix_new(int nrows, int ncols);
 
 // when given an ordinary array, construct a matrix from it, taking the prrevious memory.
 // MOVE should only be called with arrays that are allocated on the heap so that that is no
 // array jank that happens as a side effect.
-Matrix *Matrix_move(MATRIX_TYPE **__arr_ptr, size_t __nrows, size_t __ncols);
+Matrix *Matrix_move(MATRIX_TYPE **arr_ptr, size_t nrows, size_t ncols);
 
 // When given an array, clone the array (copy its memory)
-Matrix *Matrix_from(const MATRIX_TYPE *__arr, size_t __nrows, size_t __ncols);
+Matrix *Matrix_from(const MATRIX_TYPE *arr, size_t nrows, size_t ncols);
 
 // When creating vectors we can just go ahead and memcpy the data!
-Matrix *Matrix_colvec(const MATRIX_TYPE *__arr, size_t __nrows);
+Matrix *Matrix_colvec(const MATRIX_TYPE *arr, size_t nrows);
 
-Matrix *Matrix_rowvec(const MATRIX_TYPE *__arr, size_t __ncols);
+Matrix *Matrix_rowvec(const MATRIX_TYPE *arr, size_t ncols);
 
-Matrix * Matrix_clone(const Matrix *restrict __src);
+Matrix * Matrix_clone(const Matrix *restrict src);
 
 // matrix of all ones
-Matrix * Matrix_ones(size_t __nrows, size_t __ncols);
+Matrix * Matrix_ones(size_t nrows, size_t ncols);
 
-Matrix * Matrix_ij(size_t __nrows, size_t __ncols);
+Matrix * Matrix_ij(size_t nrows, size_t ncols);
 
-Vector *linspace(MATRIX_TYPE __start, MATRIX_TYPE __end, int __N);
+Vector *linspace(MATRIX_TYPE start, MATRIX_TYPE end, int N);
 
-Vector *range(int __start, int __end, int __diff);
+Vector *range(int start, int end, int diff);
 
-double raisedBy10(double __input); // used as a utility function for logspace
+double raisedBy10(double input); // used as a utility function for logspace
 
 // use base 10
-Vector *logspace(double __start, double __end, int __n);
+Vector *logspace(double start, double end, int n);
 
-Vector *Vector_linspace(MATRIX_TYPE __start, MATRIX_TYPE __end, int __N);
+Vector *Vector_linspace(MATRIX_TYPE start, MATRIX_TYPE end, int N);
 
-Vector *Vector_range(double __start, int __end, int __diff);
+Vector *Vector_range(double start, int end, int diff);
 
 
 
 /**
  * @brief Create a square diagonal matrix with random entries from 1 to 10
  *
- * @param __n
+ * @param n
  * @return Matrix*
  */
-Matrix *Matrix_diagonal(size_t __n);
+Matrix *Matrix_diagonal(size_t n);
 
-Matrix *Matrix_tridiagonal(size_t __n);
+Matrix *Matrix_tridiagonal(size_t n);
 
-Matrix * Matrix_value(size_t __nrows, size_t __ncols, MATRIX_TYPE __value);
+Matrix * Matrix_value(size_t nrows, size_t ncols, MATRIX_TYPE value);
 
 // MUST INITIALIZE EJOVO_SEED TO GET RANDOM VALUES
-Matrix * Matrix_random(size_t __nrows, size_t __ncols, int __min, int __max);
+Matrix * Matrix_random(size_t nrows, size_t ncols, int min, int max);
 
-Matrix * Matrix_rand(size_t __nrows, size_t __ncols);
+Matrix * Matrix_rand(size_t nrows, size_t ncols);
 
-Matrix * Matrix_identity(size_t __n);
+Matrix * Matrix_identity(size_t n);
 
 /**================================================================================================
  *!                                        Miscellaneous
  *================================================================================================**/
-void matprint(const Matrix *__m);
+void matprint(const Matrix *m);
 
-void Matrix_print(const Matrix *__m);
+void Matrix_print(const Matrix *m);
 
-void Vector_print_head(const Matrix *__m, int __n);
+void Vector_print_head(const Matrix *m, int n);
 
 // Print in the; iter style
-void Matrix_print_iter(const Matrix *__m);
+void Matrix_print_iter(const Matrix *m);
 
-void Matrix_summary(const Matrix *__m);
+void Matrix_summary(const Matrix *m);
 
-void Matrix_print_all_digits(const Matrix *__m);
+void Matrix_print_all_digits(const Matrix *m);
 
-void Matrix_print_fixed(const Matrix *__m);
+void Matrix_print_fixed(const Matrix *m);
 
-Matrix *Matrix_id(size_t __m, size_t __n);
+Matrix *Matrix_id(size_t m, size_t n);

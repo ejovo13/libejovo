@@ -1,4 +1,5 @@
-#include "test_mat.h"
+// #include "test_mat.h"
+#include "ejovo.h"
 
 void t_index();
 void t_set_index();
