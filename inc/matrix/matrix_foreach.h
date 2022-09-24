@@ -12,7 +12,7 @@
  *!                                        Single functions
  *================================================================================================**/
 
-// series of functions used to add two elements that Matrix_access pointers are pointing to
+// series of functions used to add two elements that MATRIX_FN(access) pointers are pointing to
 static inline void add_each(MATRIX_TYPE *__a, MATRIX_TYPE *__b) {
     (*__a) += (*__b);
 }
@@ -30,7 +30,7 @@ static inline void div_each(MATRIX_TYPE *__a, MATRIX_TYPE *__b) {
     (*__a) /= (*__b);
 }
 
-//* Matrix times scalar
+//* MATRIX_T times scalar
 
 static inline void multscalar(MATRIX_TYPE *__el, MATRIX_TYPE __k) {
     (*__el) *= __k;
@@ -52,11 +52,11 @@ static inline void subscalar(MATRIX_TYPE *__el, MATRIX_TYPE __k) {
  *!                                        Foreach loops
  *================================================================================================**/
 
-void Matrix_foreach(Matrix *__A, EDITOR __fnc);
+void MATRIX_FN(foreach)(MATRIX_T *__A, EDITOR __fnc);
 
-void Matrix_foreach_2(Matrix *__A, const Matrix *__B, EDITOR_2 __fnc);
+void MATRIX_FN(foreach_2)(MATRIX_T *__A, const MATRIX_T *__B, EDITOR_2 __fnc);
 
-void Matrix_foreach_k(Matrix *__A, EDITOR_K __fnc, MATRIX_TYPE __k);
+void MATRIX_FN(foreach_k)(MATRIX_T *__A, EDITOR_K __fnc, MATRIX_TYPE __k);
 
 /**================================================================================================
  *!                                        Single function + foreach loop
@@ -64,51 +64,51 @@ void Matrix_foreach_k(Matrix *__A, EDITOR_K __fnc, MATRIX_TYPE __k);
 
 
 // add a __B to __A, mutating __A in place, using a "foreach" construct
-void matadd_foreach(Matrix *__A, const Matrix *__B);
+void MAT_FN(add_foreach)(MATRIX_T *__A, const MATRIX_T *__B);
 
-void matsub_foreach(Matrix *__A, const Matrix *__B);
+void MAT_FN(sub_foreach)(MATRIX_T *__A, const MATRIX_T *__B);
 
-void matmult_foreach(Matrix *__A, const Matrix *__B);
+void MAT_FN(mult_foreach)(MATRIX_T *__A, const MATRIX_T *__B);
 
-void matdiv_foreach(Matrix *__A, const Matrix *__B);
+void MAT_FN(div_foreach)(MATRIX_T *__A, const MATRIX_T *__B);
 
-void matmultscalar(Matrix *__A, const MATRIX_TYPE __k);
+void MAT_FN(multscalar)(MATRIX_T *__A, const MATRIX_TYPE __k);
 
-void mataddscalar(Matrix *__A, const MATRIX_TYPE __k);
+void MAT_FN(addscalar)(MATRIX_T *__A, const MATRIX_TYPE __k);
 
-void matdivscalar(Matrix *__A, const MATRIX_TYPE __k);
+void MAT_FN(divscalar)(MATRIX_T *__A, const MATRIX_TYPE __k);
 
-void matsubscalar(Matrix *__A, const MATRIX_TYPE __k);
+void MAT_FN(subscalar)(MATRIX_T *__A, const MATRIX_TYPE __k);
 
-MATRIX_TYPE matsum(const Matrix *__A);
+MATRIX_TYPE MAT_FN(sum)(const MATRIX_T *__A);
 
-MATRIX_TYPE matmin(const Matrix *__A);
+MATRIX_TYPE MAT_FN(min)(const MATRIX_T *__A);
 
-MATRIX_TYPE matmax(const Matrix *__A);
+MATRIX_TYPE MAT_FN(max)(const MATRIX_T *__A);
 
 
 /**================================================================================================
- *!                                       Matrix API foreach
+ *!                                       MATRIX_T API foreach
  *================================================================================================**/
 
-Matrix *Matrix_mult_scalar(const Matrix *__A, const MATRIX_TYPE __k);
+MATRIX_T *MATRIX_FN(mult_scalar)(const MATRIX_T *__A, const MATRIX_TYPE __k);
 
-Matrix *Matrix_add_scalar(const Matrix *__A, const MATRIX_TYPE __k);
+MATRIX_T *MATRIX_FN(add_scalar)(const MATRIX_T *__A, const MATRIX_TYPE __k);
 
-Matrix *Matrix_sub_scalar(const Matrix *__A, const MATRIX_TYPE __k);
+MATRIX_T *MATRIX_FN(sub_scalar)(const MATRIX_T *__A, const MATRIX_TYPE __k);
 
-Matrix *Matrix_div_scalar(const Matrix *__A, const MATRIX_TYPE __k);
+MATRIX_T *MATRIX_FN(div_scalar)(const MATRIX_T *__A, const MATRIX_TYPE __k);
 
 
 /**================================================================================================
- *!                                        Matrix Mask functions
+ *!                                        MATRIX_T Mask functions
  *================================================================================================**/
 
 /**
  * Perform an operation on a matrix when a given mask evaluates to true
  */
-void Matrix_mask(Matrix *__A, Mask __mask, EDITOR __operator);
+void MATRIX_FN(mask)(MATRIX_T *__A, Mask __mask, EDITOR __operator);
 // __mask is only applied to matrix __A
-void Matrix_mask_2(Matrix *__A, Matrix *__B, Mask __mask, EDITOR_2 __operator);
+void MATRIX_FN(mask_2)(MATRIX_T *__A, MATRIX_T *__B, Mask __mask, EDITOR_2 __operator);
 
-void Matrix_mask_k(Matrix *__A, Mask __mask, EDITOR_K __operator, const MATRIX_TYPE __k);
+void MATRIX_FN(mask_k)(MATRIX_T *__A, Mask __mask, EDITOR_K __operator, const MATRIX_TYPE __k);

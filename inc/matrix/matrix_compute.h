@@ -9,11 +9,11 @@
  *================================================================================================**/
 
 // Tridiagonal K matrix
-Matrix *Matrix_K(size_t __n);
+MATRIX_T *MATRIX_FN(K)(size_t __n);
 
 // Circular matrix
-Matrix *Matrix_C(size_t __n);
+MATRIX_T *MATRIX_FN(C)(size_t __n);
 
-Matrix *Matrix_T(size_t __n);
+MATRIX_T *MATRIX_FN(T)(size_t __n);
 
-Matrix *Matrix_B(size_t __n);
+MATRIX_T *MATRIX_FN(B)(size_t __n);

@@ -24,17 +24,17 @@ Vector *filter_gt(const Vector *__v, double __cutoff);
 Vector *filter_gteq(const Vector *__v, double __cutoff);
 
 // Apply a function that takes a double and returns a double to the contents of a matrix
-Matrix *map(const Matrix *__m, function fn);
+MATRIX_T *map(const MATRIX_T *__m, function fn);
 
-Matrix *apply(Matrix *__m, function fn);
+MATRIX_T *apply(MATRIX_T *__m, function fn);
 
 // These functions should only operate on VECTORS
 // Actually, I think I'm thinking about this wrong. These can operate on matrices but they
 // will always return vectors because we can't preserve the size
-MATRIX_TYPE head(const Matrix *__m);
+MATRIX_TYPE head(const MATRIX_T *__m);
 
-Vector *tail(const Matrix *__m);
+Vector *tail(const MATRIX_T *__m);
 
-MATRIX_TYPE last(const Matrix *__m);
+MATRIX_TYPE last(const MATRIX_T *__m);
 
-Vector *init (const Matrix *__m);
+Vector *init (const MATRIX_T *__m);

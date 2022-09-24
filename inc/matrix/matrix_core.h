@@ -12,7 +12,7 @@
 /**
  * @brief Allocate the necessary space to store an m x n matrix.
  *
- * This low-level function makes two calls to malloc, one call to allocate the `Matrix *` object itself
+ * This low-level function makes two calls to malloc, one call to allocate the `MATRIX_T *` object itself
  * and a second call to allocate the `double *` array that stores the actual elements of our Matrix. This
  * routine performs no sanity checks and should rarely be used by the user. Instead, it is used by other
  * matrix constructors once the input has been validated.
@@ -22,11 +22,11 @@
  *
  * @param m Number of rows
  * @param n Number of columns
- * @return Matrix* A pointer to a newly allocated Matrix object.
+ * @return Matrix* A pointer to a newly allocated MATRIX_T object.
  */
-static inline Matrix *matalloc(size_t __nrows, size_t __ncols) {
+static inline MATRIX_T *MAT_FN(alloc)(size_t __nrows, size_t __ncols) {
 
-    Matrix *x = (Matrix *) malloc(sizeof(Matrix));
+    MATRIX_T *x = (MATRIX_T *) malloc(sizeof(MATRIX_T));
     MATRIX_TYPE *data = (MATRIX_TYPE *) malloc(sizeof(MATRIX_TYPE) * (__nrows * __ncols));
     x->data = data;
     x->nrows = __nrows;
@@ -36,17 +36,17 @@ static inline Matrix *matalloc(size_t __nrows, size_t __ncols) {
 }
 
 /**
- * @brief Create a 1 x 1 `Matrix *` whose only element is the scalar `k`
+ * @brief Create a 1 x 1 `MATRIX_T *` whose only element is the scalar `k`
  *
  * @param k
  * @return Matrix*
  */
-Matrix *vec(double k);
+MATRIX_T *vec(double k);
 
-Matrix *anon(int __count, ...);
+MATRIX_T *anon(int __count, ...);
 
 // low level function to literally just free both pointers
-static inline void matfree(Matrix *__A) {
+static inline void MAT_FN(free)(MATRIX_T *__A) {
     free(__A->data); // if data is null, don't call free on it!!!
     free(__A);
 }
@@ -54,13 +54,13 @@ static inline void matfree(Matrix *__A) {
 /**
  * @brief Free all of the memory associated with A, verifying that the A and A->data are not null
  *
- * `Matrix_free` will free the memory pointed to by A and the underlying data as well. However, `Matrix_free` will
- * not set the pointer to NULL after it is called, which isn't best practice. Prefer to use `Matrix_reset(&A)`, which
- * takes a pointer to a `Matrix *`, setting the A to NULL after freeing the associated memory
+ * `MATRIX_FN(free)` will free the memory pointed to by A and the underlying data as well. However, `MATRIX_FN(free)` will
+ * not set the pointer to NULL after it is called, which isn't best practice. Prefer to use `MATRIX_FN(reset)(&A)`, which
+ * takes a pointer to a `MATRIX_T *`, setting the A to NULL after freeing the associated memory
  *
  * @param A
  */
-static inline void Matrix_free(Matrix *__A) {
+static inline void MATRIX_FN(free)(MATRIX_T *__A) {
     if (__A) {
         if (__A->data) free(__A->data);
         free(__A);
@@ -68,7 +68,7 @@ static inline void Matrix_free(Matrix *__A) {
 }
 
 // Free the memeory and set the pointer equal to NULL
-static inline void Matrix_reset(Matrix **__A_ptr) {
+static inline void MATRIX_FN(reset)(MATRIX_T **__A_ptr) {
     if (*__A_ptr) {
         if ((*__A_ptr)->data) free((*__A_ptr)->data);
         free (*__A_ptr);
@@ -77,10 +77,10 @@ static inline void Matrix_reset(Matrix **__A_ptr) {
     *__A_ptr = NULL;
 }
 
-Matrix *Matrix_renew(Matrix *A, int m, int n);
+MATRIX_T *MATRIX_FN(renew)(MATRIX_T *A, int m, int n);
 // Copy the bytes
 // this is a utility function and should not be used by the end user
-static inline bool matcpy(Matrix *restrict __dest, const Matrix *restrict __src) {
+static inline bool MAT_FN(cpy)(MATRIX_T *restrict __dest, const MATRIX_T *restrict __src) {
 
     // Copy the bytes of __src->data into __dest->data
     memcpy(__dest->data, __src->data, sizeof(MATRIX_TYPE)*(__src->nrows * __src->ncols));
@@ -93,66 +93,66 @@ static inline bool matcpy(Matrix *restrict __dest, const Matrix *restrict __src)
     }
 }
 // copy the contents of matrix __src into __dest
-Matrix * matclone(const Matrix *restrict __src);
+MATRIX_T * MAT_FN(clone)(const MATRIX_T *restrict __src);
 
-// Catch an unnamed Matrix pointer returned from the right side and store it in the
+// Catch an unnamed MATRIX_T pointer returned from the right side and store it in the
 // lhs_ptr. Return the rhs
 // This Is useful for preventing memory leaks for expressions of the type A = A * B
-Matrix *Matrix_catch(Matrix **__lhs_ptr, Matrix *__anon_rhs);
+MATRIX_T *MATRIX_FN(catch)(MATRIX_T **__lhs_ptr, MATRIX_T *__anon_rhs);
 
 // Used to manage memory of anonymous Matrices that are the results of intermediate operations
-// FOr example Matrix_print(Matrix_mult(a, b))
+// FOr example MATRIX_FN(print)(MATRIX_FN(mult)(a, b))
 // will lead to a memory leak.
 // Instead, wrap the previous call with
-// Matrix_print(Matrix_anon(Matrix_mult(a, b)));
+// MATRIX_FN(print)(MATRIX_FN(anon)(MATRIX_FN(mult)(a, b)));
 // and finall, at the end of the program / scope call
-// Matrix_anon_free
-Matrix *Matrix_anon(Matrix *__anon_rhs);
+// MATRIX_FN(anon_free)
+MATRIX_T *MATRIX_FN(anon)(MATRIX_T *__anon_rhs);
 
 
-void Matrix_anon_free();
+void MATRIX_FN(anon_free)();
 
-Matrix *Matrix_transpose(const Matrix *m);
+MATRIX_T *MATRIX_FN(transpose)(const MATRIX_T *m);
 
 /**================================================================================================
  *!                                        Assignment Operator
  *================================================================================================**/
-// I'd like to make the statement A = Matrix_take(A, M); allow the matrix A to point to the data
+// I'd like to make the statement A = MATRIX_FN(take)(A, M); allow the matrix A to point to the data
 // of matrix M, and then to free the other matrix
 
-Matrix *Matrix_shallow_copy(const Matrix *rhs);
+MATRIX_T *MATRIX_FN(shallow_copy)(const MATRIX_T *rhs);
 
 // This function has a FATAL FLAW since it does not deallocate the matrix that is potentially being stored in the left hand side!!
-Matrix *Matrix_take(Matrix *rhs);
+MATRIX_T *MATRIX_FN(take)(MATRIX_T *rhs);
 
 
 
 
 /**================================================================================================
- *!                                        Matrix Constructors
+ *!                                        MATRIX_T Constructors
  *================================================================================================**/
 
-Matrix * Matrix_new(int nrows, int ncols);
+MATRIX_T * MATRIX_FN(new)(int nrows, int ncols);
 
 // when given an ordinary array, construct a matrix from it, taking the prrevious memory.
 // MOVE should only be called with arrays that are allocated on the heap so that that is no
 // array jank that happens as a side effect.
-Matrix *Matrix_move(MATRIX_TYPE **arr_ptr, size_t nrows, size_t ncols);
+MATRIX_T *MATRIX_FN(move)(MATRIX_TYPE **arr_ptr, size_t nrows, size_t ncols);
 
 // When given an array, clone the array (copy its memory)
-Matrix *Matrix_from(const MATRIX_TYPE *arr, size_t nrows, size_t ncols);
+MATRIX_T *MATRIX_FN(from)(const MATRIX_TYPE *arr, size_t nrows, size_t ncols);
 
 // When creating vectors we can just go ahead and memcpy the data!
-Matrix *Matrix_colvec(const MATRIX_TYPE *arr, size_t nrows);
+MATRIX_T *MATRIX_FN(colvec)(const MATRIX_TYPE *arr, size_t nrows);
 
-Matrix *Matrix_rowvec(const MATRIX_TYPE *arr, size_t ncols);
+MATRIX_T *MATRIX_FN(rowvec)(const MATRIX_TYPE *arr, size_t ncols);
 
-Matrix * Matrix_clone(const Matrix *restrict src);
+MATRIX_T * MATRIX_FN(clone)(const MATRIX_T *restrict src);
 
 // matrix of all ones
-Matrix * Matrix_ones(size_t nrows, size_t ncols);
+MATRIX_T * MATRIX_FN(ones)(size_t nrows, size_t ncols);
 
-Matrix * Matrix_ij(size_t nrows, size_t ncols);
+MATRIX_T * MATRIX_FN(ij)(size_t nrows, size_t ncols);
 
 Vector *linspace(MATRIX_TYPE start, MATRIX_TYPE end, int N);
 
@@ -163,9 +163,9 @@ double raisedBy10(double input); // used as a utility function for logspace
 // use base 10
 Vector *logspace(double start, double end, int n);
 
-Vector *Vector_linspace(MATRIX_TYPE start, MATRIX_TYPE end, int N);
+Vector *VECTOR_FN(linspace)(MATRIX_TYPE start, MATRIX_TYPE end, int N);
 
-Vector *Vector_range(double start, int end, int diff);
+Vector *VECTOR_FN(range)(double start, int end, int diff);
 
 
 
@@ -175,35 +175,35 @@ Vector *Vector_range(double start, int end, int diff);
  * @param n
  * @return Matrix*
  */
-Matrix *Matrix_diagonal(size_t n);
+MATRIX_T *MATRIX_FN(diagonal)(size_t n);
 
-Matrix *Matrix_tridiagonal(size_t n);
+MATRIX_T *MATRIX_FN(tridiagonal)(size_t n);
 
-Matrix * Matrix_value(size_t nrows, size_t ncols, MATRIX_TYPE value);
+MATRIX_T * MATRIX_FN(value)(size_t nrows, size_t ncols, MATRIX_TYPE value);
 
 // MUST INITIALIZE EJOVO_SEED TO GET RANDOM VALUES
-Matrix * Matrix_random(size_t nrows, size_t ncols, int min, int max);
+MATRIX_T * MATRIX_FN(random)(size_t nrows, size_t ncols, int min, int max);
 
-Matrix * Matrix_rand(size_t nrows, size_t ncols);
+MATRIX_T * MATRIX_FN(rand)(size_t nrows, size_t ncols);
 
-Matrix * Matrix_identity(size_t n);
+MATRIX_T * MATRIX_FN(identity)(size_t n);
 
 /**================================================================================================
  *!                                        Miscellaneous
  *================================================================================================**/
-void matprint(const Matrix *m);
+void MAT_FN(print)(const MATRIX_T *m);
 
-void Matrix_print(const Matrix *m);
+void MATRIX_FN(print)(const MATRIX_T *m);
 
-void Vector_print_head(const Matrix *m, int n);
+void VECTOR_FN(print_head)(const MATRIX_T *m, int n);
 
 // Print in the; iter style
-void Matrix_print_iter(const Matrix *m);
+void MATRIX_FN(print_iter)(const MATRIX_T *m);
 
-void Matrix_summary(const Matrix *m);
+void MATRIX_FN(summary)(const MATRIX_T *m);
 
-void Matrix_print_all_digits(const Matrix *m);
+void MATRIX_FN(print_all_digits)(const MATRIX_T *m);
 
-void Matrix_print_fixed(const Matrix *m);
+void MATRIX_FN(print_fixed)(const MATRIX_T *m);
 
-Matrix *Matrix_id(size_t m, size_t n);
+MATRIX_T *MATRIX_FN(id)(size_t m, size_t n);

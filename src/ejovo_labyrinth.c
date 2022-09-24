@@ -24,7 +24,7 @@ MATRIX_TYPE *piece_array(MATRIX_TYPE __1, MATRIX_TYPE __2, MATRIX_TYPE __3, MATR
 }
 
 // Pass an enum value and get the 3 x 3 matrix that corresponds to this piece
-Matrix *get_piece_matrix(PIECE_TYPE __t) {
+MATRIX_T *get_piece_matrix(PIECE_TYPE __t) {
 
     MATRIX_TYPE *data = {0};
 
@@ -77,7 +77,7 @@ Matrix *get_piece_matrix(PIECE_TYPE __t) {
             data = piece_array(0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
 
-    return Matrix_from(data, 3, 3);
+    return MATRIX_FN(from)(data, 3, 3);
 }
 
 LabPiece *get_piece(PIECE_TYPE __t) {
@@ -91,11 +91,11 @@ LabPiece *get_piece(PIECE_TYPE __t) {
     return p;
 }
 
-LabPiece *get_piece_from_matrix(Matrix *__m, size_t __i, size_t __j) {
+LabPiece *get_piece_from_matrix(MATRIX_T *__m, size_t __i, size_t __j) {
 
     LabPiece *p = malloc(sizeof(LabPiece));
     if(p) {
-        p->mat = Matrix_submat(__m, __i, __i+2, __j, __j+2);
+        p->mat = MATRIX_FN(submat)(__m, __i, __i+2, __j, __j+2);
         p->type = OTHER;
     }
 
@@ -107,7 +107,7 @@ void print_piece(LabPiece *__p, size_t __n) {
 
     for (size_t i = 0; i < __n; i++) {
         for (size_t j = 0; j < __n; j++) {
-            if(Matrix_at(__p->mat, i, j)) {
+            if(MATRIX_FN(at)(__p->mat, i, j)) {
                 printf("@");
             } else {
                 printf(" ");
@@ -118,12 +118,12 @@ void print_piece(LabPiece *__p, size_t __n) {
     }
 }
 
-void print_matrix_as_lab(Matrix *__m) {
+void print_matrix_as_lab(MATRIX_T *__m) {
 
     for (size_t i = 0; i < __m->nrows; i++) {
         for (size_t j = 0; j < __m->ncols; j++) {
 
-            if(Matrix_at(__m, i, j) == 1) {
+            if(MATRIX_FN(at)(__m, i, j) == 1) {
                 // printf("\u25AE");
                 printf("\u2588");
                 // printf("\u2B1B");
@@ -135,13 +135,13 @@ void print_matrix_as_lab(Matrix *__m) {
     }
 }
 // Place a LabPiece at a given index of a matrix
-void place_piece(Matrix *__m, PIECE_TYPE __t, size_t __i, size_t __j) {
+void place_piece(MATRIX_T *__m, PIECE_TYPE __t, size_t __i, size_t __j) {
 
-    matcpyele(__m, __i*3, __i*3 + 2, __j*3, __j*3 + 2, get_piece_matrix(__t));
+    MAT_FN(cpyele)(__m, __i*3, __i*3 + 2, __j*3, __j*3 + 2, get_piece_matrix(__t));
 
 }
 
-Matrix *create_checkerboard(size_t __nrows, size_t __ncols) {
+MATRIX_T *create_checkerboard(size_t __nrows, size_t __ncols) {
     if (__nrows < 0 || __ncols < 0) {
         perror("Cannot instantiate new checkerboard with 0 rows/cols\n");
         return NULL;
@@ -149,26 +149,26 @@ Matrix *create_checkerboard(size_t __nrows, size_t __ncols) {
 
     // printf("Creating a checkerboard %lu x %lu\n", __nrows*3, __ncols*3);
 
-    Matrix *m = Matrix_new(__nrows * 3, __ncols * 3);
+    MATRIX_T *m = MATRIX_FN(new)(__nrows * 3, __ncols * 3);
 
 
 
     if(m) {
         for (size_t i = 0; i < __nrows; i++) {
             for (size_t j = 0; j < __ncols; j++) {
-                // matcpyele(m, i*3, i*3 + 2, j*3, j*3 + 2, get_piece_matrix(unif(0, 10)));
+                // MAT_FN(cpyele)(m, i*3, i*3 + 2, j*3, j*3 + 2, get_piece_matrix(unif(0, 10)));
                 place_piece(m, unifi(0,10), i, j);
                 // printf("i = %lu, j = %lu\n", i, j);
             }
         }
     } else {
-        perror("Matrix not initialised\n");
+        perror("MATRIX_T not initialised\n");
     }
 
     return m;
 }
 
-void set_border_elements(Matrix *__m, size_t __jtop, size_t __jbot) {
+void set_border_elements(MATRIX_T *__m, size_t __jtop, size_t __jbot) {
 
     // set all of the elements to 1 besides (__i1, __j1) and (__i2, __j2)
     for (size_t i = 0; i < __m->nrows; i++) {
@@ -177,19 +177,19 @@ void set_border_elements(Matrix *__m, size_t __jtop, size_t __jbot) {
 
             for (size_t j = 0; j < __m->ncols; j++) { // iterate through each column
                 if (j == __jtop && i == 0) {
-                    Matrix_set(__m, i, j, 0);
+                    MATRIX_FN(set)(__m, i, j, 0);
                     continue;
                 } else if ( j == __jbot && i == __m->nrows - 1) {
-                    Matrix_set(__m, i, j, 0);
+                    MATRIX_FN(set)(__m, i, j, 0);
                     continue;
                 } else {
-                    Matrix_set(__m, i, j, 1);
+                    MATRIX_FN(set)(__m, i, j, 1);
                 }
             }
         }
 
-        Matrix_set(__m, i, 0, 1);
-        Matrix_set(__m, i, __m->ncols - 1, 1);
+        MATRIX_FN(set)(__m, i, 0, 1);
+        MATRIX_FN(set)(__m, i, __m->ncols - 1, 1);
 
     }
 }
@@ -316,7 +316,7 @@ PIECE_TYPE get_open_piece_type_2(DIRECTION __d1, DIRECTION __d2) {
 
 
 // Create a path through the matrix from the top to the bottom
-void create_path(Matrix *__m, size_t __start_j, size_t __end_j) {
+void create_path(MATRIX_T *__m, size_t __start_j, size_t __end_j) {
 
     // start by choosing an initial piece that has an opening through the top
 
@@ -333,35 +333,35 @@ enum cell_status {
 
 };
 
-bool cell_has_unvisited_neighbors(Matrix *__maze, size_t __celli, size_t __cellj) {
+bool cell_has_unvisited_neighbors(MATRIX_T *__maze, size_t __celli, size_t __cellj) {
 
-    if (Matrix_valid_bounds(__maze, __celli + 2, __cellj) ) {
-        if (Matrix_at(__maze, __celli + 2, __cellj) != -1) return true;
+    if (MATRIX_FN(valid_bounds)(__maze, __celli + 2, __cellj) ) {
+        if (MATRIX_FN(at)(__maze, __celli + 2, __cellj) != -1) return true;
     }
 
-    if (Matrix_valid_bounds(__maze, __celli - 2, __cellj) ) {
-        if (Matrix_at(__maze, __celli - 2, __cellj) != -1) return true;
+    if (MATRIX_FN(valid_bounds)(__maze, __celli - 2, __cellj) ) {
+        if (MATRIX_FN(at)(__maze, __celli - 2, __cellj) != -1) return true;
     }
 
-    if (Matrix_valid_bounds(__maze, __celli, __cellj - 2) ) {
-        if (Matrix_at(__maze, __celli, __cellj - 2) != -1) return true;
+    if (MATRIX_FN(valid_bounds)(__maze, __celli, __cellj - 2) ) {
+        if (MATRIX_FN(at)(__maze, __celli, __cellj - 2) != -1) return true;
     }
 
-    if (Matrix_valid_bounds(__maze, __celli, __cellj + 2) ) {
-        if (Matrix_at(__maze, __celli, __cellj + 2) != -1) return true;
+    if (MATRIX_FN(valid_bounds)(__maze, __celli, __cellj + 2) ) {
+        if (MATRIX_FN(at)(__maze, __celli, __cellj + 2) != -1) return true;
     }
 
     return false;
 
     // // true is __maze(i + 2, j + 2) || __maze(i + 2, j - 2) || ... is not equal to 1
-    // return (Matrix_at(__maze, __celli + 2, __cellj + 2) != -1 ||
-    //         Matrix_at(__maze, __celli - 2, __cellj + 2) != -1 ||
-    //         Matrix_at(__maze, __celli + 2, __cellj - 2) != -1 ||
-    //         Matrix_at(__maze, __celli - 2, __cellj - 2) != -1   );
+    // return (MATRIX_FN(at)(__maze, __celli + 2, __cellj + 2) != -1 ||
+    //         MATRIX_FN(at)(__maze, __celli - 2, __cellj + 2) != -1 ||
+    //         MATRIX_FN(at)(__maze, __celli + 2, __cellj - 2) != -1 ||
+    //         MATRIX_FN(at)(__maze, __celli - 2, __cellj - 2) != -1   );
 
 }
 
-void choose_next_cell(Matrix *__maze, size_t *__celli_ptr, size_t *__cellj_ptr) {
+void choose_next_cell(MATRIX_T *__maze, size_t *__celli_ptr, size_t *__cellj_ptr) {
 
     // set the __celli and __cellj value to the next cell that is available
 
@@ -381,11 +381,11 @@ void choose_next_cell(Matrix *__maze, size_t *__celli_ptr, size_t *__cellj_ptr) 
 
             case 1:
 
-                if (Matrix_valid_bounds(__maze, *__celli_ptr + 2, *__cellj_ptr) ) {
+                if (MATRIX_FN(valid_bounds)(__maze, *__celli_ptr + 2, *__cellj_ptr) ) {
 
-                    if (Matrix_at(__maze, *__celli_ptr + 2, *__cellj_ptr) != -1) {
+                    if (MATRIX_FN(at)(__maze, *__celli_ptr + 2, *__cellj_ptr) != -1) {
                         // open up the space between this cell and the next
-                        Matrix_set(__maze, *__celli_ptr + 1, *__cellj_ptr, 0);
+                        MATRIX_FN(set)(__maze, *__celli_ptr + 1, *__cellj_ptr, 0);
                         // then this cell is unvisited, set cell coordinates for the next cell
                         *__celli_ptr += 2;
                         return;
@@ -397,10 +397,10 @@ void choose_next_cell(Matrix *__maze, size_t *__celli_ptr, size_t *__cellj_ptr) 
 
             case 2:
 
-                if (Matrix_valid_bounds(__maze, *__celli_ptr - 2, *__cellj_ptr) ) {
+                if (MATRIX_FN(valid_bounds)(__maze, *__celli_ptr - 2, *__cellj_ptr) ) {
 
-                    if (Matrix_at(__maze, *__celli_ptr - 2, *__cellj_ptr) != -1) {
-                        Matrix_set(__maze, *__celli_ptr - 1, *__cellj_ptr, 0);
+                    if (MATRIX_FN(at)(__maze, *__celli_ptr - 2, *__cellj_ptr) != -1) {
+                        MATRIX_FN(set)(__maze, *__celli_ptr - 1, *__cellj_ptr, 0);
                         // then this cell is unvisited, set cell coordinates for the next cell
                         *__celli_ptr -= 2;
                         return;
@@ -414,10 +414,10 @@ void choose_next_cell(Matrix *__maze, size_t *__celli_ptr, size_t *__cellj_ptr) 
 
             case 3:
 
-                if (Matrix_valid_bounds(__maze, *__celli_ptr, *__cellj_ptr - 2) ) {
+                if (MATRIX_FN(valid_bounds)(__maze, *__celli_ptr, *__cellj_ptr - 2) ) {
 
-                    if (Matrix_at(__maze, *__celli_ptr, *__cellj_ptr - 2) != -1) {
-                        Matrix_set(__maze, *__celli_ptr, *__cellj_ptr - 1, 0);
+                    if (MATRIX_FN(at)(__maze, *__celli_ptr, *__cellj_ptr - 2) != -1) {
+                        MATRIX_FN(set)(__maze, *__celli_ptr, *__cellj_ptr - 1, 0);
                         // then this cell is unvisited, set cell coordinates for the next cell
                         *__cellj_ptr -= 2;
                         return;
@@ -429,10 +429,10 @@ void choose_next_cell(Matrix *__maze, size_t *__celli_ptr, size_t *__cellj_ptr) 
 
             case 4:
 
-                if (Matrix_valid_bounds(__maze, *__celli_ptr, *__cellj_ptr + 2) ) {
+                if (MATRIX_FN(valid_bounds)(__maze, *__celli_ptr, *__cellj_ptr + 2) ) {
 
-                    if (Matrix_at(__maze, *__celli_ptr, *__cellj_ptr + 2) != -1) {
-                        Matrix_set(__maze, *__celli_ptr, *__cellj_ptr + 1, 0);
+                    if (MATRIX_FN(at)(__maze, *__celli_ptr, *__cellj_ptr + 2) != -1) {
+                        MATRIX_FN(set)(__maze, *__celli_ptr, *__cellj_ptr + 1, 0);
                         // then this cell is unvisited, set cell coordinates for the next cell
                         *__cellj_ptr += 2;
                         return;
@@ -491,11 +491,11 @@ Cell *CellStack_pop(CellStack *__stack) {
     }
 }
 
-void generate_path(Matrix *__maze, CellStack *__stack, size_t __celli, size_t __cellj) {
+void generate_path(MATRIX_T *__maze, CellStack *__stack, size_t __celli, size_t __cellj) {
 
     // printf("Entered cell (%lu, %lu)\n", __celli, __cellj);
 
-    Matrix_set(__maze, __celli, __cellj, -1); // mark the cell as visitedj
+    MATRIX_FN(set)(__maze, __celli, __cellj, -1); // mark the cell as visitedj
 
     size_t next_celli = __celli;
     size_t next_cellj = __cellj;
@@ -536,7 +536,7 @@ void generate_path(Matrix *__maze, CellStack *__stack, size_t __celli, size_t __
 
 }
 
-Matrix *create_maze(size_t __nrows, size_t __ncols) {
+MATRIX_T *create_maze(size_t __nrows, size_t __ncols) {
 
     // create cell stack
     CellStack *stack = (CellStack *) malloc(sizeof(CellStack));
@@ -548,12 +548,12 @@ Matrix *create_maze(size_t __nrows, size_t __ncols) {
 
 
     // Start by making a matrix that is composed of cells
-    Matrix *maze = Matrix_value(__nrows*2 + 1, __ncols*2 + 1, 1);
+    MATRIX_T *maze = MATRIX_FN(value)(__nrows*2 + 1, __ncols*2 + 1, 1);
     // Open up the cells
     for (size_t i = 1; i < __nrows*2; i += 2) {
         for (size_t j = 1; j < __ncols*2; j += 2) {
 
-            Matrix_set(maze, i, j, 0);
+            MATRIX_FN(set)(maze, i, j, 0);
 
         }
     }
@@ -569,7 +569,7 @@ Matrix *create_maze(size_t __nrows, size_t __ncols) {
 
 
 // When given a maze, determine if there is an open path from (1,1) to the bottom right corner
-bool chercher_chemin(Matrix *__maze, size_t __starti, size_t __startj) {
+bool chercher_chemin(MATRIX_T *__maze, size_t __starti, size_t __startj) {
 
 
 

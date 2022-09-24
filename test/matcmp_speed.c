@@ -10,16 +10,16 @@ int main() {
     ejovo_seed();
 
     // I want to test the speed of two different compares. To do this I can use gprof
-    Matrix *base = Matrix_rand(N, N);
-    Matrix *clone = Matrix_clone(base);
+    MATRIX_T *base = MATRIX_FN(rand)(N, N);
+    MATRIX_T *clone = MATRIX_FN(clone)(base);
 
     bool result = false;
 
     // I now want to compare this MAX_ITER times
     for (size_t i = 0; i < MAX_ITER; i++) {
 
-        result = matcmp(base, clone);
-        result = matcmp_bytes(base, clone);
+        result = MAT_FN(cmp)(base, clone);
+        result = MAT_FN(cmp_bytes)(base, clone);
 
     }
 

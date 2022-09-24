@@ -14,53 +14,53 @@
 
 
 // Use your functional tools to simply cast __m to a floor
-Vector *Matrix_as_index(const Matrix *__m);
+Vector *MATRIX_FN(as_index)(const MATRIX_T *__m);
 
 // Take a supposed index matrix and scrub it -- making sure that all of the elements fall within
 // the true bounds of __m
-Vector *Matrix_scrub_index(const Matrix *__m, const Index *__ind);
+Vector *MATRIX_FN(scrub_index)(const MATRIX_T *__m, const Index *__ind);
 
 // dont even scrub the indices, just extract the data!
-Vector *matindex(const Matrix *__m, const Index *__ind);
+Vector *MAT_FN(index)(const MATRIX_T *__m, const Index *__ind);
 
-Vector *Matrix_index(const Matrix *__m, const Index *__ind);
+Vector *MATRIX_FN(index)(const MATRIX_T *__m, const Index *__ind);
 
 // Receiving a logical index that is the same shape as __m, return a Vector where
 // the mask is true
-Vector *Matrix_logical_index(const Matrix *__m, const Logical *__log);
+Vector *MATRIX_FN(logical_index)(const MATRIX_T *__m, const Logical *__log);
 
 // Return the indices where a predicate is satisfied
-Index *Matrix_where(const Matrix *__m, pred_fn __fn);
+Index *MATRIX_FN(where)(const MATRIX_T *__m, pred_fn __fn);
 
 // Given a Logical matrix (1.0s and 0.0s), return a column vector whose elements are the indices
 // of the nonzero elements and whose length is the number of nozero elements, or sum(__log).
 Index *Logical_get_index(const Logical *__log);
 
 // Return the indices where a predicate is satisfied
-Index *Matrix_where_lt(const Matrix *__m, double __k);
+Index *MATRIX_FN(where_lt)(const MATRIX_T *__m, double __k);
 
 // Return the indices where a predicate is satisfied
-Index *Matrix_where_lteq(const Matrix *__m, double __k);
+Index *MATRIX_FN(where_lteq)(const MATRIX_T *__m, double __k);
 
 // Return the indices where a predicate is satisfied
-Index *Matrix_where_gt(const Matrix *__m, double __k);
+Index *MATRIX_FN(where_gt)(const MATRIX_T *__m, double __k);
 
 // Return the indices where a predicate is satisfied
-Index *Matrix_where_gteq(const Matrix *__m, double __k);
+Index *MATRIX_FN(where_gteq)(const MATRIX_T *__m, double __k);
 
-Matrix *matsetind(Matrix *__m, const Matrix *__ind, const Matrix *__val);
+MATRIX_T *MAT_FN(setind)(MATRIX_T *__m, const MATRIX_T *__ind, const MATRIX_T *__val);
 
-Matrix *Matrix_set_index(const Matrix *__m, const Matrix *__ind, const Matrix *__val);
+MATRIX_T *MATRIX_FN(set_index)(const MATRIX_T *__m, const MATRIX_T *__ind, const MATRIX_T *__val);
 
-Matrix *Matrix_extract_rows(const Matrix *__m, Index *__ind);
+MATRIX_T *MATRIX_FN(extract_rows)(const MATRIX_T *__m, Index *__ind);
 
-Matrix *Matrix_extract_cols(const Matrix *__m, Index *__ind);
+MATRIX_T *MATRIX_FN(extract_cols)(const MATRIX_T *__m, Index *__ind);
 
 // Take a supposed index matrix and scrub it -- making sure that all of the elements fall within
 // the appropriate columns
-Vector *Matrix_scrub_col_index(const Matrix *__m, const Index *__ind);
+Vector *MATRIX_FN(scrub_col_index)(const MATRIX_T *__m, const Index *__ind);
 
-Vector *Matrix_scrub_row_index(const Matrix *__m, const Index *__ind);
+Vector *MATRIX_FN(scrub_row_index)(const MATRIX_T *__m, const Index *__ind);
 
 /**================================================================================================
  *!              Utility functions for dealing with indices -- probably shouldnt be exported
@@ -70,15 +70,15 @@ static bool is_int(double x) {
 }
 
 // Return true if all of the elements in __ind are valid column indices of __m
-static bool are_col_indices_valid(const Matrix *__m, const Index *__ind) {
+static bool are_col_indices_valid(const MATRIX_T *__m, const Index *__ind) {
 
     // loop through the __index vector
-    MatIter it = Matrix_begin(__ind);
-    const MatIter end = Matrix_begin(__ind);
+    MATITER_T it = MATRIX_FN(begin)(__ind);
+    const MATITER_T end = MATRIX_FN(begin)(__ind);
 
-    for(it; !MatIter_cmp(it, end); it = MatIter_next(it)) {
+    for(it; !MATITER_FN(cmp)(it, end); it = MATITER_FN(next)(it)) {
 
-        double val = MatIter_value(it);
+        double val = MATITER_FN(value)(it);
         // make sure the elements of __ind are positive, integers, and within __m's column range
         if (val < 0 || !is_int(val) || val >= __m->ncols) return false;
     }
@@ -87,15 +87,15 @@ static bool are_col_indices_valid(const Matrix *__m, const Index *__ind) {
 }
 
 // Return true if all of the elements in __ind are valid column indices of __m
-static bool are_row_indices_valid(const Matrix *__m, const Index *__ind) {
+static bool are_row_indices_valid(const MATRIX_T *__m, const Index *__ind) {
 
     // loop through the __index vector
-    MatIter it = Matrix_begin(__ind);
-    const MatIter end = Matrix_begin(__ind);
+    MATITER_T it = MATRIX_FN(begin)(__ind);
+    const MATITER_T end = MATRIX_FN(begin)(__ind);
 
-    for(it; !MatIter_cmp(it, end); it = MatIter_next(it)) {
+    for(it; !MATITER_FN(cmp)(it, end); it = MATITER_FN(next)(it)) {
 
-        double val = MatIter_value(it);
+        double val = MATITER_FN(value)(it);
         // make sure the elements of __ind are positive, integers, and within __m's column range
         if (val < 0 || !is_int(val) || val >= __m->nrows) return false;
     }
@@ -104,24 +104,24 @@ static bool are_row_indices_valid(const Matrix *__m, const Index *__ind) {
 }
 
 // I want to return the index of the max or min element.
-int MatIter_max_index(MatIter begin, const MatIter end);
+int MATITER_FN(max_index)(MATITER_T begin, const MATITER_T end);
 
 // I want to return the index of the max or min element.
-int MatIter_min_index(MatIter begin, const MatIter end);
+int MATITER_FN(min_index)(MATITER_T begin, const MATITER_T end);
 
-int Matrix_row_min_index(const Matrix *__m, size_t __i);
+int MATRIX_FN(row_min_index)(const MATRIX_T *__m, size_t __i);
 
-int Matrix_row_max_index(const Matrix *__m, size_t __i);
+int MATRIX_FN(row_max_index)(const MATRIX_T *__m, size_t __i);
 
-int Matrix_col_min_index(const Matrix *__m, size_t __i);
+int MATRIX_FN(col_min_index)(const MATRIX_T *__m, size_t __i);
 
-int Matrix_col_max_index(const Matrix *__m, size_t __i);
+int MATRIX_FN(col_max_index)(const MATRIX_T *__m, size_t __i);
 
-int Matrix_col_max_index_from_row(const Matrix *__m, size_t __j, size_t __i);
+int MATRIX_FN(col_max_index_from_row)(const MATRIX_T *__m, size_t __j, size_t __i);
 
 // Find the max value of column j starting from row i
-int Matrix_col_min_index_from_row(const Matrix *__m, size_t __j, size_t __i);
+int MATRIX_FN(col_min_index_from_row)(const MATRIX_T *__m, size_t __j, size_t __i);
 
-int Matrix_row_max_index_from_col(const Matrix *__m, size_t __i, size_t __j);
+int MATRIX_FN(row_max_index_from_col)(const MATRIX_T *__m, size_t __i, size_t __j);
 
-int Matrix_row_min_index_from_col(const Matrix *__m, size_t __i, size_t __j);
+int MATRIX_FN(row_min_index_from_col)(const MATRIX_T *__m, size_t __i, size_t __j);

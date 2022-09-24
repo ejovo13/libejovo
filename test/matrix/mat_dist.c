@@ -17,38 +17,38 @@ int main() {
 
 void t_unif() {
 
-    Vector *v = Vector_runif(100000, 0, 10);
+    Vector *v = VECTOR_FN(runif)(100000, 0, 10);
 
     printf("========== Uniform [0, 10] ==========\n");
-    printf("Mean(v): %lf\n", Vector_iter_mean(v));
-    printf("std(v): %lf\n", Vector_iter_std(v));
-    printf("var(v): %lf\n", Vector_iter_var(v));
+    printf("Mean(v): %lf\n", VECTOR_FN(iter_mean)(v));
+    printf("std(v): %lf\n", VECTOR_FN(iter_std)(v));
+    printf("var(v): %lf\n", VECTOR_FN(iter_var)(v));
 
-    Matrix_free(v);
+    MATRIX_FN(free)(v);
 
 }
 
 void t_norm() {
 
-    Vector *v = Vector_rnorm(100000, 0, 1);
+    Vector *v = VECTOR_FN(rnorm)(100000, 0, 1);
 
     printf("========== Norm [0, 1] ==========\n");
-    printf("Mean(v): %lf\n", Vector_iter_mean(v));
-    printf("std(v): %lf\n", Vector_iter_std(v));
-    printf("var(v): %lf\n", Vector_iter_var(v));
+    printf("Mean(v): %lf\n", VECTOR_FN(iter_mean)(v));
+    printf("std(v): %lf\n", VECTOR_FN(iter_std)(v));
+    printf("var(v): %lf\n", VECTOR_FN(iter_var)(v));
 
-    Matrix_free(v);
+    MATRIX_FN(free)(v);
 }
 
 void t_exp() {
 
-    Vector *v = Vector_rexp(100000, 5);
+    Vector *v = VECTOR_FN(rexp)(100000, 5);
 
     printf("========== Exp [5] ==========\n");
-    printf("Mean(v): %lf\n", Vector_iter_mean(v));
-    printf("std(v): %lf\n", Vector_iter_std(v));
-    printf("var(v): %lf\n", Vector_iter_var(v));
+    printf("Mean(v): %lf\n", VECTOR_FN(iter_mean)(v));
+    printf("std(v): %lf\n", VECTOR_FN(iter_std)(v));
+    printf("var(v): %lf\n", VECTOR_FN(iter_var)(v));
 
-    Matrix_free(v);
+    MATRIX_FN(free)(v);
 
 }

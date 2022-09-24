@@ -8,11 +8,11 @@ int main() {
     // print_matrix_as_lab(maze);
 
 
-    Matrix *maze = create_maze(20, 50);
+    MATRIX_T *maze = create_maze(20, 50);
     // generate_path(maze, 1, 1);
     print_matrix_as_lab(maze);
 
-    Matrix_reset(&maze);
+    MATRIX_FN(reset)(&maze);
 
 
     return 0;

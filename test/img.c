@@ -9,7 +9,7 @@ int main() {
     const int w = 100;
     const int h = 100;
 
-    Matrix *sp = reshape(linspace(0, 20, w * h), h, w);
+    MATRIX_T *sp = reshape(linspace(0, 20, w * h), h, w);
 
     // printf("min: %lf\n", min(sp));
     // printf("max: %lf\n", max(sp));
@@ -20,7 +20,7 @@ int main() {
 
     writePPM(img, "test.ppm");
 
-    Matrix_print(sp);
+    MATRIX_FN(print)(sp);
 
 
 

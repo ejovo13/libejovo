@@ -1,4 +1,4 @@
-// This module contains essential routines to deal with a "logical" Matrix data type that is represented
+// This module contains essential routines to deal with a "logical" MATRIX_T data type that is represented
 // by A matrix that is UNIQUELY ones and zeros
 
 #include "matrix_logical.h"
@@ -6,10 +6,10 @@
 double TRUE = 1.0;
 double FALSE = 0.0;
 
-// A Logical Matrix shall be typedef'd as a "Mask" to express intent
+// A Logical MATRIX_T shall be typedef'd as a "Mask" to express intent
 // This is used as a predicate function. Can be used to make a "true"
 // matrix that is the same size as a passed matrix with
-// Matrix_as_logical(m, true_fn); as Matrix_as_logical will accept a
+// MATRIX_FN(as_logical)(m, true_fn); as MATRIX_FN(as_logical) will accept a
 // predicate as an argument
 double true_fn(double d) {
     return TRUE;
@@ -29,16 +29,16 @@ double OR(double a, double b) {
 }
 
 // First routine that I should implement is having the notion of "if the vector is logical"
-bool Matrix_is_logical(const Matrix *__log) {
+bool MATRIX_FN(is_logical)(const MATRIX_T *__log) {
 
     // All of the elements MUST be either 1.0 or 0.0
-    MatIter it = Matrix_begin(__log);
-    MatIter end = Matrix_end(__log);
+    MATITER_T it = MATRIX_FN(begin)(__log);
+    MATITER_T end = MATRIX_FN(end)(__log);
     double val = 0;
 
-    for (it; !MatIter_cmp(it, end); it = MatIter_next(it)) {
+    for (it; !MATITER_FN(cmp)(it, end); it = MATITER_FN(next)(it)) {
 
-        val = MatIter_value(it);
+        val = MATITER_FN(value)(it);
         if (!(val == TRUE || val == FALSE)) {
             // printf("%lf registered as different \n", val);
             return false;
@@ -49,19 +49,19 @@ bool Matrix_is_logical(const Matrix *__log) {
 }
 
 
-bool Vector_is_logical(const Vector *__log) {
-    return Matrix_is_logical(__log);
+bool VECTOR_FN(is_logical)(const Vector *__log) {
+    return MATRIX_FN(is_logical)(__log);
 }
 
 // I need to be able to create logical vectors now...
-int Matrix_mask_count(const Matrix *__mask) {
-    return Vector_mask_count(__mask);
+int MATRIX_FN(mask_count)(const MATRIX_T *__mask) {
+    return VECTOR_FN(mask_count)(__mask);
 }
 
 // Create a logical vector that is the same size as another matrix and set all of it's values to true.
-int Vector_mask_count(const Vector *__mask) {
+int VECTOR_FN(mask_count)(const Vector *__mask) {
 
-    if (!Matrix_is_logical(__mask)) return -1;
+    if (!MATRIX_FN(is_logical)(__mask)) return -1;
 
     return sum(__mask);
 }
@@ -70,90 +70,90 @@ int Vector_mask_count(const Vector *__mask) {
 
 
 // Create a new logical matrix/vector from a current matrix and a predicate
-Matrix *Matrix_as_logical(const Matrix *__m, pred_fn __fn) {
+MATRIX_T *MATRIX_FN(as_logical)(const MATRIX_T *__m, pred_fn __fn) {
 
-    Matrix *log = matalloc(__m->nrows, __m->ncols);
+    MATRIX_T *log = MAT_FN(alloc)(__m->nrows, __m->ncols);
 
-    MatIter end = Matrix_end(__m);
-    MatIter logit = Matrix_begin(log);
+    MATITER_T end = MATRIX_FN(end)(__m);
+    MATITER_T logit = MATRIX_FN(begin)(log);
 
-    // printf("logit points to: %lf\n", MatIter_value(logit));
+    // printf("logit points to: %lf\n", MATITER_FN(value)(logit));
 
-    for (MatIter it = Matrix_begin(__m); !MatIter_cmp(it, end); it = MatIter_next(it), logit = MatIter_next(logit)) {
-        // printf("Processing: %lf\n", MatIter_value(it));
-        MatIter_set(logit, __fn(MatIter_value(it)));
+    for (MATITER_T it = MATRIX_FN(begin)(__m); !MATITER_FN(cmp)(it, end); it = MATITER_FN(next)(it), logit = MATITER_FN(next)(logit)) {
+        // printf("Processing: %lf\n", MATITER_FN(value)(it));
+        MATITER_FN(set)(logit, __fn(MATITER_FN(value)(it)));
     }
 
     return log;
 }
 
 // Return a Logical mask of all the values in __m that are lt __k
-Logical *Matrix_lt(const Matrix *__m, double __k) {
+Logical *MATRIX_FN(lt)(const MATRIX_T *__m, double __k) {
 
-    Matrix *log = matalloc(__m->nrows, __m->ncols);
+    MATRIX_T *log = MAT_FN(alloc)(__m->nrows, __m->ncols);
 
-    MatIter end = Matrix_end(__m);
-    MatIter logit = Matrix_begin(log);
+    MATITER_T end = MATRIX_FN(end)(__m);
+    MATITER_T logit = MATRIX_FN(begin)(log);
 
-    // printf("logit points to: %lf\n", MatIter_value(logit));
+    // printf("logit points to: %lf\n", MATITER_FN(value)(logit));
 
-    for (MatIter it = Matrix_begin(__m); !MatIter_cmp(it, end); it = MatIter_next(it), logit = MatIter_next(logit)) {
-        // printf("Processing: %lf\n", MatIter_value(it));
-        MatIter_set(logit, MatIter_value(it) < __k);
+    for (MATITER_T it = MATRIX_FN(begin)(__m); !MATITER_FN(cmp)(it, end); it = MATITER_FN(next)(it), logit = MATITER_FN(next)(logit)) {
+        // printf("Processing: %lf\n", MATITER_FN(value)(it));
+        MATITER_FN(set)(logit, MATITER_FN(value)(it) < __k);
     }
 
     return log;
 }
 
 // Return a Logical mask of all the values in __m that are <= __k
-Logical *Matrix_lteq(const Matrix *__m, double __k) {
+Logical *MATRIX_FN(lteq)(const MATRIX_T *__m, double __k) {
 
-    Matrix *log = matalloc(__m->nrows, __m->ncols);
+    MATRIX_T *log = MAT_FN(alloc)(__m->nrows, __m->ncols);
 
-    MatIter end = Matrix_end(__m);
-    MatIter logit = Matrix_begin(log);
+    MATITER_T end = MATRIX_FN(end)(__m);
+    MATITER_T logit = MATRIX_FN(begin)(log);
 
-    // printf("logit points to: %lf\n", MatIter_value(logit));
+    // printf("logit points to: %lf\n", MATITER_FN(value)(logit));
 
-    for (MatIter it = Matrix_begin(__m); !MatIter_cmp(it, end); it = MatIter_next(it), logit = MatIter_next(logit)) {
-        // printf("Processing: %lf\n", MatIter_value(it));
-        MatIter_set(logit, MatIter_value(it) <= __k);
+    for (MATITER_T it = MATRIX_FN(begin)(__m); !MATITER_FN(cmp)(it, end); it = MATITER_FN(next)(it), logit = MATITER_FN(next)(logit)) {
+        // printf("Processing: %lf\n", MATITER_FN(value)(it));
+        MATITER_FN(set)(logit, MATITER_FN(value)(it) <= __k);
     }
 
     return log;
 }
 
 // Return a Logical mask of all the values in __m that are > lt __k
-Logical *Matrix_gt(const Matrix *__m, double __k) {
+Logical *MATRIX_FN(gt)(const MATRIX_T *__m, double __k) {
 
-    Matrix *log = matalloc(__m->nrows, __m->ncols);
+    MATRIX_T *log = MAT_FN(alloc)(__m->nrows, __m->ncols);
 
-    MatIter end = Matrix_end(__m);
-    MatIter logit = Matrix_begin(log);
+    MATITER_T end = MATRIX_FN(end)(__m);
+    MATITER_T logit = MATRIX_FN(begin)(log);
 
-    // printf("logit points to: %lf\n", MatIter_value(logit));
+    // printf("logit points to: %lf\n", MATITER_FN(value)(logit));
 
-    for (MatIter it = Matrix_begin(__m); !MatIter_cmp(it, end); it = MatIter_next(it), logit = MatIter_next(logit)) {
-        // printf("Processing: %lf\n", MatIter_value(it));
-        MatIter_set(logit, MatIter_value(it) > __k);
+    for (MATITER_T it = MATRIX_FN(begin)(__m); !MATITER_FN(cmp)(it, end); it = MATITER_FN(next)(it), logit = MATITER_FN(next)(logit)) {
+        // printf("Processing: %lf\n", MATITER_FN(value)(it));
+        MATITER_FN(set)(logit, MATITER_FN(value)(it) > __k);
     }
 
     return log;
 }
 
 // Return a Logical mask of all the values in __m that are >= __k
-Logical *Matrix_gteq(const Matrix *__m, double __k) {
+Logical *MATRIX_FN(gteq)(const MATRIX_T *__m, double __k) {
 
-    Matrix *log = matalloc(__m->nrows, __m->ncols);
+    MATRIX_T *log = MAT_FN(alloc)(__m->nrows, __m->ncols);
 
-    MatIter end = Matrix_end(__m);
-    MatIter logit = Matrix_begin(log);
+    MATITER_T end = MATRIX_FN(end)(__m);
+    MATITER_T logit = MATRIX_FN(begin)(log);
 
-    // printf("logit points to: %lf\n", MatIter_value(logit));
+    // printf("logit points to: %lf\n", MATITER_FN(value)(logit));
 
-    for (MatIter it = Matrix_begin(__m); !MatIter_cmp(it, end); it = MatIter_next(it), logit = MatIter_next(logit)) {
-        // printf("Processing: %lf\n", MatIter_value(it));
-        MatIter_set(logit, MatIter_value(it) >= __k);
+    for (MATITER_T it = MATRIX_FN(begin)(__m); !MATITER_FN(cmp)(it, end); it = MATITER_FN(next)(it), logit = MATITER_FN(next)(logit)) {
+        // printf("Processing: %lf\n", MATITER_FN(value)(it));
+        MATITER_FN(set)(logit, MATITER_FN(value)(it) >= __k);
     }
 
     return log;
@@ -164,47 +164,47 @@ Logical *Matrix_gteq(const Matrix *__m, double __k) {
 
 
 
-Matrix *Matrix_as_true(const Matrix *__m) {
-    return Matrix_as_logical(__m, true_fn);
+MATRIX_T *MATRIX_FN(as_true)(const MATRIX_T *__m) {
+    return MATRIX_FN(as_logical)(__m, true_fn);
 }
 
 // Wherever the mask is true, set __m to the __val
-void matsetmask(Matrix *__m, const Matrix *__mask, MATRIX_TYPE __val) {
+void MAT_FN(setmask)(MATRIX_T *__m, const MATRIX_T *__mask, MATRIX_TYPE __val) {
 
-    MatIter it_mask = Matrix_begin(__mask);
+    MATITER_T it_mask = MATRIX_FN(begin)(__mask);
 
-    for (MatIter it = Matrix_begin(__m); !MatIter_cmp(it, Matrix_end(__m)); it = MatIter_next(it), it_mask = MatIter_next(it_mask)) {
+    for (MATITER_T it = MATRIX_FN(begin)(__m); !MATITER_FN(cmp)(it, MATRIX_FN(end)(__m)); it = MATITER_FN(next)(it), it_mask = MATITER_FN(next)(it_mask)) {
 
-        if (MatIter_value(it_mask) == TRUE) MatIter_set(it, __val);
+        if (MATITER_FN(value)(it_mask) == TRUE) MATITER_FN(set)(it, __val);
     }
 }
 
-void matsetpred(Matrix *__m, pred_fn __predicate, MATRIX_TYPE __val) {
+void MAT_FN(setpred)(MATRIX_T *__m, pred_fn __predicate, MATRIX_TYPE __val) {
 
-    for (MatIter it = Matrix_begin(__m); !MatIter_cmp(it, Matrix_end(__m)); it = MatIter_next(it)) {
-        if (__predicate(MatIter_value(it)) == TRUE) MatIter_set(it, __val);
+    for (MATITER_T it = MATRIX_FN(begin)(__m); !MATITER_FN(cmp)(it, MATRIX_FN(end)(__m)); it = MATITER_FN(next)(it)) {
+        if (__predicate(MATITER_FN(value)(it)) == TRUE) MATITER_FN(set)(it, __val);
     }
 }
 
 // Return a column vector of elements that correspond to a particular mask
-Vector *Matrix_filter_mask(const Matrix *__m, const Matrix *__mask) {
+Vector *MATRIX_FN(filter_mask)(const MATRIX_T *__m, const MATRIX_T *__mask) {
 
     // First thing to do is a forward pass to count the number of nonzeros
-    int count = Vector_mask_count(__mask);
+    int count = VECTOR_FN(mask_count)(__mask);
 
     // Now allocate a new column vector
     if (count == -1) return NULL;
 
-    Vector *new = matalloc(count, 1);
+    Vector *new = MAT_FN(alloc)(count, 1);
 
-    MatIter nit = Matrix_begin(new);
-    MatIter mask_it = Matrix_begin(__mask);
+    MATITER_T nit = MATRIX_FN(begin)(new);
+    MATITER_T mask_it = MATRIX_FN(begin)(__mask);
 
-    for (MatIter it = Matrix_begin(__m); !MatIter_cmp(it, Matrix_end(__m)); it = MatIter_next(it), mask_it = MatIter_next(mask_it)) {
+    for (MATITER_T it = MATRIX_FN(begin)(__m); !MATITER_FN(cmp)(it, MATRIX_FN(end)(__m)); it = MATITER_FN(next)(it), mask_it = MATITER_FN(next)(mask_it)) {
 
-        if (MatIter_value(mask_it) == TRUE) {
-            MatIter_set(nit, MatIter_value(it));
-            nit = MatIter_next(nit);
+        if (MATITER_FN(value)(mask_it) == TRUE) {
+            MATITER_FN(set)(nit, MATITER_FN(value)(it));
+            nit = MATITER_FN(next)(nit);
         }
     }
 
@@ -212,24 +212,24 @@ Vector *Matrix_filter_mask(const Matrix *__m, const Matrix *__mask) {
 }
 
 // return true if count == size of the mask
-bool Logical_all(const Matrix *__mask) {
-    return (Matrix_mask_count(__mask) == Matrix_size(__mask));
+bool Logical_all(const MATRIX_T *__mask) {
+    return (MATRIX_FN(mask_count)(__mask) == MATRIX_FN(size)(__mask));
 }
 
 // return true is any of the logical components are true
-bool Logical_any(const Matrix *__mask) {
+bool Logical_any(const MATRIX_T *__mask) {
 
-    MatIter it = Matrix_begin(__mask);
-    MatIter end = Matrix_end(__mask);
+    MATITER_T it = MATRIX_FN(begin)(__mask);
+    MATITER_T end = MATRIX_FN(end)(__mask);
 
-    for (it; !MatIter_cmp(it, end); it = MatIter_next(it)) {
-        if (MatIter_value(it) == TRUE) return true;
+    for (it; !MATITER_FN(cmp)(it, end); it = MATITER_FN(next)(it)) {
+        if (MATITER_FN(value)(it) == TRUE) return true;
     }
 
     return false;
 }
 
 // Return !__mask
-Logical *Logical_not(const Matrix *__mask) {
+Logical *Logical_not(const MATRIX_T *__mask) {
     return map(__mask, NOT);
 }

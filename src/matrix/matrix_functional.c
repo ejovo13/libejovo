@@ -20,18 +20,18 @@ Vector *filter(const Vector *__v, predicate_fn __pred) {
     // First I need to pass through the vector to see how many times the predicate is true...
     int count = 0;
 
-    for (MatIter it = Matrix_begin(__v); !MatIter_cmp(it, Matrix_end(__v)); it = MatIter_next(it)) {
-        if (__pred(MatIter_value(it))) count++;
+    for (MATITER_T it = MATRIX_FN(begin)(__v); !MATITER_FN(cmp)(it, MATRIX_FN(end)(__v)); it = MATITER_FN(next)(it)) {
+        if (__pred(MATITER_FN(value)(it))) count++;
     }
 
-    Vector *out = Matrix_new(1, count);
+    Vector *out = MATRIX_FN(new)(1, count);
 
-    MatIter j = Matrix_begin(out);
+    MATITER_T j = MATRIX_FN(begin)(out);
 
-    for (MatIter it = Matrix_begin(__v); !MatIter_cmp(it, Matrix_end(__v)); it = MatIter_next(it)) {
-        if (__pred(MatIter_value(it))) {
-            MatIter_set(j, MatIter_value(it));
-            j = MatIter_next(j);
+    for (MATITER_T it = MATRIX_FN(begin)(__v); !MATITER_FN(cmp)(it, MATRIX_FN(end)(__v)); it = MATITER_FN(next)(it)) {
+        if (__pred(MATITER_FN(value)(it))) {
+            MATITER_FN(set)(j, MATITER_FN(value)(it));
+            j = MATITER_FN(next)(j);
         }
     }
 
@@ -41,22 +41,22 @@ Vector *filter(const Vector *__v, predicate_fn __pred) {
 
 Vector *filter_lt(const Vector *__v, double __cutoff) {
 
-    Matrix *log = Matrix_lt(__v, __cutoff);
+    MATRIX_T *log = MATRIX_FN(lt)(__v, __cutoff);
 
-    Matrix *out = Matrix_logical_index(__v, log);
+    MATRIX_T *out = MATRIX_FN(logical_index)(__v, log);
 
-    Matrix_reset(&log);
+    MATRIX_FN(reset)(&log);
 
     return out;
 }
 
 Vector *filter_lteq(const Vector *__v, double __cutoff) {
 
-    Matrix *log = Matrix_lteq(__v, __cutoff);
+    MATRIX_T *log = MATRIX_FN(lteq)(__v, __cutoff);
 
-    Matrix *out = Matrix_logical_index(__v, log);
+    MATRIX_T *out = MATRIX_FN(logical_index)(__v, log);
 
-    Matrix_reset(&log);
+    MATRIX_FN(reset)(&log);
 
     return out;
 
@@ -64,22 +64,22 @@ Vector *filter_lteq(const Vector *__v, double __cutoff) {
 
 Vector *filter_gt(const Vector *__v, double __cutoff) {
 
-    Matrix *log = Matrix_gt(__v, __cutoff);
+    MATRIX_T *log = MATRIX_FN(gt)(__v, __cutoff);
 
-    Matrix *out = Matrix_logical_index(__v, log);
+    MATRIX_T *out = MATRIX_FN(logical_index)(__v, log);
 
-    Matrix_reset(&log);
+    MATRIX_FN(reset)(&log);
 
     return out;
 }
 
 Vector *filter_gteq(const Vector *__v, double __cutoff) {
 
-    Matrix *log = Matrix_gteq(__v, __cutoff);
+    MATRIX_T *log = MATRIX_FN(gteq)(__v, __cutoff);
 
-    Matrix *out = Matrix_logical_index(__v, log);
+    MATRIX_T *out = MATRIX_FN(logical_index)(__v, log);
 
-    Matrix_reset(&log);
+    MATRIX_FN(reset)(&log);
 
     return out;
 }
@@ -88,18 +88,18 @@ Vector *filter_if_not(const Vector *__v, predicate_fn __pred) {
 
     int count = 0;
 
-    for (MatIter it = Matrix_begin(__v); !MatIter_cmp(it, Matrix_end(__v)); it = MatIter_next(it)) {
-        if (!__pred(MatIter_value(it))) count++;
+    for (MATITER_T it = MATRIX_FN(begin)(__v); !MATITER_FN(cmp)(it, MATRIX_FN(end)(__v)); it = MATITER_FN(next)(it)) {
+        if (!__pred(MATITER_FN(value)(it))) count++;
     }
 
-    Vector *out = Matrix_new(1, count);
+    Vector *out = MATRIX_FN(new)(1, count);
 
-    MatIter j = Matrix_begin(out);
+    MATITER_T j = MATRIX_FN(begin)(out);
 
-    for (MatIter it = Matrix_begin(__v); !MatIter_cmp(it, Matrix_end(__v)); it = MatIter_next(it)) {
-        if (!__pred(MatIter_value(it))) {
-            MatIter_set(j, MatIter_value(it));
-            j = MatIter_next(j);
+    for (MATITER_T it = MATRIX_FN(begin)(__v); !MATITER_FN(cmp)(it, MATRIX_FN(end)(__v)); it = MATITER_FN(next)(it)) {
+        if (!__pred(MATITER_FN(value)(it))) {
+            MATITER_FN(set)(j, MATITER_FN(value)(it));
+            j = MATITER_FN(next)(j);
         }
     }
 
@@ -108,18 +108,18 @@ Vector *filter_if_not(const Vector *__v, predicate_fn __pred) {
 }
 
 // Apply a function that takes a double and returns a double to the contents of a matrix
-Matrix *map(const Matrix *__m, function fn) {
+MATRIX_T *map(const MATRIX_T *__m, function fn) {
 
-    // Matrix *dup = matalloc(__m->nrows, __m->ncols);
-    Matrix *dup = matclone(__m);
+    // MATRIX_T *dup = MAT_FN(alloc)(__m->nrows, __m->ncols);
+    MATRIX_T *dup = MAT_FN(clone)(__m);
     return apply(dup, fn);
 }
 
 // Apply a Double -> Double function to all of the elements of __m, modifying it in place.
 // Then return a pointer to __m
-Matrix *apply(Matrix *__m, function fn) {
+MATRIX_T *apply(MATRIX_T *__m, function fn) {
 
-    const size_t n = Matrix_size(__m);
+    const size_t n = MATRIX_FN(size)(__m);
     for (size_t i = 0; i < n; i++) {
         __m->data[i] = fn(__m->data[i]);
     }
@@ -130,47 +130,47 @@ Matrix *apply(Matrix *__m, function fn) {
 // These functions should only operate on VECTORS
 // Actually, I think I'm thinking about this wrong. These can operate on matrices but they
 // will always return vectors because we can't preserve the size
-MATRIX_TYPE head(const Matrix *__m) {
-    return Matrix_at(__m, 0, 0);
+MATRIX_TYPE head(const MATRIX_T *__m) {
+    return MATRIX_FN(at)(__m, 0, 0);
 }
 
-Vector *tail(const Matrix *__m) {
+Vector *tail(const MATRIX_T *__m) {
 
     // If the size of the matrix is 1, return null;
-    if (Matrix_size(__m) <= 1) return NULL;
+    if (MATRIX_FN(size)(__m) <= 1) return NULL;
 
-    Matrix *new = Vector_new(Matrix_size(__m) - 1);
+    MATRIX_T *new = VECTOR_FN(new)(MATRIX_FN(size)(__m) - 1);
 
     // Start iterating at the second value
-    MatIter it = MatIter_next(Matrix_begin(__m));
-    MatIter new_it = Matrix_begin(new);
-    MatIter end = Matrix_end(__m);
+    MATITER_T it = MATITER_FN(next)(MATRIX_FN(begin)(__m));
+    MATITER_T new_it = MATRIX_FN(begin)(new);
+    MATITER_T end = MATRIX_FN(end)(__m);
 
-    for (it; !MatIter_cmp(it, end); it = MatIter_next(it), new_it = MatIter_next(new_it)) {
-        MatIter_set(new_it, MatIter_value(it));
+    for (it; !MATITER_FN(cmp)(it, end); it = MATITER_FN(next)(it), new_it = MATITER_FN(next)(new_it)) {
+        MATITER_FN(set)(new_it, MATITER_FN(value)(it));
     }
 
     return new;
 }
 
-MATRIX_TYPE last(const Matrix *__m) {
-    return Matrix_last(__m);
+MATRIX_TYPE last(const MATRIX_T *__m) {
+    return MATRIX_FN(last)(__m);
 }
 
 // return the initial part of a Vector; init([A]:An) -> [A]
-Vector *init (const Matrix *__m) {
-    if (Matrix_size(__m) <= 1) return NULL;
+Vector *init (const MATRIX_T *__m) {
+    if (MATRIX_FN(size)(__m) <= 1) return NULL;
 
-    Matrix *new = Vector_new(Matrix_size(__m) - 1);
+    MATRIX_T *new = VECTOR_FN(new)(MATRIX_FN(size)(__m) - 1);
 
     // Start iterating at the first value, end from the second to last
-    MatIter it = MatIter_next(Matrix_begin(__m));
-    MatIter new_it = Matrix_begin(new);
-    MatIter end = Matrix_end(__m);
+    MATITER_T it = MATITER_FN(next)(MATRIX_FN(begin)(__m));
+    MATITER_T new_it = MATRIX_FN(begin)(new);
+    MATITER_T end = MATRIX_FN(end)(__m);
     end.ptr = end.ptr - end.ptr_diff;
 
-    for (it; !MatIter_cmp(it, end); it = MatIter_next(it), new_it = MatIter_next(new_it)) {
-        MatIter_set(new_it, MatIter_value(it));
+    for (it; !MATITER_FN(cmp)(it, end); it = MATITER_FN(next)(it), new_it = MATITER_FN(next)(new_it)) {
+        MATITER_FN(set)(new_it, MATITER_FN(value)(it));
     }
 
     return new;

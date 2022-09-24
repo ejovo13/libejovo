@@ -4,25 +4,25 @@
 // heaviliy reliant on the ejovo_rand.c module
 
 // fill a vector with a uniform random distribution
-Vector *Vector_runif(size_t __n, double __a, double __b) {
+Vector *VECTOR_FN(runif)(size_t __n, double __a, double __b) {
 
-    Vector *v = Vector_new(__n); // this will create a column vector by default
+    Vector *v = VECTOR_FN(new)(__n); // this will create a column vector by default
 
     for (size_t i = 0; i < __n; i++) {
-        matset(v, i, 0, unifd(__a, __b));
+        MAT_FN(set)(v, i, 0, unifd(__a, __b));
     }
 
     return v;
 }
 
-Vector *Vector_rnorm(size_t __n, double __mean, double __std) {
-    Vector *v = Vector_new(__n);
+Vector *VECTOR_FN(rnorm)(size_t __n, double __mean, double __std) {
+    Vector *v = VECTOR_FN(new)(__n);
 
-    // MatIter b= Vector_begin(v);
-    // MatIter e = Vector_end(v);
+    // MATITER_T b= VECTOR_FN(begin)(v);
+    // MATITER_T e = VECTOR_FN(end)(v);
 
     // experimental...
-    for (MatIter b = Vector_begin(v); !MatIter_cmp(b, Vector_end(v)); b = MatIter_next(b)) {
+    for (MATITER_T b = VECTOR_FN(begin)(v); !MATITER_FN(cmp)(b, VECTOR_FN(end)(v)); b = MATITER_FN(next)(b)) {
         *(b.ptr) = normd(__mean, __std);
     }
 
@@ -30,12 +30,12 @@ Vector *Vector_rnorm(size_t __n, double __mean, double __std) {
 }
 
 // fill a vector with a uniform random distribution
-Vector *Vector_rexp(size_t __n, double __rate) {
+Vector *VECTOR_FN(rexp)(size_t __n, double __rate) {
 
-    Vector *v = Vector_new(__n); // this will create a column vector by default
+    Vector *v = VECTOR_FN(new)(__n); // this will create a column vector by default
 
     for (size_t i = 0; i < __n; i++) {
-        matset(v, i, 0, expd(__rate));
+        MAT_FN(set)(v, i, 0, expd(__rate));
     }
 
     return v;

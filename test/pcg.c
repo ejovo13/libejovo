@@ -12,19 +12,19 @@ int main() {
 
     DEFAULT_RNG = unif_xoroshiro;
 
-    Matrix *x = runif(10, 1, 5);
+    MATRIX_T *x = runif(10, 1, 5);
 
     DEFAULT_RNG = unif_xoroshiro;
 
-    Matrix *y = runif(10, 1, 5);
+    MATRIX_T *y = runif(10, 1, 5);
 
-    Matrix_print(x);
-    Matrix_print(y);
+    MATRIX_FN(print)(x);
+    MATRIX_FN(print)(y);
 
     printf("Mean: %lf\n", mean(x));
 
-    Matrix_free(x);
-    Matrix_free(y);
+    MATRIX_FN(free)(x);
+    MATRIX_FN(free)(y);
 
 
 

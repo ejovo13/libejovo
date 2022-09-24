@@ -5,33 +5,33 @@
 
 #include "matrix.h"
 
-bool Matrix_valid_bounds(const Matrix *__m, size_t __i, size_t __j);
+bool MATRIX_FN(valid_bounds)(const MATRIX_T *__m, size_t __i, size_t __j);
 
 // return true if __A and __B have the same size and all of the elements are identical
-bool matcmp(const Matrix *__A, const Matrix *__B);
+bool MAT_FN(cmp)(const MATRIX_T *__A, const MATRIX_T *__B);
 
 // compare the bytes of the data using memcmp
-bool matcmp_bytes(const Matrix *__A, const Matrix *__B);
+bool MAT_FN(cmp_bytes)(const MATRIX_T *__A, const MATRIX_T *__B);
 
 // Are __A and __B compatible for addition?
-bool Matrix_comp_add(const Matrix *__A, const Matrix *__B);
+bool MATRIX_FN(comp_add)(const MATRIX_T *__A, const MATRIX_T *__B);
 
 // Are __A and __B compatible for addition?
-bool Matrix_comp_mult(const Matrix *__A, const Matrix *__B);
+bool MATRIX_FN(comp_mult)(const MATRIX_T *__A, const MATRIX_T *__B);
 
-static inline size_t Matrix_size(const Matrix *__A) {
+static inline size_t MATRIX_FN(size)(const MATRIX_T *__A) {
     return __A->nrows * __A->ncols;
 }
 
-bool Matrix_is_square(const Matrix *__A);
+bool MATRIX_FN(is_square)(const MATRIX_T *__A);
 
 // return true if __A has one row
-bool Matrix_is_row(const Matrix *__A);
+bool MATRIX_FN(is_row)(const MATRIX_T *__A);
 
 // return true if __A has one column
-bool Matrix_is_col(const Matrix *__A);
+bool MATRIX_FN(is_col)(const MATRIX_T *__A);
 
-bool Matrix_is_vec(const Matrix *__A);
+bool MATRIX_FN(is_vec)(const MATRIX_T *__A);
 
 // Return the limiting dimension of __A.
-size_t Matrix_rect_limit(const Matrix *__A);
+size_t MATRIX_FN(rect_limit)(const MATRIX_T *__A);

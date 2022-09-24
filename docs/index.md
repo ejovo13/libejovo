@@ -12,66 +12,66 @@ This section will _briefly_ introduce the user-facing functions that are used to
 
 ###### Instantiation
 
-To allocate the memory for a new, fixed-size `double` container called a `Matrix`, call `Matrix_new`:
+To allocate the memory for a new, fixed-size `double` container called a `Matrix`, call `MATRIX_FN(new)`:
 ```
-Matrix *m = Matrix_new(10, 4); // Create a 10 x 4 matrix full of zeros
+Matrix *m = MATRIX_FN(new)(10, 4); // Create a 10 x 4 matrix full of zeros
 ```
 
-`Matrix_new(10, 4)` creates a new `10 x 4` matrix - a matrix with 10 rows and 4 columns whose every element is 0. The function returns a pointer because the new `Matrix` is in charge of a (potentially) large block of memory and must be freed appropriately upon deconstruction. Notice how `Matrix_new` addopts a sort of OOP approach where an object `Matrix` performs a verb `new`. Pay attention to this pattern as it will guide the philosophy for the user-facing API provided in this library.
+`MATRIX_FN(new)(10, 4)` creates a new `10 x 4` matrix - a matrix with 10 rows and 4 columns whose every element is 0. The function returns a pointer because the new `Matrix` is in charge of a (potentially) large block of memory and must be freed appropriately upon deconstruction. Notice how `MATRIX_FN(new)` addopts a sort of OOP approach where an object `Matrix` performs a verb `new`. Pay attention to this pattern as it will guide the philosophy for the user-facing API provided in this library.
 
 ###### Releasing Memory
 
-Equally important as allocating memory is freeing it. Use the function `Matrix_free` to release the memory associated with a matrix.
+Equally important as allocating memory is freeing it. Use the function `MATRIX_FN(free)` to release the memory associated with a matrix.
 
 ```
-Matrix_free(m); // Does not nullify m
+MATRIX_FN(free)(m); // Does not nullify m
 ```
 
-This function will release the memory both held by the pointer pointing to the matrix's data and by the memory pointed to by `m` itself. Since we only pass in `m` and not the address of `m`, this function cannot actually nullify `m` after freeing the memory associated, and it is therefore in violation of CERT's security standards. We reccomend calling `Matrix_reset` to free **all** of the memory controlled by `m` and to nullify the pointer `m` afterwords.
+This function will release the memory both held by the pointer pointing to the matrix's data and by the memory pointed to by `m` itself. Since we only pass in `m` and not the address of `m`, this function cannot actually nullify `m` after freeing the memory associated, and it is therefore in violation of CERT's security standards. We reccomend calling `MATRIX_FN(reset)` to free **all** of the memory controlled by `m` and to nullify the pointer `m` afterwords.
 
 Consider:
 
 ```
-Matrix_reset(&m); // Nullifies m
+MATRIX_FN(reset)(&m); // Nullifies m
 ```
 
 ###### Constructors
 
-We can create a new constant `Matrix` whose every element is `k` with `Matrix_value`:
+We can create a new constant `Matrix` whose every element is `k` with `MATRIX_FN(value)`:
 
 ```
-m = Matrix_value(10, 10, 5); // Create a 10 x 10 matrix of all 5s
+m = MATRIX_FN(value)(10, 10, 5); // Create a 10 x 10 matrix of all 5s
 ```
 
-Print a `Matrix` with `Matrix_print`. Notice again the noun-verb combination.
+Print a `Matrix` with `MATRIX_FN(print)`. Notice again the noun-verb combination.
 
 ```
-Matrix_print(m);
+MATRIX_FN(print)(m);
 ```
 
 ![10 by 10 matrix of 5's](media/ten_by_ten.png)
 
-We can create an `m` by `n` `Matrix` whose elements are sampled from an iid uniform distribution of integers belonging to `{0, ... , 10}` with `Matrix_rand(m, n)`
+We can create an `m` by `n` `Matrix` whose elements are sampled from an iid uniform distribution of integers belonging to `{0, ... , 10}` with `MATRIX_FN(rand)(m, n)`
 
 ```
-Matrix_reset(&m);
+MATRIX_FN(reset)(&m);
 
-m = Matrix_rand(4, 3);
-Matrix_print_fixed(m); // %6.4lf as format descriptor
+m = MATRIX_FN(rand)(4, 3);
+MATRIX_FN(print_fixed)(m); // %6.4lf as format descriptor
 
 ```
 
 ![4 by 3 matrix of elements between 0 and 10](media/four_by_three.png)
 
-or belonging to `{a, ... , b}` with `Matrix_random(m, n, a, b)`
+or belonging to `{a, ... , b}` with `MATRIX_FN(random)(m, n, a, b)`
 
 ```
-Matrix_reset(&m);
+MATRIX_FN(reset)(&m);
 
-m = Matrix_random(8, 13, 0, 200);
-Matrix_print_fixed(B); // %6.4lf format descriptor per element
+m = MATRIX_FN(random)(8, 13, 0, 200);
+MATRIX_FN(print_fixed)(B); // %6.4lf format descriptor per element
 
-Matrix_reset(&m);
+MATRIX_FN(reset)(&m);
 ```
 
 ![8 by 13 matrix of elements between 0 and 200](media/eight_by_thirteen.png)
@@ -81,25 +81,25 @@ A `Vector` is a type-alias for a `Matrix` that communicates _intent_ of working 
 We can create a new `Vector` that is a sample from the Normal distribution `X ~ N(a, b)`:
 
 ```
-Vector *v = Vector_runif(100, -3, 8);
+Vector *v = VECTOR_FN(runif)(100, -3, 8);
 ```
 
-The default output of most `Vector` constructors is a column vector (a `Matrix` whose `nrows == 1`). We can print the first `n` elements with the `Vector_print_head(A, n)` function
+The default output of most `Vector` constructors is a column vector (a `Matrix` whose `nrows == 1`). We can print the first `n` elements with the `VECTOR_FN(print_head)(A, n)` function
 ```
-Vector_print_head(v, 15);
+VECTOR_FN(print_head)(v, 15);
 ```
 
 ![runif](media/runif.png)
 
-Super important and frequent in scientific applications is the beloved `linspace`, implemented with the function `Vector_linspace(start, end, n)`:
+Super important and frequent in scientific applications is the beloved `linspace`, implemented with the function `VECTOR_FN(linspace)(start, end, n)`:
 
 ```
-Matrix_reset(&v);
+MATRIX_FN(reset)(&v);
 
-v = Vector_linspace(0, 25, 9);
-Matrix_print(v);
+v = VECTOR_FN(linspace)(0, 25, 9);
+MATRIX_FN(print)(v);
 
-Matrix_reset(&v);
+MATRIX_FN(reset)(&v);
 ```
 
 ![linspace](media/linspace.png)
@@ -123,14 +123,14 @@ double max_v    = max(v);
 double var_v    = var(v);
 ```
 
-These statistical routines are not prefixed with a unique identifier like `Vector_`. Therefore, we acknowlege that this may change in the future or this might provide namespace conflicts for other projects.
+These statistical routines are not prefixed with a unique identifier like `VECTOR_FN()`. Therefore, we acknowlege that this may change in the future or this might provide namespace conflicts for other projects.
 
 Other routines that are similar but have more use in Linear Algebra will be prefixed:
 
 ```
-double norm_v   = Vector_pnorm(v, 2);
-double norm_v   = Vector_inner(v, v);
-Vector *v_proj  = Vector_project_onto(v, v);
+double norm_v   = VECTOR_FN(pnorm)(v, 2);
+double norm_v   = VECTOR_FN(inner)(v, v);
+Vector *v_proj  = VECTOR_FN(project_onto)(v, v);
 ```
 
 ###### DataFrame
@@ -141,7 +141,7 @@ A `DataFrame` is simply a pointer to a `Chain` (A linked list of `String`s) and 
 int n = 100;
 
 Chain *c = newChainVar(3, "Discrete uniform", "Continuous Uniform", "Standord Normal");
-Space *s = newSpaceVar(3, Vector_rand(n), Vector_runif(n, -5, 5), Vector_rnorm(n, 0, 1));
+Space *s = newSpaceVar(3, VECTOR_FN(rand)(n), VECTOR_FN(runif)(n, -5, 5), VECTOR_FN(rnorm)(n, 0, 1));
 
 DataFrame *df = newDataFrame(c, s);
 printDataFrame(df);

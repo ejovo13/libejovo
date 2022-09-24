@@ -20,7 +20,6 @@ set (EJOVO_LIB
     ejovo_rand.c
     ejovo_string.c
     ejovo_input.c
-    # ejovo_matrix.c
     ejovo_labyrinth.c
     ejovo_sort.c
     ejovo_comp.c

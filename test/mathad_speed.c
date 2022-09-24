@@ -9,24 +9,26 @@ int main() {
 
     ejovo_seed();
 
-    Matrix *m = Matrix_random(N, N, 1, 5);
-    Matrix *m2 = Matrix_value(N, N, 1.05);
+    MATRIX_T *m = MATRIX_FN(random)(N, N, 1, 5);
+    MATRIX_T *m2 = MATRIX_FN(value)(N, N, 1.05);
 
     for (size_t i = 0; i < MAX_ITER; i++) {
-        // mathad(m, m2);
-        // mathad_check(m, m2);
-        m = Matrix_hadamard(m, m2);
-        // Matrix_hadamard_at(m, m2);
+        // MAT_FN(had)(m, m2);
+        // MAT_FN(had_check)(m, m2);
+        m = MATRIX_FN(hadamard)(m, m2);
+        // MATRIX_FN(hadamard_at)(m, m2);
     }
 
     printf("Finished hadamard trials\n");
 
-    // Matrix_set(m, 1, 1, 0);
-    // printf("M[0][0] = %lf\n", Matrix_at(m, 1, 1));
+    // MATRIX_FN(set)(m, 1, 1, 0);
+    // printf("M[0][0] = %lf\n", MATRIX_FN(at)(m, 1, 1));
 
     printf("Getting submatrix:\n");
-    Matrix *sub = submat(m, 0, 10, 0, 25);
-    matprint(sub);
+    MATRIX_T *sub = submatdouble(m, 0, 10, 0, 25);
+    MATRIX_FN(print)(sub);
+
+    Matrix_double_print(sub);
 
 
 

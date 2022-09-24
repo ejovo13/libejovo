@@ -172,7 +172,7 @@ bool uniformSpace(const Space *__space) {
 
     while (it->next) {
 
-        if (!Matrix_comp_add(it->data, it->next->data)) return false;
+        if (!MATRIX_FN(comp_add)(it->data, it->next->data)) return false;
         it = it->next;
     }
 
@@ -265,15 +265,15 @@ void printDataFrameCol(const String *__str, const Vector *__v) {
 
     int nel = 10;
     // Print the first __nel elements
-    int n = nel < Matrix_size(__v) ? nel : Matrix_size(__v); // get the smaller element
+    int n = nel < MATRIX_FN(size)(__v) ? nel : MATRIX_FN(size)(__v); // get the smaller element
 
     printf("{");
 
     for (int i = 0; i < n - 1; i++) {
-        printf("%7.3lf, ", Vector_at(__v, i));
+        printf("%7.3lf, ", VECTOR_FN(at)(__v, i));
     }
 
-    printf("%7.3lf}\n", Vector_at(__v, n - 1));
+    printf("%7.3lf}\n", VECTOR_FN(at)(__v, n - 1));
 
 }
 
@@ -281,7 +281,7 @@ void printDataFrame(const DataFrame *__df) {
 
     // first print the dimension and number of cols
 
-    int nobs = Matrix_size(__df->space->data);
+    int nobs = MATRIX_FN(size)(__df->space->data);
 
     printf("Df with %d observations and %d colums\n", nobs, dimDataFrame(__df));
     foreachSV(__df, printDataFrameCol);
@@ -306,7 +306,7 @@ void writeDelimiter(const DataFrame *__df, const char *__filename, const char de
 
     // now iterate through all of vectors, accessing the ith print at each point.
 
-    int size = Vector_size(__df->space->data);
+    int size = VECTOR_FN(size)(__df->space->data);
 
     for (int i = 0; i < size; i++) {
 
@@ -314,10 +314,10 @@ void writeDelimiter(const DataFrame *__df, const char *__filename, const char de
 
         while (it->next) {
 
-            fprintf(f, "%lf%c", Vector_at(it->data, i), delim);
+            fprintf(f, "%lf%c", VECTOR_FN(at)(it->data, i), delim);
             it = it->next;
         }
-        fprintf(f, "%lf\n", Vector_at(it->data, i));
+        fprintf(f, "%lf\n", VECTOR_FN(at)(it->data, i));
     }
 
     fclose(f);
@@ -347,7 +347,7 @@ void writeGP(const DataFrame *__df, const char *__filename) {
 
     // now iterate through all of vectors, accessing the ith print at each point.
 
-    int size = Vector_size(__df->space->data);
+    int size = VECTOR_FN(size)(__df->space->data);
 
     for (int i = 0; i < size; i++) {
 
@@ -355,10 +355,10 @@ void writeGP(const DataFrame *__df, const char *__filename) {
 
         while (it->next) {
 
-            fprintf(f, "%lf ", Vector_at(it->data, i));
+            fprintf(f, "%lf ", VECTOR_FN(at)(it->data, i));
             it = it->next;
         }
-        fprintf(f, "%lf\n", Vector_at(it->data, i));
+        fprintf(f, "%lf\n", VECTOR_FN(at)(it->data, i));
     }
 
     fclose(f);
@@ -384,9 +384,9 @@ Vector *getColDF(const DataFrame *__df, int __j) {
 
 Vector *save_doubles(double_fn fn, int n) {
     // Allocate a row vector of appropriate space
-    Vector *out = Matrix_new(1, n);
+    Vector *out = MATRIX_FN(new)(1, n);
 
-    for (int i = 0; i < Matrix_size(out); i++) {
+    for (int i = 0; i < MATRIX_FN(size)(out); i++) {
         out->data[i] = fn();
     }
 

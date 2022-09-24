@@ -32,7 +32,7 @@ As the name suggests, `filter` allows us to select only the elements from a give
 
 Let's see this in action to better understand whats going on.
 ```
-Vector *v = Vector_rnorm(15, 0, 1);
+Vector *v = VECTOR_FN(rnorm)(15, 0, 1);
 ```
 We generate a new `Vector` whose elements are normally distributed. Let's define somewhere in our file a new function that returns true if `|x| > 1`, meaning that `x` is outside the standard deviation of our distribution.
 

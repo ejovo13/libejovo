@@ -1,6 +1,6 @@
-// Matrix type but CompMatrix instead.
+// MATRIX_T type but CompMATRIX_T instead.
 
-// This API should be unified. I should be able to create a Real Matrix from a Comp Matrix type
+// This API should be unified. I should be able to create a Real MATRIX_T from a Comp MATRIX_T type
 
 #ifndef EJOVO_COMP_MATRIX
 #define EJOVO_COMP_MATRIX
@@ -14,7 +14,7 @@
 
 /** @file
  *
- *  @brief Implement a Matrix framework for performing basic Linear Algebra tasks
+ *  @brief Implement a MATRIX_T framework for performing basic Linear Algebra tasks
  *
  *  In order to tackle the exercises prescribed in TP4, I decided to create a matrix framework to make my life
  *  easier when writing the matrix multiplication and determinant finding routines.
@@ -31,9 +31,9 @@
 #endif
 
 /**
- * @brief Matrix structure that simulates a 2d matrix accessed by A(row, col).
+ * @brief MATRIX_T structure that simulates a 2d matrix accessed by A(row, col).
  *
- * The Matrix structure contains valuable information about the number of rows and number of columns
+ * The MATRIX_T structure contains valuable information about the number of rows and number of columns
  * stored in order to perform necessary logistic checks at execution time.
  * For example, two matrices can be added to each other if and only if they are the same size; *
  */
@@ -46,32 +46,32 @@ typedef struct comp_mat_t {
 } ComplexMatrix;
 
 /**
- * Create a new __nrows x __ncols ComplexMatrix filled with zeros
+ * Create a new __nrows x __ncols ComplexMATRIX_T filled with zeros
  *
- * Calls calloc under the surface. The allocated ComplexMatrix can be freed using the function
- * `ComplexMatrix_free`.
+ * Calls calloc under the surface. The allocated ComplexMATRIX_T can be freed using the function
+ * `ComplexMATRIX_FN(free)`.
  */
-extern ComplexMatrix * ComplexMatrix_new(int __nrows, int __ncols);
+extern ComplexMATRIX_T * ComplexMATRIX_FN(new)(int __nrows, int __ncols);
 
 /**
- * Free the memory associated with the ComplexMatrix and then free the pointer itself
+ * Free the memory associated with the ComplexMATRIX_T and then free the pointer itself
  *
  *
  */
-extern void ComplexMatrix_free(ComplexMatrix *__A);
+extern void ComplexMATRIX_FN(free)(ComplexMATRIX_T *__A);
 
 /**
  * Check if the values of __i and __j are within the bounds of __m
  *
  */
-extern bool ComplexMatrix_valid_bounds(const ComplexMatrix *__m, size_t __i, size_t __j);
+extern bool ComplexMATRIX_FN(valid_bounds)(const ComplexMATRIX_T *__m, size_t __i, size_t __j);
 
 /**
  * Return the value of the element at __m(__i, __j) [zero indexed]
  *
  * Return -1 if bounds are not respected and prints an error to the screen
  */
-extern COMPLEX_MATRIX_TYPE ComplexMatrix_at(const ComplexMatrix *__m, size_t __i, size_t __j);
+extern COMPLEX_MATRIX_TYPE ComplexMATRIX_FN(at)(const ComplexMATRIX_T *__m, size_t __i, size_t __j);
 
 /**
  * Set value of the element at __m(__i, __j) [zero indexed]
@@ -80,183 +80,183 @@ extern COMPLEX_MATRIX_TYPE ComplexMatrix_at(const ComplexMatrix *__m, size_t __i
  *
  *
  */
-extern int ComplexMatrix_set(ComplexMatrix *__m, size_t __i, size_t __j, COMPLEX_MATRIX_TYPE __value);
+extern int ComplexMATRIX_FN(set)(ComplexMATRIX_T *__m, size_t __i, size_t __j, COMPLEX_MATRIX_TYPE __value);
 
 /**
  *  Return a pointer to the element at __m(__i, __j) [zero indexed]
  */
-extern COMPLEX_MATRIX_TYPE * ComplexMatrix_access(const ComplexMatrix *__m, size_t __i, size_t __j);
+extern COMPLEX_MATRIX_TYPE * ComplexMATRIX_FN(access)(const ComplexMATRIX_T *__m, size_t __i, size_t __j);
 
 
 /**
- * Print a ComplexMatrix to stdout
+ * Print a ComplexMATRIX_T to stdout
  */
-extern void ComplexMatrix_print(const ComplexMatrix *__m);
+extern void ComplexMATRIX_FN(print)(const ComplexMATRIX_T *__m);
 
 /**
- * Print the size of a ComplexMatrix to stdout
+ * Print the size of a ComplexMATRIX_T to stdout
  */
-extern void ComplexMatrix_summary(const ComplexMatrix *__m);
+extern void ComplexMATRIX_FN(summary)(const ComplexMATRIX_T *__m);
 
 
 // Take the inner product of the the __irow row of __A with the __icol col of __B
 // used as a subroutine called in matmul
 /** @private
  */
-extern COMPLEX_MATRIX_TYPE col_dot_row(const ComplexMatrix *__A, const ComplexMatrix *__B, size_t __irow, size_t __icol);
+extern COMPLEX_MATRIX_TYPE col_dot_row(const ComplexMATRIX_T *__A, const ComplexMATRIX_T *__B, size_t __irow, size_t __icol);
 
 // return true if __A and __B have the same size and all of the elements are identical
 /** @private
  */
-extern bool matcmp(const ComplexMatrix *__A, const ComplexMatrix *__B);
+extern bool MAT_FN(cmp)(const ComplexMATRIX_T *__A, const ComplexMATRIX_T *__B);
 
 // Are __A and __B compatible for addition?
 /** @private
  *
  *  Low level function that tests if __A is compatible to add with __B. That is, are __A and __B the same size?
  */
-extern bool ComplexMatrix_comp_add(const ComplexMatrix *__A, const ComplexMatrix *__B);
+extern bool ComplexMATRIX_FN(comp_add)(const ComplexMATRIX_T *__A, const ComplexMATRIX_T *__B);
 
 // Are __A and __B compatible for addition?
 /** @private
  *
  *  Low level function that tests if __A is compatible to multiply by __B.
  */
-extern bool ComplexMatrix_comp_mult(const ComplexMatrix *__A, const ComplexMatrix *__B);
+extern bool ComplexMATRIX_FN(comp_mult)(const ComplexMATRIX_T *__A, const ComplexMATRIX_T *__B);
 
 // Copy the bytes
 // this is a utility function and should not be used by the end user
 /** @private
  */
-// static bool matcpy(ComplexMatrix *restrict __dest, const ComplexMatrix *restrict __src);
+// static bool MAT_FN(cpy)(ComplexMATRIX_T *restrict __dest, const ComplexMATRIX_T *restrict __src);
 
 /** @private
- *  copy the contents of ComplexMatrix __src into __dest
+ *  copy the contents of ComplexMATRIX_T __src into __dest
  */
-extern ComplexMatrix * matclone(const ComplexMatrix *restrict __src);
+extern ComplexMATRIX_T * MAT_FN(clone)(const ComplexMATRIX_T *restrict __src);
 
 /**
- * Create a new ComplexMatrix from the contents of __src
+ * Create a new ComplexMATRIX_T from the contents of __src
  *
- * @return A ComplexMatrix with the same size and shape as `__src` and the same exact elements.
+ * @return A ComplexMATRIX_T with the same size and shape as `__src` and the same exact elements.
  * This is a clone operation and thus new data is allocated for the returned ComplexMatrix.
  *
  */
-extern ComplexMatrix * ComplexMatrix_clone(const ComplexMatrix *restrict __src);
+extern ComplexMATRIX_T * ComplexMATRIX_FN(clone)(const ComplexMATRIX_T *restrict __src);
 
 /** @private
  * Fortran named function to compute the multiplication of two matrices __A * __B
  */
-ComplexMatrix * matmul(const ComplexMatrix *__A, const ComplexMatrix *__B);
+ComplexMATRIX_T * MAT_FN(mul)(const ComplexMATRIX_T *__A, const ComplexMATRIX_T *__B);
 
 /**
  * Multiply two matrices __A*__B.
  */
-ComplexMatrix * ComplexMatrix_multiply(ComplexMatrix * __A, ComplexMatrix * __B);
+ComplexMATRIX_T * ComplexMATRIX_FN(multiply)(ComplexMATRIX_T * __A, ComplexMATRIX_T * __B);
 
 // IDEA!! MAKE THESE VARIADIC FUNCTIONS!!!
 /** @private
  */
-ComplexMatrix * matadd(ComplexMatrix * __A, ComplexMatrix * __B);
+ComplexMATRIX_T * MAT_FN(add)(ComplexMATRIX_T * __A, ComplexMATRIX_T * __B);
 
 /**
  * Add two matrices and store the sum in the return value
  */
-ComplexMatrix * ComplexMatrix_add(ComplexMatrix * __A, Matrix * __B);
+ComplexMATRIX_T * ComplexMATRIX_FN(add)(ComplexMATRIX_T * __A, MATRIX_T * __B);
 
 // Extract submatrix __A(__istart:__iend, __jstart:__jend)
 /** @private
  */
-ComplexMatrix * submat(ComplexMatrix * __A, size_t __istart, size_t __iend, size_t __jstart, size_t __jend);
+ComplexMATRIX_T * subMAT_FN()(ComplexMATRIX_T * __A, size_t __istart, size_t __iend, size_t __jstart, size_t __jend);
 
 // Alternative spelling for object-oriented approach.
 /**
- * Extract a subComplexMatrix of __A: A(__istart:__iend, __jstart:__jend) using 0 based indices
+ * Extract a subComplexMATRIX_T of __A: A(__istart:__iend, __jstart:__jend) using 0 based indices
  *
  */
-ComplexMatrix * ComplexMatrix_submat(ComplexMatrix * __A, size_t __istart, size_t __iend, size_t __jstart, size_t __jend);
+ComplexMATRIX_T * ComplexMATRIX_FN(submat)(ComplexMATRIX_T * __A, size_t __istart, size_t __iend, size_t __jstart, size_t __jend);
 
 /**
- * Fill a ComplexMatrix __A with the value __value.
+ * Fill a ComplexMATRIX_T __A with the value __value.
  */
-void ComplexMatrix_fill(ComplexMatrix * __A, COMPLEX_MATRIX_TYPE __value);
+void ComplexMATRIX_FN(fill)(ComplexMATRIX_T * __A, COMPLEX_MATRIX_TYPE __value);
 
 /**
- *  Instantiate new ComplexMatrix with the value filled in at every element
+ *  Instantiate new ComplexMATRIX_T with the value filled in at every element
  */
-ComplexMatrix * ComplexMatrix_value(size_t __nrows, size_t __ncols, COMPLEX_MATRIX_TYPE __value);
+ComplexMATRIX_T * ComplexMATRIX_FN(value)(size_t __nrows, size_t __ncols, COMPLEX_MATRIX_TYPE __value);
 
-// Return specific ComplexMatrix types
+// Return specific ComplexMATRIX_T types
 /**
- * Return a ComplexMatrix of all 1's
+ * Return a ComplexMATRIX_T of all 1's
  */
-ComplexMatrix * ComplexMatrix_ones(size_t __nrows, size_t __ncols);
+ComplexMATRIX_T * ComplexMATRIX_FN(ones)(size_t __nrows, size_t __ncols);
 
 /**
- *  Matrix whose elements are i + j (starting with i,j = 1)
+ *  MATRIX_T whose elements are i + j (starting with i,j = 1)
  */
-ComplexMatrix * ComplexMatrix_ij(size_t __nrows, size_t __ncols);
+ComplexMATRIX_T * ComplexMATRIX_FN(ij)(size_t __nrows, size_t __ncols);
 
 /**
- *  Fill a `__nrows` by `__ncols` ComplexMatrix with a uniform random variable ~ [`__min`, `__max`]
+ *  Fill a `__nrows` by `__ncols` ComplexMATRIX_T with a uniform random variable ~ [`__min`, `__max`]
  *
  */
-ComplexMatrix * ComplexMatrix_random(size_t __nrows, size_t __ncols, int __min, int __max);
+ComplexMATRIX_T * ComplexMATRIX_FN(random)(size_t __nrows, size_t __ncols, int __min, int __max);
 
 /**
- * Fill a `__nrows` by `__ncols` ComplexMatrix with a uniform random variable ~ [0, 100]
+ * Fill a `__nrows` by `__ncols` ComplexMATRIX_T with a uniform random variable ~ [0, 100]
  */
-ComplexMatrix * ComplexMatrix_rand(size_t __nrows, size_t __ncols);
+ComplexMATRIX_T * ComplexMATRIX_FN(rand)(size_t __nrows, size_t __ncols);
 
 /** @private
  *
  */
-bool is_square(ComplexMatrix * __A);
+bool is_square(ComplexMATRIX_T * __A);
 
 /**
- * Check if a Matrix is square
+ * Check if a MATRIX_T is square
  *
  * A matrix is sqaure if the nrows is equal to ncols.
  */
-bool ComplexMatrix_is_square(ComplexMatrix * __A);
+bool ComplexMATRIX_FN(is_square)(ComplexMATRIX_T * __A);
 
 /**
  * Compute the Power of a matrix
  */
-Matrix * Matrix_pow(Matrix * __A, size_t __power);
+MATRIX_T * MATRIX_FN(pow)(MATRIX_T * __A, size_t __power);
 
 /** @private
  *
- *  @brief Matrix copy elements
+ *  @brief MATRIX_T copy elements
  *
  * Copy the matrix __src into the submatrix of __dest prescribed by the start and end indices
  *
- *  This is a low lever helper function that shouldn't need to be called by the high level Matrix API.
+ *  This is a low lever helper function that shouldn't need to be called by the high level MATRIX_T API.
  */
-int matcpyele(Matrix * __dest, size_t __istart, size_t __iend, size_t __jstart, size_t __jend, Matrix * __src);
+int MAT_FN(cpyele)(MATRIX_T * __dest, size_t __istart, size_t __iend, size_t __jstart, size_t __jend, MATRIX_T * __src);
 
 /**
  * Stack two matrices on top of each other
  */
-Matrix * Matrix_rcat(Matrix * __A, Matrix * __B);
+MATRIX_T * MATRIX_FN(rcat)(MATRIX_T * __A, MATRIX_T * __B);
 
 /**
  * Smush two matrices together
  */
-Matrix * Matrix_ccat(Matrix * __A, Matrix * __B);
+MATRIX_T * MATRIX_FN(ccat)(MATRIX_T * __A, MATRIX_T * __B);
 
 /**
  * Find the minor of a matrix
  *
- * The minor of a Matrix is the Original Matrix __A with the `__irow` row removed and the `__icol` col.
+ * The minor of a MATRIX_T is the Original MATRIX_T __A with the `__irow` row removed and the `__icol` col.
  */
-Matrix * Matrix_minor(Matrix * __A, size_t __irow, size_t __icol);
+MATRIX_T * MATRIX_FN(minor)(MATRIX_T * __A, size_t __irow, size_t __icol);
 
 
 /**
  * Recursive algorithm to compute the determinant of a matrix
  *
  */
-double Matrix_det(Matrix * __A);
+double MATRIX_FN(det)(MATRIX_T * __A);
 
 #endif

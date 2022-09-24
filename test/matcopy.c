@@ -8,21 +8,21 @@
 int main() {
 
     ejovo_seed();
-    Matrix *m = Matrix_rand(10, 10);
+    MATRIX_T *m = MATRIX_FN(rand)(10, 10);
 
-    Matrix_print(m);
+    MATRIX_FN(print)(m);
 
-    Matrix *m_copy = Matrix_clone(m);
+    MATRIX_T *m_copy = MATRIX_FN(clone)(m);
 
-    Matrix_print(m_copy);
+    MATRIX_FN(print)(m_copy);
 
-    assert(matcmp(m, m_copy));
-    assert(matcmp_bytes(m, m_copy));
+    assert(MAT_FN(cmp)(m, m_copy));
+    assert(MAT_FN(cmp_bytes)(m, m_copy));
 
-    Matrix_set(m_copy, 4, 4, 10.3);
+    MATRIX_FN(set)(m_copy, 4, 4, 10.3);
 
-    assert(!matcmp(m, m_copy));
-    assert(!matcmp_bytes(m, m_copy));
+    assert(!MAT_FN(cmp)(m, m_copy));
+    assert(!MAT_FN(cmp_bytes)(m, m_copy));
 
     return 0;
 }

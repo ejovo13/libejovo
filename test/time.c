@@ -18,7 +18,7 @@ double time_passed_xoroshiro() {
     // uniformly distributed on the interval 0, 1 via
     // xoroshiro
     Clock *clock = Clock_new();
-    Matrix *m;
+    MATRIX_T *m;
 
 
     Clock_tic(clock);
@@ -27,10 +27,10 @@ double time_passed_xoroshiro() {
 
     double time = elapsed_time(clock);
 
-    fprintf(stderr, "%d", Matrix_size(m));
+    fprintf(stderr, "%d", MATRIX_FN(size)(m));
 
     free(clock);
-    Matrix_free(m);
+    MATRIX_FN(free)(m);
     return time;
 
 }
@@ -40,7 +40,7 @@ double time_passed_pcg() {
     // uniformly distributed on the interval 0, 1 via
     // xoroshiro
     Clock *clock = Clock_new();
-    Matrix *m;
+    MATRIX_T *m;
 
 
     Clock_tic(clock);
@@ -49,10 +49,10 @@ double time_passed_pcg() {
 
     double time = elapsed_time(clock);
 
-    fprintf(stderr, "%d", Matrix_size(m));
+    fprintf(stderr, "%d", MATRIX_FN(size)(m));
 
     free(clock);
-    Matrix_free(m);
+    MATRIX_FN(free)(m);
     return time;
 
 }
@@ -64,19 +64,19 @@ double time_passed_pcg() {
 //     // uniformly distributed on the interval 0, 1 via
 //     // xoroshiro
 //     Clock *clock = Clock_new();
-//     Matrix *m;
+//     MATRIX_T *m;
 
 
 //     Clock_tic(clock);
-//     m = Matrix_random(1, N_RAND, 0, 1);
+//     m = MATRIX_FN(random)(1, N_RAND, 0, 1);
 //     Clock_toc(clock);
 
 //     double time = elapsed_time(clock);
 
-//     fprintf(stderr, "%d", Matrix_size(m));
+//     fprintf(stderr, "%d", MATRIX_FN(size)(m));
 
 //     free(clock);
-//     Matrix_free(m);
+//     MATRIX_FN(free)(m);
 //     return time;
 
 // }
@@ -85,14 +85,14 @@ double time_passed_pcg() {
 // and then times the operation of summing
 double time_passed_sum_fn() {
 
-    Matrix *m = Matrix_rand(N, N);
+    MATRIX_T *m = MATRIX_FN(rand)(N, N);
     Clock *clock = Clock_new();
     Clock_tic(clock);
     double t = sum(m);
     fprintf(stderr, "%lf, ", t);
     Clock_toc(clock);
 
-    Matrix_free(m);
+    MATRIX_FN(free)(m);
 
     double time = elapsed_time(clock);
     free(clock);
@@ -102,18 +102,18 @@ double time_passed_sum_fn() {
 
 double time_passed_sum_loop() {
 
-    Matrix *m = Matrix_rand(N, N);
+    MATRIX_T *m = MATRIX_FN(rand)(N, N);
     Clock *clock = Clock_new();
     Clock_tic(clock);
     double loop_sum = 0;
     double *data = m->data;
-    for (int i = 0; i < Matrix_size(m); i++) {
+    for (int i = 0; i < MATRIX_FN(size)(m); i++) {
         loop_sum += data[i];
     }
     fprintf(stderr, "%lf, ", loop_sum);
     Clock_toc(clock);
 
-    Matrix_free(m);
+    MATRIX_FN(free)(m);
 
     double time = elapsed_time(clock);
     free(clock);
@@ -128,11 +128,11 @@ int main() {
 
     Clock* clock = Clock_new();
 
-    Matrix* m = Matrix_rand(N, N);
-    Matrix* b = Matrix_from((double []) {1., 2., 3., 4.,}, 1, 4);
+    MATRIX_T * m = MATRIX_FN(rand)(N, N);
+    MATRIX_T * b = MATRIX_FN(from)((double []) {1., 2., 3., 4.,}, 1, 4);
 
-    // Matrix_print(m);
-    // Matrix_print(b);
+    // MATRIX_FN(print)(m);
+    // MATRIX_FN(print)(b);
 
 
     // printf("Max of [1 2 3 4]: %lf \n", max(b));
@@ -148,13 +148,13 @@ int main() {
     // using my MatIters or just iterating with regular pointers?
 
     // Start with MatIters
-    // Matrix_iter
+    // MATRIX_FN(iter)
 
     // Use a regular for loop
     // Clock_tic(clock);
     // double loop_sum = 0;
     // double *data = m->data;
-    // for (int i = 0; i < Matrix_size(m); i++) {
+    // for (int i = 0; i < MATRIX_FN(size)(m); i++) {
     //     loop_sum += data[i];
     // }
     // Clock_toc(clock);
@@ -174,15 +174,15 @@ int main() {
 
     const int n_tests = 100;
 
-    Matrix *fn_time = save_doubles(time_passed_sum_fn, n_tests);
-    Matrix *loop_time = save_doubles(time_passed_sum_loop, n_tests);
+    MATRIX_T *fn_time = save_doubles(time_passed_sum_fn, n_tests);
+    MATRIX_T *loop_time = save_doubles(time_passed_sum_loop, n_tests);
 
-    Matrix *xoroshiro_time = save_doubles(time_passed_xoroshiro, n_tests);
+    MATRIX_T *xoroshiro_time = save_doubles(time_passed_xoroshiro, n_tests);
 
     #ifdef PCG_RANDOM
-        Matrix *pcg_time = save_doubles(time_passed_pcg, n_tests);
+        MATRIX_T *pcg_time = save_doubles(time_passed_pcg, n_tests);
     #endif
-    // Matrix_print(fn_time);
+    // MATRIX_FN(print)(fn_time);
     Clock_toc(clock);
     // printf("Time taken to run test total: %lf\n", elapsed_time(clock));
     // printf("Avg time to compute sums: %lf\n", mean(fn_time));
@@ -190,7 +190,7 @@ int main() {
     printf("Mean(fn_time): %lf\n", mean(fn_time));
     printf("Mean(loop_time): %lf\n", mean(loop_time));
 
-    // Matrix *rand_time = save_doubles(time_passed_rng, 100);
+    // MATRIX_T *rand_time = save_doubles(time_passed_rng, 100);
     // printf("Rand unifd %d times in %lf seconds\n", N_RAND, mean(rand_time));
     // printf("Generation rate: %lf Doubles /s\n", N_RAND / mean(rand_time));
 
@@ -201,14 +201,14 @@ int main() {
         printf("PCG: %lf D/s\n", N_RAND / mean(pcg_time));
     #endif
 
-    Matrix_free(fn_time);
-    Matrix_free(loop_time);
+    MATRIX_FN(free)(fn_time);
+    MATRIX_FN(free)(loop_time);
     #ifdef PCG_RANDOM
-        Matrix_free(pcg_time);
+        MATRIX_FN(free)(pcg_time);
     #endif
-    Matrix_free(xoroshiro_time);
-    Matrix_free(m);
-    Matrix_free(b);
+    MATRIX_FN(free)(xoroshiro_time);
+    MATRIX_FN(free)(m);
+    MATRIX_FN(free)(b);
     free(clock);
 
     return 0;

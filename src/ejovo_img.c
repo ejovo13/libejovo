@@ -1,14 +1,14 @@
 #include "ejovo_img.h"
 
 // Make sure that all of the matricese are the same size
-img_t *newImage(const Matrix *r, const Matrix *g, const Matrix *b) {
+img_t *newImage(const MATRIX_T *r, const MATRIX_T *g, const MATRIX_T *b) {
 
-    if (Matrix_comp_add(r, g) && Matrix_comp_add(g, b)) { // If they are all the same size
+    if (MATRIX_FN(comp_add)(r, g) && MATRIX_FN(comp_add)(g, b)) { // If they are all the same size
 
         img_t *img = (img_t*) malloc(sizeof(img_t));
-        img->r = matclone(r);
-        img->g = matclone(g);
-        img->b = matclone(b); // Now I have my own copy and I can perform all the manipulations that I want
+        img->r = MAT_FN(clone)(r);
+        img->g = MAT_FN(clone)(g);
+        img->b = MAT_FN(clone)(b); // Now I have my own copy and I can perform all the manipulations that I want
 
         return img;
 
@@ -27,16 +27,16 @@ size_t imageHeight(const img_t *img) {
 
 
 // Normalize via min_max (IN PLACE) a gray scale image from [min, max] to [0, 255]
-Matrix *normalize_minmax(Matrix *A) {
+MATRIX_T *normalize_minmax(MATRIX_T *A) {
     // find the min and the max
     double low = min(A);
     double high = max(A);
 
     FOREACH(A) {
         // *(atp(A, i)) = 
-        matsetlin(A, i, 255 * (at(A, i) - low) / (high - low));
+        MAT_FN(setlin)(A, i, 255 * (at(A, i) - low) / (high - low));
     }
-    // matsetind()
+    // MAT_FN(setind)()
 }
 
 void writePPM(const img_t *img, const char *filename) {
@@ -56,9 +56,9 @@ void writePPM(const img_t *img, const char *filename) {
         uint8_t buffer[3]; // write 3 bytes at time
             ,
             // fill the buffer
-            buffer[0] = (int) matat(img->r, i, j); // r value
-            buffer[1] = (int) matat(img->g, i, j); 
-            buffer[2] = (int) matat(img->b, i, j); 
+            buffer[0] = (int) MAT_FN(at)(img->r, i, j); // r value
+            buffer[1] = (int) MAT_FN(at)(img->g, i, j); 
+            buffer[2] = (int) MAT_FN(at)(img->b, i, j); 
             // fwrite((void *) buffer, sizeof(uint8_t), 3, file);
             fprintf(file, "%c%c%c", buffer[0], buffer[1], buffer[2]);
 

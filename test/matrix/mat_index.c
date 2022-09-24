@@ -21,44 +21,44 @@ static double is_neg(double x) {
 
 void t_index() {
 
-    Matrix *m = Vector_rnorm(100, 0, 1);
+    MATRIX_T *m = VECTOR_FN(rnorm)(100, 0, 1);
 
-    Matrix *ind = range(0, 10, 3);
+    MATRIX_T *ind = range(0, 10, 3);
 
-    // Vector_print_as_row(m);
-    Matrix_print(ind);
+    // VECTOR_FN(print_as_row)(m);
+    MATRIX_FN(print)(ind);
 
-    // Vector_print_as_row(Matrix_index(m, ind));
+    // VECTOR_FN(print_as_row)(MATRIX_FN(index)(m, ind));
 
     // // Get every other element
-    // Matrix_reset(&ind);
+    // MATRIX_FN(reset)(&ind);
 
     // ind = range(0, 99, 5);
-    // Vector_print_as_row(ind);
+    // VECTOR_FN(print_as_row)(ind);
 
-    // Matrix_print(Matrix_index(m, ind));
+    // MATRIX_FN(print)(MATRIX_FN(index)(m, ind));
 
     // // So there are multiple different valid ways of extracting data that fit a certain criteria.
 
     // // We can filter :
-    // // Matrix_as_logical
+    // // MATRIX_FN(as_logical)
     // // we can use logical indexing;
-    // // we can use indices and Matrix_where
+    // // we can use indices and MATRIX_FN(where)
 
-    // ind = Matrix_where(m, is_neg);
-    // // Vector_print_as_row(ind);
-    // Matrix_print(ind);
+    // ind = MATRIX_FN(where)(m, is_neg);
+    // // VECTOR_FN(print_as_row)(ind);
+    // MATRIX_FN(print)(ind);
 
     // // Now use the indices to extract the negative components of m!
 
-    // Matrix_print(Matrix_index(m, ind));
+    // MATRIX_FN(print)(MATRIX_FN(index)(m, ind));
 
 
 }
 
 void t_set_index() {
 
-    Matrix *m = Vector_rnorm(100, 0, 3);
+    MATRIX_T *m = VECTOR_FN(rnorm)(100, 0, 3);
     m->ncols = 100;
     m->nrows = 1;
 
@@ -67,16 +67,16 @@ void t_set_index() {
 
     // Pay careful attention, these values HAVE TO BE DOUBLES otherwise they will end up mangled by the variadic function
     Vector *a = anon(3, 1.0, 2.0, 3.0);
-    Matrix_print(a);
+    MATRIX_FN(print)(a);
 
-    matsetind(m, r, a);
+    MAT_FN(setind)(m, r, a);
 
-    Matrix_anon_free();
+    MATRIX_FN(anon_free)();
     // printf("Hello\n");
 
-    Matrix_print(m);
-    Matrix_free(m);
-    Matrix_free(r);
+    MATRIX_FN(print)(m);
+    MATRIX_FN(free)(m);
+    MATRIX_FN(free)(r);
 
 
 

@@ -11,20 +11,20 @@ int main() {
     Vector *v = asrow(linspace(-2, 5, 15));
     Vector *v_exp = map(v, exp);
 
-    Matrix_print(v);
-    Matrix_print(v_exp);
+    MATRIX_FN(print)(v);
+    MATRIX_FN(print)(v_exp);
 
-    Matrix_reset(&v);
+    MATRIX_FN(reset)(&v);
 
-    v = Vector_rnorm(15, 0, 1);
+    v = VECTOR_FN(rnorm)(15, 0, 1);
 
-    Matrix_print(v);
+    MATRIX_FN(print)(v);
 
     Vector *outliers = filter(v, outside_std);
     Vector *values = filter_if_not(v, outside_std);
 
-    Matrix_print(outliers);
-    Matrix_print(values);
+    MATRIX_FN(print)(outliers);
+    MATRIX_FN(print)(values);
 
     return 0;
 

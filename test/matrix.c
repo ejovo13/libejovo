@@ -4,184 +4,184 @@
 
 int main(void) {
 
-    // Matrix * A = Matrix_new(5, 5);
+    // MATRIX_T * A = MATRIX_FN(new)(5, 5);
 
-    Matrix * m1 = Matrix_ij(10, 10);
-    Matrix * m2 = Matrix_ones(13, 3);
-    Matrix * m3 = Matrix_new(3, 8);
-    Matrix * m4 = Matrix_new(5, 5);
+    MATRIX_T * m1 = MATRIX_FN(ij)(10, 10);
+    MATRIX_T * m2 = MATRIX_FN(ones)(13, 3);
+    MATRIX_T * m3 = MATRIX_FN(new)(3, 8);
+    MATRIX_T * m4 = MATRIX_FN(new)(5, 5);
 
     assert(m1);
     assert(m2);
     assert(m3);
     assert(m4);
 
-    Matrix_print(m1);
-    Matrix_print(m2);
-    Matrix_print(m3);
-    Matrix_print(m4);
+    MATRIX_FN(print)(m1);
+    MATRIX_FN(print)(m2);
+    MATRIX_FN(print)(m3);
+    MATRIX_FN(print)(m4);
 
     print_line(80, '=');
     printf("Here begins the computational functions\n");
     print_line(80, '=');
 
-    Matrix_reset(&m1);
-    Matrix_reset(&m2);
-    Matrix_reset(&m3);
-    Matrix_reset(&m4);
+    MATRIX_FN(reset)(&m1);
+    MATRIX_FN(reset)(&m2);
+    MATRIX_FN(reset)(&m3);
+    MATRIX_FN(reset)(&m4);
 
-    Matrix * m5 = Matrix_value(10, 10, 5);
-    Matrix * m6 = Matrix_value(10, 10, 4);
-    Matrix * m7 = Matrix_add(m5, m6);
+    MATRIX_T * m5 = MATRIX_FN(value)(10, 10, 5);
+    MATRIX_T * m6 = MATRIX_FN(value)(10, 10, 4);
+    MATRIX_T * m7 = MATRIX_FN(add)(m5, m6);
 
-    Matrix_print(m5);
+    MATRIX_FN(print)(m5);
     printf("\n\t+\n");
-    Matrix_print(m6);
+    MATRIX_FN(print)(m6);
     printf("\n\t=\n");
-    Matrix_print(m7);
+    MATRIX_FN(print)(m7);
 
     print_line(80, '=');
     ejovo_seed();
 
 
-    Matrix_reset(&m5);
-    Matrix_reset(&m6);
-    Matrix_reset(&m7);
+    MATRIX_FN(reset)(&m5);
+    MATRIX_FN(reset)(&m6);
+    MATRIX_FN(reset)(&m7);
 
-    Matrix * m8 = Matrix_random(6, 5, 0, 15);
-    Matrix * m9 = Matrix_random(1, 6, 1, 2);
-    Matrix * m10 = Matrix_multiply(m9, m8);
-    assert(Matrix_comp_mult(m9, m8));
+    MATRIX_T * m8 = MATRIX_FN(random)(6, 5, 0, 15);
+    MATRIX_T * m9 = MATRIX_FN(random)(1, 6, 1, 2);
+    MATRIX_T * m10 = MATRIX_FN(multiply)(m9, m8);
+    assert(MATRIX_FN(comp_mult)(m9, m8));
     assert(m10);
 
 
 
-    Matrix * m11 = Matrix_random(5, 5, -5, 5);
-    Matrix_print(m11);
+    MATRIX_T * m11 = MATRIX_FN(random)(5, 5, -5, 5);
+    MATRIX_FN(print)(m11);
     printf("\n\t^1 = \n");
-    Matrix_print(Matrix_anon(Matrix_pow(m11, 1)));
+    MATRIX_FN(print)(MATRIX_FN(anon)(MATRIX_FN(pow)(m11, 1)));
 
-    Matrix * m11_1 = Matrix_pow(m11, 1);
-    Matrix * m11_1_0 = Matrix_pow(m11, 0);
-    Matrix * m11_2 = Matrix_pow(m11, 2);
-    Matrix * m11_4 = Matrix_pow(m11, 4);
+    MATRIX_T * m11_1 = MATRIX_FN(pow)(m11, 1);
+    MATRIX_T * m11_1_0 = MATRIX_FN(pow)(m11, 0);
+    MATRIX_T * m11_2 = MATRIX_FN(pow)(m11, 2);
+    MATRIX_T * m11_4 = MATRIX_FN(pow)(m11, 4);
 
     printf("\n\t^0 = \n");
-    Matrix_print(Matrix_anon(Matrix_pow(m11_1, 0)));
+    MATRIX_FN(print)(MATRIX_FN(anon)(MATRIX_FN(pow)(m11_1, 0)));
 
     printf("\n\t^2 = \n");
-    Matrix_print(m11_2);
+    MATRIX_FN(print)(m11_2);
 
     printf("\n\t^4 = \n");
-    Matrix_print(m11_4);
+    MATRIX_FN(print)(m11_4);
 
-    Matrix_print(m9);
+    MATRIX_FN(print)(m9);
     printf("\n\t*\n");
-    Matrix_print(m8);
+    MATRIX_FN(print)(m8);
     printf("\n\t=\n");
-    Matrix_print(m10);
+    MATRIX_FN(print)(m10);
 
     print_line(80, '-');
 
 
 
-    Matrix_reset(&m8);
-    Matrix_reset(&m9);
-    Matrix_reset(&m10);
+    MATRIX_FN(reset)(&m8);
+    MATRIX_FN(reset)(&m9);
+    MATRIX_FN(reset)(&m10);
 
-    Matrix_reset(&m11);
-    Matrix_reset(&m11_1);
-    Matrix_reset(&m11_1_0);
-    Matrix_reset(&m11_2);
-    Matrix_reset(&m11_4);
+    MATRIX_FN(reset)(&m11);
+    MATRIX_FN(reset)(&m11_1);
+    MATRIX_FN(reset)(&m11_1_0);
+    MATRIX_FN(reset)(&m11_2);
+    MATRIX_FN(reset)(&m11_4);
 
-    Matrix * A1 = Matrix_rand(25, 25);
-    Matrix_print(A1);
+    MATRIX_T * A1 = MATRIX_FN(rand)(25, 25);
+    MATRIX_FN(print)(A1);
     printf("\n");
 
-    Matrix * A_sub1 = Matrix_submat(A1, 0, 9, 0, 9); // get 10x10 block
-    Matrix * A_sub2 = Matrix_submat(A1, 13, 22, 5, 14);
-    Matrix_print(A_sub1);
+    MATRIX_T * A_sub1 = MATRIX_FN(submat)(A1, 0, 9, 0, 9); // get 10x10 block
+    MATRIX_T * A_sub2 = MATRIX_FN(submat)(A1, 13, 22, 5, 14);
+    MATRIX_FN(print)(A_sub1);
     printf("\t+\n");
-    Matrix_print(A_sub2);
+    MATRIX_FN(print)(A_sub2);
     printf("\t=\n");
-    Matrix_print(Matrix_anon(Matrix_add(A_sub1, A_sub2)));
+    MATRIX_FN(print)(MATRIX_FN(anon)(MATRIX_FN(add)(A_sub1, A_sub2)));
 
     print_line(80, '&');
 
-    Matrix * A_sub3 = Matrix_submat(A1, 0, 3, 3, 8);
-    Matrix * A_sub4 = Matrix_submat(A1, 12, 15, 6, 14);
+    MATRIX_T * A_sub3 = MATRIX_FN(submat)(A1, 0, 3, 3, 8);
+    MATRIX_T * A_sub4 = MATRIX_FN(submat)(A1, 12, 15, 6, 14);
 
-    Matrix_print(A_sub3);
-    Matrix_print(A_sub4);
-    Matrix_print(Matrix_anon(Matrix_ccat(A_sub3, A_sub4)));
+    MATRIX_FN(print)(A_sub3);
+    MATRIX_FN(print)(A_sub4);
+    MATRIX_FN(print)(MATRIX_FN(anon)(MATRIX_FN(ccat)(A_sub3, A_sub4)));
 
-    Matrix * A_sub5 = Matrix_submat(A1, 5, 8, 3, 8);
-    Matrix * A_sub6 = Matrix_submat(A1, 12, 15, 6, 11);
+    MATRIX_T * A_sub5 = MATRIX_FN(submat)(A1, 5, 8, 3, 8);
+    MATRIX_T * A_sub6 = MATRIX_FN(submat)(A1, 12, 15, 6, 11);
 
-    Matrix_print(A_sub5);
-    Matrix_print(A_sub6);
-    Matrix_print(Matrix_anon(Matrix_rcat(A_sub5, A_sub6))); // These are anonymous
+    MATRIX_FN(print)(A_sub5);
+    MATRIX_FN(print)(A_sub6);
+    MATRIX_FN(print)(MATRIX_FN(anon)(MATRIX_FN(rcat)(A_sub5, A_sub6))); // These are anonymous
 
-    Matrix * A_sub0 = Matrix_submat(A1, 0, 0, 0, 0);
-    Matrix_print(A_sub0);
+    MATRIX_T * A_sub0 = MATRIX_FN(submat)(A1, 0, 0, 0, 0);
+    MATRIX_FN(print)(A_sub0);
 
     print_line(80, '#');
 
-    Matrix * toy = Matrix_submat(A1, 4, 8, 8, 10); // 5 x 3 matrix
-    Matrix_print(toy);
+    MATRIX_T * toy = MATRIX_FN(submat)(A1, 4, 8, 8, 10); // 5 x 3 matrix
+    MATRIX_FN(print)(toy);
 
-    // Matrix * toy_m00 = Matrix_minor(toy, 0, 0);
-    // Matrix_print(toy_m00);
+    // MATRIX_T * toy_m00 = MATRIX_FN(minor)(toy, 0, 0);
+    // MATRIX_FN(print)(toy_m00);
 
-    // Matrix * toy_m42 = Matrix_minor(toy, 4, 2);
-    // Matrix_print(toy_m42);
+    // MATRIX_T * toy_m42 = MATRIX_FN(minor)(toy, 4, 2);
+    // MATRIX_FN(print)(toy_m42);
 
-    // Matrix * toy_m40 = Matrix_minor(toy, 4, 0);
-    // Matrix_print(toy_m40);
+    // MATRIX_T * toy_m40 = MATRIX_FN(minor)(toy, 4, 0);
+    // MATRIX_FN(print)(toy_m40);
 
-    // Matrix * toy_m02 = Matrix_minor(toy, 0, 2);
-    // Matrix_print(toy_m02);
+    // MATRIX_T * toy_m02 = MATRIX_FN(minor)(toy, 0, 2);
+    // MATRIX_FN(print)(toy_m02);
 
-    // Matrix * toy_m10 = Matrix_minor(toy, 1, 0);
-    // Matrix_print(toy_m10);
+    // MATRIX_T * toy_m10 = MATRIX_FN(minor)(toy, 1, 0);
+    // MATRIX_FN(print)(toy_m10);
 
-    // Matrix * toy_m30 = Matrix_minor(toy, 3, 0);
-    // Matrix_print(toy_m30);
+    // MATRIX_T * toy_m30 = MATRIX_FN(minor)(toy, 3, 0);
+    // MATRIX_FN(print)(toy_m30);
 
-    Matrix * toy_m01 = Matrix_minor(toy, 0, 1);
-    Matrix_print(toy_m01);
+    MATRIX_T * toy_m01 = MATRIX_FN(minor)(toy, 0, 1);
+    MATRIX_FN(print)(toy_m01);
 
-    Matrix * toy_m41 = Matrix_minor(toy, 4, 1);
-    Matrix_print(toy_m41);
+    MATRIX_T * toy_m41 = MATRIX_FN(minor)(toy, 4, 1);
+    MATRIX_FN(print)(toy_m41);
 
-    Matrix * toy_m31 = Matrix_minor(toy, 3, 1);
-    Matrix_print(toy_m31);
+    MATRIX_T * toy_m31 = MATRIX_FN(minor)(toy, 3, 1);
+    MATRIX_FN(print)(toy_m31);
 
     print_line(80, '+');
     printf("\n Here starts the determinant tests\n");
 
-    Matrix * D = Matrix_random(4, 4, 0, 3);
-    Matrix_print(D);
-    // printf("Det(D): %lf\n", Matrix_det(D));
+    MATRIX_T * D = MATRIX_FN(random)(4, 4, 0, 3);
+    MATRIX_FN(print)(D);
+    // printf("Det(D): %lf\n", MATRIX_FN(det)(D));
 
-    Matrix_reset(&A_sub0);
-    Matrix_reset(&A_sub1);
-    Matrix_reset(&A_sub2);
-    Matrix_reset(&A_sub3);
-    Matrix_reset(&A_sub4);
-    Matrix_reset(&A_sub5);
-    Matrix_reset(&A_sub6);
+    MATRIX_FN(reset)(&A_sub0);
+    MATRIX_FN(reset)(&A_sub1);
+    MATRIX_FN(reset)(&A_sub2);
+    MATRIX_FN(reset)(&A_sub3);
+    MATRIX_FN(reset)(&A_sub4);
+    MATRIX_FN(reset)(&A_sub5);
+    MATRIX_FN(reset)(&A_sub6);
 
-    Matrix_reset(&toy);
-    Matrix_reset(&D);
-    Matrix_reset(&A1);
+    MATRIX_FN(reset)(&toy);
+    MATRIX_FN(reset)(&D);
+    MATRIX_FN(reset)(&A1);
 
-    Matrix_reset(&toy_m01);
-    Matrix_reset(&toy_m41);
-    Matrix_reset(&toy_m31);
+    MATRIX_FN(reset)(&toy_m01);
+    MATRIX_FN(reset)(&toy_m41);
+    MATRIX_FN(reset)(&toy_m31);
 
-    Matrix_anon_free();
+    MATRIX_FN(anon_free)();
 
     return 0;
 }

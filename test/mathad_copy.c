@@ -10,26 +10,26 @@ int main() {
 
     ejovo_seed();
 
-    Matrix *base = Matrix_random(N, N, 0, 10);
-    Matrix *m = Matrix_value(N, N, 1.1345);
+    MATRIX_T *base = MATRIX_FN(random)(N, N, 0, 10);
+    MATRIX_T *m = MATRIX_FN(value)(N, N, 1.1345);
 
-    Matrix_print(base);
-    Matrix_print(m);
+    MATRIX_FN(print)(base);
+    MATRIX_FN(print)(m);
 
-    Matrix *h1 = matclone(base);
-    mathad(h1, m);
+    MATRIX_T *h1 = MAT_FN(clone)(base);
+    MAT_FN(had)(h1, m);
 
-    Matrix *h2 = matclone(base);
-    mathad_check(h2, m);
+    MATRIX_T *h2 = MAT_FN(clone)(base);
+    MAT_FN(had_check)(h2, m);
 
-    Matrix *h3 = Matrix_hadamard(base, m);
+    MATRIX_T *h3 = MATRIX_FN(hadamard)(base, m);
 
-    assert(matcmp_bytes(h1, h2));
-    assert(matcmp_bytes(h2, h3));
+    assert(MAT_FN(cmp_bytes)(h1, h2));
+    assert(MAT_FN(cmp_bytes)(h2, h3));
 
-    Matrix_print(h1);
-    Matrix_print(h2);
-    Matrix_print(h3);
+    MATRIX_FN(print)(h1);
+    MATRIX_FN(print)(h2);
+    MATRIX_FN(print)(h3);
 
 
     return 0;

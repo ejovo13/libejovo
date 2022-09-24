@@ -26,21 +26,21 @@ void t_func() {
 
     // let's start by generating a new matrix
 
-    Vector *v = Vector_rnorm(100, 0, 1);
+    Vector *v = VECTOR_FN(rnorm)(100, 0, 1);
 
     v->ncols = 10;
     v->nrows = 10;
 
-    Matrix_print(v);
+    MATRIX_FN(print)(v);
 
     Vector *neg = filter(v, is_neg);
     Vector *pos = filter_if_not(v, is_neg);
 
-    Matrix_print(neg);
-    Matrix_print(pos);
+    MATRIX_FN(print)(neg);
+    MATRIX_FN(print)(pos);
 
     Vector *r = range(1, 10, 2);
-    Matrix_print(r);
+    MATRIX_FN(print)(r);
 
 
 

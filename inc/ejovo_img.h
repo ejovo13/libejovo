@@ -9,21 +9,21 @@
 
 typedef struct {
 
-    Matrix *r;
-    Matrix *g;
-    Matrix *b;
+    MATRIX_T *r;
+    MATRIX_T *g;
+    MATRIX_T *b;
 
 } img_t;
 
 // Make sure that all of the matricese are the same size
-img_t *newImage(const Matrix *r, const Matrix *g, const Matrix *b);
+img_t *newImage(const MATRIX_T *r, const MATRIX_T *g, const MATRIX_T *b);
 
 // Start off with a two dimensional matrix and fill in the values as gray
-static inline img_t *newImageGrayscale(const Matrix *gray) {
+static inline img_t *newImageGrayscale(const MATRIX_T *gray) {
     return newImage(gray, gray, gray);
 }
 
-#define FOREACH(MAT) for (size_t i = 0; i < Matrix_size(MAT); i++)
+#define FOREACH(MAT) for (size_t i = 0; i < MATRIX_FN(size)(MAT); i++)
 
 
 #define FORIJ(MAT, INIT_LOOP, INSIDE_LOOP, OUTSIDE_LOOP) \
@@ -38,22 +38,22 @@ static inline img_t *newImageGrayscale(const Matrix *gray) {
     } \
 
 
-static inline MATRIX_TYPE at(const Matrix *__A, size_t lin_index) {
+static inline MATRIX_TYPE at(const MATRIX_T *__A, size_t lin_index) {
     return __A->data[lin_index];
 }
 
-static inline MATRIX_TYPE *atp(const Matrix *__A, size_t lin_index) {
+static inline MATRIX_TYPE *atp(const MATRIX_T *__A, size_t lin_index) {
     return &(__A->data[lin_index]);
 }
 
 // set value at the linear index
-static inline Matrix *matsetlin(Matrix *A, size_t lin_index, MATRIX_TYPE val) {
+static inline MATRIX_T *MAT_FN(setlin)(MATRIX_T *A, size_t lin_index, MATRIX_TYPE val) {
     A->data[lin_index] = val;
     return A;
 }
 
 // Normalize via min_max (IN PLACE) a gray scale image from [min, max] to [0, 255]
-Matrix *normalize_minmax(Matrix *A);
+MATRIX_T *normalize_minmax(MATRIX_T *A);
 
 void writePPM(const img_t *img, const char *filename);
 

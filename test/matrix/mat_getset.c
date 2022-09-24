@@ -8,22 +8,22 @@ void t_getset();
 int main() {
 
     ejovo_seed();
-    Matrix *m = Matrix_rand(4, 4);
-    // Matrix *m = NULL;
-    // m = Matrix_new(10, 10);
-    Matrix_print(m);
+    MATRIX_T *m = MATRIX_FN(rand)(4, 4);
+    // MATRIX_T *m = NULL;
+    // m = MATRIX_FN(new)(10, 10);
+    MATRIX_FN(print)(m);
 
-    // Matrix_print(m);
+    // MATRIX_FN(print)(m);
 
-    // Matrix_mult_row_k(m, 0, 3);
+    // MATRIX_FN(mult_row_k)(m, 0, 3);
 
-    // Matrix_print(m);
+    // MATRIX_FN(print)(m);
 
-    // Matrix_mult_col_k(m, 0, 3);
+    // MATRIX_FN(mult_col_k)(m, 0, 3);
 
-    // Matrix_print(m);
+    // MATRIX_FN(print)(m);
 
-    Matrix_free(m);
+    MATRIX_FN(free)(m);
     m = NULL;
 
     t_getset();
@@ -35,10 +35,10 @@ void t_getset() {
 
     printf("tgetset\n");
 
-    Matrix *m = Matrix_new(5, 5);
-    matset(m, 0, 0, 999);
-    Matrix_print(m);
-    Matrix_free(m);
+    MATRIX_T *m = MATRIX_FN(new)(5, 5);
+    MAT_FN(set)(m, 0, 0, 999);
+    MATRIX_FN(print)(m);
+    MATRIX_FN(free)(m);
 
 
 }

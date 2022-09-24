@@ -28,7 +28,7 @@ typedef enum piece_e {
 typedef struct labyrinth_piece_t {
 
     // contain a 3 by 3 matrix and one field that is the PIECE_TYPE enum
-    Matrix *mat;
+    MATRIX_T *mat;
     PIECE_TYPE type;
 
 } LabPiece;
@@ -36,25 +36,25 @@ typedef struct labyrinth_piece_t {
 
 
 
-Matrix *Matrix_from(const MATRIX_TYPE *__arr, size_t __nrows, size_t __ncols);
+MATRIX_T *MATRIX_FN(from)(const MATRIX_TYPE *__arr, size_t __nrows, size_t __ncols);
 
 
 // Using this for a piece that is 3x3
 MATRIX_TYPE *piece_array(MATRIX_TYPE __1, MATRIX_TYPE __2, MATRIX_TYPE __3, MATRIX_TYPE __4, MATRIX_TYPE __5, MATRIX_TYPE __6, MATRIX_TYPE __7, MATRIX_TYPE __8, MATRIX_TYPE __9);
 
 // Pass an enum value and get the 3 x 3 matrix that corresponds to this piece
-Matrix *get_piece_matrix(PIECE_TYPE __t);
+MATRIX_T *get_piece_matrix(PIECE_TYPE __t);
 
 LabPiece *get_piece(PIECE_TYPE __t);
 
 void print_piece(LabPiece *__p, size_t __n);
 
-LabPiece *get_piece_from_matrix(Matrix *__m, size_t __i, size_t __j);
+LabPiece *get_piece_from_matrix(MATRIX_T *__m, size_t __i, size_t __j);
 
 
-void print_matrix_as_lab(Matrix *__m);
+void print_matrix_as_lab(MATRIX_T *__m);
 
-Matrix *create_checkerboard(size_t __nrows, size_t __ncols);
+MATRIX_T *create_checkerboard(size_t __nrows, size_t __ncols);
 
 typedef enum directions_s {
 
@@ -83,9 +83,9 @@ PIECE_TYPE get_open_piece_type(DIRECTION __d);
 PIECE_TYPE get_open_piece_type_2(DIRECTION __d1, DIRECTION __d2);
 
 // Create a path through the matrix from the top to the bottom
-void create_path(Matrix *__m, size_t __start_j, size_t __end_j);
+void create_path(MATRIX_T *__m, size_t __start_j, size_t __end_j);
 
-Matrix *create_maze(size_t __nrows, size_t __ncols);
+MATRIX_T *create_maze(size_t __nrows, size_t __ncols);
 
 typedef struct cell_t {
     size_t i;
@@ -99,6 +99,6 @@ typedef struct cell_stack_t {
 
 } CellStack;
 
-void generate_path(Matrix *__maze, CellStack *__stack, size_t __celli, size_t __cellj);
+void generate_path(MATRIX_T *__maze, CellStack *__stack, size_t __celli, size_t __cellj);
 
 #endif

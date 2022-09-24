@@ -6,7 +6,7 @@
 //  *!                                        Single functions
 //  *================================================================================================**/
 
-// // series of functions used to add two elements that Matrix_access pointers are pointing to
+// // series of functions used to add two elements that MATRIX_FN(access) pointers are pointing to
 // inline void add_each(MATRIX_TYPE *__a, MATRIX_TYPE *__b) {
 //     (*__a) += (*__b);
 // }
@@ -24,7 +24,7 @@
 //     (*__a) /= (*__b);
 // }
 
-// //* Matrix times scalar
+// //* MATRIX_T times scalar
 
 // inline void multscalar(MATRIX_TYPE *__el, MATRIX_TYPE __k) {
 //     (*__el) *= __k;
@@ -46,29 +46,29 @@
  *!                                        Foreach loops
  *================================================================================================**/
 
-void Matrix_foreach(Matrix *__A, EDITOR __fnc) {
+void MATRIX_FN(foreach)(MATRIX_T *__A, EDITOR __fnc) {
 
     for (size_t i = 0; i < __A->nrows; i++) {
         for (size_t j = 0; j < __A->ncols; j++) {
-            __fnc(matacc(__A, i, j));
+            __fnc(MAT_FN(acc)(__A, i, j));
         }
     }
 }
 
-void Matrix_foreach_2(Matrix *__A, const Matrix *__B, EDITOR_2 __fnc) {
+void MATRIX_FN(foreach_2)(MATRIX_T *__A, const MATRIX_T *__B, EDITOR_2 __fnc) {
 
     for (size_t i = 0; i < __A->nrows; i++) {
         for (size_t j = 0; j < __A->ncols; j++) {
-            __fnc(matacc(__A, i, j), matacc(__B, i, j));
+            __fnc(MAT_FN(acc)(__A, i, j), MAT_FN(acc)(__B, i, j));
         }
     }
 }
 
-void Matrix_foreach_k(Matrix *__A, EDITOR_K __fnc, MATRIX_TYPE __k) {
+void MATRIX_FN(foreach_k)(MATRIX_T *__A, EDITOR_K __fnc, MATRIX_TYPE __k) {
 
     for (size_t i = 0; i < __A->nrows; i++) {
         for (size_t j = 0; j < __A->ncols; j++) {
-            __fnc(matacc(__A, i, j), __k);
+            __fnc(MAT_FN(acc)(__A, i, j), __k);
         }
     }
 }
@@ -79,71 +79,71 @@ void Matrix_foreach_k(Matrix *__A, EDITOR_K __fnc, MATRIX_TYPE __k) {
 
 
 // add a __B to __A, mutating __A in place, using a "foreach" construct
-void matadd_foreach(Matrix *__A, const Matrix *__B) {
-    Matrix_foreach_2(__A, __B, add_each);
+void MAT_FN(add_foreach)(MATRIX_T *__A, const MATRIX_T *__B) {
+    MATRIX_FN(foreach_2)(__A, __B, add_each);
 }
 
-void matsub_foreach(Matrix *__A, const Matrix *__B) {
-    Matrix_foreach_2(__A, __B, sub_each);
+void MAT_FN(sub_foreach)(MATRIX_T *__A, const MATRIX_T *__B) {
+    MATRIX_FN(foreach_2)(__A, __B, sub_each);
 }
 
-void matmult_foreach(Matrix *__A, const Matrix *__B) {
-    Matrix_foreach_2(__A, __B, mult_each);
+void MAT_FN(mult_foreach)(MATRIX_T *__A, const MATRIX_T *__B) {
+    MATRIX_FN(foreach_2)(__A, __B, mult_each);
 }
 
-void matdiv_foreach(Matrix *__A, const Matrix *__B) {
-    Matrix_foreach_2(__A, __B, div_each);
+void MAT_FN(div_foreach)(MATRIX_T *__A, const MATRIX_T *__B) {
+    MATRIX_FN(foreach_2)(__A, __B, div_each);
 }
 
-void matmultscalar(Matrix *__A, const MATRIX_TYPE __k) {
-    Matrix_foreach_k(__A, multscalar, __k);
+void MAT_FN(multscalar)(MATRIX_T *__A, const MATRIX_TYPE __k) {
+    MATRIX_FN(foreach_k)(__A, multscalar, __k);
 }
 
-void mataddscalar(Matrix *__A, const MATRIX_TYPE __k) {
-    Matrix_foreach_k(__A, addscalar, __k);
+void MAT_FN(addscalar)(MATRIX_T *__A, const MATRIX_TYPE __k) {
+    MATRIX_FN(foreach_k)(__A, addscalar, __k);
 }
 
-void matdivscalar(Matrix *__A, const MATRIX_TYPE __k) {
-    Matrix_foreach_k(__A, divscalar, __k);
+void MAT_FN(divscalar)(MATRIX_T *__A, const MATRIX_TYPE __k) {
+    MATRIX_FN(foreach_k)(__A, divscalar, __k);
 }
 
-void matsubscalar(Matrix *__A, const MATRIX_TYPE __k) {
-    Matrix_foreach_k(__A, subscalar, __k);
+void MAT_FN(subscalar)(MATRIX_T *__A, const MATRIX_TYPE __k) {
+    MATRIX_FN(foreach_k)(__A, subscalar, __k);
 }
 
-MATRIX_TYPE matsum(const Matrix *__A) {
+MATRIX_TYPE MAT_FN(sum)(const MATRIX_T *__A) {
 
     MATRIX_TYPE sum = 0;
 
     for (size_t i = 0; i < __A->nrows; i++) {
         for (size_t j = 0; j <__A->ncols; j++) {
-            sum += matat(__A, i, j);
+            sum += MAT_FN(at)(__A, i, j);
         }
     }
 
     return sum;
 }
 
-MATRIX_TYPE matmin(const Matrix *__A) {
+MATRIX_TYPE MAT_FN(min)(const MATRIX_T *__A) {
 
-    MATRIX_TYPE min = matat(__A, 0, 0);
+    MATRIX_TYPE min = MAT_FN(at)(__A, 0, 0);
 
     for (size_t i = 0; i < __A->nrows; i++) {
         for (size_t j = 0; j < __A->ncols; j++) {
-            if (matat(__A, i, j) < min) min = matat(__A, i, j);
+            if (MAT_FN(at)(__A, i, j) < min) min = MAT_FN(at)(__A, i, j);
         }
     }
 
     return min;
 }
 
-MATRIX_TYPE matmax(const Matrix *__A) {
+MATRIX_TYPE MAT_FN(max)(const MATRIX_T *__A) {
 
-    MATRIX_TYPE max = matat(__A, 0, 0);
+    MATRIX_TYPE max = MAT_FN(at)(__A, 0, 0);
 
     for (size_t i = 0; i < __A->nrows; i++) {
         for (size_t j = 0; j < __A->ncols; j++) {
-            if (matat(__A, i, j) > max) max = matat(__A, i, j);
+            if (MAT_FN(at)(__A, i, j) > max) max = MAT_FN(at)(__A, i, j);
         }
     }
 
@@ -152,74 +152,74 @@ MATRIX_TYPE matmax(const Matrix *__A) {
 
 
 /**================================================================================================
- *!                                       Matrix API foreach
+ *!                                       MATRIX_T API foreach
  *================================================================================================**/
 
-Matrix *Matrix_mult_scalar(const Matrix *__A, const MATRIX_TYPE __k) {
-    Matrix *A = Matrix_clone(__A);
-    matmultscalar(A, __k);
+MATRIX_T *MATRIX_FN(mult_scalar)(const MATRIX_T *__A, const MATRIX_TYPE __k) {
+    MATRIX_T *A = MATRIX_FN(clone)(__A);
+    MAT_FN(multscalar)(A, __k);
     return A;
 }
 
-Matrix *Matrix_add_scalar(const Matrix *__A, const MATRIX_TYPE __k) {
-    Matrix *A = Matrix_clone(__A);
-    mataddscalar(A, __k);
+MATRIX_T *MATRIX_FN(add_scalar)(const MATRIX_T *__A, const MATRIX_TYPE __k) {
+    MATRIX_T *A = MATRIX_FN(clone)(__A);
+    MAT_FN(addscalar)(A, __k);
     return A;
 }
 
-Matrix *Matrix_sub_scalar(const Matrix *__A, const MATRIX_TYPE __k) {
-    Matrix *A = Matrix_clone(__A);
-    matsubscalar(A, __k);
+MATRIX_T *MATRIX_FN(sub_scalar)(const MATRIX_T *__A, const MATRIX_TYPE __k) {
+    MATRIX_T *A = MATRIX_FN(clone)(__A);
+    MAT_FN(subscalar)(A, __k);
     return A;
 }
 
-Matrix *Matrix_div_scalar(const Matrix *__A, const MATRIX_TYPE __k) {
-    Matrix *A = Matrix_clone(__A);
-    matdivscalar(A, __k);
+MATRIX_T *MATRIX_FN(div_scalar)(const MATRIX_T *__A, const MATRIX_TYPE __k) {
+    MATRIX_T *A = MATRIX_FN(clone)(__A);
+    MAT_FN(divscalar)(A, __k);
     return A;
 }
 
 
 /**================================================================================================
- *!                                        Matrix Mask functions
+ *!                                        MATRIX_T Mask functions
  *================================================================================================**/
 
 /**
  * Perform an operation on a matrix when a given mask evaluates to true
  */
-void Matrix_mask(Matrix *__A, Mask __mask, EDITOR __operator) {
+void MATRIX_FN(mask)(MATRIX_T *__A, Mask __mask, EDITOR __operator) {
 
     MATRIX_TYPE *el = NULL;
 
     for (size_t i = 0; i < __A->nrows; i++) {
         for (size_t j = 0; j < __A->ncols; j++) {
-            el = matacc(__A, i, j); // access the ith, jth element
+            el = MAT_FN(acc)(__A, i, j); // access the ith, jth element
             if (__mask(el)) __operator(el); // if the __mask is true, do something to __el
         }
     }
 }
 // __mask is only applied to matrix __A
-void Matrix_mask_2(Matrix *__A, Matrix *__B, Mask __mask, EDITOR_2 __operator) {
+void MATRIX_FN(mask_2)(MATRIX_T *__A, MATRIX_T *__B, Mask __mask, EDITOR_2 __operator) {
 
     MATRIX_TYPE *a = NULL;
     MATRIX_TYPE *b = NULL;
 
     for (size_t i = 0; i < __A->nrows; i++) {
         for (size_t j = 0; j < __A->ncols; j++) {
-            a = matacc(__A, i, j); // access the ith, jth element
-            b = matacc(__B, i, j); // access the ith, jth element
+            a = MAT_FN(acc)(__A, i, j); // access the ith, jth element
+            b = MAT_FN(acc)(__B, i, j); // access the ith, jth element
             if (__mask(a)) __operator(a, b); // if the __mask is true, do something to __el
         }
     }
 }
 
-void Matrix_mask_k(Matrix *__A, Mask __mask, EDITOR_K __operator, const MATRIX_TYPE __k) {
+void MATRIX_FN(mask_k)(MATRIX_T *__A, Mask __mask, EDITOR_K __operator, const MATRIX_TYPE __k) {
 
     MATRIX_TYPE *el = NULL;
 
     for (size_t i = 0; i < __A->nrows; i++) {
         for (size_t j = 0; j < __A->ncols; j++) {
-            el = matacc(__A, i, j); // access the ith, jth element
+            el = MAT_FN(acc)(__A, i, j); // access the ith, jth element
             if (__mask(el)) __operator(el, __k); // if the __mask is true, do something to __el
         }
     }

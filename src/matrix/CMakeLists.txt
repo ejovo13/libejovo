@@ -15,6 +15,7 @@ set(EJOVO_MATRIX_SRC
     matrix_logical.c
     matrix_index.c
     matrix_stochastic.c
+    matrix_getset.c
 
 )
 
