@@ -30,6 +30,7 @@ set (EJOVO_LIB
     ejovo_dataframe.c
     ejovo_color.c
     ejovo_time.c
+    ejovo_img.c
 
 )
 
@@ -51,6 +52,7 @@ set (EJOVO_LIB_HEADERS
     ${INC}/ejovo_dataframe.h
     ${INC}/ejovo_color.h
     ${INC}/ejovo_time.h
+    ${INC}/ejovo_img.h
     ${INC}/ejovo.h
 )
 

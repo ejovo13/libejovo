@@ -8,7 +8,11 @@
 /**================================================================================================
  *!                                        Set/Get Individual Elements
  *================================================================================================**/
-
+static inline Matrix *reshape(Matrix *__m, size_t __nrow, size_t __ncol) {
+    __m->nrows = __nrow;
+    __m->ncols = __ncol;
+    return __m;
+}
 
 static inline MATRIX_TYPE matget(const Matrix *__m, size_t __i) {
     return __m->data[__i];

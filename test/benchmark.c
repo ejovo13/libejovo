@@ -16,11 +16,11 @@ typedef struct {
 
 } matrix_op_benchmark_t;
 
-Matrix * reshape(Matrix *A, size_t m, size_t n) {
-    A->nrows = m;
-    A->ncols = n;
-    return A;
-}
+// Matrix * reshape(Matrix *A, size_t m, size_t n) {
+//     A->nrows = m;
+//     A->ncols = n;
+//     return A;
+// }
 
 typedef Matrix* (*mat_binop_fn) (const Matrix*, const Matrix*);
 

@@ -19,7 +19,9 @@ bool Matrix_comp_add(const Matrix *__A, const Matrix *__B);
 // Are __A and __B compatible for addition?
 bool Matrix_comp_mult(const Matrix *__A, const Matrix *__B);
 
-size_t Matrix_size(const Matrix *__A);
+static inline size_t Matrix_size(const Matrix *__A) {
+    return __A->nrows * __A->ncols;
+}
 
 bool Matrix_is_square(const Matrix *__A);
 

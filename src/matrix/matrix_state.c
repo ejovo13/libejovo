@@ -31,9 +31,9 @@ bool Matrix_comp_mult(const Matrix *__A, const Matrix *__B) {
     return (__A->ncols == __B->nrows);
 }
 
-size_t Matrix_size(const Matrix *__A) {
-    return __A->nrows * __A->ncols;
-}
+// size_t Matrix_size(const Matrix *__A) {
+//     return __A->nrows * __A->ncols;
+// }
 
 bool Matrix_is_square(const Matrix *__A) {
     return __A->nrows == __A->ncols;
