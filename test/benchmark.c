@@ -16,7 +16,7 @@ typedef struct {
 
 } matrix_op_benchmark_t;
 
-// MATRIX_T * reshape(MATRIX_T *A, size_t m, size_t n) {
+// MATRIX_T * TYPED_FN(reshape)(MATRIX_T *A, size_t m, size_t n) {
 //     A->nrows = m;
 //     A->ncols = n;
 //     return A;
@@ -35,10 +35,10 @@ void time_matrix_times_vector(int n) {
     // MATRIX_T *a = MATRIX_FN(rand)(n, n);
     // MATRIX_T *b = MATRIX_FN(rand)(n, n);
 
-    MATRIX_T *A = runif(n * n, 0, 1);
-    MATRIX_T *b = runif(n, 0, 1);
-    reshape(A, n, n);
-    reshape(b, n, 1);
+    MATRIX_T *A = TYPED_FN(runif)(n * n, 0, 1);
+    MATRIX_T *b = TYPED_FN(runif)(n, 0, 1);
+    TYPED_FN(reshape)(A, n, n);
+    TYPED_FN(reshape)(b, n, 1);
 
     Clock_toc(clock);
 
@@ -81,10 +81,10 @@ void time_matrix_op(int n, mat_binop_fn binop, const char* str) {
     // MATRIX_T *a = MATRIX_FN(rand)(n, n);
     // MATRIX_T *b = MATRIX_FN(rand)(n, n);
 
-    MATRIX_T *a = runif(n * n, 0, 1);
-    MATRIX_T *b = runif(n * n, 0, 1);
-    reshape(a, n, n);
-    reshape(b, n, n);
+    MATRIX_T *a = TYPED_FN(runif)(n * n, 0, 1);
+    MATRIX_T *b = TYPED_FN(runif)(n * n, 0, 1);
+    TYPED_FN(reshape)(a, n, n);
+    TYPED_FN(reshape)(b, n, n);
 
     Clock_toc(clock);
 
@@ -146,13 +146,13 @@ void compute_flops_On(int n) {
     Clock *my_clock = Clock_new();
 
     Clock_tic(my_clock);
-    MATRIX_T *r = runif(n, 0, 1);
+    MATRIX_T *r = TYPED_FN(runif)(n, 0, 1);
     Clock_toc(my_clock);
 
     double init_time = elapsed_time(my_clock);
 
     Clock_tic(my_clock);
-    double somme = sum(r); // Here we performed N floating point operations
+    double somme = TYPED_FN(sum)(r); // Here we performed N floating point operations
     Clock_toc(my_clock);
     double op_time = elapsed_time(my_clock); 
     double op_per_s = n / op_time;
@@ -219,8 +219,8 @@ int main() {
 
     // Let's test some basic operations of an established array of sizes
 
-    // MATRIX_T *sizes = linspace()
-    MATRIX_T *sizes = logspace(2, 4, 10);
+    // MATRIX_T *sizes = TYPED_FN(linspace)()
+    MATRIX_T *sizes = TYPED_FN(logspace)(2, 4, 10);
 
     ejovo_seed();
 
@@ -241,10 +241,10 @@ int main() {
 
     // Compute the number of addition flops by adding two row 
     // vectors of size n
-    // Vector *N = logspace(1, 9, 9);
+    // Vector *N = TYPED_FN(logspace)(1, 9, 9);
     const int len = 20;
 
-    Vector *N = reshape(logspace(1, 4, len), len, 1);
+    Vector *N = TYPED_FN(reshape)(TYPED_FN(logspace)(1, 4, len), len, 1);
     Vector *op_times = MATRIX_FN(new)(len, 1);
 
     // MATRIX_FN(print)(N);
@@ -262,19 +262,19 @@ int main() {
 
     writeGP(df, "test_bench.gp");
 
-    Vector *x = reshape(linspace(2, 100, 1000), 100, 1);
-    // Vector *y = map(x, log);
-    Vector *y = map(x, x_cubed);
+    Vector *x = TYPED_FN(reshape)(TYPED_FN(linspace)(2, 100, 1000), 100, 1);
+    // Vector *y = TYPED_FN(map)(x, log);
+    Vector *y = TYPED_FN(map)(x, TYPED_FN(x_cubed));
     // Vector *y = MATRIX_FN(clone)(x);
 
-    Vector *a_lin = loglog_regression(N, op_times);
-    Vector *a_log = linear_regression(N, op_times);
-    // Vector *xy_lin = linear_regression(x, y);
+    Vector *a_lin = TYPED_FN(loglog_regression)(N, op_times);
+    Vector *a_log = TYPED_FN(linear_regression)(N, op_times);
+    // Vector *xy_lin = TYPED_FN(linear_regression)(x, y);
     // Vector *xy_log = logistical_regression(x, y);
-    Vector *x3_reg = least_squares(x, y, 3);
-    Vector *x3_log = loglog_regression(x, y);
-    Vector *fn_reg = least_squares(x, map(x, f), 3);
-    Vector *f2_log = loglog_regression(x, map(x, f2));
+    Vector *x3_reg = TYPED_FN(least_squares)(x, y, 3);
+    Vector *x3_log = TYPED_FN(loglog_regression)(x, y);
+    Vector *fn_reg = TYPED_FN(least_squares)(x, TYPED_FN(map)(x, f), 3);
+    Vector *f2_log = TYPED_FN(loglog_regression)(x, TYPED_FN(map)(x, f2));
     // Vector *
 
     print_polynomial(x3_log);
@@ -282,7 +282,7 @@ int main() {
     print_polynomial(f2_log);
 
     DataFrame *df2 = newDataFrame(newChainVar(4, "x", "y", "fx", "f2"),
-        newSpaceVar(4, x, y, map(x, f), map(x, f2)));
+        newSpaceVar(4, x, y, TYPED_FN(map)(x, f), TYPED_FN(map)(x, f2)));
 
     writeGP(df2, "test_bench2.gp");
 

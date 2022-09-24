@@ -1,4 +1,5 @@
-#pragma once
+#ifndef MATRIX_GETSET_H
+#define MATRIX_GETSET_H
 
 // Essential routines to get and set elements and columns and rows of matrices
 
@@ -8,7 +9,7 @@
 /**================================================================================================
  *!                                        Set/Get Individual Elements
  *================================================================================================**/
-static inline MATRIX_T *reshape(MATRIX_T *__m, size_t __nrow, size_t __ncol) {
+static inline MATRIX_T *TYPED_FN(reshape)(MATRIX_T *__m, size_t __nrow, size_t __ncol) {
     __m->nrows = __nrow;
     __m->ncols = __ncol;
     return __m;
@@ -281,8 +282,10 @@ void MATRIX_FN(fill)(MATRIX_T * __A, const MATRIX_TYPE value);
 /**
  * Set all of the elements who fulfill a mask equal to the value
  */
-void MATRIX_FN(fill_mask)(MATRIX_T *__A, Mask __mask, const MATRIX_TYPE __value);
+void MATRIX_FN(fill_mask)(MATRIX_T *__A, TYPED(Mask) __mask, const MATRIX_TYPE __value);
 
 MATRIX_T *MATRIX_FN(rcat)(const MATRIX_T *__A, const MATRIX_T *__B);
 
 MATRIX_T *MATRIX_FN(ccat)(const MATRIX_T *__A, const MATRIX_T *__B);
+
+#endif

@@ -2,7 +2,7 @@
 #define EJOVO_LABYRINTH
 
 #include "stdbool.h"
-#include "ejovo_matrix.h"
+#include "ejovo_matrix_generic.h"
 
 // This file contains some functions to generate a labyrinth and then later how to solve the maze
 #ifndef MATRIX_TYPE

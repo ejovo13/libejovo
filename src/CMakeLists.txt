@@ -53,6 +53,7 @@ set (EJOVO_LIB_HEADERS
     ${INC}/ejovo_time.h
     ${INC}/ejovo_img.h
     ${INC}/ejovo.h
+    ${INC}/ejovo_matrix_generic.h
 )
 
 set (EJOVO_MATRIX_HEADERS
@@ -69,6 +70,7 @@ set (EJOVO_MATRIX_HEADERS
     ${INC}/matrix/matrix_state.h
     ${INC}/matrix/matrix_stats.h
     ${INC}/matrix/matrix_vector.h
+    ${INC}/matrix/matrix_logical.h
     ${INC}/matrix/matrix.h
 )
 
@@ -88,7 +90,9 @@ message("Project: ${PROJECT_SOURCE_DIR}")
 
 add_subdirectory(matrix)
 
-add_library(ejovo STATIC ${EJOVO_LIB} $<TARGET_OBJECTS:ejovo_matrix>)
+add_library(ejovo STATIC ${EJOVO_LIB} $<TARGET_OBJECTS:ejovo_matrix_double>)
+                                    #   $<TARGET_OBJECTS:ejovo_matrix_int>
+                                    #   $<TARGET_OBJECTS:ejovo_matrix_float>)
 # target_link_libraries(ejovo PUBLIC ${PCG_RANDOM_LIBRARY})
 if (NOT WIN32)
     if (EXISTS ${PCG_RANDOM_LIBRARY})

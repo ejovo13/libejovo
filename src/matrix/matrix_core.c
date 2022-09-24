@@ -1,13 +1,22 @@
 // matrix_core.c contains essential functions
 // that deal with the creation, destruction and setting of matrix elements
 
-#include "ejovo_matrix.h"
+#include "ejovo_matrix_generic.h"
+// #include "ejovo_matrix.h"
 
-MATRIX_T *g_ANON = NULL;
+MATRIX_T *TYPED(g_ANON) = NULL;
 
-const double PI = 3.141592653589793;
-const double TWO_PI = 2.0 * 3.141592653589793;
-const double HALF_PI = 3.141592653589793 / 2.0;
+#ifdef FIRST_COMPILATION_PASS
+// #undef FIRST_COMPILATION_PASS
+
+    const double PI = 3.141592653589793;
+    const double TWO_PI = 2.0 * 3.141592653589793;
+    const double HALF_PI = 3.141592653589793 / 2.0;
+    const double EPS = 1E-10;
+
+
+#endif
+
 
 
 /**================================================================================================
@@ -27,7 +36,7 @@ const double HALF_PI = 3.141592653589793 / 2.0;
 //     return x;
 // }
 
-MATRIX_T *vec(double __k) {
+MATRIX_T *MAT_FN(vec)(double __k) {
 
     MATRIX_T *x = MAT_FN(alloc)(1, 1);
     x->data[0] = __k;
@@ -36,7 +45,7 @@ MATRIX_T *vec(double __k) {
 
 // Let's use a new variadic function called anon to instantiate a new anonymous matrix that should get slotted for immediate
 // removal. -- This could easily lead to concurrency issues FYI
-MATRIX_T *anon(int __count, ...) {
+MATRIX_T *MAT_FN(anon)(int __count, ...) {
 
     va_list ptr;
     va_start(ptr, __count);
@@ -139,12 +148,12 @@ MATRIX_T *MATRIX_FN(catch)(MATRIX_T **__lhs_ptr, MATRIX_T *__anon_rhs) {
 // and finall, at the end of the program / scope call
 // MATRIX_FN(anon_free)
 MATRIX_T *MATRIX_FN(anon)(MATRIX_T *__anon_rhs) {
-    if (g_ANON) {
-        if (g_ANON->data) free(g_ANON->data);
-        free (g_ANON);
+    if (TYPED(g_ANON)) {
+        if (TYPED(g_ANON)->data) free(TYPED(g_ANON)->data);
+        free (TYPED(g_ANON));
     }
 
-    g_ANON = __anon_rhs;
+    TYPED(g_ANON) = __anon_rhs;
     return __anon_rhs;
 }
 
@@ -314,10 +323,10 @@ MATRIX_T * MATRIX_FN(ij)(size_t __nrows, size_t __ncols) {
 }
 
 Vector *VECTOR_FN(range)(double __start, int __end, int __diff) {
-    return range(__start, __end, __diff);
+    return TYPED_FN(range)(__start, __end, __diff);
 }
 
-Vector *range(int __start, int __end, int __diff) {
+Vector *TYPED_FN(range)(int __start, int __end, int __diff) {
 
     // first calculate how many elements there will be.
     int n = (__end - __start) / __diff + 1;
@@ -330,7 +339,7 @@ Vector *range(int __start, int __end, int __diff) {
     return v;
 }
 
-Vector *linspace(MATRIX_TYPE __start, MATRIX_TYPE __end, int __N) {
+Vector *TYPED_FN(linspace)(MATRIX_TYPE __start, MATRIX_TYPE __end, int __N) {
 
     Vector *v = VECTOR_FN(linspace)(__start, __end, __N);
     int tmp = v->ncols;
@@ -340,16 +349,16 @@ Vector *linspace(MATRIX_TYPE __start, MATRIX_TYPE __end, int __N) {
     return v;
 }
 
-double raisedBy10(double __input) {
+MATRIX_TYPE TYPED_FN(raisedBy10)(MATRIX_TYPE __input) {
     return pow(10, __input);
 }
 
 // use base 10
-Vector *logspace(double __start, double __end, int __n) {
+Vector *TYPED_FN(logspace)(double __start, double __end, int __n) {
 
-    Vector *exp = linspace(__start, __end, __n);
+    Vector *exp = TYPED_FN(linspace)(__start, __end, __n);
 
-    Vector *out = VECTOR_FN(map)(exp, raisedBy10);
+    Vector *out = VECTOR_FN(map)(exp, TYPED_FN(raisedBy10));
 
     MATRIX_FN(free)(exp);
 
@@ -471,6 +480,21 @@ MATRIX_T * MATRIX_FN(identity)(size_t __n) {
  *================================================================================================**/
 // void 
 
+/**========================================================================
+ *!                           Double
+ *========================================================================**/
+// void matprintfloat(const Matrix_float *__m) {
+//         MATRIX_FN(summary)(__m);
+//     for (size_t i = 0; i < __m->nrows; i++) {
+//         printf("| ");
+//         for (size_t j = 0; j < __m->ncols; j++) {
+//             printf("%4.4lf ", MAT_FN(at)(__m, i, j));
+//         }
+
+//         printf("|\n");
+
+//     }
+// }
 
 
 void MAT_FN(print)(const MATRIX_T *__m) {

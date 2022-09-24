@@ -1,7 +1,8 @@
 // Functions that are used to inquire about the state of a matrix
 // For example, is_square, is_symmetric, is_transpose etc etc
 
-#include "ejovo_matrix.h"
+#include "ejovo_matrix_generic.h"
+// #include "ejovo_matrix.h"
 
 bool MATRIX_FN(valid_bounds)(const MATRIX_T *__m, size_t __i, size_t __j) {
     return (__i < __m->nrows && __j < __m->ncols);

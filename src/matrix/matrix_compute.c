@@ -1,6 +1,7 @@
 // Routines that are used in Computational Science and Engineering
 
-#include "ejovo_matrix.h"
+#include "ejovo_matrix_generic.h"
+// #include "ejovo_matrix.h"
 
 /**================================================================================================
  *!                                        Finite Differences Matrices

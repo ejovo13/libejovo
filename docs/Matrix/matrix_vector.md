@@ -235,8 +235,8 @@ vecnormalize(v_normalized); // "normalize" an already normalized vector
 Take the projection of `u` onto `v` with `VECTOR_FN(project_onto)(u, v)`.
 
 ```
-Vector *u = vector(3, 6.0, 2.0, 3.0);
-Vector *v = vector(3, 1.0, 0.0, 0.0);
+Vector *u = TYPED_FN(vector)(3, 6.0, 2.0, 3.0);
+Vector *v = TYPED_FN(vector)(3, 1.0, 0.0, 0.0);
 
 Vector *proju_v = VECTOR_FN(project_onto)(u, v); // proju_v = {6.0, 0.0, 0.0}
 ```

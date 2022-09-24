@@ -1,4 +1,5 @@
-#pragma once
+#ifndef MATRIX_DIST_H
+#define MATRIX_DIST_H
 
 #include "matrix.h"
 
@@ -12,3 +13,5 @@ Vector *VECTOR_FN(rnorm)(size_t __n, double __mean, double __std);
 
 // fill a vector with a uniform random distribution
 Vector *VECTOR_FN(rexp)(size_t __n, double __rate);
+
+#endif // MATRIX_DIST_H

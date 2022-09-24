@@ -1,5 +1,5 @@
 #include "ejovo_rand.h"
-#include "ejovo_matrix.h"
+#include "ejovo_matrix_generic.h"
 #include <stdio.h>
 
 #define MAX_ITER 1E0
@@ -25,10 +25,10 @@ int main() {
     // printf("M[0][0] = %lf\n", MATRIX_FN(at)(m, 1, 1));
 
     printf("Getting submatrix:\n");
-    MATRIX_T *sub = submatdouble(m, 0, 10, 0, 25);
+    MATRIX_T *sub = submat_d(m, 0, 10, 0, 25);
     MATRIX_FN(print)(sub);
 
-    Matrix_double_print(sub);
+    Matrix_d_print(sub);
 
 
 

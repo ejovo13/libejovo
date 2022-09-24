@@ -9,7 +9,7 @@ Use `map` to return a newly allocated vector whose elements `y_i = f(x_i)`, that
 
 Here's an example where we apply the function `exp` to the `15` equally spaced points between `[-2, 5]`
 ```
-Vector *v = asrow(linspace(-2, 5, 15));
+Vector *v = TYPED_FN(asrow)(linspace(-2, 5, 15));
 Vector *v_exp = map(v, exp);
 ```
 <!-- Which outputs: -->
@@ -47,7 +47,7 @@ bool outside_std(double x) {
 Armed with this new function we can pull out the elements that are not within 1 standard deviation of `0`.
 
 ```
-Vector *outliers = filter(v, outside_std);
+Vector *outliers = TYPED_FN(filter)(v, outside_std);
 ```
 
 We can filter the elements that return `false` when evaluated by the predicate with `filter_if_not`:
@@ -65,7 +65,7 @@ Named functions are useful to pass as arguments to higher order functions like `
 The identity function is in this module is `Id`
 
 ```
-double x = Id(3.0); // x = 3.0
+double x =TYPED_FN(Id)(3.0); // x = 3.0
 ```
 
 <!-- One interesting way to use the identity function is to clone a matrix: -->
@@ -76,4 +76,4 @@ We have named `f(x) = x^2` in C as `x_squared`.
 
 ###### x_cubed
 
-`f(x) = x^3` is named `x_cubed`.
+`f(x) = x^3` is named `TYPED_FN(x_cubed)`.

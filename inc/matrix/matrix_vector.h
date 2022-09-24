@@ -1,4 +1,5 @@
-#pragma once
+#ifndef MATRIX_VECTOR_H
+#define MATRIX_VECTOR_H
 
 // Function definitions for conceptualizing Matrices as column vectors
 
@@ -9,7 +10,7 @@
  *================================================================================================**/
 
 
-Vector *vector(int __count, ...);
+Vector *TYPED_FN(vector)(int __count, ...);
 
 // Default to making a column vector
 Vector *VECTOR_FN(new)(size_t __nrows);
@@ -83,7 +84,7 @@ MATRIX_TYPE *VECTOR_FN(access)(const Vector *__v, size_t __i);
 
 // More abstract, functional pattern "map"
 // apply a function to the objects of a
-Vector *VECTOR_FN(map)(const Vector *__v, function __fn);
+Vector *VECTOR_FN(map)(const Vector *__v, TYPED(function) __fn);
 
 MATRIX_TYPE VECTOR_FN(sum)(const Vector *__v);
 
@@ -103,11 +104,11 @@ void VECTOR_FN(print_as_row)(const Vector *__v);
 
 // Take the dot product of __u and __v in place, storing the results in u!
 // we are also just assuming that __u and __v are column (OR ROW) vectors of the same size
-MATRIX_TYPE vecdot(const Vector *__u, const Vector *__v);
+MATRIX_TYPE TYPED_FN(vecdot)(const Vector *__u, const Vector *__v);
 
 MATRIX_TYPE VECTOR_FN(inner)(const Vector *__u, const Vector *__v);
 
-Vector *vecproject(const Vector *__v, const Vector *__u);
+Vector *TYPED_FN(vecproject)(const Vector *__v, const Vector *__u);
 
 // Take vector __v and project it ONTO __u
 Vector *VECTOR_FN(project_onto)(const Vector *__v, const Vector *__u);
@@ -134,12 +135,12 @@ MATRIX_T *VECTOR_FN(orthogonal_projection)(const Vector *__v);
  * The p-norm of a matrix is defined to be the pth root ( sum of |a_ij|^p )
  *
  */
-MATRIX_TYPE vecpnorm(const Vector *__u, const int __p);
+MATRIX_TYPE TYPED_FN(vecpnorm)(const Vector *__u, const int __p);
 
 // Euclidean norm
-MATRIX_TYPE vecnorm(const Vector *__A);
+MATRIX_TYPE TYPED_FN(vecnorm)(const Vector *__A);
 
-void vecnormalize(Vector *__u);
+void TYPED_FN(vecnormalize)(Vector *__u);
 
 // Return the norm of a vector (checking bounds?)
 MATRIX_TYPE VECTOR_FN(norm)(const Vector *__u);
@@ -150,12 +151,14 @@ MATRIX_TYPE VECTOR_FN(pnorm)(const Vector *__u, const size_t __p);
 Vector *VECTOR_FN(normalize)(const Vector *__u);
 
 // Take a coliter and compute the pnorm
-MATRIX_TYPE ColIter_norm(ColIter *__c);
+MATRIX_TYPE TYPED_FN(ColIter_norm)(TYPED(ColIter) *__c);
 
-Vector *ascol(Vector *__v);
+Vector *TYPED_FN(ascol)(Vector *__v);
 
-Vector *asrow(Vector *__v);
+Vector *TYPED_FN(asrow)(Vector *__v);
 
 MATRIX_TYPE VECTOR_FN(distance)(const Vector *__v, const Vector *__u);
 
 Vector *VECTOR_FN(difference)(const Vector *__v, const Vector *__u);
+
+#endif

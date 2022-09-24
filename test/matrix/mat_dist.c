@@ -21,8 +21,8 @@ void t_unif() {
 
     printf("========== Uniform [0, 10] ==========\n");
     printf("Mean(v): %lf\n", VECTOR_FN(iter_mean)(v));
-    printf("std(v): %lf\n", VECTOR_FN(iter_std)(v));
-    printf("var(v): %lf\n", VECTOR_FN(iter_var)(v));
+    printf("TYPED_FN(std)(v): %lf\n", VECTOR_FN(iter_std)(v));
+    printf("TYPED_FN(var)(v): %lf\n", VECTOR_FN(iter_var)(v));
 
     MATRIX_FN(free)(v);
 
@@ -34,8 +34,8 @@ void t_norm() {
 
     printf("========== Norm [0, 1] ==========\n");
     printf("Mean(v): %lf\n", VECTOR_FN(iter_mean)(v));
-    printf("std(v): %lf\n", VECTOR_FN(iter_std)(v));
-    printf("var(v): %lf\n", VECTOR_FN(iter_var)(v));
+    printf("TYPED_FN(std)(v): %lf\n", VECTOR_FN(iter_std)(v));
+    printf("TYPED_FN(var)(v): %lf\n", VECTOR_FN(iter_var)(v));
 
     MATRIX_FN(free)(v);
 }
@@ -46,7 +46,7 @@ void t_exp() {
 
     printf("========== Exp [5] ==========\n");
     printf("Mean(v): %lf\n", VECTOR_FN(iter_mean)(v));
-    printf("std(v): %lf\n", VECTOR_FN(iter_std)(v));
+    printf("TYPED_FN(std)(v): %lf\n", VECTOR_FN(iter_std)(v));
     printf("var(v): %lf\n", VECTOR_FN(iter_var)(v));
 
     MATRIX_FN(free)(v);

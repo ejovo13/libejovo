@@ -1,4 +1,5 @@
-#pragma once
+#ifndef MATRIX_LINEAR_H
+#define MATRIX_LINEAR_H
 
 #include "matrix.h"
 
@@ -88,7 +89,7 @@ MATRIX_T *MATRIX_FN(subtract)(const MATRIX_T *__A, const MATRIX_T *__B);
  *================================================================================================**/
 
 // Calculate the norm of a column using MatIter's
-MATRIX_TYPE colnorm(const MATITER_T __begin, const MATITER_T __end);
+MATRIX_TYPE TYPED_FN(colnorm)(const MATITER_T __begin, const MATITER_T __end);
 
 // Calculate the norm of a specific column
 MATRIX_TYPE MATRIX_FN(col_norm)(const MATRIX_T *__A, size_t __j);
@@ -116,7 +117,7 @@ MATRIX_TYPE MATRIX_FN(frobenius)(const MATRIX_T *__A);
 // produce the upper matrix
 MATRIX_T *MAT_FN(lu_nopivot)(MATRIX_T *__A);
 
-LU MATRIX_FN(lu)(const MATRIX_T *__A);
+TYPED(LU) MATRIX_FN(lu)(const MATRIX_T *__A);
 
 // I need a function that performs back_substitution and also forward_substitution
 
@@ -136,7 +137,7 @@ MATRIX_T *MATRIX_FN(solve_lu)(const MATRIX_T *__A, const Vector *__b);
 
 // Return a column vector that contains the solutions
 // this column vector can be null if there are no solutions/infinitely many solutions
-MATRIX_T *gausselim(const MATRIX_T *__A, const MATRIX_T *__B);
+MATRIX_T *TYPED_FN(gausselim)(const MATRIX_T *__A, const MATRIX_T *__B);
 
 MATRIX_T *MATRIX_FN(inverse)(const MATRIX_T *__A);
 
@@ -159,7 +160,7 @@ MATRIX_T *MATRIX_FN(inverse)(const MATRIX_T *__A);
  * @returns a newly allocated vector
  *
  */
-Vector *jacobi_iteration(const MATRIX_T *__A, const Vector *__b, const Vector *__x0, MATRIX_TYPE __crit);
+Vector *TYPED_FN(jacobi_iteration)(const MATRIX_T *__A, const Vector *__b, const Vector *__x0, MATRIX_TYPE __crit);
 
 MATRIX_T *MATRIX_FN(vandermonde)(const Vector *__v);
 
@@ -167,17 +168,19 @@ MATRIX_T *MATRIX_FN(vandermonde_reduced)(const Vector *__v, size_t __degree);
 
 // These elementary operations will be considered low level and don't consider checking bounds...
 // void MATRIX_FN(switch_rows)(OrderedMATRIX_T m, size_t __r1, size_t __r2) {
-void Row_switch(const MATRIX_T *__m, Index *__ind, size_t __r1, size_t __r2);
+void TYPED_FN(Row_switch)(const MATRIX_T *__m, Index *__ind, size_t __r1, size_t __r2);
 
-void Row_multiply(MATRIX_T *__m, Index *__ind, size_t __r, double __k);
+void TYPED_FN(Row_multiply)(MATRIX_T *__m, Index *__ind, size_t __r, double __k);
 
 // Modify the contents of __r1 by adding __r2 in place.
-void Row_addition(MATRIX_T *__m, Index *__ind, size_t __r1, size_t __r2);
+void TYPED_FN(Row_addition)(MATRIX_T *__m, Index *__ind, size_t __r1, size_t __r2);
 
 // r1 = r1 + k * r2
-void Row_addition_k(MATRIX_T *__m, Index *__ind, size_t __r1, size_t __r2, double __k);
+void TYPED_FN(Row_addition_k)(MATRIX_T *__m, Index *__ind, size_t __r1, size_t __r2, double __k);
 
 // Now that we have an inverse, vandermonde, and transpose operator, let's go ahead and compute a linear
 // regression!
 
 // Vector *linear
+
+#endif

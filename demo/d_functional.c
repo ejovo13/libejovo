@@ -1,6 +1,6 @@
-#include "ejovo_matrix.h"
+#include "ejovo_matrix_generic.h"
 
-bool outside_std(double x) {
+bool outside_std (double x) {
     return x < -1 || x > 1;
 }
 
@@ -8,8 +8,8 @@ int main() {
 
     ejovo_seed();
 
-    Vector *v = asrow(linspace(-2, 5, 15));
-    Vector *v_exp = map(v, exp);
+    Vector *v = TYPED_FN(asrow)(linspace_d(-2, 5, 15));
+    Vector *v_exp = map_d(v, exp);
 
     MATRIX_FN(print)(v);
     MATRIX_FN(print)(v_exp);
@@ -20,8 +20,8 @@ int main() {
 
     MATRIX_FN(print)(v);
 
-    Vector *outliers = filter(v, outside_std);
-    Vector *values = filter_if_not(v, outside_std);
+    Vector *outliers = TYPED_FN(filter)(v, outside_std);
+    Vector *values = TYPED_FN(filter_if_not)(v, outside_std);
 
     MATRIX_FN(print)(outliers);
     MATRIX_FN(print)(values);

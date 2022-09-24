@@ -1,10 +1,10 @@
-
-#pragma once
+#ifndef EJOVO_IMG_H
+#define EJOVO_IMG_H
 
 // Provide functions that allow us to create a bitmap given a Img structure
 #include <stdlib.h>
 
-#include "ejovo_matrix.h"
+#include "ejovo_matrix_generic.h"
 
 
 typedef struct {
@@ -23,19 +23,6 @@ static inline img_t *newImageGrayscale(const MATRIX_T *gray) {
     return newImage(gray, gray, gray);
 }
 
-#define FOREACH(MAT) for (size_t i = 0; i < MATRIX_FN(size)(MAT); i++)
-
-
-#define FORIJ(MAT, INIT_LOOP, INSIDE_LOOP, OUTSIDE_LOOP) \
-    const __m = MAT->nrows; \
-    const __n = MAT->ncols; \
-        for (size_t i = 0; i < __m; i++) { \
-        INIT_LOOP \
-        for (size_t j = 0; j < __n; j++) {  \
-            INSIDE_LOOP \
-        } \
-        OUTSIDE_LOOP\
-    } \
 
 
 static inline MATRIX_TYPE at(const MATRIX_T *__A, size_t lin_index) {
@@ -61,3 +48,4 @@ void writePPM(const img_t *img, const char *filename);
 
 // }
 
+#endif

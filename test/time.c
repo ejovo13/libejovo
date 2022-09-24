@@ -1,5 +1,5 @@
 #include "ejovo_time.h"
-#include "ejovo_matrix.h"
+#include "ejovo_matrix_generic.h"
 #include "ejovo_dataframe.h"
 #include "ejovo_rand.h"
 #include <assert.h>
@@ -22,7 +22,7 @@ double time_passed_xoroshiro() {
 
 
     Clock_tic(clock);
-    m = runif_gen(N_RAND, 0, 1, unif_xoroshiro);
+    m = TYPED_FN(runif_gen)(N_RAND, 0, 1, unif_xoroshiro);
     Clock_toc(clock);
 
     double time = elapsed_time(clock);
@@ -44,7 +44,7 @@ double time_passed_pcg() {
 
 
     Clock_tic(clock);
-    m = runif_gen(N_RAND, 0, 1, unif_pcg);
+    m = TYPED_FN(runif_gen)(N_RAND, 0, 1, unif_pcg);
     Clock_toc(clock);
 
     double time = elapsed_time(clock);
@@ -88,7 +88,7 @@ double time_passed_sum_fn() {
     MATRIX_T *m = MATRIX_FN(rand)(N, N);
     Clock *clock = Clock_new();
     Clock_tic(clock);
-    double t = sum(m);
+    double t = TYPED_FN(sum)(m);
     fprintf(stderr, "%lf, ", t);
     Clock_toc(clock);
 
@@ -135,11 +135,11 @@ int main() {
     // MATRIX_FN(print)(b);
 
 
-    // printf("Max of [1 2 3 4]: %lf \n", max(b));
-    // // printf("Sum of [1 2 3 4]: %lf \n", sum(b));
+    // printf("Max of [1 2 3 4]: %lf \n", TYPED_FN(max)(b));
+    // // printf("Sum of [1 2 3 4]: %lf \n", TYPED_FN(sum)(b));
 
     // Clock_tic(clock);
-    // printf("Sum :%lf, Mean: %lf, Std: %lf, Var: %lf\n", sum(m), mean(m), std(m), var(m));
+    // printf("Sum :%lf, Mean: %lf, Std: %lf, Var: %lf\n", TYPED_FN(sum)(m), TYPED_FN(mean)(m), TYPED_FN(std)(m), TYPED_FN(var)(m));
     // Clock_toc(clock);
 
     // printf("Elapsed time: %lf\n", elapsed_time(clock));
@@ -162,7 +162,7 @@ int main() {
     // double loop_time = elapsed_time(clock);
 
     // Clock_tic(clock);
-    // double fn_sum = sum(m);
+    // double fn_sum = TYPED_FN(sum)(m);
     // Clock_toc(clock);
 
     // double fn_time = elapsed_time(clock);
@@ -185,20 +185,20 @@ int main() {
     // MATRIX_FN(print)(fn_time);
     Clock_toc(clock);
     // printf("Time taken to run test total: %lf\n", elapsed_time(clock));
-    // printf("Avg time to compute sums: %lf\n", mean(fn_time));
+    // printf("Avg time to compute sums: %lf\n", TYPED_FN(mean)(fn_time));
 
-    printf("Mean(fn_time): %lf\n", mean(fn_time));
-    printf("Mean(loop_time): %lf\n", mean(loop_time));
+    printf("Mean(fn_time): %lf\n", TYPED_FN(mean)(fn_time));
+    printf("Mean(loop_time): %lf\n", TYPED_FN(mean)(loop_time));
 
     // MATRIX_T *rand_time = save_doubles(time_passed_rng, 100);
-    // printf("Rand unifd %d times in %lf seconds\n", N_RAND, mean(rand_time));
-    // printf("Generation rate: %lf Doubles /s\n", N_RAND / mean(rand_time));
+    // printf("Rand unifd %d times in %lf seconds\n", N_RAND, TYPED_FN(mean)(rand_time));
+    // printf("Generation rate: %lf Doubles /s\n", N_RAND / TYPED_FN(mean)(rand_time));
 
 
-    printf("XOROSHIRO: %lf D/s\n", N_RAND / mean(xoroshiro_time));
+    printf("XOROSHIRO: %lf D/s\n", N_RAND / TYPED_FN(mean)(xoroshiro_time));
 
     #ifdef PCG_RANDOM
-        printf("PCG: %lf D/s\n", N_RAND / mean(pcg_time));
+        printf("PCG: %lf D/s\n", N_RAND / TYPED_FN(mean)(pcg_time));
     #endif
 
     MATRIX_FN(free)(fn_time);

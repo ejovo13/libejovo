@@ -1,4 +1,5 @@
-#include "ejovo_matrix.h"
+#include "ejovo_matrix_generic.h"
+// #include "ejovo_matrix.h"
 
 // a module to generate vectors containing variates following basic distributions.
 // heaviliy reliant on the ejovo_rand.c module

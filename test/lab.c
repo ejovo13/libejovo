@@ -1,5 +1,5 @@
 #include "ejovo_labyrinth.h"
-#include "ejovo_matrix.h"
+#include "ejovo_matrix_generic.h"
 
 int main() {
 

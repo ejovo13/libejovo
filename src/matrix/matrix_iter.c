@@ -1,6 +1,7 @@
 // functions that deal with the creation of iterator objects
 
-#include "ejovo_matrix.h"
+#include "ejovo_matrix_generic.h"
+// #include "ejovo_matrix.h"
 
 // TODO I need to add checks for some of my iterator functions like matdiagend -> MATRIX_FN(diag_end)
 // TODO I should have an interface to change a "col iter" to a "row iter"
@@ -113,7 +114,7 @@ MATITER_T MATRIX_FN(diag_end)(const MATRIX_T *__m, const int __d) {
  *!                                        RowCol and ColIter
  *================================================================================================**/
 
-MATRIX_TYPE Iter_dot(const MATITER_T __r, const MATITER_T __rend, const MATITER_T __c) {
+MATRIX_TYPE TYPED_FN(Iter_dot)(const MATITER_T __r, const MATITER_T __rend, const MATITER_T __c) {
 
     MATRIX_TYPE dot = 0;
 
@@ -615,7 +616,7 @@ void MATITER_FN(row_add_row)(const MATITER_T __abegin, const MATITER_T __aend, c
 // Appy functions are a way to iterate a ColIter until we reach the "end" point
 
 
-void MATITER_FN(apply)(const MATITER_T __rbegin, const MATITER_T __rend, MatIterFn __fn) {
+void MATITER_FN(apply)(const MATITER_T __rbegin, const MATITER_T __rend, TYPED(MatIterFn) __fn) {
 
     MATITER_T rbegin = __rbegin;
 
@@ -625,7 +626,7 @@ void MATITER_FN(apply)(const MATITER_T __rbegin, const MATITER_T __rend, MatIter
     }
 }
 
-void MATITER_FN(apply_k)(const MATITER_T __rbegin, const MATITER_T __rend, const MATRIX_TYPE __k, MatIterFn_k __fn_k) {
+void MATITER_FN(apply_k)(const MATITER_T __rbegin, const MATITER_T __rend, const MATRIX_TYPE __k, TYPED(MatIterFn_k) __fn_k) {
 
     MATITER_T rbegin = __rbegin;
 
@@ -635,7 +636,7 @@ void MATITER_FN(apply_k)(const MATITER_T __rbegin, const MATITER_T __rend, const
     }
 }
 
-void MATITER_FN(apply_ptr)(const MATITER_T __rbegin, const MATITER_T __rend, const MATRIX_TYPE *__ptr, MatIterFn_ptr __fn_ptr) {
+void MATITER_FN(apply_ptr)(const MATITER_T __rbegin, const MATITER_T __rend, const MATRIX_TYPE *__ptr, TYPED(MatIterFn_ptr) __fn_ptr) {
 
     MATITER_T rbegin = __rbegin;
 
@@ -645,7 +646,7 @@ void MATITER_FN(apply_ptr)(const MATITER_T __rbegin, const MATITER_T __rend, con
     }
 }
 
-void MATITER_FN(apply_iter)(const MATITER_T __abegin, const MATITER_T __aend, const MATITER_T __bbegin, MatIterFn_iter __fn_iter) {
+void MATITER_FN(apply_iter)(const MATITER_T __abegin, const MATITER_T __aend, const MATITER_T __bbegin, TYPED(MatIterFn_iter) __fn_iter) {
 
     MATITER_T abegin = __abegin;
     MATITER_T bbegin = __bbegin;
@@ -657,7 +658,7 @@ void MATITER_FN(apply_iter)(const MATITER_T __abegin, const MATITER_T __aend, co
     }
 }
 
-void MATITER_FN(apply_iter_scaled)(const MATITER_T __abegin, const MATITER_T __aend, const MATITER_T __bbegin, const MATRIX_TYPE __k, MatIterFn_iter_k __fn_iter_k) {
+void MATITER_FN(apply_iter_scaled)(const MATITER_T __abegin, const MATITER_T __aend, const MATITER_T __bbegin, const MATRIX_TYPE __k, TYPED(MatIterFn_iter_k) __fn_iter_k) {
 
     MATITER_T abegin = __abegin;
     MATITER_T bbegin = __bbegin;

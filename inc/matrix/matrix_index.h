@@ -1,5 +1,5 @@
-#pragma once
-
+#ifndef MATRIX_INDEX_H
+#define MATRIX_INDEX_H
 // This submodule contains important routines for using a vector of integers as indices.
 
 // General routines for verifying that a vector indeed represents a list of integers would be nice
@@ -34,7 +34,29 @@ Index *MATRIX_FN(where)(const MATRIX_T *__m, pred_fn __fn);
 
 // Given a Logical matrix (1.0s and 0.0s), return a column vector whose elements are the indices
 // of the nonzero elements and whose length is the number of nozero elements, or sum(__log).
-Index *Logical_get_index(const Logical *__log);
+static inline Index *Logical_get_index(const Logical *__log) {
+
+    // Should I validate the index?
+
+    // Create a vector to store the indices, whose nrows is the number of elements in __log
+    Index *ind = VECTOR_FN(new)(VECTOR_FN(mask_count)(__log));
+
+    // Now let's iterate through our logical matrix. If the logical matrix is true,
+    // add the index counter to ind
+    // MATITER_T ind_it = MATRIX_FN(begin)(ind);
+    MATITER_T it = MATRIX_FN(begin)(ind);
+    // MATITER_T end = MATRIX_FN(end)(log);
+
+
+    for (size_t i = 0; i < MATRIX_FN(size)(__log); i++) {
+        if (MAT_FN(get)(__log, i) == TYPED(TRUE)) {
+            MATITER_FN(set)(it, i);
+            it = MATITER_FN(next)(it);
+        }
+    }
+
+    return ind;
+}
 
 // Return the indices where a predicate is satisfied
 Index *MATRIX_FN(where_lt)(const MATRIX_T *__m, double __k);
@@ -125,3 +147,5 @@ int MATRIX_FN(col_min_index_from_row)(const MATRIX_T *__m, size_t __j, size_t __
 int MATRIX_FN(row_max_index_from_col)(const MATRIX_T *__m, size_t __i, size_t __j);
 
 int MATRIX_FN(row_min_index_from_col)(const MATRIX_T *__m, size_t __i, size_t __j);
+
+#endif

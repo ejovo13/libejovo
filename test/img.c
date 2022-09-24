@@ -9,10 +9,12 @@ int main() {
     const int w = 100;
     const int h = 100;
 
-    MATRIX_T *sp = reshape(linspace(0, 20, w * h), h, w);
+    MATRIX_T *sp = TYPED_FN(reshape) ( TYPED_FN(linspace) (0, 20, w * h), 
+                                   h,
+                                   w );
 
-    // printf("min: %lf\n", min(sp));
-    // printf("max: %lf\n", max(sp));
+    // printf("min: %lf\n", TYPED_FN(min)(sp));
+    // printf("max: %lf\n", TYPED_FN(max)(sp));
 
     normalize_minmax(sp);
 

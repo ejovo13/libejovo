@@ -1,6 +1,7 @@
 // Essential routines to get and set elements and columns and rows of matrices
 
-#include "ejovo_matrix.h"
+#include "ejovo_matrix_generic.h"
+// #include "ejovo_matrix.h"
 
 /**================================================================================================
  *!                                        Set/Get Individual Elements
@@ -168,7 +169,7 @@
 void MAT_FN(setrow_mult_k)(MATRIX_T *__A, MATITER_T __r, const MATITER_T __row_end, MATRIX_TYPE __k) {
 
     while(! MATITER_FN(cmp)(__r, __row_end)) { // while we haven't reached the end,
-        multscalar(__r.ptr, __k);
+        TYPED_FN(multscalar)(__r.ptr, __k);
         __r = MATITER_FN(next)(__r);
     }
 
@@ -178,7 +179,7 @@ void MAT_FN(setrow_mult_k)(MATRIX_T *__A, MATITER_T __r, const MATITER_T __row_e
 void MAT_FN(setrow_div_k)(MATRIX_T *__A, MATITER_T __r, const MATITER_T __row_end, MATRIX_TYPE __k) {
 
     while(! MATITER_FN(cmp)(__r, __row_end)) { // while we haven't reached the end,
-        divscalar(__r.ptr, __k);
+        TYPED_FN(divscalar)(__r.ptr, __k);
         __r = MATITER_FN(next)(__r);
     }
 
@@ -187,7 +188,7 @@ void MAT_FN(setrow_div_k)(MATRIX_T *__A, MATITER_T __r, const MATITER_T __row_en
 void MAT_FN(setrow_add_k)(MATRIX_T *__A, MATITER_T __r, const MATITER_T __row_end, MATRIX_TYPE __k) {
 
     while(! MATITER_FN(cmp)(__r, __row_end)) { // while we haven't reached the end,
-        addscalar(__r.ptr, __k);
+        TYPED_FN(addscalar)(__r.ptr, __k);
         __r = MATITER_FN(next)(__r);
     }
 
@@ -197,7 +198,7 @@ void MAT_FN(setrow_add_k)(MATRIX_T *__A, MATITER_T __r, const MATITER_T __row_en
 void MAT_FN(setrow_sub_k)(MATRIX_T *__A, MATITER_T __r, const MATITER_T __row_end, MATRIX_TYPE __k) {
 
     while(! MATITER_FN(cmp)(__r, __row_end)) { // while we haven't reached the end,
-        subscalar(__r.ptr, __k);
+        TYPED_FN(subscalar)(__r.ptr, __k);
         __r = MATITER_FN(next)(__r);
     }
 
@@ -247,7 +248,7 @@ int MATRIX_FN(sub_row_k)(MATRIX_T *__A, const size_t __i, const MATRIX_TYPE __k)
 void MAT_FN(setcol_mult_k)(MATRIX_T *__A, MATITER_T __c, const MATITER_T __col_end, MATRIX_TYPE __k) {
 
     while(! MATITER_FN(cmp)(__c, __col_end)) { // while we haven't reached the end,
-        multscalar(__c.ptr, __k);
+        TYPED_FN(multscalar)(__c.ptr, __k);
         MATITER_FN(next)(__c);
     }
 
@@ -257,7 +258,7 @@ void MAT_FN(setcol_mult_k)(MATRIX_T *__A, MATITER_T __c, const MATITER_T __col_e
 void MAT_FN(setcol_div_k)(MATRIX_T *__A, MATITER_T __c, const MATITER_T __col_end, MATRIX_TYPE __k) {
 
     while(! MATITER_FN(cmp)(__c, __col_end)) { // while we haven't reached the end,
-        divscalar(__c.ptr, __k);
+        TYPED_FN(divscalar)(__c.ptr, __k);
         MATITER_FN(next)(__c);
     }
 
@@ -266,7 +267,7 @@ void MAT_FN(setcol_div_k)(MATRIX_T *__A, MATITER_T __c, const MATITER_T __col_en
 void MAT_FN(setcol_add_k)(MATRIX_T *__A, MATITER_T __c, const MATITER_T __col_end, MATRIX_TYPE __k) {
 
     while(! MATITER_FN(cmp)(__c, __col_end)) { // while we haven't reached the end,
-        addscalar(__c.ptr, __k);
+        TYPED_FN(addscalar)(__c.ptr, __k);
         MATITER_FN(next)(__c);
     }
 
@@ -276,7 +277,7 @@ void MAT_FN(setcol_add_k)(MATRIX_T *__A, MATITER_T __c, const MATITER_T __col_en
 void MAT_FN(setcol_sub_k)(MATRIX_T *__A, MATITER_T __c, const MATITER_T __col_end, MATRIX_TYPE __k) {
 
     while(! MATITER_FN(cmp)(__c, __col_end)) { // while we haven't reached the end,
-        subscalar(__c.ptr, __k);
+        TYPED_FN(subscalar)(__c.ptr, __k);
         MATITER_FN(next)(__c);
     }
 
@@ -581,7 +582,7 @@ void MATRIX_FN(fill)(MATRIX_T * __A, const MATRIX_TYPE value) {
 /**
  * Set all of the elements who fulfill a mask equal to the value
  */
-void MATRIX_FN(fill_mask)(MATRIX_T *__A, Mask __mask, const MATRIX_TYPE __value) {
+void MATRIX_FN(fill_mask)(MATRIX_T *__A, TYPED(Mask) __mask, const MATRIX_TYPE __value) {
     MATRIX_FN(mask_k)(__A, __mask, setelement, __value);
 }
 

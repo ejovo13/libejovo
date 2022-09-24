@@ -1,4 +1,5 @@
-#include "ejovo_matrix.h"
+#include "ejovo_matrix_generic.h"
+// #include "ejovo_matrix.h"
 
 /**================================================================================================
  *!                                        Unary MATRIX_T Operators
@@ -284,7 +285,7 @@ MATRIX_T *MATRIX_FN(subtract)(const MATRIX_T *__A, const MATRIX_T *__B) {
  *================================================================================================**/
 
 // Calculate the norm of a column using MatIter's
-MATRIX_TYPE colnorm(const MATITER_T __begin, const MATITER_T __end) {
+MATRIX_TYPE TYPED_FN(colnorm)(const MATITER_T __begin, const MATITER_T __end) {
 
     MATITER_T c = __begin;
     MATRIX_TYPE sum = 0;
@@ -308,7 +309,7 @@ MATRIX_TYPE MATRIX_FN(col_norm)(const MATRIX_T *__A, size_t __j) {
     if (__j < __A->ncols) {
         begin = MATRIX_FN(col_begin)(__A, __j);
         end = MATRIX_FN(col_end)(__A, __j);
-        out = colnorm(begin, end);
+        out = TYPED_FN(colnorm)(begin, end);
         return out;
     } else {
         perror("Col requested exceeds bounds");
@@ -319,7 +320,7 @@ MATRIX_TYPE MATRIX_FN(col_norm)(const MATRIX_T *__A, size_t __j) {
 void MAT_FN(normcol)(const MATITER_T __begin, const MATITER_T __end) {
 
     MATITER_T c = __begin;
-    MATRIX_TYPE norm = colnorm(__begin, __end);
+    MATRIX_TYPE norm = TYPED_FN(colnorm)(__begin, __end);
 
     // now that we have calculated the norm, divide the columns values by the norm
 
@@ -366,7 +367,7 @@ void MATRIX_FN(normalize_cols)(MATRIX_T *__A) {
  * single column vector and taking the euclidean norm
  */
 MATRIX_TYPE MATRIX_FN(frobenius)(const MATRIX_T *__A) {
-    return vecnorm(__A);
+    return TYPED_FN(vecnorm)(__A);
 }
 
 /**================================================================================================
@@ -410,11 +411,11 @@ MATRIX_T *MAT_FN(lu_nopivot)(MATRIX_T *__A) {
 
 }
 
-LU MATRIX_FN(lu)(const MATRIX_T *__A) {
+TYPED(LU) MATRIX_FN(lu)(const MATRIX_T *__A) {
 
     MATRIX_T *U = MATRIX_FN(clone)(__A);
     MATRIX_T *L = MAT_FN(lu_nopivot)(U);
-    LU lu = {L, U};
+    TYPED(LU) lu = {L, U};
     return lu;
 
 }
@@ -436,7 +437,7 @@ MATRIX_T *MATRIX_FN(solve_lu)(const MATRIX_T *__A, const Vector *__b) {
     // MATRIX_FN(print)(__A);
     // MATRIX_FN(print)(__b);
 
-    LU lu = MATRIX_FN(lu)(__A);
+    TYPED(LU) lu = MATRIX_FN(lu)(__A);
 
     // printf("L:\t");
     // MATRIX_FN(print)(lu.L);
@@ -510,17 +511,14 @@ MATRIX_T *MATRIX_FN(solve_lu)(const MATRIX_T *__A, const Vector *__b) {
 
 }
 
-
-const double EPS = 1E-10;
-
 // Return a matrix that contains the solutions tot Ax = B
 // this matrix will be null if there are no solutions/infinitely many solutions
-MATRIX_T *gausselim(const MATRIX_T *__A, const MATRIX_T *__B) {
+MATRIX_T *TYPED_FN(gausselim)(const MATRIX_T *__A, const MATRIX_T *__B) {
 
     if (!MATRIX_FN(is_square)(__A)) return NULL;
 
     MATRIX_T *aug = MATRIX_FN(ccat)(__A, __B);      // Create augmented matrix
-    Index *ind = range(0, __A->nrows - 1, 1); // keep track of indices to enable pivoting
+    Index *ind = TYPED_FN(range)(0, __A->nrows - 1, 1); // keep track of indices to enable pivoting
 
     /**============================================
      *!               Row Reductions
@@ -538,14 +536,14 @@ MATRIX_T *gausselim(const MATRIX_T *__A, const MATRIX_T *__B) {
             return NULL;
         }
 
-        Row_switch(aug, ind, pivot_index, j);
+        TYPED_FN(Row_switch)(aug, ind, pivot_index, j);
 
         // Perform elementary row operations.
         for (size_t i = j + 1; i < __A->nrows; i++) {
 
             int row_index = ind->data[i];
             double scalar = -MATRIX_FN(at)(aug, row_index, j) / pivot_value;
-            Row_addition_k(aug, ind, i, j, scalar);
+            TYPED_FN(Row_addition_k)(aug, ind, i, j, scalar);
 
         }
     }
@@ -586,7 +584,7 @@ MATRIX_T *MATRIX_FN(inverse)(const MATRIX_T *__A) {
         return NULL;
     }
     MATRIX_T *Id = MATRIX_FN(id)(__A->nrows, __A->ncols);
-    MATRIX_T *inv = gausselim(__A, Id);
+    MATRIX_T *inv = TYPED_FN(gausselim)(__A, Id);
 
     MATRIX_FN(reset)(&Id);
     return inv;
@@ -611,7 +609,7 @@ MATRIX_T *MATRIX_FN(inverse)(const MATRIX_T *__A) {
  * @returns a newly allocated vector
  *
  */
-Vector *jacobi_iteration(const MATRIX_T *__A, const Vector *__b, const Vector *__x0, MATRIX_TYPE __crit) {
+Vector *TYPED_FN(jacobi_iteration)(const MATRIX_T *__A, const Vector *__b, const Vector *__x0, MATRIX_TYPE __crit) {
 
     // let's start out by implementing the algorithm for x_1
     // I'll need a temporary x variable
@@ -701,7 +699,7 @@ Vector *jacobi_iteration(const MATRIX_T *__A, const Vector *__b, const Vector *_
 
 // These elementary operations will be considered low level and don't consider checking bounds...
 // void MATRIX_FN(switch_rows)(OrderedMATRIX_T m, size_t __r1, size_t __r2) {
-void Row_switch(const MATRIX_T *__m, Index *__ind, size_t __r1, size_t __r2) {
+void TYPED_FN(Row_switch)(const MATRIX_T *__m, Index *__ind, size_t __r1, size_t __r2) {
 
     double tmp = __ind->data[__r1];
 
@@ -710,14 +708,14 @@ void Row_switch(const MATRIX_T *__m, Index *__ind, size_t __r1, size_t __r2) {
 
 }
 
-void Row_multiply(MATRIX_T *__m, Index *__ind, size_t __r, double __k) {
+void TYPED_FN(Row_multiply)(MATRIX_T *__m, Index *__ind, size_t __r, double __k) {
 
     // multiply the row pointed to by __ind->data[__r] with __k
     MATRIX_FN(mult_row_k)(__m, __ind->data[__r], __k);
 }
 
 // Modify the contents of __r1 by adding __r2 in place.
-void Row_addition(MATRIX_T *__m, Index *__ind, size_t __r1, size_t __r2) {
+void TYPED_FN(Row_addition)(MATRIX_T *__m, Index *__ind, size_t __r1, size_t __r2) {
 
     MATITER_T r1 = MATRIX_FN(row_begin)(__m, __ind->data[__r1]);
     const MATITER_T end = MATRIX_FN(row_end)(__m, __ind->data[__r1]);
@@ -727,7 +725,7 @@ void Row_addition(MATRIX_T *__m, Index *__ind, size_t __r1, size_t __r2) {
 }
 
 // r1 = r1 + k * r2
-void Row_addition_k(MATRIX_T *__m, Index *__ind, size_t __r1, size_t __r2, double __k) {
+void TYPED_FN(Row_addition_k)(MATRIX_T *__m, Index *__ind, size_t __r1, size_t __r2, double __k) {
 
     MATITER_T r1 = MATRIX_FN(row_begin)(__m, __ind->data[__r1]);
     const MATITER_T end = MATRIX_FN(row_end)(__m, __ind->data[__r1]);

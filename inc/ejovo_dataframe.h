@@ -2,7 +2,7 @@
 
 #include <stdarg.h>
 
-#include "ejovo_matrix.h"
+#include "ejovo_matrix_generic.h"
 #include "ejovo_string.h"
 
 // Routines dealing with the manipulating of multiple columns of data

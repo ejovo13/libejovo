@@ -1,8 +1,13 @@
-#pragma once
+#ifndef MATRIX_STATS_H
+#define MATRIX_STATS_H
 
 #include "matrix.h"
 
 // Basic statistic routines that will operate on either vectors or a pair of MatIters
+
+static inline MATRIX_TYPE TYPED_FN(log)(MATRIX_TYPE x) {
+    return log(x);
+}
 
 MATRIX_TYPE MATITER_FN(mean)(const MATITER_T __begin, const MATITER_T __end);
 
@@ -56,42 +61,46 @@ typedef MATRIX_TYPE (* mat_iter_fn) (const MATITER_T, const MATITER_T);
 
 MATRIX_TYPE MATRIX_FN(iterate)(const MATRIX_T *__m, mat_iter_fn fn);
 
-MATRIX_TYPE mean(const MATRIX_T *__m);
+/**========================================================================
+ *!                           Typed functions
+ *========================================================================**/
 
-MATRIX_TYPE sum(const MATRIX_T *__m);
+MATRIX_TYPE TYPED_FN(mean)(const MATRIX_T *__m);
 
-MATRIX_TYPE std(const MATRIX_T *__m);
+MATRIX_TYPE TYPED_FN(sum)(const MATRIX_T *__m);
 
-MATRIX_TYPE var(const MATRIX_T *__m);
+MATRIX_TYPE TYPED_FN(std)(const MATRIX_T *__m);
 
-MATRIX_TYPE min(const MATRIX_T *__m);
+MATRIX_TYPE TYPED_FN(var)(const MATRIX_T *__m);
 
-MATRIX_TYPE max(const MATRIX_T *__m);
+MATRIX_TYPE TYPED_FN(min)(const MATRIX_T *__m);
 
-MATRIX_TYPE rms(const MATRIX_T *__m);
+MATRIX_TYPE TYPED_FN(max)(const MATRIX_T *__m);
 
-MATRIX_TYPE mean_squared(const MATRIX_T *__m);
+MATRIX_TYPE TYPED_FN(rms)(const MATRIX_T *__m);
 
-MATRIX_TYPE cov(const MATRIX_T *__x, const MATRIX_T *__y);
+MATRIX_TYPE TYPED_FN(mean_squared)(const MATRIX_T *__m);
 
-MATRIX_TYPE prod(const MATRIX_T *__m);
+MATRIX_TYPE TYPED_FN(cov)(const MATRIX_T *__x, const MATRIX_T *__y);
 
-MATRIX_TYPE cor(const MATRIX_T *__x, const MATRIX_T *__y);
+MATRIX_TYPE TYPED_FN(prod)(const MATRIX_T *__m);
+
+MATRIX_TYPE TYPED_FN(cor)(const MATRIX_T *__x, const MATRIX_T *__y);
 
 // central moment
-MATRIX_TYPE cmoment(const Vector *__v, int __k);
+MATRIX_TYPE TYPED_FN(cmoment)(const Vector *__v, int __k);
 
 // raw moment
-MATRIX_TYPE rmoment(const Vector *__v, int __k);
+MATRIX_TYPE TYPED_FN(rmoment)(const Vector *__v, int __k);
 
-Vector *linear_regression(const Vector *__x, const Vector *__y);
+Vector *TYPED_FN(linear_regression)(const Vector *__x, const Vector *__y);
 
-Vector *loglog_regression(const Vector *__x, const Vector *__y);
+Vector *TYPED_FN(loglog_regression)(const Vector *__x, const Vector *__y);
 
-Vector *least_squares(const Vector *__x, const Vector *__y, int degree);
+Vector *TYPED_FN(least_squares)(const Vector *__x, const Vector *__y, int degree);
 
+MATRIX_T *TYPED_FN(runif)(int n, double a, double b);
 
+MATRIX_T *TYPED_FN(runif_gen)(int n, double a, double b, RNG_FN rng_fn);
 
-MATRIX_T *runif(int n, double a, double b);
-
-MATRIX_T *runif_gen(int n, double a, double b, RNG_FN rng_fn);
+#endif

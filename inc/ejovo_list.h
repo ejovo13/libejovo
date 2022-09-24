@@ -8,7 +8,7 @@
 #include <stdbool.h>
 #include <math.h>
 #include <stdarg.h>
-#include "ejovo_matrix.h"
+#include "ejovo_matrix_generic.h"
 
 // header files to declare functions declared in TP6
 typedef struct node_t {

@@ -1,4 +1,5 @@
-#include "ejovo_matrix.h"
+#include "ejovo_matrix_generic.h"
+// #include "ejovo_matrix.h"
 
 // I want a function that will return a stochastic matrix.
 
@@ -37,9 +38,9 @@ MATRIX_T *MATRIX_FN(rexp)(size_t __m, size_t __n, double __rate) {
 }
 
 // Low level routine that will modify a matrix in place
-MATRIX_T *as_stochastic(MATRIX_T *__m) {
+MATRIX_T *TYPED_FN(as_stochastic)(MATRIX_T *__m) {
 
-    apply(__m, fabs);
+    TYPED_FN(apply)(__m, fabs);
 
     // No I want to normalize the rows based on their sums!!
     double sum = 0;
@@ -60,7 +61,7 @@ MATRIX_T *as_stochastic(MATRIX_T *__m) {
     return __m;
 }
 
-MATRIX_T *as_row_stochastic(MATRIX_T *__m) {
+MATRIX_T *TYPED_FN(as_row_stochastic)(MATRIX_T *__m) {
 
     // I am not going to apply the absolute value function. Let that be applied in a higher level function.
     // This function will simply verify that the rows add up to one.
@@ -83,7 +84,7 @@ MATRIX_T *as_row_stochastic(MATRIX_T *__m) {
 
 }
 
-MATRIX_T *as_col_stochastic(MATRIX_T *__m) {
+MATRIX_T *TYPED_FN(as_col_stochastic)(MATRIX_T *__m) {
 
     double sum = 0;
 
@@ -106,7 +107,7 @@ MATRIX_T *as_col_stochastic(MATRIX_T *__m) {
 #define MAX_STOCHASTIC_ITERATIONS 1E4
 #define STOCHASTIC_EPSILON 1E-10
 
-MATRIX_T *as_doubly_stochastic(MATRIX_T *__m) {
+MATRIX_T *TYPED_FN(as_doubly_stochastic)(MATRIX_T *__m) {
 
     // I want every row and column to be equal to 1 within a certain margin.
 
@@ -122,11 +123,11 @@ MATRIX_T *as_doubly_stochastic(MATRIX_T *__m) {
 
     do {
 
-        if (row_err > STOCHASTIC_EPSILON) as_row_stochastic(__m);
-        if (col_err > STOCHASTIC_EPSILON) as_col_stochastic(__m);
+        if (row_err > STOCHASTIC_EPSILON) TYPED_FN(as_row_stochastic)(__m);
+        if (col_err > STOCHASTIC_EPSILON) TYPED_FN(as_col_stochastic)(__m);
 
-        row_sums = compute_row_sums(__m);
-        col_sums = compute_col_sums(__m);
+        row_sums = TYPED_FN(compute_row_sums)(__m);
+        col_sums = TYPED_FN(compute_col_sums)(__m);
 
         row_err = VECTOR_FN(distance)(row_sums, row_ones);
         col_err = VECTOR_FN(distance)(col_sums, col_ones);
@@ -155,7 +156,7 @@ MATRIX_T *as_doubly_stochastic(MATRIX_T *__m) {
 
 // Low level routine to modify a matrix in place and create a matrix that is doubly stochastic
 // (whose rows and columns sum to 1)
-MATRIX_T *as_doubly_stochastic_DEPRECATED(MATRIX_T *__m) {
+MATRIX_T *TYPED_FN(as_doubly_stochastic_DEPRECATED)(MATRIX_T *__m) {
 
     // If the matrix is not square, return NULL and don't modify __m
     if (!MATRIX_FN(is_square)(__m)) return NULL;
@@ -163,7 +164,7 @@ MATRIX_T *as_doubly_stochastic_DEPRECATED(MATRIX_T *__m) {
     // I will use an algorithm that first normalizes col 1 so that the sum is one, and
     // then row 1 so that the sum of the elements __m(1, 2:end) sum up to 1 - __m(1, 1)
     // I will then repeat this iteratively, moving along the matrix in diagonal blocks.
-    apply(__m, fabs);
+    TYPED_FN(apply)(__m, fabs);
 
 
     // iterate along the diagonals.
@@ -227,7 +228,7 @@ MATRIX_T *MATRIX_FN(as_stochastic)(const MATRIX_T *__m) {
 
     // first thing I should do is apply the absolute value function to the matrix
 
-    MATRIX_T *m_pos = map(__m, fabs);
+    MATRIX_T *m_pos = TYPED_FN(map)(__m, fabs);
 
     // No I want to normalize the rows based on their sums!!
     double sum = 0;
@@ -249,27 +250,27 @@ MATRIX_T *MATRIX_FN(as_stochastic)(const MATRIX_T *__m) {
 }
 
 // Create a new Stochastic matrix whose elements come from a uniform distribution
-MATRIX_T *Stochastic_runif(size_t __n, double __a, double __b) {
+MATRIX_T *TYPED_FN(Stochastic_runif)(size_t __n, double __a, double __b) {
 
     // first thing I need to do is create a new uniformly generated matrix, althought the
     // actual scale shouldnt really matter...
     MATRIX_T *stoch = MATRIX_FN(runif)(__n, __n, __a, __b);
 
-    return as_stochastic(stoch);
+    return TYPED_FN(as_stochastic)(stoch);
 }
 
-MATRIX_T *Stochastic_rnorm(size_t __n, double __mean, double __std) {
+MATRIX_T *TYPED_FN(Stochastic_rnorm)(size_t __n, double __mean, double __std) {
 
     MATRIX_T *stoch = MATRIX_FN(rnorm)(__n, __n, __mean, __std);
 
-    return as_stochastic(stoch);
+    return TYPED_FN(as_stochastic)(stoch);
 }
 
-MATRIX_T *Stochastic_rexp(size_t __n, double __rate) {
+MATRIX_T *TYPED_FN(Stochastic_rexp)(size_t __n, double __rate) {
 
     MATRIX_T *stoch = MATRIX_FN(rexp)(__n, __n, __rate);
 
-    return as_stochastic(stoch);
+    return TYPED_FN(as_stochastic)(stoch);
 }
 
 // Return a DSICRETE probability vector
@@ -280,7 +281,7 @@ Vector *VECTOR_FN(prob_unif)(size_t __n) {
 /**========================================================================
  *!                           Utility functions
  *========================================================================**/
-Vector *compute_row_sums(const MATRIX_T *__m) {
+Vector *TYPED_FN(compute_row_sums)(const MATRIX_T *__m) {
 
     Vector *out = VECTOR_FN(new)(__m->ncols);
 
@@ -292,9 +293,9 @@ Vector *compute_row_sums(const MATRIX_T *__m) {
     return out;
 }
 
-Vector *compute_col_sums(const MATRIX_T *__m) {
+Vector *TYPED_FN(compute_col_sums)(const MATRIX_T *__m) {
 
-    Vector *out = asrow(VECTOR_FN(new)(__m->nrows));
+    Vector *out = TYPED_FN(asrow)(VECTOR_FN(new)(__m->nrows));
 
     for (size_t i = 0; i < __m->nrows; i++) {
         // sum each of the cols, storing

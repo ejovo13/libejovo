@@ -1,4 +1,5 @@
-#pragma once
+#ifndef MATRIX_ITER_H
+#define MATRIX_ITER_H
 
 // functions that deal with the creation of iterator objects
 
@@ -33,7 +34,7 @@ void MATITER_FN(print)(const MATITER_T __begin, const MATITER_T __end);
  *!                                        RowCol and ColIter
  *================================================================================================**/
 
-MATRIX_TYPE Iter_dot(const MATITER_T __r, const MATITER_T __rend, const MATITER_T __c);
+MATRIX_TYPE TYPED_FN(Iter_dot)(const MATITER_T __r, const MATITER_T __rend, const MATITER_T __c);
 
 /**=======================================================================================================================
  *!                                           MATRIX_T Interface to Iter functions
@@ -217,15 +218,15 @@ void MATITER_FN(row_add_row)(const MATITER_T __abegin, const MATITER_T __aend, c
 // Appy functions are a way to iterate a ColIter until we reach the "end" point
 
 
-void MATITER_FN(apply)(const MATITER_T __rbegin, const MATITER_T __rend, MatIterFn __fn);
+void MATITER_FN(apply)(const MATITER_T __rbegin, const MATITER_T __rend, TYPED(MatIterFn) __fn);
 
-void MATITER_FN(apply_k)(const MATITER_T __rbegin, const MATITER_T __rend, const MATRIX_TYPE __k, MatIterFn_k __fn_k);
+void MATITER_FN(apply_k)(const MATITER_T __rbegin, const MATITER_T __rend, const MATRIX_TYPE __k, TYPED(MatIterFn_k) __fn_k);
 
-void MATITER_FN(apply_ptr)(const MATITER_T __rbegin, const MATITER_T __rend, const MATRIX_TYPE *__ptr, MatIterFn_ptr __fn_ptr);
+void MATITER_FN(apply_ptr)(const MATITER_T __rbegin, const MATITER_T __rend, const MATRIX_TYPE *__ptr, TYPED(MatIterFn_ptr) __fn_ptr);
 
-void MATITER_FN(apply_iter)(const MATITER_T __abegin, const MATITER_T __aend, const MATITER_T __bbegin, MatIterFn_iter __fn_iter);
+void MATITER_FN(apply_iter)(const MATITER_T __abegin, const MATITER_T __aend, const MATITER_T __bbegin, TYPED(MatIterFn_iter) __fn_iter);
 
-void MATITER_FN(apply_iter_scaled)(const MATITER_T __abegin, const MATITER_T __aend, const MATITER_T __bbegin, const MATRIX_TYPE __k, MatIterFn_iter_k __fn_iter_k);
+void MATITER_FN(apply_iter_scaled)(const MATITER_T __abegin, const MATITER_T __aend, const MATITER_T __bbegin, const MATRIX_TYPE __k, TYPED(MatIterFn_iter_k) __fn_iter_k);
 
 /**================================================================================================
  *!                                        Mat manipulations using apply functions
@@ -293,3 +294,5 @@ MATITER_T MATRIX_FN(diag_end)(const MATRIX_T *__m, const int __d);
 MATITER_T MATRIX_FN(diag_begin)(const MATRIX_T *__m, const int __d);
 
 Vector *MATITER_FN(difference)(MATITER_T __abegin, const MATITER_T __aend, MATITER_T __bbegin);
+
+#endif

@@ -8,7 +8,7 @@
  *                   functions
  *========================================================================**/
 
-#include "ejovo_matrix.h"
+#include "ejovo_matrix_generic.h"
 
 // Function declaration for VECTOR_FN(map) function
 double x_sq(double x);
@@ -46,7 +46,7 @@ int main() {
      *! Alternatively, we can compute the dot product as a matrix multiplication
      *========================================================================**/
 
-    MATRIX_T *dp_m = MATRIX_FN(multiply)(asrow(sinx), cosx); // MATRIX_FN(multiply) returns a matrix
+    MATRIX_T *dp_m = MATRIX_FN(multiply)(TYPED_FN(asrow)(sinx), cosx); // MATRIX_FN(multiply) returns a matrix
 
     // In this case, dp_m only has one element that we access with MATRIX_FN(first)
     printf("MATRIX_T multiplication dp: %lf\n", MATRIX_FN(first)(dp_m));
@@ -65,8 +65,8 @@ int main() {
      *!                   Let's showcase some projections
      *========================================================================**/
 
-    Vector *u = vector(3, 10.0, -1.3, 14.6);
-    Vector *v = vector(3, 1.0, 2.0, 3.0);
+    Vector *u = TYPED_FN(vector)(3, 10.0, -1.3, 14.6);
+    Vector *v = TYPED_FN(vector)(3, 1.0, 2.0, 3.0);
 
     MATRIX_T *proj_v = VECTOR_FN(orthogonal_projection)(v);
 

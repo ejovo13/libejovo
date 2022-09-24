@@ -1,4 +1,5 @@
-#pragma once
+#ifndef MATRIX_LOGICAL_H
+#define MATRIX_LOGICAL_H
 
 // This module contains essential routines to deal with a "logical" MATRIX_T data type that is represented
 // by A matrix that is UNIQUELY ones and zeros
@@ -14,24 +15,24 @@
 #include "matrix_state.h"
 #include "matrix_functional.h"
 
-extern double TRUE;
-extern double FALSE;
+extern MATRIX_TYPE TYPED(TRUE);
+extern MATRIX_TYPE TYPED(FALSE);
 
 typedef MATRIX_T Logical;
-typedef double (* pred_fn) (double);
+typedef MATRIX_TYPE (* pred_fn) (MATRIX_TYPE);
 
 // A Logical MATRIX_T shall be typedef'd as a "Mask" to express intent
 // This is used as a predicate function. Can be used to make a "true"
 // matrix that is the same size as a passed matrix with
 // MATRIX_FN(as_logical)(m, true_fn); as MATRIX_FN(as_logical) will accept a
 // predicate as an argument
-double true_fn(double d);
+MATRIX_TYPE TYPED_FN(true_fn)(MATRIX_TYPE d);
 
-double NOT(double d);
+MATRIX_TYPE TYPED_FN(NOT)(MATRIX_TYPE d);
 
-double AND(double a, double b);
+MATRIX_TYPE TYPED_FN(AND)(MATRIX_TYPE a, MATRIX_TYPE b);
 
-double OR(double a, double b);
+MATRIX_TYPE TYPED_FN(OR)(MATRIX_TYPE a, MATRIX_TYPE b);
 
 // First routine that I should implement is having the notion of "if the vector is logical"
 bool MATRIX_FN(is_logical)(const MATRIX_T *__log);
@@ -53,16 +54,16 @@ MATRIX_T *MATRIX_FN(as_logical)(const MATRIX_T *__m, pred_fn __fn);
 
 MATRIX_T *MATRIX_FN(as_true)(const MATRIX_T *__m);
 
-Logical *MATRIX_FN(lt)(const MATRIX_T *__m, double __k);
+Logical *MATRIX_FN(lt)(const MATRIX_T *__m, MATRIX_TYPE __k);
 
 // Return a Logical mask of all the values in __m that are <= __k
-Logical *MATRIX_FN(lteq)(const MATRIX_T *__m, double __k);
+Logical *MATRIX_FN(lteq)(const MATRIX_T *__m, MATRIX_TYPE __k);
 
 // Return a Logical mask of all the values in __m that are > lt __k
-Logical *MATRIX_FN(gt)(const MATRIX_T *__m, double __k);
+Logical *MATRIX_FN(gt)(const MATRIX_T *__m, MATRIX_TYPE __k);
 
 // Return a Logical mask of all the values in __m that are >= __k
-Logical *MATRIX_FN(gteq)(const MATRIX_T *__m, double __k);
+Logical *MATRIX_FN(gteq)(const MATRIX_T *__m, MATRIX_TYPE __k);
 
 // Wherever the mask is true, set __m to the __val
 void MAT_FN(setmask)(MATRIX_T *__m, const MATRIX_T *__mask, MATRIX_TYPE __val);
@@ -73,10 +74,12 @@ void MAT_FN(setpred)(MATRIX_T *__m, pred_fn __predicate, MATRIX_TYPE __val);
 Vector *MATRIX_FN(filter_mask)(const MATRIX_T *__m, const MATRIX_T *__mask);
 
 // return true if count == size of the mask
-bool Logical_all(const MATRIX_T *__mask);
+bool TYPED_FN(Logical_all)(const MATRIX_T *__mask);
 
 // return true is any of the logical components are true
-bool Logical_any(const MATRIX_T *__mask);
+bool TYPED_FN(Logical_any)(const MATRIX_T *__mask);
 
 // Return !__mask
-Logical *Logical_not(const MATRIX_T *__mask);
+Logical *TYPED_FN(Logical_not)(const MATRIX_T *__mask);
+
+#endif

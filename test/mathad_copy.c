@@ -1,5 +1,5 @@
 // need to make sure that the various ways to calculate the Hadamard product lead to the same value
-#include "ejovo_matrix.h"
+#include "ejovo_matrix_generic.h"
 #include <stdio.h>
 #include <stdbool.h>
 #include <assert.h>

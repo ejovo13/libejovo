@@ -1,5 +1,5 @@
-#pragma once
-
+#ifndef MATRIX_STATE_H
+#define MATRIX_STATE_H
 // Functions that are used to inquire about the state of a matrix
 // For example, is_square, is_symmetric, is_transpose etc etc
 
@@ -35,3 +35,5 @@ bool MATRIX_FN(is_vec)(const MATRIX_T *__A);
 
 // Return the limiting dimension of __A.
 size_t MATRIX_FN(rect_limit)(const MATRIX_T *__A);
+
+#endif

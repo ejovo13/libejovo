@@ -1,4 +1,4 @@
-#include "ejovo_matrix.h"
+#include "ejovo_matrix_generic.h"
 
 int main() {
 
@@ -7,10 +7,10 @@ int main() {
     // MATRIX_T *stoch = MATRIX_FN(as_stochastic)(MATRIX_FN(runif)(10, 10, 0, 5));
     // MATRIX_T *stoch = MATRIX_FN(as_stochastic)(MATRIX_FN(runif)(2, 2, 0, 5));
 
-    // MATRIX_T *stoch = Stochastic_rexp(5, 3);
-    MATRIX_T *stoch_norm = Stochastic_rnorm(5, 0, 1);
-    MATRIX_T *stoch_exp = Stochastic_rexp(5, 3);
-    MATRIX_T *stoch_unif = Stochastic_runif(5, 0, 10);
+    // MATRIX_T *stoch = TYPED_FN(Stochastic_rexp)(5, 3);
+    MATRIX_T *stoch_norm = TYPED_FN(Stochastic_rnorm)(5, 0, 1);
+    MATRIX_T *stoch_exp = TYPED_FN(Stochastic_rexp)(5, 3);
+    MATRIX_T *stoch_unif = TYPED_FN(Stochastic_runif)(5, 0, 10);
 
     // MATRIX_FN(print)(stoch);
 
@@ -22,7 +22,7 @@ int main() {
     // printf("P_ij ~ exp(rate = 3)\n");
     // MATRIX_FN(print)(stoch_exp);
 
-    Vector *dist = asrow(VECTOR_FN(prob_unif)(4));
+    Vector *dist = TYPED_FN(asrow)(VECTOR_FN(prob_unif)(4));
 
     MATRIX_FN(print)(dist);
 
@@ -72,15 +72,15 @@ int main() {
 
     MATRIX_FN(print)(m);
 
-    // MATRIX_FN(print)(MATRIX_FN(anon)(as_stochastic(MATRIX_FN(clone)(m))));
+    // MATRIX_FN(print)(MATRIX_FN(anon)(TYPED_FN(as_stochastic)(MATRIX_FN(clone)(m))));
 
     printf("------- Double Stochastic Tests ---------\n");
 
     MATRIX_FN(print)(m);
 
-    MATRIX_T *m_pos = map(m, fabs);
+    MATRIX_T *m_pos = TYPED_FN(map)(m, fabs);
 
-    MATRIX_FN(print)(as_doubly_stochastic(m_pos));
+    MATRIX_FN(print)(TYPED_FN(as_doubly_stochastic)(m_pos));
     // v = MATRIX_FN(value)(3, 1, 1.0);
     // Vector *u = MATRIX_FN(value)(3, 1, 1.0);
 
@@ -104,7 +104,7 @@ int main() {
 
     MATRIX_FN(print)(ehren_stable);
 
-    MATRIX_FN(print)(gausselim(ehren_stable, NULL));
+    MATRIX_FN(print)(TYPED_FN(gausselim)(ehren_stable, NULL));
 
     MATRIX_T *rainy = MATRIX_FN(from)((double []) {0.6, .4, .2, .8}, 2, 2);
     MATRIX_FN(print)(MATRIX_FN(pow)(rainy, 20));

@@ -23,7 +23,7 @@ void t_index() {
 
     MATRIX_T *m = VECTOR_FN(rnorm)(100, 0, 1);
 
-    MATRIX_T *ind = range(0, 10, 3);
+    MATRIX_T *ind = range_d(0, 10, 3);
 
     // VECTOR_FN(print_as_row)(m);
     MATRIX_FN(print)(ind);
@@ -33,7 +33,7 @@ void t_index() {
     // // Get every other element
     // MATRIX_FN(reset)(&ind);
 
-    // ind = range(0, 99, 5);
+    // ind = range_double(0, 99, 5);
     // VECTOR_FN(print_as_row)(ind);
 
     // MATRIX_FN(print)(MATRIX_FN(index)(m, ind));
@@ -63,10 +63,10 @@ void t_set_index() {
     m->nrows = 1;
 
 
-    Vector *r = range(0, 99, 2);
+    Vector *r = range_d(0, 99, 2);
 
     // Pay careful attention, these values HAVE TO BE DOUBLES otherwise they will end up mangled by the variadic function
-    Vector *a = anon(3, 1.0, 2.0, 3.0);
+    Vector *a = MAT_FN(anon)(3, 1.0, 2.0, 3.0);
     MATRIX_FN(print)(a);
 
     MAT_FN(setind)(m, r, a);

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef MATRIX_H
+#define MATRIX_H
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -7,6 +8,7 @@
 #include "ejovo_rand.h"
 #include <string.h>
 #include <stdarg.h>
+#include "generic_macros.h"
 // #include "ejovo_comp.h"
 
 /** @file
@@ -27,41 +29,42 @@
 #define MATRIX_TYPE double 
 #endif
 
-#ifndef __BIZARRE_MACROS__
-#define __BIZARRE_MACROS__
-
-    // #define STRINGIFY(X) STRINGIFY2(X)
-    // #define STRINGIFY2(X) #X
-    // Used to expand the definition of MATRIX_TYPe 
-    // when calling MATRIX
-    #define CAT(X, Y) CAT2(X, Y)
-    #define CAT2(X, Y) X##Y
-
-    #define CAT3(X, Y, Z) CAT32(X, Y, Z)
-    #define CAT32(X, Y, Z) X ## Y ## Z
-
+#ifndef TYPE_SUFFIX
+#define TYPE_SUFFIX _d
 #endif
 
-#define MATRIX_T CAT(Matrix_, MATRIX_TYPE)
-#define VECTOR_T CAT(Vector_, MATRIX_TYPE)
-
-#define MAT_T CAT(mat, MATRIX_TYPE)
-#define MAT_FN(fn_name) CAT2(MAT_T, fn_name)
-
-#define MATRIX(TYPE) CAT(Matrix_, TYPE) 
-#define MATRIX_FN(fn_name) CAT3(MATRIX_T, _, fn_name)
-#define VECTOR_FN(fn_name) CAT3(VECTOR_T, _, fn_name)
-#define MATITER_NEW CAT3(MATITER_T, _, new)
-#define MATITER_T CAT(MatIter_, MATRIX_TYPE)
-#define MATITER_FN(fn_name) CAT3(MATITER_T, _, fn_name)
+/**========================================================================
+ *!                           GENERIC FUNCTIONS
+ *========================================================================**/
+// #define RESHAPE CAT3(reshape, _, MATRIX_TYPE)
 
 #define MAX_STEP_SIZE 100000
 
 const extern double PI;
 const extern double TWO_PI;
 const extern double HALF_PI;
+const extern double EPS;
 
 // MATRIX_FN(get)
+// struct Matrix_complex;
+// struct Matrix_bool;
+
+// #define DECLARE_MATRIX(TYPE) typedef struct Matrix_ ## TYPE {\
+//     TYPE *data;\
+//     size_t nrows;\
+//     size_t ncols;\
+// } Matrix_ ## TYPE\
+
+// #ifdef DECLARE_NUMERIC_TYPES
+
+//     DECLARE_MATRIX(int);
+//     DECLARE_MATRIX(float);
+//     DECLARE_MATRIX(double);
+
+// #endif
+
+// DEFINE_MATRIX()
+
 
 /**
  * @brief MATRIX_T structure that simulates a 2d matrix accessed by A(row, col).
@@ -78,7 +81,9 @@ typedef struct MATRIX_T {
     size_t ncols;
 } MATRIX_T;
 
-extern MATRIX_T *g_ANON;
+
+
+extern MATRIX_T *TYPED(g_ANON);
 
 // Iterate through a column, stopping when we've reached the final element
 /**
@@ -102,13 +107,13 @@ extern MATRIX_T *g_ANON;
 typedef struct mat_col_iterator_t {
     MATRIX_TYPE *ptr;
     size_t ncols; //! This needs to be renamed to "diff" or something like that
-} ColIter;
+} TYPED(ColIter);
 
 // used to iterate through a row, although I suspect this will be used less than a column iterator
 typedef struct mat_row_iterator_t {
     MATRIX_TYPE *ptr;
     size_t ptr_diff; // pointer difference between elements in the same row
-} RowIter;
+} TYPED(RowIter);
 
 typedef struct mat_iterator_t {
     MATRIX_TYPE *ptr;
@@ -124,15 +129,15 @@ typedef struct mat_iterator_t {
  *
  */
 typedef MATRIX_T Vector;
-typedef void (* EDITOR) (MATRIX_TYPE *); // A function that will modify the pointer foreach element
-typedef void (* EDITOR_2) (MATRIX_TYPE *, MATRIX_TYPE *); // A function that will modify the pointer foreach element
-typedef void (* EDITOR_K) (MATRIX_TYPE *, MATRIX_TYPE); // A function that will modify the pointer foreach element
+typedef void (* TYPED(EDITOR)) (MATRIX_TYPE *); // A function that will modify the pointer foreach element
+typedef void (* TYPED(EDITOR_2)) (MATRIX_TYPE *, MATRIX_TYPE *); // A function that will modify the pointer foreach element
+typedef void (* TYPED(EDITOR_K)) (MATRIX_TYPE *, MATRIX_TYPE); // A function that will modify the pointer foreach element
 
 /**================================================================================================
  *!                                        MATRIX_T Mask functions
  *================================================================================================**/
 // This mask API should allow me to set values according to a certain condition
-typedef bool (* Mask) (MATRIX_TYPE *); // A "Mask" is a pointer to a function that tests a condition
+typedef bool (* TYPED(Mask)) (MATRIX_TYPE *); // A "Mask" is a pointer to a function that tests a condition
                                        // based on the inputted element.
                                        // Masks then can be used to only interact with data
                                        // that fit a specific criterion
@@ -144,45 +149,50 @@ typedef bool (* Mask) (MATRIX_TYPE *); // A "Mask" is a pointer to a function th
  *!                                        MATRIX_T Decompositions
  *================================================================================================**/
 
-typedef struct lu_t {
+typedef struct {
     MATRIX_T *L;
     MATRIX_T *U;
-} LU;
+} TYPED(LU);
 
-typedef struct lup_t {
+typedef struct {
     MATRIX_T *L;
     MATRIX_T *U;
     Vector *P;
-} LUP;
+} TYPED(LUP);
 
-typedef struct ldu_t {
+typedef struct {
     MATRIX_T *L;
     MATRIX_T *D; // I need to encode a new matrix structure that is a diagonal
     Vector *U;
-} LDU;
+} TYPED(LDU);
 
-typedef void (* MatIterFn) (MATITER_T);
-typedef void (* MatIterFn_k) (MATITER_T, MATRIX_TYPE);
-typedef void (* MatIterFn_ptr) (MATITER_T, const MATRIX_TYPE *);
-typedef void (* MatIterFn_iter) (MATITER_T, MATITER_T);
-typedef void (* MatIterFn_iter_k) (MATITER_T, MATITER_T, const MATRIX_TYPE);
+typedef void (* TYPED(MatIterFn)) (MATITER_T);
+typedef void (* TYPED(MatIterFn_k)) (MATITER_T, MATRIX_TYPE);
+typedef void (* TYPED(MatIterFn_ptr)) (MATITER_T, const MATRIX_TYPE *);
+typedef void (* TYPED(MatIterFn_iter)) (MATITER_T, MATITER_T);
+typedef void (* TYPED(MatIterFn_iter_k)) (MATITER_T, MATITER_T, const MATRIX_TYPE);
 
-typedef void (* ColIterFn) (ColIter *);
-typedef void (* ColIterFn_k) (ColIter *, MATRIX_TYPE);
-typedef void (* ColIterFn_ptr) (ColIter *, const MATRIX_TYPE *);
-typedef void (* ColIterFn_iter) (ColIter *, ColIter *);
+typedef void (* TYPED(ColIterFn)) (TYPED(ColIter) *);
+typedef void (* TYPED(ColIterFn_k)) (TYPED(ColIter )*, MATRIX_TYPE);
+typedef void (* TYPED(ColIterFn_ptr)) (TYPED(ColIter )*, const MATRIX_TYPE *);
+typedef void (* TYPED(ColIterFn_iter)) (TYPED(ColIter )*, TYPED(ColIter )*);
 
-typedef void (* RowIterFn) (RowIter *);
-typedef void (* RowIterFn_k) (RowIter *, MATRIX_TYPE);
-typedef void (* RowIterFn_ptr) (RowIter *, const MATRIX_TYPE *);
-typedef void (* RowIterFn_iter) (RowIter *, RowIter *);
-typedef void (* RowIterFn_iter_k) (RowIter *, RowIter *, const MATRIX_TYPE);
+typedef void (* TYPED(RowIterFn)) (TYPED(RowIter )*);
+typedef void (* TYPED(RowIterFn_k)) (TYPED(RowIter )*, MATRIX_TYPE);
+typedef void (* TYPED(RowIterFn_ptr)) (TYPED(RowIter )*, const MATRIX_TYPE *);
+typedef void (* TYPED(RowIterFn_iter)) (TYPED(RowIter )*, TYPED(RowIter )*);
+typedef void (* TYPED(RowIterFn_iter_k)) (TYPED(RowIter )*, TYPED(RowIter )*, const MATRIX_TYPE);
 
-typedef MATRIX_TYPE (* function) (MATRIX_TYPE); // declare a function type that can be mapped to items of the matrix
+typedef MATRIX_TYPE (* TYPED(function)) (MATRIX_TYPE); // declare a function type that can be mapped to items of the matrix
 
 /**========================================================================
  *!                           Functional patters
  *========================================================================**/
-typedef bool (* predicate_fn) (MATRIX_TYPE); // used to filter out values
+typedef bool (* TYPED(predicate_fn)) (MATRIX_TYPE); // used to filter out values
 
 typedef MATRIX_T Index;
+
+// #endif // MATRIX_TYPE
+// #endif // TYPE_SUFFIX
+
+#endif // MATRIX_H

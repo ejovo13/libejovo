@@ -10,6 +10,7 @@ set(MATRIX_TEST_SRC
     mat_log
     mat_func
     mat_index
+    mat_generic
 
 
 )

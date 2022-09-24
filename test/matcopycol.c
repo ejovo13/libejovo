@@ -1,4 +1,4 @@
-#include "ejovo_matrix.h"
+#include "ejovo_matrix_generic.h"
 #include <assert.h>
 #include <stdbool.h>
 

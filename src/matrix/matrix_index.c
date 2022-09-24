@@ -1,12 +1,13 @@
 // This submodule contains important routines for using a vector of integers as indices.
 
 // General routines for verifying that a vector indeed represents a list of integers would be nice
-#include "ejovo_matrix.h"
+#include "ejovo_matrix_generic.h"
+// #include "ejovo_matrix.h"
 // A new typedef of "Index" is a type of Vector whose values are integers
 
 // Use your functional tools to simply cast __m to a floor
 Vector *MATRIX_FN(as_index)(const MATRIX_T *__m) {
-    return apply(map(__m, floor), fabs); // Ok this is neat but now I think that it actually has 0 utility...
+    return TYPED_FN(apply)(TYPED_FN(map)(__m, floor), fabs); // Ok this is neat but now I think that it actually has 0 utility...
 }
 
 // Take a supposed index matrix and scrub it -- making sure that all of the elements fall within
@@ -152,7 +153,7 @@ Vector *MATRIX_FN(logical_index)(const MATRIX_T *__m, const Logical *__log) {
     if (MATRIX_FN(size)(__m) != MATRIX_FN(size)(__log)) return NULL;
 
     // Else, let's count the number in log
-    int count = sum(__log);
+    int count = TYPED_FN(sum)(__log);
 
     // and allocate a new vector
     Vector *out = MAT_FN(alloc)(count, 1);
@@ -164,7 +165,7 @@ Vector *MATRIX_FN(logical_index)(const MATRIX_T *__m, const Logical *__log) {
     MATITER_T end = MATRIX_FN(end)(__log);
 
     for (it; !MATITER_FN(cmp)(it, end); it = MATITER_FN(next)(it), m_it = MATITER_FN(next)(m_it)) {
-        if (MATITER_FN(value)(it) == TRUE) {
+        if (MATITER_FN(value)(it) == TYPED(TRUE)) {
             MATITER_FN(set)(out_it, MATITER_FN(value)(m_it));
             out_it = MATITER_FN(next)(out_it);
         }
@@ -181,7 +182,7 @@ Index *MATRIX_FN(where)(const MATRIX_T *__m, pred_fn __fn) {
 
     // And then let's allocate space for our new vector of indices
 
-    Index *ind = MAT_FN(alloc)(sum(log), 1);
+    Index *ind = MAT_FN(alloc)(TYPED_FN(sum)(log), 1);
 
     // Now let's iterate through our logical matrix. If the logical matrix is true,
     // add the index counter to ind
@@ -191,7 +192,7 @@ Index *MATRIX_FN(where)(const MATRIX_T *__m, pred_fn __fn) {
 
 
     for (size_t i = 0; i < MATRIX_FN(size)(__m); i++) {
-        if (MAT_FN(get)(log, i) == TRUE) {
+        if (MAT_FN(get)(log, i) == TYPED(TRUE)) {
             MATITER_FN(set)(it, i);
             it = MATITER_FN(next)(it);
         }
@@ -201,31 +202,31 @@ Index *MATRIX_FN(where)(const MATRIX_T *__m, pred_fn __fn) {
     return ind;
 }
 
-// Given a Logical matrix (1.0s and 0.0s), return a column vector whose elements are the indices
-// of the nonzero elements and whose length is the number of nozero elements, or sum(__log).
-Index *Logical_get_index(const Logical *__log) {
+// // Given a Logical matrix (1.0s and 0.0s), return a column vector whose elements are the indices
+// // of the nonzero elements and whose length is the number of nozero elements, or sum(__log).
+// Index *Logical_get_index(const Logical *__log) {
 
-    // Should I validate the index?
+//     // Should I validate the index?
 
-    // Create a vector to store the indices, whose nrows is the number of elements in __log
-    Index *ind = VECTOR_FN(new)(VECTOR_FN(mask_count)(__log));
+//     // Create a vector to store the indices, whose nrows is the number of elements in __log
+//     Index *ind = VECTOR_FN(new)(VECTOR_FN(mask_count)(__log));
 
-    // Now let's iterate through our logical matrix. If the logical matrix is true,
-    // add the index counter to ind
-    // MATITER_T ind_it = MATRIX_FN(begin)(ind);
-    MATITER_T it = MATRIX_FN(begin)(ind);
-    // MATITER_T end = MATRIX_FN(end)(log);
+//     // Now let's iterate through our logical matrix. If the logical matrix is true,
+//     // add the index counter to ind
+//     // MATITER_T ind_it = MATRIX_FN(begin)(ind);
+//     MATITER_T it = MATRIX_FN(begin)(ind);
+//     // MATITER_T end = MATRIX_FN(end)(log);
 
 
-    for (size_t i = 0; i < MATRIX_FN(size)(__log); i++) {
-        if (MAT_FN(get)(__log, i) == TRUE) {
-            MATITER_FN(set)(it, i);
-            it = MATITER_FN(next)(it);
-        }
-    }
+//     for (size_t i = 0; i < MATRIX_FN(size)(__log); i++) {
+//         if (MAT_FN(get)(__log, i) == TRUE) {
+//             MATITER_FN(set)(it, i);
+//             it = MATITER_FN(next)(it);
+//         }
+//     }
 
-    return ind;
-}
+//     return ind;
+// }
 
 // Return the indices where a predicate is satisfied
 Index *MATRIX_FN(where_lt)(const MATRIX_T *__m, double __k) {

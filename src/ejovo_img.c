@@ -29,8 +29,8 @@ size_t imageHeight(const img_t *img) {
 // Normalize via min_max (IN PLACE) a gray scale image from [min, max] to [0, 255]
 MATRIX_T *normalize_minmax(MATRIX_T *A) {
     // find the min and the max
-    double low = min(A);
-    double high = max(A);
+    double low = TYPED_FN(min)(A);
+    double high = TYPED_FN(max)(A);
 
     FOREACH(A) {
         // *(atp(A, i)) = 

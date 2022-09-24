@@ -33,13 +33,13 @@ void t_func() {
 
     MATRIX_FN(print)(v);
 
-    Vector *neg = filter(v, is_neg);
-    Vector *pos = filter_if_not(v, is_neg);
+    Vector *neg = TYPED_FN(filter)(v, is_neg);
+    Vector *pos = TYPED_FN(filter_if_not)(v, is_neg);
 
     MATRIX_FN(print)(neg);
     MATRIX_FN(print)(pos);
 
-    Vector *r = range(1, 10, 2);
+    Vector *r = range_d(1, 10, 2);
     MATRIX_FN(print)(r);
 
 

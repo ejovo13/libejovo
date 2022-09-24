@@ -1,4 +1,4 @@
-#include "ejovo_matrix.h"
+#include "ejovo_matrix_generic.h"
 #include <assert.h>
 #include <stdbool.h>
 
@@ -481,7 +481,7 @@ void t_vecnorm() {
 
     MATRIX_FN(print)(m);
 
-    vecnormalize(m);
+    TYPED_FN(vecnormalize)(m);
 
     MATRIX_FN(print)(m);
 

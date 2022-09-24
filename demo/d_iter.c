@@ -13,7 +13,7 @@ int main() {
 
     // Let's try and extract a new matrix whose columns are [1, 1, 1]
 
-    Vector *ind = vector(3, 1.0, 0.0, 4.0);
+    Vector *ind = TYPED_FN(vector)(3, 1.0, 0.0, 4.0);
 
     MATRIX_T *new = MATRIX_FN(extract_cols)(m, ind);
 
@@ -21,7 +21,7 @@ int main() {
     // MATRIX_FN(print_fixed)(new);
 
     // Let's now extract a few rows
-    new = MATRIX_FN(extract_rows)(m, anon(3, 0.0, 5.0, 2.0));
+    new = MATRIX_FN(extract_rows)(m, MAT_FN(anon)(3, 0.0, 5.0, 2.0));
 
     // MATRIX_FN(print_fixed)(new);
 

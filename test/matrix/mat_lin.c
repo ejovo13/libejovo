@@ -193,7 +193,7 @@ void t_matrix_lu() {
 
     MATRIX_T *m = MATRIX_FN(random)(10, 10, 1, 12);
 
-    LU lu = MATRIX_FN(lu)(m);
+    TYPED(LU) lu = MATRIX_FN(lu)(m);
 
     MATRIX_FN(print)(m);
     printf("\n LU decomposition: \n");
@@ -226,8 +226,8 @@ void t_jacobi() {
     // Vector *b = MATRIX_FN(rand)(15, 1); // creer b = [100, 100, 100, 100, 100]^T
     Vector *b = MATRIX_FN(rand)(5, 1); // creer b = [100, 100, 100, 100, 100]^T
 
-    // Vector *x = jacobi_iteration(A, b, MATRIX_FN(new)(15, 1), 0.0001); // Tester l'algorithme avec x^0 = [0, 0, 0, 0, 0]^T, tolerance 0.0001
-    Vector *x = jacobi_iteration(A, b, MATRIX_FN(catch)(&catch, MATRIX_FN(new)(5, 1)), 0.0001); // Tester l'algorithme avec x^0 = [0, 0, 0, 0, 0]^T, tolerance 0.0001
+    // Vector *x = TYPED_FN(jacobi_iteration)(A, b, MATRIX_FN(new)(15, 1), 0.0001); // Tester l'algorithme avec x^0 = [0, 0, 0, 0, 0]^T, tolerance 0.0001
+    Vector *x = TYPED_FN(jacobi_iteration)(A, b, MATRIX_FN(catch)(&catch, MATRIX_FN(new)(5, 1)), 0.0001); // Tester l'algorithme avec x^0 = [0, 0, 0, 0, 0]^T, tolerance 0.0001
 
     // Afficher a l'écran les résultats
     printf("A: ");
@@ -285,13 +285,13 @@ void t_vandermonde() {
     MATRIX_FN(reset)(&Vr_t);
     MATRIX_FN(reset)(&v);
 
-    MATRIX_T *r = ascol(range(1, 100, 24));
+    MATRIX_T *r = TYPED_FN(ascol)(range_d(1, 100, 24));
 
     MATRIX_FN(print)(r);
 
-    asrow(r);
+    TYPED_FN(asrow)(r);
 
-    v = asrow(vector(5, 1.0, 13.0, -24.0, 14.0, 4.1));
+    v = TYPED_FN(asrow)(TYPED_FN(vector)(5, 1.0, 13.0, -24.0, 14.0, 4.1));
 
     MATRIX_FN(print)(v);
 
@@ -315,7 +315,7 @@ void t_gausselim() {
 
     MATRIX_T *b = MATRIX_FN(value)(3, 1, 1);
 
-    MATRIX_T *x = gausselim(A, b);
+    MATRIX_T *x = TYPED_FN(gausselim)(A, b);
 
     MATRIX_FN(print)(x);
 
@@ -334,7 +334,7 @@ void t_gausselim_rand() {
 
     MATRIX_T *A = MATRIX_FN(random)(5, 5, 1, 5);
     MATRIX_T *b = MATRIX_FN(ones)(5, 5);
-    MATRIX_T *x = gausselim(A, b);
+    MATRIX_T *x = TYPED_FN(gausselim)(A, b);
 
     MATRIX_T *Ax = MATRIX_FN(multiply)(A, x);
 

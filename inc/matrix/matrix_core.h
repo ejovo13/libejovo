@@ -1,4 +1,5 @@
-#pragma once
+#ifndef MATRIX_CORE_H
+#define MATRIX_CORE_H
 
 // matrix_core.c contains essential functions
 // that deal with the creation, destruction and setting of matrix elements
@@ -41,9 +42,9 @@ static inline MATRIX_T *MAT_FN(alloc)(size_t __nrows, size_t __ncols) {
  * @param k
  * @return Matrix*
  */
-MATRIX_T *vec(double k);
+MATRIX_T *MAT_FN(vec)(double k);
 
-MATRIX_T *anon(int __count, ...);
+MATRIX_T *MAT_FN(anon)(int __count, ...);
 
 // low level function to literally just free both pointers
 static inline void MAT_FN(free)(MATRIX_T *__A) {
@@ -154,14 +155,14 @@ MATRIX_T * MATRIX_FN(ones)(size_t nrows, size_t ncols);
 
 MATRIX_T * MATRIX_FN(ij)(size_t nrows, size_t ncols);
 
-Vector *linspace(MATRIX_TYPE start, MATRIX_TYPE end, int N);
+Vector *TYPED_FN(linspace)(MATRIX_TYPE start, MATRIX_TYPE end, int N);
 
-Vector *range(int start, int end, int diff);
+Vector *TYPED_FN(range)(int start, int end, int diff);
 
-double raisedBy10(double input); // used as a utility function for logspace
+MATRIX_TYPE TYPED_FN(raisedBy10)(MATRIX_TYPE input); // used as a utility function for logspace
 
 // use base 10
-Vector *logspace(double start, double end, int n);
+Vector *TYPED_FN(logspace)(double start, double end, int n);
 
 Vector *VECTOR_FN(linspace)(MATRIX_TYPE start, MATRIX_TYPE end, int N);
 
@@ -207,3 +208,5 @@ void MATRIX_FN(print_all_digits)(const MATRIX_T *m);
 void MATRIX_FN(print_fixed)(const MATRIX_T *m);
 
 MATRIX_T *MATRIX_FN(id)(size_t m, size_t n);
+
+#endif

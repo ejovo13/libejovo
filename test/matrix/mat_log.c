@@ -13,8 +13,8 @@ int main() {
 }
 
 double lambda_gt5(double x) {
-    if (x > 5) return TRUE;
-    else return FALSE;
+    if (x > 5) return FALSE_d;
+    else return FALSE_d;
 }
 
 void t_logical() {
@@ -34,7 +34,7 @@ void t_logical() {
     MATRIX_T *true_mat = MATRIX_FN(as_true)(m);
     MATRIX_FN(print)(true_mat);
 
-    assert(Logical_all(true_mat));
+    assert(TYPED_FN(Logical_all)(true_mat));
 
     assert(MATRIX_FN(is_logical)(logical));
     assert(!MATRIX_FN(is_logical)(m));
@@ -42,7 +42,7 @@ void t_logical() {
     MAT_FN(setmask)(m, logical, 0);
     MATRIX_FN(print)(m);
 
-    MATRIX_T *gt5 = MATRIX_FN(filter_mask)(m, Logical_not(logical));
+    MATRIX_T *gt5 = MATRIX_FN(filter_mask)(m, TYPED_FN(Logical_not)(logical));
     MATRIX_FN(print)(gt5);
 
 

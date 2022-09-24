@@ -1,13 +1,14 @@
 // Function definitions for conceptualizing Matrices as column vectors
 
-#include "ejovo_matrix.h"
+#include "ejovo_matrix_generic.h"
+// #include "ejovo_matrix.h"
 
 /**================================================================================================
  *!                                        Constructors
  *================================================================================================**/
 
 
-Vector *vector(int __count, ...) {
+Vector *TYPED_FN(vector)(int __count, ...) {
 
     va_list ptr;
     va_start(ptr, __count);
@@ -16,14 +17,14 @@ Vector *vector(int __count, ...) {
     Vector *v = MAT_FN(alloc)(__count, 1);
 
 
-    double next = va_arg(ptr, double);
+    MATRIX_TYPE next = va_arg(ptr, MATRIX_TYPE);
 
     if (__count == 0) return NULL;
 
 
     for (int i = 0; i < __count; i++) {
         v->data[i] = next;
-        next = va_arg(ptr, double);
+        next = va_arg(ptr, MATRIX_TYPE);
     }
 
     return v;
@@ -61,12 +62,12 @@ Vector *VECTOR_FN(clone)(const Vector *__v) {
 
 Vector *VECTOR_FN(as_col)(const Vector *__v) {
     Vector *v = VECTOR_FN(clone)(__v);
-    return ascol(v);
+    return TYPED_FN(ascol)(v);
 }
 
 Vector *VECTOR_FN(as_row)(const Vector *__v) {
     Vector *v = VECTOR_FN(clone)(__v);
-    return asrow(v);
+    return TYPED_FN(asrow)(v);
 }
 
 Vector *VECTOR_FN(rand)(size_t __nrows) {
@@ -154,7 +155,7 @@ MATRIX_TYPE *VECTOR_FN(access)(const Vector *__v, size_t __i) {
 
 // More abstract, functional pattern "map"
 // apply a function to the objects of a
-Vector *VECTOR_FN(map)(const Vector *__v, function __fn) {
+Vector *VECTOR_FN(map)(const Vector *__v, TYPED(function) __fn) {
     Vector *v_mapped = MATRIX_FN(clone)(__v);
     for (int i = 0; i < VECTOR_FN(size)(__v); i++) {
         VECTOR_FN(set)(v_mapped, i, __fn(VECTOR_FN(at)(__v, i)));
@@ -196,7 +197,7 @@ void VECTOR_FN(print_as_row)(const Vector *__v) {
 
 // Take the dot product of __u and __v in place, storing the results in u!
 // we are also just assuming that __u and __v are column (OR ROW) vectors of the same size
-MATRIX_TYPE vecdot(const Vector *__u, const Vector *__v) {
+MATRIX_TYPE TYPED_FN(vecdot)(const Vector *__u, const Vector *__v) {
     MATRIX_TYPE dot = 0;
     for (size_t i = 0; i < __u->nrows; i++) {
         for (size_t j = 0; j < __u->ncols; j++) {
@@ -235,7 +236,7 @@ MATRIX_TYPE VECTOR_FN(inner)(const Vector *__u, const Vector *__v) {
         return -1;
     }
 
-    return vecdot(__u, __v);
+    return TYPED_FN(vecdot)(__u, __v);
 }
 
 // Compute the outer product u * v_T
@@ -272,10 +273,10 @@ MATRIX_T *VECTOR_FN(orthogonal_projection)(const Vector *__v) {
     return outer;
 }
 
-Vector *vecproject(const Vector *__v, const Vector *__u) {
+Vector *TYPED_FN(vecproject)(const Vector *__v, const Vector *__u) {
 
-    MATRIX_TYPE u_v = vecdot(__u, __v);
-    MATRIX_TYPE u_u = vecdot(__u, __u);
+    MATRIX_TYPE u_v = TYPED_FN(vecdot)(__u, __v);
+    MATRIX_TYPE u_u = TYPED_FN(vecdot)(__u, __u);
 
     return MATRIX_FN(mult_scalar)(__u, u_v / u_u);
 
@@ -293,7 +294,7 @@ Vector *VECTOR_FN(project_onto)(const Vector *__v, const Vector *__u) {
         return NULL;
     }
 
-    return vecproject(__v, __u);
+    return TYPED_FN(vecproject)(__v, __u);
 }
 
 
@@ -307,7 +308,7 @@ Vector *VECTOR_FN(project_onto)(const Vector *__v, const Vector *__u) {
  * The p-norm of a matrix is defined to be the pth root ( sum of |a_ij|^p )
  *
  */
-MATRIX_TYPE vecpnorm(const Vector *__u, const int __p) {
+MATRIX_TYPE TYPED_FN(vecpnorm)(const Vector *__u, const int __p) {
 
     MATRIX_TYPE sum = 0;
     MATRIX_TYPE *a = NULL;
@@ -323,7 +324,7 @@ MATRIX_TYPE vecpnorm(const Vector *__u, const int __p) {
 }
 
 // Euclidean norm
-MATRIX_TYPE vecnorm(const Vector *__A) {
+MATRIX_TYPE TYPED_FN(vecnorm)(const Vector *__A) {
 
     MATRIX_TYPE sum = 0;
     MATRIX_TYPE *a = NULL;
@@ -338,19 +339,19 @@ MATRIX_TYPE vecnorm(const Vector *__A) {
     return sqrt(sum);
 }
 
-void vecnormalize(Vector *__u) {
+void TYPED_FN(vecnormalize)(Vector *__u) {
 
-    MATRIX_TYPE norm = vecnorm(__u);
+    MATRIX_TYPE norm = TYPED_FN(vecnorm)(__u);
     MAT_FN(divscalar)(__u, norm);
 }
 
 // Return the norm of a vector (checking bounds?)
 MATRIX_TYPE VECTOR_FN(norm)(const Vector *__u) {
-    return vecnorm(__u);
+    return TYPED_FN(vecnorm)(__u);
 }
 
 MATRIX_TYPE VECTOR_FN(pnorm)(const Vector *__u, const size_t __p) {
-    return vecpnorm(__u, __p);
+    return TYPED_FN(vecpnorm)(__u, __p);
 }
 
 // return a normalized version of this vector
@@ -358,12 +359,13 @@ Vector *VECTOR_FN(normalize)(const Vector *__u) {
 
     Vector *v = MATRIX_FN(clone)(__u);
 
-    vecnormalize(v);
+    TYPED_FN(vecnormalize)(v);
     return v;
 }
 
 // Take a coliter and compute the pnorm
-MATRIX_TYPE ColIter_norm(ColIter *__c) {
+MATRIX_TYPE TYPED_FN(ColIter_norm)(TYPED(ColIter) *__c) {
+    
 
 
 
@@ -372,7 +374,7 @@ MATRIX_TYPE ColIter_norm(ColIter *__c) {
 
 // Resizing/reorienting
 // modify this vector in place so that it is a column vector (n rows, 1 col)
-Vector *ascol(Vector *__v) {
+Vector *TYPED_FN(ascol)(Vector *__v) {
 
     const size_t size = MATRIX_FN(size)(__v);
 
@@ -383,7 +385,7 @@ Vector *ascol(Vector *__v) {
 }
 
 // modify this vector in place so that it is a column vector (n rows, 1 col)
-Vector *asrow(Vector *__v) {
+Vector *TYPED_FN(asrow)(Vector *__v) {
 
     const size_t size = MATRIX_FN(size)(__v);
 

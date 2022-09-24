@@ -1,31 +1,32 @@
 // This module contains essential routines to deal with a "logical" MATRIX_T data type that is represented
 // by A matrix that is UNIQUELY ones and zeros
+#include "ejovo_matrix_generic.h"
+// #include "ejovo_matrix.h"
+// #include "matrix_logical.h"
 
-#include "matrix_logical.h"
-
-double TRUE = 1.0;
-double FALSE = 0.0;
+MATRIX_TYPE TYPED(TRUE) = 1.0;
+MATRIX_TYPE TYPED(FALSE) = 0.0;
 
 // A Logical MATRIX_T shall be typedef'd as a "Mask" to express intent
 // This is used as a predicate function. Can be used to make a "true"
 // matrix that is the same size as a passed matrix with
 // MATRIX_FN(as_logical)(m, true_fn); as MATRIX_FN(as_logical) will accept a
 // predicate as an argument
-double true_fn(double d) {
-    return TRUE;
+MATRIX_TYPE TYPED_FN(true_fn)(MATRIX_TYPE d) {
+    return TYPED(TRUE);
 }
 
-double NOT(double d) {
-    if (d == FALSE) return TRUE;
-    else return FALSE;
+MATRIX_TYPE TYPED_FN(NOT)(MATRIX_TYPE d) {
+    if (d == TYPED(FALSE)) return TYPED(TRUE);
+    else return TYPED(FALSE);
 }
 
-double AND(double a, double b) {
-    return (a == TRUE) && (b == TRUE);
+MATRIX_TYPE TYPED_FN(AND)(MATRIX_TYPE a, MATRIX_TYPE b) {
+    return (a == TYPED(TRUE)) && (b == TYPED(TRUE));
 }
 
-double OR(double a, double b) {
-    return (a == TRUE) || (b == TRUE);
+MATRIX_TYPE TYPED_FN(OR)(MATRIX_TYPE a, MATRIX_TYPE b) {
+    return (a == TYPED(TRUE)) || (b == TYPED(TRUE));
 }
 
 // First routine that I should implement is having the notion of "if the vector is logical"
@@ -34,12 +35,12 @@ bool MATRIX_FN(is_logical)(const MATRIX_T *__log) {
     // All of the elements MUST be either 1.0 or 0.0
     MATITER_T it = MATRIX_FN(begin)(__log);
     MATITER_T end = MATRIX_FN(end)(__log);
-    double val = 0;
+    MATRIX_TYPE val = 0;
 
     for (it; !MATITER_FN(cmp)(it, end); it = MATITER_FN(next)(it)) {
 
         val = MATITER_FN(value)(it);
-        if (!(val == TRUE || val == FALSE)) {
+        if (!(val == TYPED(TRUE) || val == TYPED(FALSE))) {
             // printf("%lf registered as different \n", val);
             return false;
         }
@@ -63,7 +64,7 @@ int VECTOR_FN(mask_count)(const Vector *__mask) {
 
     if (!MATRIX_FN(is_logical)(__mask)) return -1;
 
-    return sum(__mask);
+    return TYPED_FN(sum)(__mask);
 }
 
 // An alternative way to count the value is to count the non zero values
@@ -88,7 +89,7 @@ MATRIX_T *MATRIX_FN(as_logical)(const MATRIX_T *__m, pred_fn __fn) {
 }
 
 // Return a Logical mask of all the values in __m that are lt __k
-Logical *MATRIX_FN(lt)(const MATRIX_T *__m, double __k) {
+Logical *MATRIX_FN(lt)(const MATRIX_T *__m, MATRIX_TYPE __k) {
 
     MATRIX_T *log = MAT_FN(alloc)(__m->nrows, __m->ncols);
 
@@ -106,7 +107,7 @@ Logical *MATRIX_FN(lt)(const MATRIX_T *__m, double __k) {
 }
 
 // Return a Logical mask of all the values in __m that are <= __k
-Logical *MATRIX_FN(lteq)(const MATRIX_T *__m, double __k) {
+Logical *MATRIX_FN(lteq)(const MATRIX_T *__m, MATRIX_TYPE __k) {
 
     MATRIX_T *log = MAT_FN(alloc)(__m->nrows, __m->ncols);
 
@@ -124,7 +125,7 @@ Logical *MATRIX_FN(lteq)(const MATRIX_T *__m, double __k) {
 }
 
 // Return a Logical mask of all the values in __m that are > lt __k
-Logical *MATRIX_FN(gt)(const MATRIX_T *__m, double __k) {
+Logical *MATRIX_FN(gt)(const MATRIX_T *__m, MATRIX_TYPE __k) {
 
     MATRIX_T *log = MAT_FN(alloc)(__m->nrows, __m->ncols);
 
@@ -142,7 +143,7 @@ Logical *MATRIX_FN(gt)(const MATRIX_T *__m, double __k) {
 }
 
 // Return a Logical mask of all the values in __m that are >= __k
-Logical *MATRIX_FN(gteq)(const MATRIX_T *__m, double __k) {
+Logical *MATRIX_FN(gteq)(const MATRIX_T *__m, MATRIX_TYPE __k) {
 
     MATRIX_T *log = MAT_FN(alloc)(__m->nrows, __m->ncols);
 
@@ -165,7 +166,7 @@ Logical *MATRIX_FN(gteq)(const MATRIX_T *__m, double __k) {
 
 
 MATRIX_T *MATRIX_FN(as_true)(const MATRIX_T *__m) {
-    return MATRIX_FN(as_logical)(__m, true_fn);
+    return MATRIX_FN(as_logical)(__m, TYPED(true_fn));
 }
 
 // Wherever the mask is true, set __m to the __val
@@ -175,14 +176,14 @@ void MAT_FN(setmask)(MATRIX_T *__m, const MATRIX_T *__mask, MATRIX_TYPE __val) {
 
     for (MATITER_T it = MATRIX_FN(begin)(__m); !MATITER_FN(cmp)(it, MATRIX_FN(end)(__m)); it = MATITER_FN(next)(it), it_mask = MATITER_FN(next)(it_mask)) {
 
-        if (MATITER_FN(value)(it_mask) == TRUE) MATITER_FN(set)(it, __val);
+        if (MATITER_FN(value)(it_mask) == TYPED(TRUE)) MATITER_FN(set)(it, __val);
     }
 }
 
 void MAT_FN(setpred)(MATRIX_T *__m, pred_fn __predicate, MATRIX_TYPE __val) {
 
     for (MATITER_T it = MATRIX_FN(begin)(__m); !MATITER_FN(cmp)(it, MATRIX_FN(end)(__m)); it = MATITER_FN(next)(it)) {
-        if (__predicate(MATITER_FN(value)(it)) == TRUE) MATITER_FN(set)(it, __val);
+        if (__predicate(MATITER_FN(value)(it)) == TYPED(TRUE)) MATITER_FN(set)(it, __val);
     }
 }
 
@@ -202,7 +203,7 @@ Vector *MATRIX_FN(filter_mask)(const MATRIX_T *__m, const MATRIX_T *__mask) {
 
     for (MATITER_T it = MATRIX_FN(begin)(__m); !MATITER_FN(cmp)(it, MATRIX_FN(end)(__m)); it = MATITER_FN(next)(it), mask_it = MATITER_FN(next)(mask_it)) {
 
-        if (MATITER_FN(value)(mask_it) == TRUE) {
+        if (MATITER_FN(value)(mask_it) == TYPED(TRUE)) {
             MATITER_FN(set)(nit, MATITER_FN(value)(it));
             nit = MATITER_FN(next)(nit);
         }
@@ -212,24 +213,24 @@ Vector *MATRIX_FN(filter_mask)(const MATRIX_T *__m, const MATRIX_T *__mask) {
 }
 
 // return true if count == size of the mask
-bool Logical_all(const MATRIX_T *__mask) {
+bool TYPED_FN(Logical_all)(const MATRIX_T *__mask) {
     return (MATRIX_FN(mask_count)(__mask) == MATRIX_FN(size)(__mask));
 }
 
 // return true is any of the logical components are true
-bool Logical_any(const MATRIX_T *__mask) {
+bool TYPED_FN(Logical_any)(const MATRIX_T *__mask) {
 
     MATITER_T it = MATRIX_FN(begin)(__mask);
     MATITER_T end = MATRIX_FN(end)(__mask);
 
     for (it; !MATITER_FN(cmp)(it, end); it = MATITER_FN(next)(it)) {
-        if (MATITER_FN(value)(it) == TRUE) return true;
+        if (MATITER_FN(value)(it) == TYPED(TRUE)) return true;
     }
 
     return false;
 }
 
 // Return !__mask
-Logical *Logical_not(const MATRIX_T *__mask) {
-    return map(__mask, NOT);
+Logical *TYPED_FN(Logical_not)(const MATRIX_T *__mask) {
+    return TYPED_FN(map)(__mask, TYPED(NOT));
 }
