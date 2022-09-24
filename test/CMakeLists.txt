@@ -20,6 +20,7 @@ list(APPEND TESTS
     time
     pcg
     benchmark
+    img
     # rand
 )
 

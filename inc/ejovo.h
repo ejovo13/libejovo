@@ -18,6 +18,7 @@
 // #include "hw_printer.h"
 #include "ejovo_time.h"
 #include "ejovo_color.h"
+#include "ejovo_img.h"
 
 #ifdef PCG_RANDOM
     #include "pcg_variants.h"
