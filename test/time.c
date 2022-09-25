@@ -22,7 +22,7 @@ double time_passed_xoroshiro() {
 
 
     Clock_tic(clock);
-    m = runif_gen_d(N_RAND, 0, 1, unif_xoroshiro);
+    m = runif_rng_d(N_RAND, 0, 1, unif_xoroshiro);
     Clock_toc(clock);
 
     double time = elapsed_time(clock);
@@ -44,7 +44,7 @@ double time_passed_pcg() {
 
 
     Clock_tic(clock);
-    m = runif_gen_d(N_RAND, 0, 1, unif_pcg);
+    m = runif_rng_d(N_RAND, 0, 1, unif_pcg);
     Clock_toc(clock);
 
     double time = elapsed_time(clock);

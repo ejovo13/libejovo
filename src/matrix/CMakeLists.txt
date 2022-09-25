@@ -31,16 +31,20 @@ file(MAKE_DIRECTORY ${INC}/matrix)
 # add_library(ejovo_matrix_double OBJECT ${EJOVO_MATRIX_SRC})
 
 add_library(ejovo_matrix_double OBJECT matrix_d.c)
-# add_library(ejovo_matrix_int OBJECT matrix_i.c)
-# add_library(ejovo_matrix_float OBJECT matrix_f.c)
+add_library(ejovo_matrix_int OBJECT matrix_i.c)
+add_library(ejovo_matrix_float OBJECT matrix_f.c)
+add_library(ejovo_matrix_complex OBJECT matrix_c.c)
 
-target_compile_definitions(ejovo_matrix_double PUBLIC FIRST_COMPILATION_PASS)
+# Defining FIRST_COMPILATION_PASS allows me to add the definitions for M_PI and a few other 
+# constants ONLY ONCE
+target_compile_definitions(ejovo_matrix_double PUBLIC FIRST_COMPILATION_PASS) 
 # target_compile_definitions(ejovo_matrix_int PUBLIC FIRST_COMPILATION_PASS)
 # target_compile_definitions(ejovo_matrix_float PUBLIC FIRST_COMPILATION_PASS)
 
 target_include_directories(ejovo_matrix_double PUBLIC ${INC}/matrix)
-# target_include_directories(ejovo_matrix_int PUBLIC ${INC}/matrix)
-# target_include_directories(ejovo_matrix_float PUBLIC ${INC}/matrix)
+target_include_directories(ejovo_matrix_int PUBLIC ${INC}/matrix)
+target_include_directories(ejovo_matrix_float PUBLIC ${INC}/matrix)
+target_include_directories(ejovo_matrix_complex PUBLIC ${INC}/matrix)
 
 
 # set_target_properties(ejovo_matrix PROPERTIES

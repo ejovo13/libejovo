@@ -6,9 +6,9 @@
 // I also need a TYPED(Matrix) interface to the runif, rnorm functions
 
 
-TYPED(Matrix) *TYPED(Matrix_runif)(size_t __m, size_t __n, double __a, double __b) {
+TYPED(Matrix) *TYPED(Matrix_runif)(size_t __m, size_t __n, MATRIX_TYPE __a, MATRIX_TYPE __b) {
 
-    TYPED(Matrix) *m = TYPED(Vector_runif)(__m * __n, __a, __b);
+    TYPED(Matrix) *m = TYPED(runif)(__m * __n, __a, __b);
 
     m->nrows = __m;
     m->ncols = __n;
@@ -16,9 +16,9 @@ TYPED(Matrix) *TYPED(Matrix_runif)(size_t __m, size_t __n, double __a, double __
     return m;
 }
 
-TYPED(Matrix) *TYPED(Matrix_rnorm)(size_t __m, size_t __n, double __mean, double __std) {
+TYPED(Matrix) *TYPED(Matrix_rnorm)(size_t __m, size_t __n, MATRIX_TYPE __mean, MATRIX_TYPE __std) {
 
-    TYPED(Matrix) *m = TYPED(Vector_rnorm)(__m * __n, __mean, __std);
+    TYPED(Matrix) *m = TYPED(rnorm)(__m * __n, __mean, __std);
 
     m->nrows = __m;
     m->ncols = __n;
@@ -123,8 +123,14 @@ TYPED(Matrix) *TYPED(as_doubly_stochastic)(TYPED(Matrix) *__m) {
 
     do {
 
+    #ifdef MATRIX_COMPLEX
+        if (cabs(row_err) > STOCHASTIC_EPSILON) TYPED(as_row_stochastic)(__m);
+        if (cabs(col_err) > STOCHASTIC_EPSILON) TYPED(as_col_stochastic)(__m);
+    #else
         if (row_err > STOCHASTIC_EPSILON) TYPED(as_row_stochastic)(__m);
         if (col_err > STOCHASTIC_EPSILON) TYPED(as_col_stochastic)(__m);
+    #endif
+
 
         row_sums = TYPED(compute_row_sums)(__m);
         col_sums = TYPED(compute_col_sums)(__m);
@@ -140,7 +146,11 @@ TYPED(Matrix) *TYPED(as_doubly_stochastic)(TYPED(Matrix) *__m) {
     } while (
         // the distance between the col_sums and the row_sums is between a certain threshold.
         counter < MAX_STOCHASTIC_ITERATIONS &&
+    #ifdef MATRIX_COMPLEX
+        (cabs(row_err) > STOCHASTIC_EPSILON || cabs(col_err) > STOCHASTIC_EPSILON)
+    #else
         (row_err > STOCHASTIC_EPSILON || col_err > STOCHASTIC_EPSILON)
+    #endif
     );
 
     printf("Exiting 'as_doubly_stochastic' with row_err: %lf, col_err: %lf, niter: %d\n", row_err, col_err, counter);

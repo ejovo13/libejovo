@@ -75,6 +75,7 @@ set (EJOVO_MATRIX_HEADERS
     ${INC}/matrix/matrix_d.h
     ${INC}/matrix/matrix_f.h
     ${INC}/matrix/matrix_i.h
+    ${INC}/matrix/matrix_c.h
 )
 
 # set (PCG_HEADERS
@@ -93,12 +94,13 @@ message("Project: ${PROJECT_SOURCE_DIR}")
 
 add_subdirectory(matrix)
 
-add_library(ejovo STATIC ${EJOVO_LIB} $<TARGET_OBJECTS:ejovo_matrix_double>)
+# add_library(ejovo STATIC ${EJOVO_LIB} $<TARGET_OBJECTS:ejovo_matrix_double>)
 # add_library(ejovo STATIC ${EJOVO_LIB} $<TARGET_OBJECTS:ejovo_matrix_int>)
 # add_library(ejovo STATIC ${EJOVO_LIB} $<TARGET_OBJECTS:ejovo_matrix_float>)
-# add_library(ejovo STATIC ${EJOVO_LIB} $<TARGET_OBJECTS:ejovo_matrix_double>
-                                    #   $<TARGET_OBJECTS:ejovo_matrix_int>)
-                                    #   $<TARGET_OBJECTS:ejovo_matrix_float>)
+add_library(ejovo STATIC ${EJOVO_LIB} $<TARGET_OBJECTS:ejovo_matrix_double>
+                                      $<TARGET_OBJECTS:ejovo_matrix_int>
+                                      $<TARGET_OBJECTS:ejovo_matrix_float>
+                                      $<TARGET_OBJECTS:ejovo_matrix_complex>)
 # target_link_libraries(ejovo PUBLIC ${PCG_RANDOM_LIBRARY})
 if (NOT WIN32)
     if (EXISTS ${PCG_RANDOM_LIBRARY})

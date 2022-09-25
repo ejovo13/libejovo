@@ -8,14 +8,19 @@ int main() {
 
     ejovo_seed();
 
-    Matrix_d *m = Matrix_new_d(10, 2);
+    // Matrix_d *md = Matrix_rand_d(10, 2);
+    // Matrix_i *mi = Matrix_random_i(10, 2, 0, 100);
+    // Matrix_f *mf = Matrix_new_f(10, 2);
 
-    Matrix_print_d(m); 
-    // MATRIX(int) *mi = Matrix_i_new(10, 10); 
+    Matrix_c *mc = Matrix_runif_c(5, 2, CMPLX(1, 0), CMPLX(0, 10));
+    Matrix_c *mc1 = Matrix_value_c(5, 2, 2);
 
-    // Matrix_int_print(mi);
+    Matrix_print_c(mc);
+    Matrix_print_c(mc1);
 
-    
+    Matrix_print_c(Matrix_add_c(mc, mc1));
+    Matrix_print_c(Matrix_hadamard_c(mc, mc1));
+
 
     return 0;
 }

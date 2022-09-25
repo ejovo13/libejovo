@@ -652,7 +652,11 @@ TYPED(Matrix) *TYPED(Matrix_inverse)(const TYPED(Matrix) *__A) {
         // if all the components of res are below the critical threshold __crit, stop iterating
         all_res_pass = true;
         for (size_t r = 0; r < TYPED(Vector_size)(res); r++) {
+        #ifdef MATRIX_COMPLEX
+            if ( cabs(TYPED(Vector_at)(res, r)) > cabs(__crit) ) {
+        #else
             if ( fabs(TYPED(Vector_at)(res, r)) > __crit ) {
+        #endif
                 all_res_pass = false;
             }
         }

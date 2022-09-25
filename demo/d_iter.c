@@ -7,6 +7,7 @@ int main() {
     ejovo_seed();
 
     Matrix_d *m = Matrix_rnorm_d(10, 5, 0, 1);
+    Matrix_i *mi = Matrix_rnorm_i(10, 5, 0, 1);
 
     Matrix_print_fixed_d(m);
 

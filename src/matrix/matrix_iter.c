@@ -422,8 +422,11 @@ MATRIX_TYPE TYPED(MatIter_max)(TYPED(MatIter) __a, const TYPED(MatIter) __b) {
 
     // This is the TYPED(MatIter) idiom to traverse a row
     while (!TYPED(MatIter_cmp)(__a, __b)) {
-
+    #ifdef MATRIX_COMPLEX
+        if (cabs(TYPED(MatIter_value)(__a)) > cabs(max))
+    #else
         if (TYPED(MatIter_value)(__a) > max)
+    #endif
             max = TYPED(MatIter_value)(__a);
 
         __a = TYPED(MatIter_next)(__a);
@@ -441,8 +444,11 @@ MATRIX_TYPE TYPED(MatIter_min)(TYPED(MatIter) __a, const TYPED(MatIter) __b) {
 
     // This is the TYPED(MatIter) idiom to traverse a row
     while (!TYPED(MatIter_cmp)(__a, __b)) {
-
+    #ifdef MATRIX_COMPLEX
+        if (cabs(TYPED(MatIter_value)(__a)) < cabs(min))
+    #else
         if (TYPED(MatIter_value)(__a) < min)
+    #endif
             min = TYPED(MatIter_value)(__a);
 
         __a = TYPED(MatIter_next)(__a);

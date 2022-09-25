@@ -6,6 +6,11 @@
 #undef MATRIX_TYPE
 #undef TYPE_SUFFIX
 
+#undef MATRIX_FLOAT
+#undef MATRIX_INT
+#undef MATRIX_COMPLEX
+
+#define MATRIX_DOUBLE
 #define MATRIX_TYPE double
 #define TYPE_SUFFIX _d 
 

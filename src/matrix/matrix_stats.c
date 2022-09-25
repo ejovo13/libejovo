@@ -327,18 +327,42 @@ MATRIX_TYPE TYPED(rmoment)(const TYPED(Vector)*__v, int __k) {
 }
 
 
-TYPED(Matrix) *TYPED(runif)(int n, double a, double b) {
-    return TYPED(runif_gen)(n, a, b, DEFAULT_RNG);
+TYPED(Matrix) *TYPED(runif)(int n, MATRIX_TYPE a, MATRIX_TYPE b) {
+    return TYPED(runif_rng)(n, a, b, DEFAULT_RNG);
 }
 
+TYPED(Matrix) *TYPED(rnorm)(int n, MATRIX_TYPE mu, MATRIX_TYPE sigma) {
+    return TYPED(rnorm_rng)(n, mu, sigma, DEFAULT_RNG);
+}
 
-
-TYPED(Matrix) *TYPED(runif_gen)(int n, double a, double b, RNG_FN rng_fn) {
+TYPED(Matrix) *TYPED(rnorm_rng)(int n, MATRIX_TYPE mu, MATRIX_TYPE sigma, RNG_FN rng_fn) {
 
     TYPED(Matrix) *out = TYPED(Matrix_new)(1, n);
 
     for (int i = 0; i < n; i++) {
+    #ifdef MATRIX_COMPLEX
+        out->data[i] = normc_rng(mu, sigma, rng_fn);
+    #else
+        out->data[i] = normd_rng(mu, sigma, rng_fn);
+    #endif
+
+    }
+
+    return out;
+
+}
+
+TYPED(Matrix) *TYPED(runif_rng)(int n, MATRIX_TYPE a, MATRIX_TYPE b, RNG_FN rng_fn) {
+
+    TYPED(Matrix) *out = TYPED(Matrix_new)(1, n);
+
+    for (int i = 0; i < n; i++) {
+    #ifdef MATRIX_COMPLEX
+        out->data[i] = unifc_rng(a, b, rng_fn);
+    #else
         out->data[i] = unifd_rng(a, b, rng_fn);
+    #endif
+
     }
 
     return out;

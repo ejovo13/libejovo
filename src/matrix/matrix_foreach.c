@@ -91,7 +91,11 @@ MATRIX_TYPE TYPED(matmin)(const TYPED(Matrix) *__A) {
 
     for (size_t i = 0; i < __A->nrows; i++) {
         for (size_t j = 0; j < __A->ncols; j++) {
+        #ifdef MATRIX_COMPLEX
+            if (cabs(TYPED(matat)(__A, i, j)) < cabs(min)) min = TYPED(matat)(__A, i, j);
+        #else
             if (TYPED(matat)(__A, i, j) < min) min = TYPED(matat)(__A, i, j);
+        #endif
         }
     }
 
@@ -104,7 +108,11 @@ MATRIX_TYPE TYPED(matmax)(const TYPED(Matrix) *__A) {
 
     for (size_t i = 0; i < __A->nrows; i++) {
         for (size_t j = 0; j < __A->ncols; j++) {
+        #ifdef MATRIX_COMPLEX
+            if (cabs(TYPED(matat)(__A, i, j)) > cabs(max)) max = TYPED(matat)(__A, i, j);
+        #else
             if (TYPED(matat)(__A, i, j) > max) max = TYPED(matat)(__A, i, j);
+        #endif
         }
     }
 

@@ -1,8 +1,18 @@
 // matrix_core.c contains essential functions
 // that deal with the creation, destruction and setting of matrix elements
 
+// This header is to make my linter STFU
+#ifndef MATRIX_TYPE
+#define MATRIX_TYPE double
+#define TYPE_SUFFIX _d
+#endif
+
 // #include "ejovo_matrix_matrix.h"
 #include "ejovo_matrix.h"
+
+#ifdef MATRIX_COMPLEX
+    #include <complex.h>
+#endif
 
 TYPED(Matrix) *TYPED(g_ANON) = NULL;
 
@@ -22,20 +32,6 @@ TYPED(Matrix) *TYPED(g_ANON) = NULL;
 /**================================================================================================
  *!                                        Memory and Allocation
  *================================================================================================**/
-
-
-// // perform literally 0 checks, just allocate the space for a new matrix
-// TYPED(Matrix) *TYPED(matalloc)(size_t __nrows, size_t __ncols) {
-
-//     TYPED(Matrix) *x = (TYPED(Matrix) *) malloc(sizeof(Matrix));
-//     MATRIX_TYPE *data = (MATRIX_TYPE *) malloc(sizeof(MATRIX_TYPE) * (__nrows * __ncols));
-//     x->data = data;
-//     x->nrows = __nrows;
-//     x->ncols = __ncols;
-
-//     return x;
-// }
-
 TYPED(Matrix) *TYPED(matvec)(double __k) {
 
     TYPED(Matrix) *x = TYPED(matalloc)(1, 1);
@@ -69,52 +65,13 @@ TYPED(Matrix) *TYPED(matanon)(int __count, ...) {
     return v;
 }
 
-// low level function to literally just free both pointers
-// inline void TYPED(matfree)(TYPED(Matrix) *__A) {
-//     free(__A->data); // if data is null, don't call free on it!!!
-//     free(__A);
-// }
-
-// // Free the memory associated with the matrix and then free the pointer itself
-// inline void TYPED(Matrix_free)(TYPED(Matrix) *__A) {
-//     if (__A) {
-//         if (__A->data) free(__A->data);
-//         free(__A);
-//     }
-// }
-
-// // Free the memeory and set the pointer equal to NULL
-// inline void TYPED(Matrix_reset)(TYPED(Matrix) **__A_ptr) {
-//     if (*__A_ptr) {
-//         if ((*__A_ptr)->data) free((*__A_ptr)->data);
-//         free (*__A_ptr);
-//     }
-
-//     *__A_ptr = NULL;
-// }
-
 // set all of the elements of __A to 0
 TYPED(Matrix) *TYPED(Matrix_clean)(TYPED(Matrix) *__A) {
     TYPED(Matrix_fill)(__A, 0);
 }
 
-// Copy the bytes
-// this is a utility function and should not be used by the end user
-// inline bool TYPED(matcpy)(TYPED(Matrix) *restrict __dest, const TYPED(Matrix) *restrict __src) {
-
-    // Copy the bytes of __src->data into __dest->data
-    // memcpy(__dest->data, __src->data, sizeof(MATRIX_TYPE)*(__src->nrows * __src->ncols));
-    // __dest->ncols = __src->ncols;
-    // __dest->nrows = __src->nrows;
-    // if(__dest && __src && __dest->data) { // if all the pointers are not null, return true
-    //     return  true;
-    // } else {
-    //     return false;
-    // }
-// }
-
 // copy the contents of matrix __src into __dest
-TYPED(Matrix) * TYPED(matclone)(const TYPED(Matrix) *restrict __src) {
+TYPED(Matrix) *TYPED(matclone)(const TYPED(Matrix) *restrict __src) {
 
     TYPED(Matrix) * clone = NULL;
 
@@ -514,7 +471,7 @@ void TYPED(matprint)(const TYPED(Matrix) *__m) {
 void TYPED(Matrix_print)(const TYPED(Matrix) *__m) {
 
     if (!__m) {
-        printf("TYPED(Matrix) is NULL.\n");
+        printf("Matrix is NULL.\n");
         return;
     }
 
@@ -522,7 +479,26 @@ void TYPED(Matrix_print)(const TYPED(Matrix) *__m) {
     for (size_t i = 0; i < __m->nrows; i++) {
         printf("| ");
         for (size_t j = 0; j < __m->ncols; j++) {
+
+        #if defined MATRIX_DOUBLE 
+
             printf("%4.4lf ", TYPED(Matrix_at)(__m, i, j));
+
+        #elif defined MATRIX_FLOAT 
+
+            printf("%4.4f ", TYPED(Matrix_at)(__m, i, j));
+
+        #elif defined MATRIX_INT
+
+            printf("%5d ", TYPED(Matrix_at)(__m, i, j));
+
+        #elif defined MATRIX_COMPLEX
+
+            printf("(%4.4lf, %4.4lf) ", creal(matat_c(__m, i, j)), cimag(matat_c(__m, i, j)));
+
+        #endif
+
+
         }
 
         printf("|\n");
@@ -571,7 +547,7 @@ void TYPED(Matrix_print_iter)(const TYPED(Matrix) *__m) {
 }
 
 void TYPED(Matrix_summary)(const TYPED(Matrix) *__m) {
-    printf("%lu x %lu matrix\n", __m->nrows, __m->ncols);
+    printf("%lu x %lu %s\n", __m->nrows, __m->ncols, STRINGIFY(TYPED(Matrix)));
 }
 
 void TYPED(Vector_print_head)(const TYPED(Matrix) *__m, int __n) {

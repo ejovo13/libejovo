@@ -100,7 +100,11 @@ TYPED(Logical) *TYPED(Matrix_lt)(const TYPED(Matrix) *__m, MATRIX_TYPE __k) {
 
     for (TYPED(MatIter) it = TYPED(Matrix_begin)(__m); !TYPED(MatIter_cmp)(it, end); it = TYPED(MatIter_next)(it), logit = TYPED(MatIter_next)(logit)) {
         // printf("Processing: %lf\n", TYPED(MatIter_value)(it));
+    #ifdef MATRIX_COMPLEX
+        TYPED(MatIter_set)(logit, cabs(TYPED(MatIter_value)(it)) < cabs(__k));
+    #else
         TYPED(MatIter_set)(logit, TYPED(MatIter_value)(it) < __k);
+    #endif
     }
 
     return log;
@@ -118,7 +122,11 @@ TYPED(Logical) *TYPED(Matrix_lteq)(const TYPED(Matrix) *__m, MATRIX_TYPE __k) {
 
     for (TYPED(MatIter) it = TYPED(Matrix_begin)(__m); !TYPED(MatIter_cmp)(it, end); it = TYPED(MatIter_next)(it), logit = TYPED(MatIter_next)(logit)) {
         // printf("Processing: %lf\n", TYPED(MatIter_value)(it));
+    #ifdef MATRIX_COMPLEX
+        TYPED(MatIter_set)(logit, cabs(TYPED(MatIter_value)(it)) <= cabs(__k));
+    #else
         TYPED(MatIter_set)(logit, TYPED(MatIter_value)(it) <= __k);
+    #endif
     }
 
     return log;
@@ -136,7 +144,11 @@ TYPED(Logical) *TYPED(Matrix_gt)(const TYPED(Matrix) *__m, MATRIX_TYPE __k) {
 
     for (TYPED(MatIter) it = TYPED(Matrix_begin)(__m); !TYPED(MatIter_cmp)(it, end); it = TYPED(MatIter_next)(it), logit = TYPED(MatIter_next)(logit)) {
         // printf("Processing: %lf\n", TYPED(MatIter_value)(it));
+    #ifdef MATRIX_COMPLEX
+        TYPED(MatIter_set)(logit, cabs(TYPED(MatIter_value)(it)) > cabs(__k));
+    #else
         TYPED(MatIter_set)(logit, TYPED(MatIter_value)(it) > __k);
+    #endif
     }
 
     return log;
@@ -154,7 +166,11 @@ TYPED(Logical) *TYPED(Matrix_gteq)(const TYPED(Matrix) *__m, MATRIX_TYPE __k) {
 
     for (TYPED(MatIter) it = TYPED(Matrix_begin)(__m); !TYPED(MatIter_cmp)(it, end); it = TYPED(MatIter_next)(it), logit = TYPED(MatIter_next)(logit)) {
         // printf("Processing: %lf\n", TYPED(MatIter_value)(it));
+    #ifdef MATRIX_COMPLEX
+        TYPED(MatIter_set)(logit, cabs(TYPED(MatIter_value)(it)) >= cabs(__k));
+    #else
         TYPED(MatIter_set)(logit, TYPED(MatIter_value)(it) >= __k);
+    #endif
     }
 
     return log;

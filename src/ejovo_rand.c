@@ -131,6 +131,11 @@ double unifd_rng(double a, double b, RNG_FN rng) {
     return x * spread + a;
 }
 
+double complex unifc_rng(double complex a, double complex b, RNG_FN rng) {
+    return CMPLX( unifd_rng(creal(a), creal(b), rng), 
+                  unifd_rng(cimag(a), cimag(b), rng) );
+}
+
 
 int unifi_rng(int a, int b, RNG_FN rng) {
     int spread = (b - a) + 1;
@@ -154,6 +159,11 @@ double normd_rng(double mean, double std, RNG_FN rng) {
     return (std_norm_rng(rng) * std) + mean;
 }
 
+double complex normc_rng(double complex mean, double complex sigma, RNG_FN rng) {
+    return CMPLX( normd_rng(creal(mean), cabs(sigma), rng), 
+                  normd_rng(cimag(mean), cabs(sigma), rng) );
+}
+
 /**========================================================================
  *!                           Default generators
  *========================================================================**/ 
@@ -161,12 +171,16 @@ RNG_FN DEFAULT_RNG = unif_xoroshiro;
 
 // Unif(0, 1)
 double std_unifd() {
-    std_unifd_rng(DEFAULT_RNG);
+    return std_unifd_rng(DEFAULT_RNG);
 }
 
 // Unif(a, b)
 double unifd(double a, double b) {
-    unifd_rng(a, b, DEFAULT_RNG);
+    return unifd_rng(a, b, DEFAULT_RNG);
+}
+
+double unifc(double complex a, double complex b) {
+    return unifc_rng(a, b, DEFAULT_RNG);
 }
 
 // Discrete uniform distribution (a, b)
@@ -176,11 +190,15 @@ int unifi(int a, int b) {
 
 // Norm(0, 1)
 double std_norm() {
-    std_norm_rng(DEFAULT_RNG);
+    return std_norm_rng(DEFAULT_RNG);
 }
 
 double normd(double mean, double std) {
-    normd_rng(mean, std, DEFAULT_RNG);
+    return normd_rng(mean, std, DEFAULT_RNG);
+}
+
+double complex normc(double complex mu, double complex sigma) {
+    return normc_rng(mu, sigma, DEFAULT_RNG);
 }
 
 /**========================================================================

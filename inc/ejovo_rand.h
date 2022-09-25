@@ -13,6 +13,7 @@
 #include <limits.h>
 #include <stdio.h>
 #include <string.h>
+#include <complex.h>
 
 #ifdef PCG_RANDOM
     #include "pcg_variants.h"
@@ -171,6 +172,8 @@ double std_unifd_rng(RNG_FN rng);
 
 double unifd_rng(double a, double b, RNG_FN rng);
 
+double complex unifc_rng(double complex a, double complex b, RNG_FN rng);
+
 
 int unifi_rng(int a, int b, RNG_FN rng);
 
@@ -178,6 +181,8 @@ int unifi_rng(int a, int b, RNG_FN rng);
 double std_norm_rng(RNG_FN rng);
 
 double normd_rng(double mean, double std, RNG_FN rng);
+
+double complex normc_rng(double complex mean, double complex sigma, RNG_FN rng);
 
 /**========================================================================
  *!                           Default generators
@@ -195,6 +200,8 @@ int unifi(int a, int b);
 double std_norm();
 
 double normd(double mean, double std);
+
+double complex normc(double complex mean, double complex sigma);
 
 
 /**

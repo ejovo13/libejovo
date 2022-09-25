@@ -3,9 +3,9 @@
 
 #include "matrix.h"
 
-TYPED(Matrix) *TYPED(Matrix_runif)(size_t __m, size_t __n, double __a, double __b);
+TYPED(Matrix) *TYPED(Matrix_runif)(size_t __m, size_t __n, MATRIX_TYPE __a, MATRIX_TYPE __b);
 
-TYPED(Matrix) *TYPED(Matrix_rnorm)(size_t __m, size_t __n, double __mean, double __std);
+TYPED(Matrix) *TYPED(Matrix_rnorm)(size_t __m, size_t __n, MATRIX_TYPE __mean, MATRIX_TYPE __std);
 
 TYPED(Matrix) *TYPED(as_stochastic)(TYPED(Matrix) *__m);
 

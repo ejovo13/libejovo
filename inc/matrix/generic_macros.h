@@ -5,6 +5,8 @@
 // when calling MATRIX
 #define CAT(X, Y) CAT2(X, Y)
 #define CAT2(X, Y) X##Y
+#define STRINGIFY(X) STRINGIFY2(X)
+#define STRINGIFY2(X) #X
 
 #define CAT3(X, Y, Z) CAT32(X, Y, Z)
 #define CAT32(X, Y, Z) X ## Y ## Z

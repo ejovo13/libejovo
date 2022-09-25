@@ -99,8 +99,12 @@ MATRIX_TYPE TYPED(rmoment)(const TYPED(Vector)*__v, int __k);
 
  TYPED(Vector)*TYPED(least_squares)(const TYPED(Vector)*__x, const TYPED(Vector)*__y, int degree);
 
-TYPED(Matrix) *TYPED(runif)(int n, double a, double b);
+TYPED(Matrix) *TYPED(runif)(int n, MATRIX_TYPE a, MATRIX_TYPE b);
 
-TYPED(Matrix) *TYPED(runif_gen)(int n, double a, double b, RNG_FN rng_fn);
+TYPED(Matrix) *TYPED(rnorm)(int n, MATRIX_TYPE mu, MATRIX_TYPE sigma);
+
+TYPED(Matrix) *TYPED(rnorm_rng)(int n, MATRIX_TYPE mu, MATRIX_TYPE sigma, RNG_FN rng_fn);
+
+TYPED(Matrix) *TYPED(runif_rng)(int n, MATRIX_TYPE a, MATRIX_TYPE b, RNG_FN rng_fn);
 
 #endif

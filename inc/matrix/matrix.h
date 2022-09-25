@@ -9,6 +9,7 @@
 #include <string.h>
 #include <stdarg.h>
 #include "generic_macros.h"
+#include "complex.h"
 // #include "ejovo_comp.h"
 
 /** @file
