@@ -1,9 +1,9 @@
-#ifndef EJOVO_MATRIX_H
-#define EJOVO_MATRIX_H
+// #ifndef EJOVO_MATRIX_H
+// #define EJOVO_MATRIX_H
 
 #ifdef MATRIX_TYPE
 
-#define FOREACH(MAT) for (size_t i = 0; i < MATRIX_FN(size)(MAT); i++)
+#define FOREACH(MAT) for (size_t i = 0; i < TYPED(Matrix_size)(MAT); i++)
 #define FORIJ(MAT, INIT_LOOP, INSIDE_LOOP, OUTSIDE_LOOP) \
     const size_t __m = MAT->nrows; \
     const size_t __n = MAT->ncols; \
@@ -14,6 +14,8 @@
         } \
         OUTSIDE_LOOP\
     } \
+
+#include "matrix/generic_macros.h"
 
 #include "matrix/matrix.h"
 #include "matrix/matrix_core.h"
@@ -34,4 +36,4 @@
 
 #endif // MATRIX_TYPE
 
-#endif // EJOVO_MATRIX_H
+// #endif // EJOVO_MATRIX_H

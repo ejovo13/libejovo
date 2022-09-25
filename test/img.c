@@ -9,12 +9,12 @@ int main() {
     const int w = 100;
     const int h = 100;
 
-    MATRIX_T *sp = TYPED_FN(reshape) ( TYPED_FN(linspace) (0, 20, w * h), 
+    TYPED(Matrix) *sp = TYPED(reshape) ( TYPED(linspace) (0, 20, w * h), 
                                    h,
                                    w );
 
-    // printf("min: %lf\n", TYPED_FN(min)(sp));
-    // printf("max: %lf\n", TYPED_FN(max)(sp));
+    // printf("min: %lf\n", TYPED(min)(sp));
+    // printf("max: %lf\n", TYPED(max)(sp));
 
     normalize_minmax(sp);
 
@@ -22,7 +22,7 @@ int main() {
 
     writePPM(img, "test.ppm");
 
-    MATRIX_FN(print)(sp);
+    TYPED(Matrix_print)(sp);
 
 
 

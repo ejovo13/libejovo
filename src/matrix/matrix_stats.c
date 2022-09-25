@@ -1,130 +1,130 @@
-#include "ejovo_matrix_generic.h"
-// #include "ejovo_matrix.h"
+// #include "ejovo_matrix_generic.h"
+#include "ejovo_matrix.h"
 #include "ejovo_rand.h"
 
 // Basic statistic routines that will operate on either vectors or a pair of MatIters
 
 // Typed version of log
-MATRIX_TYPE MATITER_FN(mean)(const MATITER_T __begin, const MATITER_T __end) {
-    MATRIX_TYPE sum = MATITER_FN(sum)(__begin, __end);
-    return sum / MATITER_FN(length)(__begin, __end);
+MATRIX_TYPE TYPED(MatIter_mean)(const TYPED(MatIter) __begin, const TYPED(MatIter) __end) {
+    MATRIX_TYPE sum = TYPED(MatIter_sum)(__begin, __end);
+    return sum / TYPED(MatIter_length)(__begin, __end);
 }
 
-MATRIX_TYPE MATITER_FN(sum_squared)(const MATITER_T __begin, const MATITER_T __end) {
+MATRIX_TYPE TYPED(MatIter_sum_squared)(const TYPED(MatIter) __begin, const TYPED(MatIter) __end) {
 
-    MATITER_T iter = __begin;
+    TYPED(MatIter) iter = __begin;
     MATRIX_TYPE sum_squared = 0;
 
-    while (! MATITER_FN(cmp)(iter, __end)) {
-        sum_squared += MATITER_FN(value)(iter) * MATITER_FN(value)(iter);
-        iter = MATITER_FN(next)(iter);
+    while (! TYPED(MatIter_cmp)(iter, __end)) {
+        sum_squared += TYPED(MatIter_value)(iter) * TYPED(MatIter_value)(iter);
+        iter = TYPED(MatIter_next)(iter);
     }
 
     return sum_squared;
 }
 
-MATRIX_TYPE MATITER_FN(mean_squared)(const MATITER_T __begin, const MATITER_T __end) {
-    MATRIX_TYPE sum_squared = MATITER_FN(sum_squared)(__begin, __end);
-    return sum_squared / MATITER_FN(length)(__begin, __end);
+MATRIX_TYPE TYPED(MatIter_mean_squared)(const TYPED(MatIter) __begin, const TYPED(MatIter) __end) {
+    MATRIX_TYPE sum_squared = TYPED(MatIter_sum_squared)(__begin, __end);
+    return sum_squared / TYPED(MatIter_length)(__begin, __end);
 }
 
-MATRIX_TYPE MATITER_FN(rms)(const MATITER_T __begin, const MATITER_T __end) {
-    MATRIX_TYPE mean_squared = MATITER_FN(mean_squared)(__begin, __end);
+MATRIX_TYPE TYPED(MatIter_rms)(const TYPED(MatIter) __begin, const TYPED(MatIter) __end) {
+    MATRIX_TYPE mean_squared = TYPED(MatIter_mean_squared)(__begin, __end);
     return sqrt(mean_squared);
 }
 
-MATRIX_TYPE MATITER_FN(var)(const MATITER_T __begin, const MATITER_T __end) {
+MATRIX_TYPE TYPED(MatIter_var)(const TYPED(MatIter) __begin, const TYPED(MatIter) __end) {
 
     // First thing that I need to do is create a new disposable vector from __begin and __end
-    Vector *copy = VECTOR_FN(from_iter)(__begin, __end);
+    TYPED(Vector) *copy = TYPED(Vector_from_iter)(__begin, __end);
 
     // compute the average
-    MATRIX_TYPE mean = MATITER_FN(mean)(__begin, __end);
+    MATRIX_TYPE mean = TYPED(MatIter_mean)(__begin, __end);
 
     // subtract the average from our copy
-    MATITER_FN(row_sub_k)(VECTOR_FN(begin)(copy), VECTOR_FN(end)(copy), mean);
+    TYPED(MatIter_row_sub_k)(TYPED(Vector_begin)(copy), TYPED(Vector_end)(copy), mean);
 
     // now simply take the rms right??
-    MATRIX_TYPE var = MATITER_FN(mean_squared)(VECTOR_FN(begin)(copy), VECTOR_FN(end)(copy));
+    MATRIX_TYPE var = TYPED(MatIter_mean_squared)(TYPED(Vector_begin)(copy), TYPED(Vector_end)(copy));
 
-    MATRIX_FN(free)(copy);
+    TYPED(Matrix_free)(copy);
     return var;
 }
 
-MATRIX_TYPE MATITER_FN(std)(const MATITER_T __begin, const MATITER_T __end) {
-    return sqrt(MATITER_FN(var)(__begin, __end));
+MATRIX_TYPE TYPED(MatIter_std)(const TYPED(MatIter) __begin, const TYPED(MatIter) __end) {
+    return sqrt(TYPED(MatIter_var)(__begin, __end));
 }
 
-MATRIX_TYPE VECTOR_FN(iter_sum)(const Vector *__v) {
-    return MATITER_FN(sum)(VECTOR_FN(begin)(__v), VECTOR_FN(end)(__v));
+MATRIX_TYPE TYPED(Vector_iter_sum)(const TYPED(Vector)*__v) {
+    return TYPED(MatIter_sum)(TYPED(Vector_begin)(__v), TYPED(Vector_end)(__v));
 }
 
-MATRIX_TYPE VECTOR_FN(iter_prod)(const Vector *__v) {
-    return MATITER_FN(prod)(VECTOR_FN(begin)(__v), VECTOR_FN(end)(__v));
+MATRIX_TYPE TYPED(Vector_iter_prod)(const TYPED(Vector)*__v) {
+    return TYPED(MatIter_prod)(TYPED(Vector_begin)(__v), TYPED(Vector_end)(__v));
 }
 
-MATRIX_TYPE VECTOR_FN(iter_mean)(const Vector *__v) {
-    return MATITER_FN(mean)(VECTOR_FN(begin)(__v), VECTOR_FN(end)(__v));
+MATRIX_TYPE TYPED(Vector_iter_mean)(const TYPED(Vector)*__v) {
+    return TYPED(MatIter_mean)(TYPED(Vector_begin)(__v), TYPED(Vector_end)(__v));
 }
 
-MATRIX_TYPE VECTOR_FN(iter_mean_squared)(const Vector *__v) {
-    return MATITER_FN(mean_squared)(VECTOR_FN(begin)(__v), VECTOR_FN(end)(__v));
+MATRIX_TYPE TYPED(Vector_iter_mean_squared)(const TYPED(Vector)*__v) {
+    return TYPED(MatIter_mean_squared)(TYPED(Vector_begin)(__v), TYPED(Vector_end)(__v));
 }
 
-MATRIX_TYPE VECTOR_FN(iter_rms)(const Vector *__v) {
-    return MATITER_FN(rms)(VECTOR_FN(begin)(__v), VECTOR_FN(end)(__v));
+MATRIX_TYPE TYPED(Vector_iter_rms)(const TYPED(Vector)*__v) {
+    return TYPED(MatIter_rms)(TYPED(Vector_begin)(__v), TYPED(Vector_end)(__v));
 }
 
-MATRIX_TYPE VECTOR_FN(iter_min)(const Vector *__v) {
-    return MATITER_FN(min)(VECTOR_FN(begin)(__v), VECTOR_FN(end)(__v));
+MATRIX_TYPE TYPED(Vector_iter_min)(const TYPED(Vector)*__v) {
+    return TYPED(MatIter_min)(TYPED(Vector_begin)(__v), TYPED(Vector_end)(__v));
 }
 
-MATRIX_TYPE VECTOR_FN(iter_max)(const Vector *__v) {
-    return MATITER_FN(max)(VECTOR_FN(begin)(__v), VECTOR_FN(end)(__v));
+MATRIX_TYPE TYPED(Vector_iter_max)(const TYPED(Vector)*__v) {
+    return TYPED(MatIter_max)(TYPED(Vector_begin)(__v), TYPED(Vector_end)(__v));
 }
 
-MATRIX_TYPE VECTOR_FN(iter_var)(const Vector *__v) {
-    return MATITER_FN(var)(VECTOR_FN(begin)(__v), VECTOR_FN(end)(__v));
+MATRIX_TYPE TYPED(Vector_iter_var)(const TYPED(Vector)*__v) {
+    return TYPED(MatIter_var)(TYPED(Vector_begin)(__v), TYPED(Vector_end)(__v));
 }
 
-MATRIX_TYPE VECTOR_FN(iter_std)(const Vector *__v) {
-    return MATITER_FN(std)(VECTOR_FN(begin)(__v), VECTOR_FN(end)(__v));
+MATRIX_TYPE TYPED(Vector_iter_std)(const TYPED(Vector)*__v) {
+    return TYPED(MatIter_std)(TYPED(Vector_begin)(__v), TYPED(Vector_end)(__v));
 }
 
-MATRIX_TYPE MATRIX_FN(iter_sum)(const MATRIX_T *__m) {
-    return MATITER_FN(sum)(MATRIX_FN(begin)(__m), MATRIX_FN(end)(__m));
+MATRIX_TYPE TYPED(Matrix_iter_sum)(const TYPED(Matrix) *__m) {
+    return TYPED(MatIter_sum)(TYPED(Matrix_begin)(__m), TYPED(Matrix_end)(__m));
 }
 
-MATRIX_TYPE MATRIX_FN(iter_prod)(const MATRIX_T *__m) {
-    return MATITER_FN(prod)(MATRIX_FN(begin)(__m), MATRIX_FN(end)(__m));
+MATRIX_TYPE TYPED(Matrix_iter_prod)(const TYPED(Matrix) *__m) {
+    return TYPED(MatIter_prod)(TYPED(Matrix_begin)(__m), TYPED(Matrix_end)(__m));
 }
 
-MATRIX_TYPE MATRIX_FN(iter_mean)(const MATRIX_T *__m) {
-    return MATITER_FN(mean)(MATRIX_FN(begin)(__m), MATRIX_FN(end)(__m));
+MATRIX_TYPE TYPED(Matrix_iter_mean)(const TYPED(Matrix) *__m) {
+    return TYPED(MatIter_mean)(TYPED(Matrix_begin)(__m), TYPED(Matrix_end)(__m));
 }
 
-MATRIX_TYPE MATRIX_FN(iter_mean_squared)(const MATRIX_T *__m) {
-    return MATITER_FN(mean_squared)(MATRIX_FN(begin)(__m), MATRIX_FN(end)(__m));
+MATRIX_TYPE TYPED(Matrix_iter_mean_squared)(const TYPED(Matrix) *__m) {
+    return TYPED(MatIter_mean_squared)(TYPED(Matrix_begin)(__m), TYPED(Matrix_end)(__m));
 }
 
-MATRIX_TYPE MATRIX_FN(iter_rms)(const MATRIX_T *__m) {
-    return MATITER_FN(rms)(MATRIX_FN(begin)(__m), MATRIX_FN(end)(__m));
+MATRIX_TYPE TYPED(Matrix_iter_rms)(const TYPED(Matrix) *__m) {
+    return TYPED(MatIter_rms)(TYPED(Matrix_begin)(__m), TYPED(Matrix_end)(__m));
 }
 
-MATRIX_TYPE MATRIX_FN(iter_min)(const MATRIX_T *__m) {
-    return MATITER_FN(min)(MATRIX_FN(begin)(__m), MATRIX_FN(end)(__m));
+MATRIX_TYPE TYPED(Matrix_iter_min)(const TYPED(Matrix) *__m) {
+    return TYPED(MatIter_min)(TYPED(Matrix_begin)(__m), TYPED(Matrix_end)(__m));
 }
 
-MATRIX_TYPE MATRIX_FN(iter_max)(const MATRIX_T *__m) {
-    return MATITER_FN(max)(MATRIX_FN(begin)(__m), MATRIX_FN(end)(__m));
+MATRIX_TYPE TYPED(Matrix_iter_max)(const TYPED(Matrix) *__m) {
+    return TYPED(MatIter_max)(TYPED(Matrix_begin)(__m), TYPED(Matrix_end)(__m));
 }
 
-MATRIX_TYPE MATRIX_FN(iter_var)(const MATRIX_T *__m) {
-    return MATITER_FN(var)(MATRIX_FN(begin)(__m), MATRIX_FN(end)(__m));
+MATRIX_TYPE TYPED(Matrix_iter_var)(const TYPED(Matrix) *__m) {
+    return TYPED(MatIter_var)(TYPED(Matrix_begin)(__m), TYPED(Matrix_end)(__m));
 }
 
-MATRIX_TYPE MATRIX_FN(iter_std)(const MATRIX_T *__m) {
-    return MATITER_FN(std)(MATRIX_FN(begin)(__m), MATRIX_FN(end)(__m));
+MATRIX_TYPE TYPED(Matrix_iter_std)(const TYPED(Matrix) *__m) {
+    return TYPED(MatIter_std)(TYPED(Matrix_begin)(__m), TYPED(Matrix_end)(__m));
 }
 
 /**========================================================================
@@ -132,57 +132,57 @@ MATRIX_TYPE MATRIX_FN(iter_std)(const MATRIX_T *__m) {
  *========================================================================**/
 // typedef MATRIX_TYPE (* mat_iter_fn) (const MatIter, const MatIter);
 
-MATRIX_TYPE MATRIX_FN(iterate)(const MATRIX_T *__m, mat_iter_fn fn) {
-    return fn(MATRIX_FN(begin)(__m), MATRIX_FN(end)(__m));
+MATRIX_TYPE TYPED(Matrix_iterate)(const TYPED(Matrix) *__m, TYPED(mat_iter_fn) fn) {
+    return fn(TYPED(Matrix_begin)(__m), TYPED(Matrix_end)(__m));
 }
 
-MATRIX_TYPE TYPED_FN(mean)(const MATRIX_T *__m) {
-    // return MATITER_FN(mean)(MATRIX_FN(begin)(__m), MATRIX_FN(end)(__m));
-    return MATRIX_FN(iterate)(__m, MATITER_FN(mean));
+MATRIX_TYPE TYPED(mean)(const TYPED(Matrix) *__m) {
+    // return TYPED(MatIter_mean)(TYPED(Matrix_begin)(__m), TYPED(Matrix_end)(__m));
+    return TYPED(Matrix_iterate)(__m, TYPED(MatIter_mean));
 }
 
-MATRIX_TYPE TYPED_FN(sum)(const MATRIX_T *__m) {
-    // return MATITER_FN(sum)(MATRIX_FN(begin)(__m), MATRIX_FN(end)(__m));
-    // return MATRIX_FN(iterate)(__m, MATITER_FN(sum));
+MATRIX_TYPE TYPED(sum)(const TYPED(Matrix) *__m) {
+    // return TYPED(MatIter_sum)(TYPED(Matrix_begin)(__m), TYPED(Matrix_end)(__m));
+    // return TYPED(Matrix_iterate)(__m, TYPED(MatIter_sum));
     MATRIX_TYPE somme = 0;
     MATRIX_TYPE *data = __m->data;
-    const size_t n = MATRIX_FN(size)(__m);
+    const size_t n = TYPED(Matrix_size)(__m);
     for (int i = 0; i < n; i++) {
         somme += data[i];
     }
     return somme;
 }
 
-MATRIX_TYPE TYPED_FN(std)(const MATRIX_T *__m) {
-    // return MATITER_FN(std)(MATRIX_FN(begin)(__m), MATRIX_FN(end)(__m));
-    return MATRIX_FN(iterate)(__m, MATITER_FN(std));
+MATRIX_TYPE TYPED(std)(const TYPED(Matrix) *__m) {
+    // return TYPED(MatIter_std)(TYPED(Matrix_begin)(__m), TYPED(Matrix_end)(__m));
+    return TYPED(Matrix_iterate)(__m, TYPED(MatIter_std));
 }
 
-MATRIX_TYPE TYPED_FN(var)(const MATRIX_T *__m) {
-    // return MATITER_FN(std)(MATRIX_FN(begin)(__m), MATRIX_FN(end)(__m));
-    return MATRIX_FN(iterate)(__m, MATITER_FN(var));
+MATRIX_TYPE TYPED(var)(const TYPED(Matrix) *__m) {
+    // return TYPED(MatIter_std)(TYPED(Matrix_begin)(__m), TYPED(Matrix_end)(__m));
+    return TYPED(Matrix_iterate)(__m, TYPED(MatIter_var));
 }
 
-MATRIX_TYPE TYPED_FN(min)(const MATRIX_T *__m) {
-    // return MATITER_FN(std)(MATRIX_FN(begin)(__m), MATRIX_FN(end)(__m));
-    return MATRIX_FN(iterate)(__m, MATITER_FN(min));
+MATRIX_TYPE TYPED(min)(const TYPED(Matrix) *__m) {
+    // return TYPED(MatIter_std)(TYPED(Matrix_begin)(__m), TYPED(Matrix_end)(__m));
+    return TYPED(Matrix_iterate)(__m, TYPED(MatIter_min));
 }
 
-MATRIX_TYPE TYPED_FN(max)(const MATRIX_T *__m) {
-    // return MATITER_FN(std)(MATRIX_FN(begin)(__m), MATRIX_FN(end)(__m));
-    return MATRIX_FN(iterate)(__m, MATITER_FN(max));
+MATRIX_TYPE TYPED(max)(const TYPED(Matrix) *__m) {
+    // return TYPED(MatIter_std)(TYPED(Matrix_begin)(__m), TYPED(Matrix_end)(__m));
+    return TYPED(Matrix_iterate)(__m, TYPED(MatIter_max));
 }
 
-MATRIX_TYPE TYPED_FN(rms)(const MATRIX_T *__m) {
-    return MATRIX_FN(iterate)(__m, MATITER_FN(rms));
+MATRIX_TYPE TYPED(rms)(const TYPED(Matrix) *__m) {
+    return TYPED(Matrix_iterate)(__m, TYPED(MatIter_rms));
 }
 
-MATRIX_TYPE TYPED_FN(mean_squared)(const MATRIX_T *__m) {
-    return MATRIX_FN(iterate)(__m, MATITER_FN(mean_squared));
+MATRIX_TYPE TYPED(mean_squared)(const TYPED(Matrix) *__m) {
+    return TYPED(Matrix_iterate)(__m, TYPED(MatIter_mean_squared));
 }
 
-MATRIX_TYPE TYPED_FN(prod)(const MATRIX_T *__m) {
-    return MATRIX_FN(iterate)(__m, MATITER_FN(prod));
+MATRIX_TYPE TYPED(prod)(const TYPED(Matrix) *__m) {
+    return TYPED(Matrix_iterate)(__m, TYPED(MatIter_prod));
 }
 
 // Implement the `cor` function to compute the correlation coefficient between two points
@@ -190,100 +190,100 @@ MATRIX_TYPE TYPED_FN(prod)(const MATRIX_T *__m) {
 // practice
 
 // We are just assuming that both of these are vectors with the same size
-// MATRIX_TYPE cor(const MATRIX_T *__a, const MATRIX_T *__b) {
+// MATRIX_TYPE cor(const TYPED(Matrix) *__a, const TYPED(Matrix) *__b) {
 
-//     if (! (MATRIX_FN(is_vec)(__a) && MATRIX_FN(is_vec)(__b))) return -1; // If they arent both vectors
+//     if (! (TYPED(Matrix_is_vec)(__a) && TYPED(Matrix_is_vec)(__b))) return -1; // If they arent both vectors
 
 //     // make sure their sizes are the same
-//     if (VECTOR_FN(size)(__a) != VECTOR_FN(size)(__b)) return -2;
+//     if (TYPED(Vector_size)(__a) != TYPED(Vector_size)(__b)) return -2;
 
 //     // First we need to find the average of __a and __b
 
-//     MATRIX_TYPE mean_a = TYPED_FN(mean)(__a);
-//     MATRIX_TYPE mean_b = TYPED_FN(mean)(__b);
+//     MATRIX_TYPE mean_a = TYPED(mean)(__a);
+//     MATRIX_TYPE mean_b = TYPED(mean)(__b);
 
 //     // Now we need to compute The sum of x minus the mean and the sum
 //     // of y minus its mean
-//     Vector *a_min_mean = MATRIX_FN(sub_scalar)(__a, mean_a);
-//     Vector *b_min_mean = MATRIX_FN(sub_scalar)(__b, mean_b);
+//     TYPED(Vector)*a_min_mean = TYPED(Matrix_sub_scalar)(__a, mean_a);
+//     TYPED(Vector)*b_min_mean = TYPED(Matrix_sub_scalar)(__b, mean_b);
 
-//     Vector *num_arr = MATRIX_FN(hadamard)(a_min_mean, b_min_mean);
+//     TYPED(Vector)*num_arr = TYPED(Matrix_hadamard)(a_min_mean, b_min_mean);
 
-//     MATRIX_TYPE num = TYPED_FN(sum)(num_arr);
+//     MATRIX_TYPE num = TYPED(sum)(num_arr);
 //     MATRIX_TYPE den = std(__a) * std(__b);
 
 //     MATRIX_TYPE out = num / den;
 
-//     MATRIX_FN(free)(a_min_mean);
-//     MATRIX_FN(free)(b_min_mean);
-//     MATRIX_FN(free)(num_arr);
+//     TYPED(Matrix_free)(a_min_mean);
+//     TYPED(Matrix_free)(b_min_mean);
+//     TYPED(Matrix_free)(num_arr);
 
 //     return out;
 // }
-MATRIX_TYPE TYPED_FN(cov)(const MATRIX_T *__x, const MATRIX_T *__y) {
+MATRIX_TYPE TYPED(cov)(const TYPED(Matrix) *__x, const TYPED(Matrix) *__y) {
 
 
-    if (! (MATRIX_FN(is_vec)(__x) && MATRIX_FN(is_vec)(__y))) return -1; // If they arent both vectors
+    if (! (TYPED(Matrix_is_vec)(__x) && TYPED(Matrix_is_vec)(__y))) return -1; // If they arent both vectors
 
-    if (VECTOR_FN(size)(__x) != VECTOR_FN(size)(__y)) return -2;
+    if (TYPED(Vector_size)(__x) != TYPED(Vector_size)(__y)) return -2;
 
-    MATRIX_TYPE mean_x = TYPED_FN(mean)(__x);
-    MATRIX_TYPE mean_y = TYPED_FN(mean)(__y);
+    MATRIX_TYPE mean_x = TYPED(mean)(__x);
+    MATRIX_TYPE mean_y = TYPED(mean)(__y);
 
-    Vector *x_min_mean = MATRIX_FN(sub_scalar)(__x, mean_x);
-    Vector *y_min_mean = MATRIX_FN(sub_scalar)(__y, mean_y);
+    TYPED(Vector)*x_min_mean = TYPED(Matrix_sub_scalar)(__x, mean_x);
+    TYPED(Vector)*y_min_mean = TYPED(Matrix_sub_scalar)(__y, mean_y);
 
-    Vector *num_arr = MATRIX_FN(hadamard)(x_min_mean, y_min_mean);
+    TYPED(Vector)*num_arr = TYPED(Matrix_hadamard)(x_min_mean, y_min_mean);
 
-    MATRIX_TYPE out = TYPED_FN(sum)(num_arr) / VECTOR_FN(size)(num_arr);
+    MATRIX_TYPE out = TYPED(sum)(num_arr) / TYPED(Vector_size)(num_arr);
 
-    MATRIX_FN(free)(x_min_mean);
-    MATRIX_FN(free)(y_min_mean);
-    MATRIX_FN(free)(num_arr);
+    TYPED(Matrix_free)(x_min_mean);
+    TYPED(Matrix_free)(y_min_mean);
+    TYPED(Matrix_free)(num_arr);
 
     return out;
 }
 
 // Attempt to compute the correlation coefficient by using standard scores
-MATRIX_TYPE TYPED_FN(cor)(const MATRIX_T *__a, const MATRIX_T *__b) {
+MATRIX_TYPE TYPED(cor)(const TYPED(Matrix) *__a, const TYPED(Matrix) *__b) {
 
-    if (! (MATRIX_FN(is_vec)(__a) && MATRIX_FN(is_vec)(__b))) return -1; // If they arent both vectors
+    if (! (TYPED(Matrix_is_vec)(__a) && TYPED(Matrix_is_vec)(__b))) return -1; // If they arent both vectors
 
     // make sure their sizes are the same
-    if (VECTOR_FN(size)(__a) != VECTOR_FN(size)(__b)) return -2;
+    if (TYPED(Vector_size)(__a) != TYPED(Vector_size)(__b)) return -2;
 
     // Now we need to compute The sum of x minus the mean and the sum
     // of y minus its mean
-    return TYPED_FN(cov)(__a, __b) / (TYPED_FN(std)(__a) * TYPED_FN(std)(__b));
+    return TYPED(cov)(__a, __b) / (TYPED(std)(__a) * TYPED(std)(__b));
 }
 
 // Find the kth central moment
-MATRIX_TYPE TYPED_FN(cmoment)(const Vector *__v, int __k) {
+MATRIX_TYPE TYPED(cmoment)(const TYPED(Vector)*__v, int __k) {
 
     // Take the hadamard product of __v minus its mean.
     // Then take the sum and divide by n
-    MATRIX_TYPE u_v = TYPED_FN(mean)(__v);
-    Vector *v_min_uv = MATRIX_FN(sub_scalar)(__v, u_v);
+    MATRIX_TYPE u_v = TYPED(mean)(__v);
+    TYPED(Vector)*v_min_uv = TYPED(Matrix_sub_scalar)(__v, u_v);
 
     // take the kth hadamard exponential
-    MAT_FN(hadexp)(v_min_uv, __k);
+    TYPED(mathadexp)(v_min_uv, __k);
 
-    MATRIX_TYPE out = TYPED_FN(sum)(v_min_uv) / VECTOR_FN(size)(__v);
+    MATRIX_TYPE out = TYPED(sum)(v_min_uv) / TYPED(Vector_size)(__v);
 
-    MATRIX_FN(free)(v_min_uv);
+    TYPED(Matrix_free)(v_min_uv);
 
     return out;
 }
 
-MATRIX_TYPE TYPED_FN(rmoment)(const Vector *__v, int __k) {
+MATRIX_TYPE TYPED(rmoment)(const TYPED(Vector)*__v, int __k) {
 
-    Vector *v = MATRIX_FN(clone)(__v);
+    TYPED(Vector)*v = TYPED(Matrix_clone)(__v);
 
-    MAT_FN(hadexp)(v, __k);
+    TYPED(mathadexp)(v, __k);
 
-    MATRIX_TYPE out = TYPED_FN(sum)(v) / VECTOR_FN(size)(__v);
+    MATRIX_TYPE out = TYPED(sum)(v) / TYPED(Vector_size)(__v);
 
-    MATRIX_FN(free)(v);
+    TYPED(Matrix_free)(v);
 
     return out;
 }
@@ -291,51 +291,51 @@ MATRIX_TYPE TYPED_FN(rmoment)(const Vector *__v, int __k) {
 // Let's do a simple linear regression with respect to an x and y variable
 // Return a matrix whose elements are the coefficients a_0, a_1, a_n for an nth
 // degree polynomial
-Vector *TYPED_FN(linear_regression)(const Vector *__x, const Vector *__y) {
-    return TYPED_FN(least_squares)(__x, __y, 1);
+ TYPED(Vector)*TYPED(linear_regression)(const TYPED(Vector)*__x, const TYPED(Vector)*__y) {
+    return TYPED(least_squares)(__x, __y, 1);
 }
 
-Vector *TYPED_FN(least_squares)(const Vector *__x, const Vector *__y, int degree) {
+ TYPED(Vector)*TYPED(least_squares)(const TYPED(Vector)*__x, const TYPED(Vector)*__y, int degree) {
 
-    MATRIX_T *V = MATRIX_FN(vandermonde_reduced)(__x, degree);
-    MATRIX_T *Vt = MATRIX_FN(transpose)(V);
-    Vector *y_hat = MATRIX_FN(multiply)(Vt, __y);
-    MATRIX_T *lhs = MATRIX_FN(multiply)(Vt, V);
+    TYPED(Matrix) *V = TYPED(Matrix_vandermonde_reduced)(__x, degree);
+    TYPED(Matrix) *Vt = TYPED(Matrix_transpose)(V);
+    TYPED(Vector)*y_hat = TYPED(Matrix_multiply)(Vt, __y);
+    TYPED(Matrix) *lhs = TYPED(Matrix_multiply)(Vt, V);
 
-    MATRIX_FN(reset)(&V);
-    MATRIX_FN(reset)(&Vt);
+    TYPED(Matrix_reset)(&V);
+    TYPED(Matrix_reset)(&Vt);
 
-    Vector *a = MATRIX_FN(solve_lu)(lhs, y_hat);
+    TYPED(Vector)*a = TYPED(Matrix_solve_lu)(lhs, y_hat);
 
-    MATRIX_FN(reset)(&y_hat);
-    MATRIX_FN(reset)(&lhs);
+    TYPED(Matrix_reset)(&y_hat);
+    TYPED(Matrix_reset)(&lhs);
 
     return a;
 
 }
 
-Vector *TYPED_FN(loglog_regression)(const Vector *__x, const Vector *__y) {
+ TYPED(Vector)*TYPED(loglog_regression)(const TYPED(Vector)*__x, const TYPED(Vector)*__y) {
 
-    MATRIX_T *logx = TYPED_FN(map)(__x, log);
-    MATRIX_T *logy = TYPED_FN(map)(__y, log);
-    Vector *out = TYPED_FN(linear_regression)(logx, logy);
+    TYPED(Matrix) *logx = TYPED(map)(__x, log);
+    TYPED(Matrix) *logy = TYPED(map)(__y, log);
+    TYPED(Vector)*out = TYPED(linear_regression)(logx, logy);
 
-    MATRIX_FN(free)(logx);
-    MATRIX_FN(free)(logy);
+    TYPED(Matrix_free)(logx);
+    TYPED(Matrix_free)(logy);
 
     return out;
 }
 
 
-MATRIX_T *TYPED_FN(runif)(int n, double a, double b) {
-    return TYPED_FN(runif_gen)(n, a, b, DEFAULT_RNG);
+TYPED(Matrix) *TYPED(runif)(int n, double a, double b) {
+    return TYPED(runif_gen)(n, a, b, DEFAULT_RNG);
 }
 
 
 
-MATRIX_T *TYPED_FN(runif_gen)(int n, double a, double b, RNG_FN rng_fn) {
+TYPED(Matrix) *TYPED(runif_gen)(int n, double a, double b, RNG_FN rng_fn) {
 
-    MATRIX_T *out = MATRIX_FN(new)(1, n);
+    TYPED(Matrix) *out = TYPED(Matrix_new)(1, n);
 
     for (int i = 0; i < n; i++) {
         out->data[i] = unifd_rng(a, b, rng_fn);

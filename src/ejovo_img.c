@@ -1,14 +1,14 @@
 #include "ejovo_img.h"
 
 // Make sure that all of the matricese are the same size
-img_t *newImage(const MATRIX_T *r, const MATRIX_T *g, const MATRIX_T *b) {
+img_t *newImage(const Matrix_d *r, const Matrix_d *g, const Matrix_d *b) {
 
-    if (MATRIX_FN(comp_add)(r, g) && MATRIX_FN(comp_add)(g, b)) { // If they are all the same size
+    if (Matrix_comp_add_d(r, g) && Matrix_comp_add_d(g, b)) { // If they are all the same size
 
         img_t *img = (img_t*) malloc(sizeof(img_t));
-        img->r = MAT_FN(clone)(r);
-        img->g = MAT_FN(clone)(g);
-        img->b = MAT_FN(clone)(b); // Now I have my own copy and I can perform all the manipulations that I want
+        img->r = matclone_d(r);
+        img->g = matclone_d(g);
+        img->b = matclone_d(b); // Now I have my own copy and I can perform all the manipulations that I want
 
         return img;
 
@@ -27,16 +27,17 @@ size_t imageHeight(const img_t *img) {
 
 
 // Normalize via min_max (IN PLACE) a gray scale image from [min, max] to [0, 255]
-MATRIX_T *normalize_minmax(MATRIX_T *A) {
+// Take a DOUBLE MATRIX and return an INTEGER MATRIX
+Matrix_d *normalize_minmax(Matrix_d *A) {
     // find the min and the max
-    double low = TYPED_FN(min)(A);
-    double high = TYPED_FN(max)(A);
+    double low = min_d(A);
+    double high = max_d(A);
 
     FOREACH(A) {
         // *(atp(A, i)) = 
-        MAT_FN(setlin)(A, i, 255 * (at(A, i) - low) / (high - low));
+        Vector_set_d(A, i, 255 * (atd(A, i) - low) / (high - low));
     }
-    // MAT_FN(setind)()
+    // matsetind_i()
 }
 
 void writePPM(const img_t *img, const char *filename) {
@@ -56,15 +57,15 @@ void writePPM(const img_t *img, const char *filename) {
         uint8_t buffer[3]; // write 3 bytes at time
             ,
             // fill the buffer
-            buffer[0] = (int) MAT_FN(at)(img->r, i, j); // r value
-            buffer[1] = (int) MAT_FN(at)(img->g, i, j); 
-            buffer[2] = (int) MAT_FN(at)(img->b, i, j); 
+            buffer[0] = (int) matat_d(img->r, i, j); // r value
+            buffer[1] = (int) matat_d(img->g, i, j); 
+            buffer[2] = (int) matat_d(img->b, i, j); 
             // fwrite((void *) buffer, sizeof(uint8_t), 3, file);
             fprintf(file, "%c%c%c", buffer[0], buffer[1], buffer[2]);
 
         , 
         continue;
-    )
+    );
 
     fclose(file);
 

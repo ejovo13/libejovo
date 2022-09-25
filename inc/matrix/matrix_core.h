@@ -13,7 +13,7 @@
 /**
  * @brief Allocate the necessary space to store an m x n matrix.
  *
- * This low-level function makes two calls to malloc, one call to allocate the `MATRIX_T *` object itself
+ * This low-level function makes two calls to malloc, one call to allocate the `TYPED(Matrix) *` object itself
  * and a second call to allocate the `double *` array that stores the actual elements of our Matrix. This
  * routine performs no sanity checks and should rarely be used by the user. Instead, it is used by other
  * matrix constructors once the input has been validated.
@@ -23,11 +23,11 @@
  *
  * @param m Number of rows
  * @param n Number of columns
- * @return Matrix* A pointer to a newly allocated MATRIX_T object.
+ * @return Matrix* A pointer to a newly allocated TYPED(Matrix) object.
  */
-static inline MATRIX_T *MAT_FN(alloc)(size_t __nrows, size_t __ncols) {
+static inline TYPED(Matrix) *TYPED(matalloc)(size_t __nrows, size_t __ncols) {
 
-    MATRIX_T *x = (MATRIX_T *) malloc(sizeof(MATRIX_T));
+    TYPED(Matrix) *x = (TYPED(Matrix) *) malloc(sizeof(TYPED(Matrix)));
     MATRIX_TYPE *data = (MATRIX_TYPE *) malloc(sizeof(MATRIX_TYPE) * (__nrows * __ncols));
     x->data = data;
     x->nrows = __nrows;
@@ -37,17 +37,17 @@ static inline MATRIX_T *MAT_FN(alloc)(size_t __nrows, size_t __ncols) {
 }
 
 /**
- * @brief Create a 1 x 1 `MATRIX_T *` whose only element is the scalar `k`
+ * @brief Create a 1 x 1 `TYPED(Matrix) *` whose only element is the scalar `k`
  *
  * @param k
  * @return Matrix*
  */
-MATRIX_T *MAT_FN(vec)(double k);
+TYPED(Matrix) *TYPED(matvec)(double k);
 
-MATRIX_T *MAT_FN(anon)(int __count, ...);
+TYPED(Matrix) *TYPED(matanon)(int __count, ...);
 
 // low level function to literally just free both pointers
-static inline void MAT_FN(free)(MATRIX_T *__A) {
+static inline void TYPED(matfree)(TYPED(Matrix) *__A) {
     free(__A->data); // if data is null, don't call free on it!!!
     free(__A);
 }
@@ -55,13 +55,13 @@ static inline void MAT_FN(free)(MATRIX_T *__A) {
 /**
  * @brief Free all of the memory associated with A, verifying that the A and A->data are not null
  *
- * `MATRIX_FN(free)` will free the memory pointed to by A and the underlying data as well. However, `MATRIX_FN(free)` will
- * not set the pointer to NULL after it is called, which isn't best practice. Prefer to use `MATRIX_FN(reset)(&A)`, which
- * takes a pointer to a `MATRIX_T *`, setting the A to NULL after freeing the associated memory
+ * `TYPED(Matrix_free)` will free the memory pointed to by A and the underlying data as well. However, `TYPED(Matrix_free)` will
+ * not set the pointer to NULL after it is called, which isn't best practice. Prefer to use `TYPED(Matrix_reset)(&A)`, which
+ * takes a pointer to a `TYPED(Matrix) *`, setting the A to NULL after freeing the associated memory
  *
  * @param A
  */
-static inline void MATRIX_FN(free)(MATRIX_T *__A) {
+static inline void TYPED(Matrix_free)(TYPED(Matrix) *__A) {
     if (__A) {
         if (__A->data) free(__A->data);
         free(__A);
@@ -69,7 +69,7 @@ static inline void MATRIX_FN(free)(MATRIX_T *__A) {
 }
 
 // Free the memeory and set the pointer equal to NULL
-static inline void MATRIX_FN(reset)(MATRIX_T **__A_ptr) {
+static inline void TYPED(Matrix_reset)(TYPED(Matrix) **__A_ptr) {
     if (*__A_ptr) {
         if ((*__A_ptr)->data) free((*__A_ptr)->data);
         free (*__A_ptr);
@@ -78,10 +78,10 @@ static inline void MATRIX_FN(reset)(MATRIX_T **__A_ptr) {
     *__A_ptr = NULL;
 }
 
-MATRIX_T *MATRIX_FN(renew)(MATRIX_T *A, int m, int n);
+TYPED(Matrix) *TYPED(Matrix_renew)(TYPED(Matrix) *A, int m, int n);
 // Copy the bytes
 // this is a utility function and should not be used by the end user
-static inline bool MAT_FN(cpy)(MATRIX_T *restrict __dest, const MATRIX_T *restrict __src) {
+static inline bool TYPED(matcpy)(TYPED(Matrix) *restrict __dest, const TYPED(Matrix) *restrict __src) {
 
     // Copy the bytes of __src->data into __dest->data
     memcpy(__dest->data, __src->data, sizeof(MATRIX_TYPE)*(__src->nrows * __src->ncols));
@@ -94,79 +94,79 @@ static inline bool MAT_FN(cpy)(MATRIX_T *restrict __dest, const MATRIX_T *restri
     }
 }
 // copy the contents of matrix __src into __dest
-MATRIX_T * MAT_FN(clone)(const MATRIX_T *restrict __src);
+TYPED(Matrix) * TYPED(matclone)(const TYPED(Matrix) *restrict __src);
 
-// Catch an unnamed MATRIX_T pointer returned from the right side and store it in the
+// Catch an unnamed TYPED(Matrix) pointer returned from the right side and store it in the
 // lhs_ptr. Return the rhs
 // This Is useful for preventing memory leaks for expressions of the type A = A * B
-MATRIX_T *MATRIX_FN(catch)(MATRIX_T **__lhs_ptr, MATRIX_T *__anon_rhs);
+TYPED(Matrix) *TYPED(Matrix_catch)(TYPED(Matrix) **__lhs_ptr, TYPED(Matrix) *__anon_rhs);
 
 // Used to manage memory of anonymous Matrices that are the results of intermediate operations
-// FOr example MATRIX_FN(print)(MATRIX_FN(mult)(a, b))
+// FOr example TYPED(Matrix_print)(TYPED(Matrix_mult)(a, b))
 // will lead to a memory leak.
 // Instead, wrap the previous call with
-// MATRIX_FN(print)(MATRIX_FN(anon)(MATRIX_FN(mult)(a, b)));
+// TYPED(Matrix_print)(TYPED(Matrix_anon)(TYPED(Matrix_mult)(a, b)));
 // and finall, at the end of the program / scope call
-// MATRIX_FN(anon_free)
-MATRIX_T *MATRIX_FN(anon)(MATRIX_T *__anon_rhs);
+// TYPED(Matrix_anon_free)
+TYPED(Matrix) *TYPED(Matrix_anon)(TYPED(Matrix) *__anon_rhs);
 
 
-void MATRIX_FN(anon_free)();
+void TYPED(Matrix_anon_free)();
 
-MATRIX_T *MATRIX_FN(transpose)(const MATRIX_T *m);
+TYPED(Matrix) *TYPED(Matrix_transpose)(const TYPED(Matrix) *m);
 
 /**================================================================================================
  *!                                        Assignment Operator
  *================================================================================================**/
-// I'd like to make the statement A = MATRIX_FN(take)(A, M); allow the matrix A to point to the data
+// I'd like to make the statement A = TYPED(Matrix_take)(A, M); allow the matrix A to point to the data
 // of matrix M, and then to free the other matrix
 
-MATRIX_T *MATRIX_FN(shallow_copy)(const MATRIX_T *rhs);
+TYPED(Matrix) *TYPED(Matrix_shallow_copy)(const TYPED(Matrix) *rhs);
 
 // This function has a FATAL FLAW since it does not deallocate the matrix that is potentially being stored in the left hand side!!
-MATRIX_T *MATRIX_FN(take)(MATRIX_T *rhs);
+TYPED(Matrix) *TYPED(Matrix_take)(TYPED(Matrix) *rhs);
 
 
 
 
 /**================================================================================================
- *!                                        MATRIX_T Constructors
+ *!                                        TYPED(Matrix) Constructors
  *================================================================================================**/
 
-MATRIX_T * MATRIX_FN(new)(int nrows, int ncols);
+TYPED(Matrix) * TYPED(Matrix_new)(int nrows, int ncols);
 
 // when given an ordinary array, construct a matrix from it, taking the prrevious memory.
 // MOVE should only be called with arrays that are allocated on the heap so that that is no
 // array jank that happens as a side effect.
-MATRIX_T *MATRIX_FN(move)(MATRIX_TYPE **arr_ptr, size_t nrows, size_t ncols);
+TYPED(Matrix) *TYPED(Matrix_move)(MATRIX_TYPE **arr_ptr, size_t nrows, size_t ncols);
 
 // When given an array, clone the array (copy its memory)
-MATRIX_T *MATRIX_FN(from)(const MATRIX_TYPE *arr, size_t nrows, size_t ncols);
+TYPED(Matrix) *TYPED(Matrix_from)(const MATRIX_TYPE *arr, size_t nrows, size_t ncols);
 
 // When creating vectors we can just go ahead and memcpy the data!
-MATRIX_T *MATRIX_FN(colvec)(const MATRIX_TYPE *arr, size_t nrows);
+TYPED(Matrix) *TYPED(Matrix_colvec)(const MATRIX_TYPE *arr, size_t nrows);
 
-MATRIX_T *MATRIX_FN(rowvec)(const MATRIX_TYPE *arr, size_t ncols);
+TYPED(Matrix) *TYPED(Matrix_rowvec)(const MATRIX_TYPE *arr, size_t ncols);
 
-MATRIX_T * MATRIX_FN(clone)(const MATRIX_T *restrict src);
+TYPED(Matrix) * TYPED(Matrix_clone)(const TYPED(Matrix) *restrict src);
 
 // matrix of all ones
-MATRIX_T * MATRIX_FN(ones)(size_t nrows, size_t ncols);
+TYPED(Matrix) * TYPED(Matrix_ones)(size_t nrows, size_t ncols);
 
-MATRIX_T * MATRIX_FN(ij)(size_t nrows, size_t ncols);
+TYPED(Matrix) * TYPED(Matrix_ij)(size_t nrows, size_t ncols);
 
-Vector *TYPED_FN(linspace)(MATRIX_TYPE start, MATRIX_TYPE end, int N);
+ TYPED(Vector)*TYPED(linspace)(MATRIX_TYPE start, MATRIX_TYPE end, int N);
 
-Vector *TYPED_FN(range)(int start, int end, int diff);
+ TYPED(Vector)*TYPED(range)(int start, int end, int diff);
 
-MATRIX_TYPE TYPED_FN(raisedBy10)(MATRIX_TYPE input); // used as a utility function for logspace
+MATRIX_TYPE TYPED(raisedBy10)(MATRIX_TYPE input); // used as a utility function for logspace
 
 // use base 10
-Vector *TYPED_FN(logspace)(double start, double end, int n);
+ TYPED(Vector)*TYPED(logspace)(double start, double end, int n);
 
-Vector *VECTOR_FN(linspace)(MATRIX_TYPE start, MATRIX_TYPE end, int N);
+ TYPED(Vector)*TYPED(Vector_linspace)(MATRIX_TYPE start, MATRIX_TYPE end, int N);
 
-Vector *VECTOR_FN(range)(double start, int end, int diff);
+ TYPED(Vector)*TYPED(Vector_range)(double start, int end, int diff);
 
 
 
@@ -176,37 +176,37 @@ Vector *VECTOR_FN(range)(double start, int end, int diff);
  * @param n
  * @return Matrix*
  */
-MATRIX_T *MATRIX_FN(diagonal)(size_t n);
+TYPED(Matrix) *TYPED(Matrix_diagonal)(size_t n);
 
-MATRIX_T *MATRIX_FN(tridiagonal)(size_t n);
+TYPED(Matrix) *TYPED(Matrix_tridiagonal)(size_t n);
 
-MATRIX_T * MATRIX_FN(value)(size_t nrows, size_t ncols, MATRIX_TYPE value);
+TYPED(Matrix) * TYPED(Matrix_value)(size_t nrows, size_t ncols, MATRIX_TYPE value);
 
 // MUST INITIALIZE EJOVO_SEED TO GET RANDOM VALUES
-MATRIX_T * MATRIX_FN(random)(size_t nrows, size_t ncols, int min, int max);
+TYPED(Matrix) * TYPED(Matrix_random)(size_t nrows, size_t ncols, int min, int max);
 
-MATRIX_T * MATRIX_FN(rand)(size_t nrows, size_t ncols);
+TYPED(Matrix) * TYPED(Matrix_rand)(size_t nrows, size_t ncols);
 
-MATRIX_T * MATRIX_FN(identity)(size_t n);
+TYPED(Matrix) * TYPED(Matrix_identity)(size_t n);
 
 /**================================================================================================
  *!                                        Miscellaneous
  *================================================================================================**/
-void MAT_FN(print)(const MATRIX_T *m);
+void TYPED(matprint)(const TYPED(Matrix) *m);
 
-void MATRIX_FN(print)(const MATRIX_T *m);
+void TYPED(Matrix_print)(const TYPED(Matrix) *m);
 
-void VECTOR_FN(print_head)(const MATRIX_T *m, int n);
+void TYPED(Vector_print_head)(const TYPED(Matrix) *m, int n);
 
 // Print in the; iter style
-void MATRIX_FN(print_iter)(const MATRIX_T *m);
+void TYPED(Matrix_print_iter)(const TYPED(Matrix) *m);
 
-void MATRIX_FN(summary)(const MATRIX_T *m);
+void TYPED(Matrix_summary)(const TYPED(Matrix) *m);
 
-void MATRIX_FN(print_all_digits)(const MATRIX_T *m);
+void TYPED(Matrix_print_all_digits)(const TYPED(Matrix) *m);
 
-void MATRIX_FN(print_fixed)(const MATRIX_T *m);
+void TYPED(Matrix_print_fixed)(const TYPED(Matrix) *m);
 
-MATRIX_T *MATRIX_FN(id)(size_t m, size_t n);
+TYPED(Matrix) *TYPED(Matrix_id)(size_t m, size_t n);
 
 #endif

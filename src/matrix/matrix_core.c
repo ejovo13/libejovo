@@ -1,10 +1,10 @@
 // matrix_core.c contains essential functions
 // that deal with the creation, destruction and setting of matrix elements
 
-#include "ejovo_matrix_generic.h"
-// #include "ejovo_matrix.h"
+// #include "ejovo_matrix_matrix.h"
+#include "ejovo_matrix.h"
 
-MATRIX_T *TYPED(g_ANON) = NULL;
+TYPED(Matrix) *TYPED(g_ANON) = NULL;
 
 #ifdef FIRST_COMPILATION_PASS
 // #undef FIRST_COMPILATION_PASS
@@ -25,9 +25,9 @@ MATRIX_T *TYPED(g_ANON) = NULL;
 
 
 // // perform literally 0 checks, just allocate the space for a new matrix
-// MATRIX_T *MAT_FN(alloc)(size_t __nrows, size_t __ncols) {
+// TYPED(Matrix) *TYPED(matalloc)(size_t __nrows, size_t __ncols) {
 
-//     MATRIX_T *x = (MATRIX_T *) malloc(sizeof(Matrix));
+//     TYPED(Matrix) *x = (TYPED(Matrix) *) malloc(sizeof(Matrix));
 //     MATRIX_TYPE *data = (MATRIX_TYPE *) malloc(sizeof(MATRIX_TYPE) * (__nrows * __ncols));
 //     x->data = data;
 //     x->nrows = __nrows;
@@ -36,22 +36,22 @@ MATRIX_T *TYPED(g_ANON) = NULL;
 //     return x;
 // }
 
-MATRIX_T *MAT_FN(vec)(double __k) {
+TYPED(Matrix) *TYPED(matvec)(double __k) {
 
-    MATRIX_T *x = MAT_FN(alloc)(1, 1);
+    TYPED(Matrix) *x = TYPED(matalloc)(1, 1);
     x->data[0] = __k;
     return x;
 }
 
 // Let's use a new variadic function called anon to instantiate a new anonymous matrix that should get slotted for immediate
 // removal. -- This could easily lead to concurrency issues FYI
-MATRIX_T *MAT_FN(anon)(int __count, ...) {
+TYPED(Matrix) *TYPED(matanon)(int __count, ...) {
 
     va_list ptr;
     va_start(ptr, __count);
 
     // allocate a new vector with the alloted elements;
-    Vector *v = MAT_FN(alloc)(__count, 1);
+    TYPED(Vector)*v = TYPED(matalloc)(__count, 1);
 
 
     double next = va_arg(ptr, double);
@@ -64,19 +64,19 @@ MATRIX_T *MAT_FN(anon)(int __count, ...) {
         next = va_arg(ptr, double);
     }
 
-    MATRIX_FN(anon)(v);
+    TYPED(Matrix_anon)(v);
 
     return v;
 }
 
 // low level function to literally just free both pointers
-// inline void MAT_FN(free)(MATRIX_T *__A) {
+// inline void TYPED(matfree)(TYPED(Matrix) *__A) {
 //     free(__A->data); // if data is null, don't call free on it!!!
 //     free(__A);
 // }
 
 // // Free the memory associated with the matrix and then free the pointer itself
-// inline void MATRIX_FN(free)(MATRIX_T *__A) {
+// inline void TYPED(Matrix_free)(TYPED(Matrix) *__A) {
 //     if (__A) {
 //         if (__A->data) free(__A->data);
 //         free(__A);
@@ -84,7 +84,7 @@ MATRIX_T *MAT_FN(anon)(int __count, ...) {
 // }
 
 // // Free the memeory and set the pointer equal to NULL
-// inline void MATRIX_FN(reset)(MATRIX_T **__A_ptr) {
+// inline void TYPED(Matrix_reset)(TYPED(Matrix) **__A_ptr) {
 //     if (*__A_ptr) {
 //         if ((*__A_ptr)->data) free((*__A_ptr)->data);
 //         free (*__A_ptr);
@@ -94,13 +94,13 @@ MATRIX_T *MAT_FN(anon)(int __count, ...) {
 // }
 
 // set all of the elements of __A to 0
-MATRIX_T *MATRIX_FN(clean)(MATRIX_T *__A) {
-    MATRIX_FN(fill)(__A, 0);
+TYPED(Matrix) *TYPED(Matrix_clean)(TYPED(Matrix) *__A) {
+    TYPED(Matrix_fill)(__A, 0);
 }
 
 // Copy the bytes
 // this is a utility function and should not be used by the end user
-// inline bool MAT_FN(cpy)(MATRIX_T *restrict __dest, const MATRIX_T *restrict __src) {
+// inline bool TYPED(matcpy)(TYPED(Matrix) *restrict __dest, const TYPED(Matrix) *restrict __src) {
 
     // Copy the bytes of __src->data into __dest->data
     // memcpy(__dest->data, __src->data, sizeof(MATRIX_TYPE)*(__src->nrows * __src->ncols));
@@ -114,22 +114,22 @@ MATRIX_T *MATRIX_FN(clean)(MATRIX_T *__A) {
 // }
 
 // copy the contents of matrix __src into __dest
-MATRIX_T * MAT_FN(clone)(const MATRIX_T *restrict __src) {
+TYPED(Matrix) * TYPED(matclone)(const TYPED(Matrix) *restrict __src) {
 
-    MATRIX_T * clone = NULL;
+    TYPED(Matrix) * clone = NULL;
 
-    clone = MATRIX_FN(new)(__src->nrows, __src->ncols);
+    clone = TYPED(Matrix_new)(__src->nrows, __src->ncols);
     if (clone) {
-        MAT_FN(cpy)(clone, __src);
+        TYPED(matcpy)(clone, __src);
     }
 
     return clone;
 }
 
-// Catch an unnamed MATRIX_T pointer returned from the right side and store it in the
+// Catch an unnamed TYPED(Matrix) pointer returned from the right side and store it in the
 // __lhs_ptr. Return the __rhs
 // This Is useful for preventing memory leaks for expressions of the type A = A * B
-MATRIX_T *MATRIX_FN(catch)(MATRIX_T **__lhs_ptr, MATRIX_T *__anon_rhs) {
+TYPED(Matrix) *TYPED(Matrix_catch)(TYPED(Matrix) **__lhs_ptr, TYPED(Matrix) *__anon_rhs) {
     if (*__lhs_ptr) {
         if ((*__lhs_ptr)->data)
             free((*__lhs_ptr)->data);
@@ -141,13 +141,13 @@ MATRIX_T *MATRIX_FN(catch)(MATRIX_T **__lhs_ptr, MATRIX_T *__anon_rhs) {
 }
 
 // Used to manage memory of anonymous Matrices that are the results of intermediate operations
-// FOr example MATRIX_FN(print)(MATRIX_FN(mult)(a, b))
+// FOr example TYPED(Matrix_print)(TYPED(Matrix_mult)(a, b))
 // will lead to a memory leak.
 // Instead, wrap the previous call with
-// MATRIX_FN(print)(MATRIX_FN(anon)(MATRIX_FN(mult)(a, b)));
+// TYPED(Matrix_print)(TYPED(Matrix_anon)(TYPED(Matrix_mult)(a, b)));
 // and finall, at the end of the program / scope call
-// MATRIX_FN(anon_free)
-MATRIX_T *MATRIX_FN(anon)(MATRIX_T *__anon_rhs) {
+// TYPED(Matrix_anon_free)
+TYPED(Matrix) *TYPED(Matrix_anon)(TYPED(Matrix) *__anon_rhs) {
     if (TYPED(g_ANON)) {
         if (TYPED(g_ANON)->data) free(TYPED(g_ANON)->data);
         free (TYPED(g_ANON));
@@ -157,25 +157,25 @@ MATRIX_T *MATRIX_FN(anon)(MATRIX_T *__anon_rhs) {
     return __anon_rhs;
 }
 
-void MATRIX_FN(anon_free)() {
-    MATRIX_FN(anon)(NULL);
+void TYPED(Matrix_anon_free)() {
+    TYPED(Matrix_anon)(NULL);
 }
 
-MATRIX_T *MATRIX_FN(transpose)(const MATRIX_T *__m) {
+TYPED(Matrix) *TYPED(Matrix_transpose)(const TYPED(Matrix) *__m) {
 
-    MATRIX_T *mt = MAT_FN(alloc)(__m->ncols, __m->nrows);
+    TYPED(Matrix) *mt = TYPED(matalloc)(__m->ncols, __m->nrows);
 
 
     for (size_t i = 0; i < __m->ncols; i++) {
 
-        MATITER_T m_it = MATRIX_FN(col_begin)(__m, i);
-        MATITER_T m_end = MATRIX_FN(col_end)(__m, i);
+        TYPED(MatIter) m_it = TYPED(Matrix_col_begin)(__m, i);
+        TYPED(MatIter) m_end = TYPED(Matrix_col_end)(__m, i);
 
-        MATITER_T mt_end = MATRIX_FN(row_end)(mt, i);
-        MATITER_T mt_it = MATRIX_FN(row_begin)(mt, i);
+        TYPED(MatIter) mt_end = TYPED(Matrix_row_end)(mt, i);
+        TYPED(MatIter) mt_it = TYPED(Matrix_row_begin)(mt, i);
 
-        for (m_it; !MATITER_FN(cmp)(m_it, m_end); m_it = MATITER_FN(next)(m_it), mt_it = MATITER_FN(next)(mt_it)) {
-            MATITER_FN(set)(mt_it, MATITER_FN(value)(m_it));
+        for (m_it; !TYPED(MatIter_cmp)(m_it, m_end); m_it = TYPED(MatIter_next)(m_it), mt_it = TYPED(MatIter_next)(mt_it)) {
+            TYPED(MatIter_set)(mt_it, TYPED(MatIter_value)(m_it));
         }
     }
 
@@ -185,12 +185,12 @@ MATRIX_T *MATRIX_FN(transpose)(const MATRIX_T *__m) {
 /**================================================================================================
  *!                                        Assignment Operator
  *================================================================================================**/
-// I'd like to make the statement A = MATRIX_FN(take)(A, M); allow the matrix A to point to the data
+// I'd like to make the statement A = TYPED(Matrix_take)(A, M); allow the matrix A to point to the data
 // of matrix M, and then to free the other matrix
 
-MATRIX_T *MATRIX_FN(shallow_copy)(const MATRIX_T *__rhs) {
+TYPED(Matrix) *TYPED(Matrix_shallow_copy)(const TYPED(Matrix) *__rhs) {
 
-    MATRIX_T *__lhs = (MATRIX_T *) malloc(sizeof(MATRIX_T ));
+    TYPED(Matrix) *__lhs = (TYPED(Matrix) *) malloc(sizeof(TYPED(Matrix) ));
 
     __lhs->data = __rhs->data;
     __lhs->ncols = __rhs->ncols;
@@ -201,9 +201,9 @@ MATRIX_T *MATRIX_FN(shallow_copy)(const MATRIX_T *__rhs) {
 }
 
 // This function has a FATAL FLAW since it does not deallocate the matrix that is potentially being stored in the left hand side!!
-MATRIX_T *MATRIX_FN(take)(MATRIX_T *__rhs) {
+TYPED(Matrix) *TYPED(Matrix_take)(TYPED(Matrix) *__rhs) {
 
-    MATRIX_T *__lhs = (MATRIX_T *) malloc(sizeof(MATRIX_T ));
+    TYPED(Matrix) *__lhs = (TYPED(Matrix) *) malloc(sizeof(TYPED(Matrix) ));
 
     __lhs->data = __rhs->data;
     __lhs->ncols = __rhs->ncols;
@@ -211,7 +211,7 @@ MATRIX_T *MATRIX_FN(take)(MATRIX_T *__rhs) {
 
     __rhs->data = NULL;
 
-    MATRIX_FN(free)(__rhs);
+    TYPED(Matrix_free)(__rhs);
     return __lhs;
 
 }
@@ -221,12 +221,12 @@ MATRIX_T *MATRIX_FN(take)(MATRIX_T *__rhs) {
 
 
 /**================================================================================================
- *!                                        MATRIX_T Constructors
+ *!                                        TYPED(Matrix) Constructors
  *================================================================================================**/
 
-MATRIX_T * MATRIX_FN(new)(int __nrows, int __ncols) {
+TYPED(Matrix) * TYPED(Matrix_new)(int __nrows, int __ncols) {
 
-    MATRIX_T *x = (MATRIX_T *) malloc(sizeof(MATRIX_T ));
+    TYPED(Matrix) *x = (TYPED(Matrix) *) malloc(sizeof(TYPED(Matrix) ));
 
     if(x) {
 
@@ -257,63 +257,63 @@ MATRIX_T * MATRIX_FN(new)(int __nrows, int __ncols) {
 // when given an ordinary array, construct a matrix from it, taking the prrevious memory.
 // MOVE should only be called with arrays that are allocated on the heap so that that is no
 // array jank that happens as a side effect.
-MATRIX_T *MATRIX_FN(move)(MATRIX_TYPE **__arr_ptr, size_t __nrows, size_t __ncols) {
-    MATRIX_T *m = (MATRIX_T *) malloc(sizeof(MATRIX_T ));
+TYPED(Matrix) *TYPED(Matrix_move)(MATRIX_TYPE **__arr_ptr, size_t __nrows, size_t __ncols) {
+    TYPED(Matrix) *m = (TYPED(Matrix) *) malloc(sizeof(TYPED(Matrix) ));
     m->ncols = __ncols;
     m->nrows = __nrows;
     m->data = *__arr_ptr;
 
-    printf("Address of arr_ptr inside MATRIX_FN(move): %p\n", __arr_ptr);
+    printf("Address of arr_ptr inside TYPED(Matrix_move): %p\n", __arr_ptr);
     printf("Address of m->data inside matrix: %p\n", m->data);
 
-    // MATRIX_FN(print)(m);
+    // TYPED(Matrix_print)(m);
 
     *__arr_ptr = NULL;
 
-    printf("Address of arr inside MATRIX_FN(move): %p\n", *__arr_ptr);
+    printf("Address of arr inside TYPED(Matrix_move): %p\n", *__arr_ptr);
 
     return m;
 }
 
 // When given an array, clone the array (copy its memory)
-MATRIX_T *MATRIX_FN(from)(const MATRIX_TYPE *__arr, size_t __nrows, size_t __ncols) {
+TYPED(Matrix) *TYPED(Matrix_from)(const MATRIX_TYPE *__arr, size_t __nrows, size_t __ncols) {
 
-    MATRIX_T *m = MAT_FN(alloc)(__nrows, __ncols);
+    TYPED(Matrix) *m = TYPED(matalloc)(__nrows, __ncols);
     memcpy(m->data, __arr, sizeof(MATRIX_TYPE) * (__nrows * __ncols));
 
     return m;
 }
 
 // When creating vectors we can just go ahead and memcpy the data!
-MATRIX_T *MATRIX_FN(colvec)(const MATRIX_TYPE *__arr, size_t __nrows) {
-    return MATRIX_FN(from)(__arr, __nrows, 1);
+TYPED(Matrix) *TYPED(Matrix_colvec)(const MATRIX_TYPE *__arr, size_t __nrows) {
+    return TYPED(Matrix_from)(__arr, __nrows, 1);
 }
 
-MATRIX_T *MATRIX_FN(rowvec)(const MATRIX_TYPE *__arr, size_t __ncols) {
-    return MATRIX_FN(from)(__arr, 1, __ncols);
+TYPED(Matrix) *TYPED(Matrix_rowvec)(const MATRIX_TYPE *__arr, size_t __ncols) {
+    return TYPED(Matrix_from)(__arr, 1, __ncols);
 }
 
-MATRIX_T * MATRIX_FN(clone)(const MATRIX_T *restrict __src) {
-    return MAT_FN(clone)(__src);
+TYPED(Matrix) * TYPED(Matrix_clone)(const TYPED(Matrix) *restrict __src) {
+    return TYPED(matclone)(__src);
 }
 
 // matrix of all ones
-MATRIX_T * MATRIX_FN(ones)(size_t __nrows, size_t __ncols) {
+TYPED(Matrix) * TYPED(Matrix_ones)(size_t __nrows, size_t __ncols) {
 
-    MATRIX_T * m = MATRIX_FN(new)(__nrows, __ncols);
-    MAT_FN(fill)(m, 1);
+    TYPED(Matrix) * m = TYPED(Matrix_new)(__nrows, __ncols);
+    TYPED(matfill)(m, 1);
 
     return m;
 
 }
 
-MATRIX_T * MATRIX_FN(ij)(size_t __nrows, size_t __ncols) {
+TYPED(Matrix) * TYPED(Matrix_ij)(size_t __nrows, size_t __ncols) {
 
-    MATRIX_T * m = MATRIX_FN(new)(__nrows, __ncols);
+    TYPED(Matrix) * m = TYPED(Matrix_new)(__nrows, __ncols);
     if(m) {
         for (size_t i = 0; i < __nrows; i++) {
             for (size_t j = 0; j < __ncols; j++) {
-                MAT_FN(set)(m, i, j, i + j + 1);
+                TYPED(matset)(m, i, j, i + j + 1);
             }
         }
     }
@@ -322,26 +322,26 @@ MATRIX_T * MATRIX_FN(ij)(size_t __nrows, size_t __ncols) {
 
 }
 
-Vector *VECTOR_FN(range)(double __start, int __end, int __diff) {
-    return TYPED_FN(range)(__start, __end, __diff);
+ TYPED(Vector)*TYPED(Vector_range)(double __start, int __end, int __diff) {
+    return TYPED(range)(__start, __end, __diff);
 }
 
-Vector *TYPED_FN(range)(int __start, int __end, int __diff) {
+ TYPED(Vector)*TYPED(range)(int __start, int __end, int __diff) {
 
     // first calculate how many elements there will be.
     int n = (__end - __start) / __diff + 1;
-    Vector *v = MATRIX_FN(new)(1, n);
+    TYPED(Vector)*v = TYPED(Matrix_new)(1, n);
 
     for (int i = 0; i < n; i++) {
-        VECTOR_FN(set)(v, i, __start + i * __diff);
+        TYPED(Vector_set)(v, i, __start + i * __diff);
     }
 
     return v;
 }
 
-Vector *TYPED_FN(linspace)(MATRIX_TYPE __start, MATRIX_TYPE __end, int __N) {
+ TYPED(Vector)*TYPED(linspace)(MATRIX_TYPE __start, MATRIX_TYPE __end, int __N) {
 
-    Vector *v = VECTOR_FN(linspace)(__start, __end, __N);
+    TYPED(Vector)*v = TYPED(Vector_linspace)(__start, __end, __N);
     int tmp = v->ncols;
     v->ncols = v->nrows;
     v->nrows = tmp;
@@ -349,31 +349,31 @@ Vector *TYPED_FN(linspace)(MATRIX_TYPE __start, MATRIX_TYPE __end, int __N) {
     return v;
 }
 
-MATRIX_TYPE TYPED_FN(raisedBy10)(MATRIX_TYPE __input) {
+MATRIX_TYPE TYPED(raisedBy10)(MATRIX_TYPE __input) {
     return pow(10, __input);
 }
 
 // use base 10
-Vector *TYPED_FN(logspace)(double __start, double __end, int __n) {
+ TYPED(Vector)*TYPED(logspace)(double __start, double __end, int __n) {
 
-    Vector *exp = TYPED_FN(linspace)(__start, __end, __n);
+    TYPED(Vector)*exp = TYPED(linspace)(__start, __end, __n);
 
-    Vector *out = VECTOR_FN(map)(exp, TYPED_FN(raisedBy10));
+    TYPED(Vector)*out = TYPED(Vector_map)(exp, TYPED(raisedBy10));
 
-    MATRIX_FN(free)(exp);
+    TYPED(Matrix_free)(exp);
 
     return out;
 }
 
-Vector *VECTOR_FN(linspace)(MATRIX_TYPE __start, MATRIX_TYPE __end, int __N) {
+ TYPED(Vector)*TYPED(Vector_linspace)(MATRIX_TYPE __start, MATRIX_TYPE __end, int __N) {
 
     MATRIX_TYPE difference = (__end - __start) / (__N - 1.0);
-    Vector *v = VECTOR_FN(new)(__N);
-    VECTOR_FN(set_first)(v, __start);
-    VECTOR_FN(set_last)(v, __end);
+    TYPED(Vector)*v = TYPED(Vector_new)(__N);
+    TYPED(Vector_set_first)(v, __start);
+    TYPED(Vector_set_last)(v, __end);
 
     for (int i = 1; i < __N - 1; i++) {
-        VECTOR_FN(set)(v, i, __start + difference * i);
+        TYPED(Vector_set)(v, i, __start + difference * i);
     }
 
     return v;
@@ -387,57 +387,57 @@ Vector *VECTOR_FN(linspace)(MATRIX_TYPE __start, MATRIX_TYPE __end, int __N) {
  * @param __n
  * @return Matrix*
  */
-MATRIX_T *MATRIX_FN(diagonal)(size_t __n) {
+TYPED(Matrix) *TYPED(Matrix_diagonal)(size_t __n) {
 
-    MATRIX_T *A = MATRIX_FN(new)(__n, __n);
+    TYPED(Matrix) *A = TYPED(Matrix_new)(__n, __n);
     for (size_t i = 0; i < __n; i++) {
-        MATRIX_FN(set)(A, i, i, unifi(1, 10));
+        TYPED(Matrix_set)(A, i, i, unifi(1, 10));
     }
 
     return A;
 
 }
 
-MATRIX_T *MATRIX_FN(tridiagonal)(size_t __n) {
+TYPED(Matrix) *TYPED(Matrix_tridiagonal)(size_t __n) {
 
-    MATRIX_T *A = MATRIX_FN(new)(__n, __n);
+    TYPED(Matrix) *A = TYPED(Matrix_new)(__n, __n);
 
-    MAT_FN(set)(A, 0, 0, unifi(1, 10));
-    MAT_FN(set)(A, 0, 1, unifi(1, 10));
+    TYPED(matset)(A, 0, 0, unifi(1, 10));
+    TYPED(matset)(A, 0, 1, unifi(1, 10));
 
     for (size_t i = 1; i < __n-1; i++) {
-        MAT_FN(set)(A, i, i - 1, unifi(1, 10));
-        MAT_FN(set)(A, i, i, unifi(1, 10));
-        MAT_FN(set)(A, i, i + 1, unifi(1, 10));
+        TYPED(matset)(A, i, i - 1, unifi(1, 10));
+        TYPED(matset)(A, i, i, unifi(1, 10));
+        TYPED(matset)(A, i, i + 1, unifi(1, 10));
     }
 
-    MAT_FN(set)(A, __n-1, __n-2, unifi(1, 10));
-    MAT_FN(set)(A, __n-1, __n-1, unifi(1, 10));
+    TYPED(matset)(A, __n-1, __n-2, unifi(1, 10));
+    TYPED(matset)(A, __n-1, __n-1, unifi(1, 10));
 
     return A;
 
 }
 
-MATRIX_T * MATRIX_FN(value)(size_t __nrows, size_t __ncols, MATRIX_TYPE __value) {
+TYPED(Matrix) * TYPED(Matrix_value)(size_t __nrows, size_t __ncols, MATRIX_TYPE __value) {
 
-    MATRIX_T * m = MATRIX_FN(new)(__nrows, __ncols);
-    MAT_FN(fill)(m, __value);
+    TYPED(Matrix) * m = TYPED(Matrix_new)(__nrows, __ncols);
+    TYPED(matfill)(m, __value);
 
     return m;
 }
 
 // MUST INITIALIZE EJOVO_SEED TO GET RANDOM VALUES
-MATRIX_T * MATRIX_FN(random)(size_t __nrows, size_t __ncols, int __min, int __max) {
+TYPED(Matrix) * TYPED(Matrix_random)(size_t __nrows, size_t __ncols, int __min, int __max) {
 
-    MATRIX_T * m = MATRIX_FN(new)(__nrows, __ncols);
+    TYPED(Matrix) * m = TYPED(Matrix_new)(__nrows, __ncols);
 
     // for (size_t i = 0; i < __nrows; i++) {
     //     for (size_t j = 0; j < __ncols; j++) {
-    //         MAT_FN(set)(m, i, j, unifi(__min, __max));
+    //         TYPED(matset)(m, i, j, unifi(__min, __max));
     //     }
     // }
     
-    for (int i = 0; i < MATRIX_FN(size)(m); i++) {
+    for (int i = 0; i < TYPED(Matrix_size)(m); i++) {
         m->data[i] = unifi(__min, __max);
     }
 
@@ -445,30 +445,30 @@ MATRIX_T * MATRIX_FN(random)(size_t __nrows, size_t __ncols, int __min, int __ma
 
 }
 
-MATRIX_T * MATRIX_FN(rand)(size_t __nrows, size_t __ncols) {
-    return MATRIX_FN(random)(__nrows, __ncols, 0, 10);
+TYPED(Matrix) * TYPED(Matrix_rand)(size_t __nrows, size_t __ncols) {
+    return TYPED(Matrix_random)(__nrows, __ncols, 0, 10);
 }
 
-MATRIX_T *MATRIX_FN(id)(size_t __m, size_t __n) {
+TYPED(Matrix) *TYPED(Matrix_id)(size_t __m, size_t __n) {
 
-    MATRIX_T *m = MATRIX_FN(new)(__m, __n);
+    TYPED(Matrix) *m = TYPED(Matrix_new)(__m, __n);
 
-    MATITER_T diag = MATRIX_FN(diag_begin)(m, 0);
-    const MATITER_T end = MATRIX_FN(diag_end)(m, 0);
+    TYPED(MatIter) diag = TYPED(Matrix_diag_begin)(m, 0);
+    const TYPED(MatIter) end = TYPED(Matrix_diag_end)(m, 0);
 
-    for (diag; !MATITER_FN(cmp)(diag, end); diag = MATITER_FN(next)(diag)) {
-        MATITER_FN(set)(diag, 1);
+    for (diag; !TYPED(MatIter_cmp)(diag, end); diag = TYPED(MatIter_next)(diag)) {
+        TYPED(MatIter_set)(diag, 1);
     }
 
     return m;
 }
 
-MATRIX_T * MATRIX_FN(identity)(size_t __n) {
+TYPED(Matrix) * TYPED(Matrix_identity)(size_t __n) {
 
-    MATRIX_T * m = MATRIX_FN(new)(__n, __n);
+    TYPED(Matrix) * m = TYPED(Matrix_new)(__n, __n);
 
     for (size_t i = 0; i < __n; i++) {
-        MAT_FN(set)(m, i, i, 1);
+        TYPED(matset)(m, i, i, 1);
     }
 
     return m;
@@ -484,11 +484,11 @@ MATRIX_T * MATRIX_FN(identity)(size_t __n) {
  *!                           Double
  *========================================================================**/
 // void matprintfloat(const Matrix_float *__m) {
-//         MATRIX_FN(summary)(__m);
+//         TYPED(Matrix_summary)(__m);
 //     for (size_t i = 0; i < __m->nrows; i++) {
 //         printf("| ");
 //         for (size_t j = 0; j < __m->ncols; j++) {
-//             printf("%4.4lf ", MAT_FN(at)(__m, i, j));
+//             printf("%4.4lf ", TYPED(matat)(__m, i, j));
 //         }
 
 //         printf("|\n");
@@ -497,13 +497,13 @@ MATRIX_T * MATRIX_FN(identity)(size_t __n) {
 // }
 
 
-void MAT_FN(print)(const MATRIX_T *__m) {
+void TYPED(matprint)(const TYPED(Matrix) *__m) {
 
-    MATRIX_FN(summary)(__m);
+    TYPED(Matrix_summary)(__m);
     for (size_t i = 0; i < __m->nrows; i++) {
         printf("| ");
         for (size_t j = 0; j < __m->ncols; j++) {
-            printf("%4.4lf ", MAT_FN(at)(__m, i, j));
+            printf("%4.4lf ", TYPED(matat)(__m, i, j));
         }
 
         printf("|\n");
@@ -511,54 +511,54 @@ void MAT_FN(print)(const MATRIX_T *__m) {
     }
 }
 
-void MATRIX_FN(print)(const MATRIX_T *__m) {
+void TYPED(Matrix_print)(const TYPED(Matrix) *__m) {
 
     if (!__m) {
-        printf("MATRIX_T is NULL.\n");
+        printf("TYPED(Matrix) is NULL.\n");
         return;
     }
 
-    MATRIX_FN(summary)(__m);
+    TYPED(Matrix_summary)(__m);
     for (size_t i = 0; i < __m->nrows; i++) {
         printf("| ");
         for (size_t j = 0; j < __m->ncols; j++) {
-            printf("%4.4lf ", MATRIX_FN(at)(__m, i, j));
+            printf("%4.4lf ", TYPED(Matrix_at)(__m, i, j));
         }
 
         printf("|\n");
     }
 }
 
-void MATRIX_FN(print_fixed)(const MATRIX_T *__m) {
+void TYPED(Matrix_print_fixed)(const TYPED(Matrix) *__m) {
 
     if (!__m) {
-        printf("MATRIX_T is NULL.\n");
+        printf("TYPED(Matrix) is NULL.\n");
         return;
     }
 
-    MATRIX_FN(summary)(__m);
+    TYPED(Matrix_summary)(__m);
     for (size_t i = 0; i < __m->nrows; i++) {
         printf("| ");
         for (size_t j = 0; j < __m->ncols; j++) {
-            printf("%16.8lf ", MATRIX_FN(at)(__m, i, j));
+            printf("%16.8lf ", TYPED(Matrix_at)(__m, i, j));
         }
 
         printf("|\n");
     }
 }
 
-void MATRIX_FN(print_all_digits)(const MATRIX_T *__m) {
+void TYPED(Matrix_print_all_digits)(const TYPED(Matrix) *__m) {
 
     if (!__m) {
-        printf("MATRIX_T is NULL.\n");
+        printf("TYPED(Matrix) is NULL.\n");
         return;
     }
 
-    MATRIX_FN(summary)(__m);
+    TYPED(Matrix_summary)(__m);
     for (size_t i = 0; i < __m->nrows; i++) {
         printf("| ");
         for (size_t j = 0; j < __m->ncols; j++) {
-            printf("%.16lf ", MATRIX_FN(at)(__m, i, j));
+            printf("%.16lf ", TYPED(Matrix_at)(__m, i, j));
         }
 
         printf("|\n");
@@ -566,22 +566,22 @@ void MATRIX_FN(print_all_digits)(const MATRIX_T *__m) {
 }
 
 // Print in the {1, 2, 3} iter style
-void MATRIX_FN(print_iter)(const MATRIX_T *__m) {
-    MATITER_FN(print)(MATRIX_FN(begin)(__m), MATRIX_FN(end)(__m));
+void TYPED(Matrix_print_iter)(const TYPED(Matrix) *__m) {
+    TYPED(MatIter_print)(TYPED(Matrix_begin)(__m), TYPED(Matrix_end)(__m));
 }
 
-void MATRIX_FN(summary)(const MATRIX_T *__m) {
+void TYPED(Matrix_summary)(const TYPED(Matrix) *__m) {
     printf("%lu x %lu matrix\n", __m->nrows, __m->ncols);
 }
 
-void VECTOR_FN(print_head)(const MATRIX_T *__m, int __n) {
+void TYPED(Vector_print_head)(const TYPED(Matrix) *__m, int __n) {
 
-    int n = VECTOR_FN(size)(__m) < __n ? VECTOR_FN(size)(__m) : __n;
+    int n = TYPED(Vector_size)(__m) < __n ? TYPED(Vector_size)(__m) : __n;
 
-    MATRIX_FN(summary)(__m);
+    TYPED(Matrix_summary)(__m);
     printf("| ");
     for (size_t i = 0; i < n; i++) {
-        printf("%4.4lf ", VECTOR_FN(at)(__m, i));
+        printf("%4.4lf ", TYPED(Vector_at)(__m, i));
     }
     printf("|\n");
 

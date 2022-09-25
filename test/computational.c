@@ -7,30 +7,30 @@ int main() {
 
     printf("Sup bitch\n");
 
-    MATRIX_T *K = MATRIX_FN(K)(2);
-    MATRIX_FN(print)(K);
-    MATRIX_FN(free)(K);
+    Matrix_d *K = Matrix_K_d(2);
+    Matrix_print_d(K);
+    Matrix_free_d(K);
 
-    MATRIX_T *K5 = MATRIX_FN(K)(5);
-    MATRIX_FN(print)(K);
+    Matrix_d *K5 = Matrix_K_d(5);
+    Matrix_print_d(K);
 
-    MATRIX_T *K15 = MATRIX_FN(K)(15);
-    MATRIX_FN(print)(K15);
+    Matrix_d *K15 = Matrix_K_d(15);
+    Matrix_print_d(K15);
 
-    MATRIX_T *C5 = MATRIX_FN(C)(5);
-    MATRIX_FN(print)(C5);
+    Matrix_d *C5 = Matrix_C_d(5);
+    Matrix_print_d(C5);
 
-    MATRIX_T *T5 = MATRIX_FN(T)(5);
-    MATRIX_FN(print)(T5);
+    Matrix_d *T5 = Matrix_T_d(5);
+    Matrix_print_d(T5);
 
-    MATRIX_T *B5 = MATRIX_FN(B)(5);
-    MATRIX_FN(print)(B5);
+    Matrix_d *B5 = Matrix_B_d(5);
+    Matrix_print_d(B5);
 
-    MATRIX_FN(free)(K5);
-    MATRIX_FN(free)(K15);
-    MATRIX_FN(free)(C5);
-    MATRIX_FN(free)(T5);
-    MATRIX_FN(free)(B5);
+    Matrix_free_d(K5);
+    Matrix_free_d(K15);
+    Matrix_free_d(C5);
+    Matrix_free_d(T5);
+    Matrix_free_d(B5);
 
 
     return 0;

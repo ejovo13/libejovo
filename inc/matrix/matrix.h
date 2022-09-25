@@ -13,7 +13,7 @@
 
 /** @file
  *
- *  @brief Implement a MATRIX_T framework for performing basic Linear Algebra tasks
+ *  @brief Implement a TYPED(Matrix) framework for performing basic Linear Algebra tasks
  *
  *  In order to tackle the exercises prescribed in TP4, I decided to create a matrix framework to make my life
  *  easier when writing the matrix multiplication and determinant finding routines.
@@ -45,7 +45,7 @@ const extern double TWO_PI;
 const extern double HALF_PI;
 const extern double EPS;
 
-// MATRIX_FN(get)
+// TYPED(Matrix_get)
 // struct Matrix_complex;
 // struct Matrix_bool;
 
@@ -67,23 +67,23 @@ const extern double EPS;
 
 
 /**
- * @brief MATRIX_T structure that simulates a 2d matrix accessed by A(row, col).
+ * @brief TYPED(Matrix) structure that simulates a 2d matrix accessed by A(row, col).
  *
- * The MATRIX_T structure contains valuable information about the number of rows and number of columns
+ * The TYPED(Matrix) structure contains valuable information about the number of rows and number of columns
  * stored in order to perform necessary logistic checks at execution time.
  * For example, two matrices can be added to each other if and only if they are the same size; *
  */
-typedef struct MATRIX_T {
+typedef struct TYPED(Matrix) {
     MATRIX_TYPE *data; // SUPER IMPORTANT!!! I am declaring that the underlying data
                                 // is only ever accessed by one pointer! In terms of Rust,
                                 // data is the only owner of the matrix elements
     size_t nrows;
     size_t ncols;
-} MATRIX_T;
+} TYPED(Matrix);
 
 
 
-extern MATRIX_T *TYPED(g_ANON);
+extern TYPED(Matrix) *TYPED(g_ANON);
 
 // Iterate through a column, stopping when we've reached the final element
 /**
@@ -94,47 +94,47 @@ extern MATRIX_T *TYPED(g_ANON);
  *
  * For example:
  * ```C
- * MATRIX_T *m = MATRIX_FN(new)(10, 10);
- * ColIter *begin = MATRIX_FN(col_begin)(m, 2) // Create the begining iterator that points
+ * TYPED(Matrix) *m = TYPED(Matrix_new)(10, 10);
+ * ColIter *begin = TYPED(Matrix_col_begin)(m, 2) // Create the begining iterator that points
  *                                         // to the first element in m's third column
- * ColIter *end = MATRIX_FN(col_end)(m, 5);
+ * ColIter *end = TYPED(Matrix_col_end)(m, 5);
  * ```
  *
  * We can use `ColIter`s to compute the norm of a column more effectively
- * For example, the function `MATRIX_FN(col_norm)` makes use of `ColIter`s
+ * For example, the function `TYPED(Matrix_col_norm)` makes use of `ColIter`s
  *
  */
-typedef struct mat_col_iterator_t {
+typedef struct {
     MATRIX_TYPE *ptr;
     size_t ncols; //! This needs to be renamed to "diff" or something like that
 } TYPED(ColIter);
 
 // used to iterate through a row, although I suspect this will be used less than a column iterator
-typedef struct mat_row_iterator_t {
+typedef struct {
     MATRIX_TYPE *ptr;
     size_t ptr_diff; // pointer difference between elements in the same row
 } TYPED(RowIter);
 
-typedef struct mat_iterator_t {
+typedef struct {
     MATRIX_TYPE *ptr;
     size_t ptr_diff;
-} MATITER_T;
+} TYPED(MatIter);
 
 /**
  * A `Vector` is a `Matrix` that is either a column or row vector.
  * This typedef is used to express intent in the code.
- * For example, the function `VECTOR_FN(new)` will create a new
+ * For example, the function `TYPED(Vector_new)` will create a new
  * col vector when only passing one parameter, the desired number of
  * elements.
  *
  */
-typedef MATRIX_T Vector;
+typedef TYPED(Matrix) TYPED(Vector);
 typedef void (* TYPED(EDITOR)) (MATRIX_TYPE *); // A function that will modify the pointer foreach element
 typedef void (* TYPED(EDITOR_2)) (MATRIX_TYPE *, MATRIX_TYPE *); // A function that will modify the pointer foreach element
 typedef void (* TYPED(EDITOR_K)) (MATRIX_TYPE *, MATRIX_TYPE); // A function that will modify the pointer foreach element
 
 /**================================================================================================
- *!                                        MATRIX_T Mask functions
+ *!                                        TYPED(Matrix) Mask functions
  *================================================================================================**/
 // This mask API should allow me to set values according to a certain condition
 typedef bool (* TYPED(Mask)) (MATRIX_TYPE *); // A "Mask" is a pointer to a function that tests a condition
@@ -146,31 +146,31 @@ typedef bool (* TYPED(Mask)) (MATRIX_TYPE *); // A "Mask" is a pointer to a func
 // This can be constructed with a Mask Function
 
 /**================================================================================================
- *!                                        MATRIX_T Decompositions
+ *!                                        TYPED(Matrix) Decompositions
  *================================================================================================**/
 
 typedef struct {
-    MATRIX_T *L;
-    MATRIX_T *U;
+    TYPED(Matrix) *L;
+    TYPED(Matrix) *U;
 } TYPED(LU);
 
 typedef struct {
-    MATRIX_T *L;
-    MATRIX_T *U;
-    Vector *P;
+    TYPED(Matrix) *L;
+    TYPED(Matrix) *U;
+    TYPED(Vector)*P;
 } TYPED(LUP);
 
 typedef struct {
-    MATRIX_T *L;
-    MATRIX_T *D; // I need to encode a new matrix structure that is a diagonal
-    Vector *U;
+    TYPED(Matrix) *L;
+    TYPED(Matrix) *D; // I need to encode a new matrix structure that is a diagonal
+    TYPED(Vector)*U;
 } TYPED(LDU);
 
-typedef void (* TYPED(MatIterFn)) (MATITER_T);
-typedef void (* TYPED(MatIterFn_k)) (MATITER_T, MATRIX_TYPE);
-typedef void (* TYPED(MatIterFn_ptr)) (MATITER_T, const MATRIX_TYPE *);
-typedef void (* TYPED(MatIterFn_iter)) (MATITER_T, MATITER_T);
-typedef void (* TYPED(MatIterFn_iter_k)) (MATITER_T, MATITER_T, const MATRIX_TYPE);
+typedef void (* TYPED(MatIterFn)) (TYPED(MatIter));
+typedef void (* TYPED(MatIterFn_k)) (TYPED(MatIter), MATRIX_TYPE);
+typedef void (* TYPED(MatIterFn_ptr)) (TYPED(MatIter), const MATRIX_TYPE *);
+typedef void (* TYPED(MatIterFn_iter)) (TYPED(MatIter), TYPED(MatIter));
+typedef void (* TYPED(MatIterFn_iter_k)) (TYPED(MatIter), TYPED(MatIter), const MATRIX_TYPE);
 
 typedef void (* TYPED(ColIterFn)) (TYPED(ColIter) *);
 typedef void (* TYPED(ColIterFn_k)) (TYPED(ColIter )*, MATRIX_TYPE);
@@ -190,7 +190,7 @@ typedef MATRIX_TYPE (* TYPED(function)) (MATRIX_TYPE); // declare a function typ
  *========================================================================**/
 typedef bool (* TYPED(predicate_fn)) (MATRIX_TYPE); // used to filter out values
 
-typedef MATRIX_T Index;
+typedef TYPED(Matrix) TYPED(Index);
 
 // #endif // MATRIX_TYPE
 // #endif // TYPE_SUFFIX

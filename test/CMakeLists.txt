@@ -8,7 +8,7 @@ list(APPEND TESTS
     substr
     words
     matrix
-    lab
+    # lab
     complex
     mathad_speed
     matcopy
@@ -20,7 +20,7 @@ list(APPEND TESTS
     time
     pcg
     benchmark
-    img
+    # img
     # rand
 )
 

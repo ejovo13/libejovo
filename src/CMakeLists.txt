@@ -20,7 +20,7 @@ set (EJOVO_LIB
     ejovo_rand.c
     ejovo_string.c
     ejovo_input.c
-    ejovo_labyrinth.c
+    # ejovo_labyrinth.c
     ejovo_sort.c
     ejovo_comp.c
     ejovo_crypto.c
@@ -41,7 +41,7 @@ set (EJOVO_LIB_HEADERS
     ${INC}/ejovo_string.h
     ${INC}/ejovo_input.h
     ${INC}/ejovo_matrix.h
-    ${INC}/ejovo_labyrinth.h
+    # ${INC}/ejovo_labyrinth.h
     ${INC}/ejovo_list.h
     ${INC}/ejovo_sort.h
     ${INC}/ejovo_comp.h
@@ -72,6 +72,9 @@ set (EJOVO_MATRIX_HEADERS
     ${INC}/matrix/matrix_vector.h
     ${INC}/matrix/matrix_logical.h
     ${INC}/matrix/matrix.h
+    ${INC}/matrix/matrix_d.h
+    ${INC}/matrix/matrix_f.h
+    ${INC}/matrix/matrix_i.h
 )
 
 # set (PCG_HEADERS
@@ -91,7 +94,10 @@ message("Project: ${PROJECT_SOURCE_DIR}")
 add_subdirectory(matrix)
 
 add_library(ejovo STATIC ${EJOVO_LIB} $<TARGET_OBJECTS:ejovo_matrix_double>)
-                                    #   $<TARGET_OBJECTS:ejovo_matrix_int>
+# add_library(ejovo STATIC ${EJOVO_LIB} $<TARGET_OBJECTS:ejovo_matrix_int>)
+# add_library(ejovo STATIC ${EJOVO_LIB} $<TARGET_OBJECTS:ejovo_matrix_float>)
+# add_library(ejovo STATIC ${EJOVO_LIB} $<TARGET_OBJECTS:ejovo_matrix_double>
+                                    #   $<TARGET_OBJECTS:ejovo_matrix_int>)
                                     #   $<TARGET_OBJECTS:ejovo_matrix_float>)
 # target_link_libraries(ejovo PUBLIC ${PCG_RANDOM_LIBRARY})
 if (NOT WIN32)

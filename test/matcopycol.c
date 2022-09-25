@@ -9,31 +9,31 @@ int main() {
 
     ejovo_seed();
 
-    MATRIX_T *col_vector = MATRIX_FN(rand)(10, 1);
-    MATRIX_T *row_vector = MATRIX_FN(rand)(1, 10);
-    MATRIX_T *m = MATRIX_FN(rand)(13, 13);
+    Matrix_d *col_vector = Matrix_rand_d(10, 1);
+    Matrix_d *row_vector = Matrix_rand_d(1, 10);
+    Matrix_d *m = Matrix_rand_d(13, 13);
 
-    MATRIX_T *c1 = MATRIX_FN(get_col)(col_vector, 0);
-    MATRIX_T *r1 = MATRIX_FN(get_row)(row_vector, 0);
+    Matrix_d *c1 = Matrix_get_col_d(col_vector, 0);
+    Matrix_d *r1 = Matrix_get_row_d(row_vector, 0);
 
-    assert(MAT_FN(cmp)(c1, col_vector));
-    assert(MAT_FN(cmp)(r1, row_vector));
+    assert(matcmp_d(c1, col_vector));
+    assert(matcmp_d(r1, row_vector));
 
     printf("col_vector:\n");
-    MATRIX_FN(print)(col_vector);
+    Matrix_print_d(col_vector);
 
     printf("Clone:\n");
-    MATRIX_FN(print)(c1);
+    Matrix_print_d(c1);
 
     printf("row_vector:\n");
-    MATRIX_FN(print)(row_vector);
+    Matrix_print_d(row_vector);
 
     printf("Clone:\n");
-    MATRIX_FN(print)(r1);
+    Matrix_print_d(r1);
 
-    MATRIX_FN(print)(m);
+    Matrix_print_d(m);
 
-    MATRIX_FN(free)(c1);
-    MATRIX_FN(free)(m);
+    Matrix_free_d(c1);
+    Matrix_free_d(m);
     return 0;
 }

@@ -4,25 +4,25 @@ int main() {
 
     ejovo_seed();
 
-    // MATRIX_T *m = MATRIX_FN(random)(4, 4, 1, 10);
+    // Matrix_d *m = Matrix_random_d(4, 4, 1, 10);
 
-    MATRIX_T *m = MATRIX_FN(rnorm)(10, 10, 0, 1);
-    // Vector *v = TYPED_FN(vector)(4, 3.0, 5.0, 3.0, 4.0);
+    Matrix_d *m = Matrix_rnorm_d(10, 10, 0, 1);
+    // Vector_d*v = vector_d(4, 3.0, 5.0, 3.0, 4.0);
 
-    // MATRIX_FN(print)(v);
+    // Matrix_print_d(v);
 
-    // printf("max: %lf\n", TYPED_FN(max)(v));
-    // printf("index: %d\n", MATRIX_FN(col_max_index)(v, 0));
+    // printf("max: %lf\n", max_d(v));
+    // printf("index: %d\n", Matrix_col_max_index_d(v, 0));
 
-    MATRIX_FN(print_fixed)(m);
+    Matrix_print_fixed_d(m);
 
-    MATRIX_T *a = TYPED_FN(gausselim)(m, NULL);
+    Matrix_d *a = gausselim_d(m, NULL);
 
-    MATRIX_FN(print_fixed)(a);
+    Matrix_print_fixed_d(a);
 
-    // MATRIX_FN(print_all_digits)(a);
+    // Matrix_print_all_digits_d(a);
 
-    // MATRIX_FN(print_iter)(a);
+    // Matrix_print_iter_d(a);
 
     return 0;
 }

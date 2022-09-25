@@ -1,38 +1,38 @@
-#include "ejovo_matrix_generic.h"
-// #include "ejovo_matrix.h"
+// #include "ejovo_matrix_generic.h"
+#include "ejovo_matrix.h"
 
 // The identity function...
-MATRIX_TYPE TYPED_FN(Id)(MATRIX_TYPE x) {
+MATRIX_TYPE TYPED(Id)(MATRIX_TYPE x) {
     return x;
 }
 
-MATRIX_TYPE TYPED_FN(x_squared)(MATRIX_TYPE x) {
+MATRIX_TYPE TYPED(x_squared)(MATRIX_TYPE x) {
     return x * x;
 }
 
-MATRIX_TYPE TYPED_FN(x_cubed)(MATRIX_TYPE x) {
+MATRIX_TYPE TYPED(x_cubed)(MATRIX_TYPE x) {
     return x * x * x;
 }
 
 // If the predicate is costly, we should consider using the Logical matrix counterpart that
 // will filter using logical masks
-Vector *TYPED_FN(filter)(const Vector *__v, TYPED(predicate_fn) __pred) {
+ TYPED(Vector)*TYPED(filter)(const TYPED(Vector)*__v, TYPED(predicate_fn) __pred) {
 
     // First I need to pass through the vector to see how many times the predicate is true...
     int count = 0;
 
-    for (MATITER_T it = MATRIX_FN(begin)(__v); !MATITER_FN(cmp)(it, MATRIX_FN(end)(__v)); it = MATITER_FN(next)(it)) {
-        if (__pred(MATITER_FN(value)(it))) count++;
+    for (TYPED(MatIter) it = TYPED(Matrix_begin)(__v); !TYPED(MatIter_cmp)(it, TYPED(Matrix_end)(__v)); it = TYPED(MatIter_next)(it)) {
+        if (__pred(TYPED(MatIter_value)(it))) count++;
     }
 
-    Vector *out = MATRIX_FN(new)(1, count);
+    TYPED(Vector)*out = TYPED(Matrix_new)(1, count);
 
-    MATITER_T j = MATRIX_FN(begin)(out);
+    TYPED(MatIter) j = TYPED(Matrix_begin)(out);
 
-    for (MATITER_T it = MATRIX_FN(begin)(__v); !MATITER_FN(cmp)(it, MATRIX_FN(end)(__v)); it = MATITER_FN(next)(it)) {
-        if (__pred(MATITER_FN(value)(it))) {
-            MATITER_FN(set)(j, MATITER_FN(value)(it));
-            j = MATITER_FN(next)(j);
+    for (TYPED(MatIter) it = TYPED(Matrix_begin)(__v); !TYPED(MatIter_cmp)(it, TYPED(Matrix_end)(__v)); it = TYPED(MatIter_next)(it)) {
+        if (__pred(TYPED(MatIter_value)(it))) {
+            TYPED(MatIter_set)(j, TYPED(MatIter_value)(it));
+            j = TYPED(MatIter_next)(j);
         }
     }
 
@@ -40,67 +40,67 @@ Vector *TYPED_FN(filter)(const Vector *__v, TYPED(predicate_fn) __pred) {
 
 }
 
-Vector *TYPED_FN(filter_lt)(const Vector *__v, MATRIX_TYPE __cutoff) {
+ TYPED(Vector)*TYPED(filter_lt)(const TYPED(Vector)*__v, MATRIX_TYPE __cutoff) {
 
-    MATRIX_T *log = MATRIX_FN(lt)(__v, __cutoff);
+    TYPED(Matrix) *log = TYPED(Matrix_lt)(__v, __cutoff);
 
-    MATRIX_T *out = MATRIX_FN(logical_index)(__v, log);
+    TYPED(Matrix) *out = TYPED(Matrix_logical_index)(__v, log);
 
-    MATRIX_FN(reset)(&log);
-
-    return out;
-}
-
-Vector *TYPED_FN(filter_lteq)(const Vector *__v, MATRIX_TYPE __cutoff) {
-
-    MATRIX_T *log = MATRIX_FN(lteq)(__v, __cutoff);
-
-    MATRIX_T *out = MATRIX_FN(logical_index)(__v, log);
-
-    MATRIX_FN(reset)(&log);
-
-    return out;
-
-}
-
-Vector *TYPED_FN(filter_gt)(const Vector *__v, MATRIX_TYPE __cutoff) {
-
-    MATRIX_T *log = MATRIX_FN(gt)(__v, __cutoff);
-
-    MATRIX_T *out = MATRIX_FN(logical_index)(__v, log);
-
-    MATRIX_FN(reset)(&log);
+    TYPED(Matrix_reset)(&log);
 
     return out;
 }
 
-Vector *TYPED_FN(filter_gteq)(const Vector *__v, MATRIX_TYPE __cutoff) {
+ TYPED(Vector)*TYPED(filter_lteq)(const TYPED(Vector)*__v, MATRIX_TYPE __cutoff) {
 
-    MATRIX_T *log = MATRIX_FN(gteq)(__v, __cutoff);
+    TYPED(Matrix) *log = TYPED(Matrix_lteq)(__v, __cutoff);
 
-    MATRIX_T *out = MATRIX_FN(logical_index)(__v, log);
+    TYPED(Matrix) *out = TYPED(Matrix_logical_index)(__v, log);
 
-    MATRIX_FN(reset)(&log);
+    TYPED(Matrix_reset)(&log);
+
+    return out;
+
+}
+
+ TYPED(Vector)*TYPED(filter_gt)(const TYPED(Vector)*__v, MATRIX_TYPE __cutoff) {
+
+    TYPED(Matrix) *log = TYPED(Matrix_gt)(__v, __cutoff);
+
+    TYPED(Matrix) *out = TYPED(Matrix_logical_index)(__v, log);
+
+    TYPED(Matrix_reset)(&log);
 
     return out;
 }
 
-Vector *TYPED_FN(filter_if_not)(const Vector *__v, TYPED(predicate_fn) __pred) {
+ TYPED(Vector)*TYPED(filter_gteq)(const TYPED(Vector)*__v, MATRIX_TYPE __cutoff) {
+
+    TYPED(Matrix) *log = TYPED(Matrix_gteq)(__v, __cutoff);
+
+    TYPED(Matrix) *out = TYPED(Matrix_logical_index)(__v, log);
+
+    TYPED(Matrix_reset)(&log);
+
+    return out;
+}
+
+ TYPED(Vector)*TYPED(filter_if_not)(const TYPED(Vector)*__v, TYPED(predicate_fn) __pred) {
 
     int count = 0;
 
-    for (MATITER_T it = MATRIX_FN(begin)(__v); !MATITER_FN(cmp)(it, MATRIX_FN(end)(__v)); it = MATITER_FN(next)(it)) {
-        if (!__pred(MATITER_FN(value)(it))) count++;
+    for (TYPED(MatIter) it = TYPED(Matrix_begin)(__v); !TYPED(MatIter_cmp)(it, TYPED(Matrix_end)(__v)); it = TYPED(MatIter_next)(it)) {
+        if (!__pred(TYPED(MatIter_value)(it))) count++;
     }
 
-    Vector *out = MATRIX_FN(new)(1, count);
+    TYPED(Vector)*out = TYPED(Matrix_new)(1, count);
 
-    MATITER_T j = MATRIX_FN(begin)(out);
+    TYPED(MatIter) j = TYPED(Matrix_begin)(out);
 
-    for (MATITER_T it = MATRIX_FN(begin)(__v); !MATITER_FN(cmp)(it, MATRIX_FN(end)(__v)); it = MATITER_FN(next)(it)) {
-        if (!__pred(MATITER_FN(value)(it))) {
-            MATITER_FN(set)(j, MATITER_FN(value)(it));
-            j = MATITER_FN(next)(j);
+    for (TYPED(MatIter) it = TYPED(Matrix_begin)(__v); !TYPED(MatIter_cmp)(it, TYPED(Matrix_end)(__v)); it = TYPED(MatIter_next)(it)) {
+        if (!__pred(TYPED(MatIter_value)(it))) {
+            TYPED(MatIter_set)(j, TYPED(MatIter_value)(it));
+            j = TYPED(MatIter_next)(j);
         }
     }
 
@@ -109,18 +109,18 @@ Vector *TYPED_FN(filter_if_not)(const Vector *__v, TYPED(predicate_fn) __pred) {
 }
 
 // Apply a function that takes a MATRIX_TYPE and returns a MATRIX_TYPE to the contents of a matrix
-MATRIX_T *TYPED_FN(map)(const MATRIX_T *__m, TYPED(function) fn) {
+TYPED(Matrix) *TYPED(map)(const TYPED(Matrix) *__m, TYPED(function) fn) {
 
-    // MATRIX_T *dup = MAT_FN(alloc)(__m->nrows, __m->ncols);
-    MATRIX_T *dup = MAT_FN(clone)(__m);
-    return TYPED_FN(apply)(dup, fn);
+    // TYPED(Matrix) *dup = TYPED(matalloc)(__m->nrows, __m->ncols);
+    TYPED(Matrix) *dup = TYPED(matclone)(__m);
+    return TYPED(apply)(dup, fn);
 }
 
 // Apply a Double -> Double function to all of the elements of __m, modifying it in place.
 // Then return a pointer to __m
-MATRIX_T *TYPED_FN(apply)(MATRIX_T *__m, TYPED(function) fn) {
+TYPED(Matrix) *TYPED(apply)(TYPED(Matrix) *__m, TYPED(function) fn) {
 
-    const size_t n = MATRIX_FN(size)(__m);
+    const size_t n = TYPED(Matrix_size)(__m);
     for (size_t i = 0; i < n; i++) {
         __m->data[i] = fn(__m->data[i]);
     }
@@ -131,47 +131,47 @@ MATRIX_T *TYPED_FN(apply)(MATRIX_T *__m, TYPED(function) fn) {
 // These functions should only operate on VECTORS
 // Actually, I think I'm thinking about this wrong. These can operate on matrices but they
 // will always return vectors because we can't preserve the size
-MATRIX_TYPE TYPED_FN(head)(const MATRIX_T *__m) {
-    return MATRIX_FN(at)(__m, 0, 0);
+MATRIX_TYPE TYPED(head)(const TYPED(Matrix) *__m) {
+    return TYPED(Matrix_at)(__m, 0, 0);
 }
 
-Vector *TYPED_FN(tail)(const MATRIX_T *__m) {
+ TYPED(Vector)*TYPED(tail)(const TYPED(Matrix) *__m) {
 
     // If the size of the matrix is 1, return null;
-    if (MATRIX_FN(size)(__m) <= 1) return NULL;
+    if (TYPED(Matrix_size)(__m) <= 1) return NULL;
 
-    MATRIX_T *new = VECTOR_FN(new)(MATRIX_FN(size)(__m) - 1);
+    TYPED(Matrix) *new = TYPED(Vector_new)(TYPED(Matrix_size)(__m) - 1);
 
     // Start iterating at the second value
-    MATITER_T it = MATITER_FN(next)(MATRIX_FN(begin)(__m));
-    MATITER_T new_it = MATRIX_FN(begin)(new);
-    MATITER_T end = MATRIX_FN(end)(__m);
+    TYPED(MatIter) it = TYPED(MatIter_next)(TYPED(Matrix_begin)(__m));
+    TYPED(MatIter) new_it = TYPED(Matrix_begin)(new);
+    TYPED(MatIter) end = TYPED(Matrix_end)(__m);
 
-    for (it; !MATITER_FN(cmp)(it, end); it = MATITER_FN(next)(it), new_it = MATITER_FN(next)(new_it)) {
-        MATITER_FN(set)(new_it, MATITER_FN(value)(it));
+    for (it; !TYPED(MatIter_cmp)(it, end); it = TYPED(MatIter_next)(it), new_it = TYPED(MatIter_next)(new_it)) {
+        TYPED(MatIter_set)(new_it, TYPED(MatIter_value)(it));
     }
 
     return new;
 }
 
-MATRIX_TYPE TYPED_FN(last)(const MATRIX_T *__m) {
-    return MATRIX_FN(last)(__m);
+MATRIX_TYPE TYPED(last)(const TYPED(Matrix) *__m) {
+    return TYPED(Matrix_last)(__m);
 }
 
-// return the initial part of a Vector; TYPED_FN(init)([A]:An) -> [A]
-Vector *TYPED_FN(init)(const MATRIX_T *__m) {
-    if (MATRIX_FN(size)(__m) <= 1) return NULL;
+// return the initial part of a Vector; TYPED(init)([A]:An) -> [A]
+ TYPED(Vector)*TYPED(init)(const TYPED(Matrix) *__m) {
+    if (TYPED(Matrix_size)(__m) <= 1) return NULL;
 
-    MATRIX_T *new = VECTOR_FN(new)(MATRIX_FN(size)(__m) - 1);
+    TYPED(Matrix) *new = TYPED(Vector_new)(TYPED(Matrix_size)(__m) - 1);
 
     // Start iterating at the first value, end from the second to last
-    MATITER_T it = MATITER_FN(next)(MATRIX_FN(begin)(__m));
-    MATITER_T new_it = MATRIX_FN(begin)(new);
-    MATITER_T end = MATRIX_FN(end)(__m);
+    TYPED(MatIter) it = TYPED(MatIter_next)(TYPED(Matrix_begin)(__m));
+    TYPED(MatIter) new_it = TYPED(Matrix_begin)(new);
+    TYPED(MatIter) end = TYPED(Matrix_end)(__m);
     end.ptr = end.ptr - end.ptr_diff;
 
-    for (it; !MATITER_FN(cmp)(it, end); it = MATITER_FN(next)(it), new_it = MATITER_FN(next)(new_it)) {
-        MATITER_FN(set)(new_it, MATITER_FN(value)(it));
+    for (it; !TYPED(MatIter_cmp)(it, end); it = TYPED(MatIter_next)(it), new_it = TYPED(MatIter_next)(new_it)) {
+        TYPED(MatIter_set)(new_it, TYPED(MatIter_value)(it));
     }
 
     return new;

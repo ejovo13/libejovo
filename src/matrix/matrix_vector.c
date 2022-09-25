@@ -1,20 +1,20 @@
 // Function definitions for conceptualizing Matrices as column vectors
 
-#include "ejovo_matrix_generic.h"
-// #include "ejovo_matrix.h"
+// #include "ejovo_matrix_generic.h"
+#include "ejovo_matrix.h"
 
 /**================================================================================================
  *!                                        Constructors
  *================================================================================================**/
 
 
-Vector *TYPED_FN(vector)(int __count, ...) {
+ TYPED(Vector)*TYPED(vector)(int __count, ...) {
 
     va_list ptr;
     va_start(ptr, __count);
 
     // allocate a new vector with the alloted elements;
-    Vector *v = MAT_FN(alloc)(__count, 1);
+    TYPED(Vector)*v = TYPED(matalloc)(__count, 1);
 
 
     MATRIX_TYPE next = va_arg(ptr, MATRIX_TYPE);
@@ -31,160 +31,160 @@ Vector *TYPED_FN(vector)(int __count, ...) {
 }
 
 // Default to making a column vector
-Vector *VECTOR_FN(new)(size_t __nrows) {
-    return MATRIX_FN(new)(__nrows, 1);
+ TYPED(Vector)*TYPED(Vector_new)(size_t __nrows) {
+    return TYPED(Matrix_new)(__nrows, 1);
 }
 
-Vector *VECTOR_FN(ones)(size_t __nrows) {
-    return MATRIX_FN(ones)(__nrows, 1);
+ TYPED(Vector)*TYPED(Vector_ones)(size_t __nrows) {
+    return TYPED(Matrix_ones)(__nrows, 1);
 }
 
-Vector *VECTOR_FN(from_iter)(MATITER_T __begin, MATITER_T __end) {
-    size_t len = MATITER_FN(length)(__begin, __end);
-    Vector *v = VECTOR_FN(new)(len);
+ TYPED(Vector)*TYPED(Vector_from_iter)(TYPED(MatIter) __begin, TYPED(MatIter) __end) {
+    size_t len = TYPED(MatIter_length)(__begin, __end);
+    TYPED(Vector)*v = TYPED(Vector_new)(len);
 
-    MATITER_FN(row_set_iter)(VECTOR_FN(begin)(v), VECTOR_FN(end)(v), __begin);
+    TYPED(MatIter_row_set_iter)(TYPED(Vector_begin)(v), TYPED(Vector_end)(v), __begin);
     return v;
 }
 
-Vector *VECTOR_FN(from)(const double* __arr, size_t __nrows) {
-    return MATRIX_FN(from)(__arr, __nrows, 1);
+ TYPED(Vector)*TYPED(Vector_from)(const double* __arr, size_t __nrows) {
+    return TYPED(Matrix_from)(__arr, __nrows, 1);
 }
 
 // Return a COLUMN vector whose elements are the row-major components of __m
-Vector *VECTOR_FN(from_matrix)(const MATRIX_T *__m) {
-    return VECTOR_FN(as_col)(__m);
+ TYPED(Vector)*TYPED(Vector_from_matrix)(const TYPED(Matrix) *__m) {
+    return TYPED(Vector_as_col)(__m);
 }
 
-Vector *VECTOR_FN(clone)(const Vector *__v) {
-    return MATRIX_FN(clone)(__v);
+ TYPED(Vector)*TYPED(Vector_clone)(const TYPED(Vector)*__v) {
+    return TYPED(Matrix_clone)(__v);
 }
 
-Vector *VECTOR_FN(as_col)(const Vector *__v) {
-    Vector *v = VECTOR_FN(clone)(__v);
-    return TYPED_FN(ascol)(v);
+ TYPED(Vector)*TYPED(Vector_as_col)(const TYPED(Vector)*__v) {
+    TYPED(Vector)*v = TYPED(Vector_clone)(__v);
+    return TYPED(ascol)(v);
 }
 
-Vector *VECTOR_FN(as_row)(const Vector *__v) {
-    Vector *v = VECTOR_FN(clone)(__v);
-    return TYPED_FN(asrow)(v);
+ TYPED(Vector)*TYPED(Vector_as_row)(const TYPED(Vector)*__v) {
+    TYPED(Vector)*v = TYPED(Vector_clone)(__v);
+    return TYPED(asrow)(v);
 }
 
-Vector *VECTOR_FN(rand)(size_t __nrows) {
-    return MATRIX_FN(rand)(__nrows, 1);
+ TYPED(Vector)*TYPED(Vector_rand)(size_t __nrows) {
+    return TYPED(Matrix_rand)(__nrows, 1);
 }
 
-Vector *VECTOR_FN(random)(size_t __nrows, int __min, int __max) {
-    return MATRIX_FN(random)(__nrows, 1, __min, __max);
+ TYPED(Vector)*TYPED(Vector_random)(size_t __nrows, int __min, int __max) {
+    return TYPED(Matrix_random)(__nrows, 1, __min, __max);
 }
 
-void VECTOR_FN(free)(Vector *__v) {
-    MATRIX_FN(free)(__v);
+void TYPED(Vector_free)( TYPED(Vector)*__v) {
+    TYPED(Matrix_free)(__v);
 }
 
-void VECTOR_FN(reset)(Vector **__v) {
-    MATRIX_FN(reset)(__v);
+void TYPED(Vector_reset)( TYPED(Vector)**__v) {
+    TYPED(Matrix_reset)(__v);
 }
 
 
 /**================================================================================================
- *!                                        MATRIX_T to vec functions
+ *!                                        TYPED(Matrix) to vec functions
  *================================================================================================**/
-Vector *MATRIX_FN(as_col)(const MATRIX_T *__m) {
-    return VECTOR_FN(as_col)(__m);
+ TYPED(Vector)*TYPED(Matrix_as_col)(const TYPED(Matrix) *__m) {
+    return TYPED(Vector_as_col)(__m);
 }
 
-Vector *MATRIX_FN(as_row)(const MATRIX_T *__m) {
-    return VECTOR_FN(as_row)(__m);
+ TYPED(Vector)*TYPED(Matrix_as_row)(const TYPED(Matrix) *__m) {
+    return TYPED(Vector_as_row)(__m);
 }
 
 
 /**================================================================================================
  *!                                        State Functions
  *================================================================================================**/
-size_t VECTOR_FN(size)(const Vector *__v) {
-    if (MATRIX_FN(is_col)(__v)) return __v->nrows;
+size_t TYPED(Vector_size)(const TYPED(Vector)*__v) {
+    if (TYPED(Matrix_is_col)(__v)) return __v->nrows;
     else return __v->ncols;
 }
 
-void VECTOR_FN(set)(Vector *__v, size_t __pos, MATRIX_TYPE __val) {
-    if (MATRIX_FN(is_col)(__v)) MATRIX_FN(set)(__v, __pos, 0, __val); else MATRIX_FN(set)(__v, 0, __pos, __val);
+void TYPED(Vector_set)( TYPED(Vector)*__v, size_t __pos, MATRIX_TYPE __val) {
+    if (TYPED(Matrix_is_col)(__v)) TYPED(Matrix_set)(__v, __pos, 0, __val); else TYPED(Matrix_set)(__v, 0, __pos, __val);
 }
 
-void VECTOR_FN(set_first)(Vector *__v, MATRIX_TYPE __val) {
-    VECTOR_FN(set)(__v, 0, __val);
+void TYPED(Vector_set_first)( TYPED(Vector)*__v, MATRIX_TYPE __val) {
+    TYPED(Vector_set)(__v, 0, __val);
 }
 
-void VECTOR_FN(set_last)(Vector *__v, MATRIX_TYPE __val) {
-    VECTOR_FN(set)(__v, VECTOR_FN(size)(__v) - 1, __val);
+void TYPED(Vector_set_last)( TYPED(Vector)*__v, MATRIX_TYPE __val) {
+    TYPED(Vector_set)(__v, TYPED(Vector_size)(__v) - 1, __val);
 }
 
-MATRIX_TYPE VECTOR_FN(first)(const Vector *__v) {
-    return MAT_FN(at)(__v, 0, 0);
+MATRIX_TYPE TYPED(Vector_first)(const TYPED(Vector)*__v) {
+    return TYPED(matat)(__v, 0, 0);
 }
 
-MATRIX_TYPE VECTOR_FN(last)(const Vector *__v) {
-    return VECTOR_FN(at)(__v, VECTOR_FN(size)(__v) - 1);
+MATRIX_TYPE TYPED(Vector_last)(const TYPED(Vector)*__v) {
+    return TYPED(Vector_at)(__v, TYPED(Vector_size)(__v) - 1);
 }
 
 /**================================================================================================
- *!                                        Vector iterator functions
+ *!                                        TYPED(Vector)iterator functions
  *================================================================================================**/
-MATITER_T VECTOR_FN(begin)(const Vector *__v) {
-    return MATITER_FN(new)(MAT_FN(acc)(__v, 0, 0), 1);
+TYPED(MatIter) TYPED(Vector_begin)(const TYPED(Vector)*__v) {
+    return TYPED(MatIter_new)(TYPED(matacc)(__v, 0, 0), 1);
 }
 
-MATITER_T VECTOR_FN(end)(const Vector *__v) {
-    return MATITER_FN(new)(VECTOR_FN(access)(__v, VECTOR_FN(size)(__v)), 1);
+TYPED(MatIter) TYPED(Vector_end)(const TYPED(Vector)*__v) {
+    return TYPED(MatIter_new)(TYPED(Vector_access)(__v, TYPED(Vector_size)(__v)), 1);
 }
 
-MATITER_T VECTOR_FN(iter)(const Vector *__v, size_t __i) {
-    MATITER_T it = {.ptr = VECTOR_FN(access)(__v, __i), .ptr_diff = 1};
+TYPED(MatIter) TYPED(Vector_iter)(const TYPED(Vector)*__v, size_t __i) {
+    TYPED(MatIter) it = {.ptr = TYPED(Vector_access)(__v, __i), .ptr_diff = 1};
     return it;
 }
 
-MATRIX_TYPE VECTOR_FN(at)(const Vector *__v, size_t __i) {
-    if (MATRIX_FN(is_col)(__v)) return MAT_FN(at)(__v, __i, 0);
-    else return MAT_FN(at)(__v, 0, __i);
+MATRIX_TYPE TYPED(Vector_at)(const TYPED(Vector)*__v, size_t __i) {
+    if (TYPED(Matrix_is_col)(__v)) return TYPED(matat)(__v, __i, 0);
+    else return TYPED(matat)(__v, 0, __i);
 }
 
-MATRIX_TYPE *VECTOR_FN(access)(const Vector *__v, size_t __i) {
-    if (MATRIX_FN(is_col)(__v)) return MAT_FN(acc)(__v, __i, 0);
-    else return MAT_FN(acc)(__v, 0, __i);
+MATRIX_TYPE *TYPED(Vector_access)(const TYPED(Vector)*__v, size_t __i) {
+    if (TYPED(Matrix_is_col)(__v)) return TYPED(matacc)(__v, __i, 0);
+    else return TYPED(matacc)(__v, 0, __i);
 }
 
 // More abstract, functional pattern "map"
 // apply a function to the objects of a
-Vector *VECTOR_FN(map)(const Vector *__v, TYPED(function) __fn) {
-    Vector *v_mapped = MATRIX_FN(clone)(__v);
-    for (int i = 0; i < VECTOR_FN(size)(__v); i++) {
-        VECTOR_FN(set)(v_mapped, i, __fn(VECTOR_FN(at)(__v, i)));
+ TYPED(Vector)*TYPED(Vector_map)(const TYPED(Vector)*__v, TYPED(function) __fn) {
+    TYPED(Vector)*v_mapped = TYPED(Matrix_clone)(__v);
+    for (int i = 0; i < TYPED(Vector_size)(__v); i++) {
+        TYPED(Vector_set)(v_mapped, i, __fn(TYPED(Vector_at)(__v, i)));
     }
     return v_mapped;
 }
 
-MATRIX_TYPE VECTOR_FN(max)(const Vector *__v) {
-    return MATRIX_FN(iter_max)(__v);
+MATRIX_TYPE TYPED(Vector_max)(const TYPED(Vector)*__v) {
+    return TYPED(Matrix_iter_max)(__v);
 }
 
-MATRIX_TYPE VECTOR_FN(sum)(const Vector *__v) {
+MATRIX_TYPE TYPED(Vector_sum)(const TYPED(Vector)*__v) {
     MATRIX_TYPE sum = 0;
-    for (size_t i = 0; i < VECTOR_FN(size)(__v); i++) {
-        sum += VECTOR_FN(at)(__v, i);
+    for (size_t i = 0; i < TYPED(Vector_size)(__v); i++) {
+        sum += TYPED(Vector_at)(__v, i);
     }
     return sum;
 }
 
-void VECTOR_FN(print_as_row)(const Vector *__v) {
+void TYPED(Vector_print_as_row)(const TYPED(Vector)*__v) {
     printf("| ");
-    for (size_t i = 0; i < VECTOR_FN(size)(__v); i++) {
-        printf("%4.4lf ", VECTOR_FN(at)(__v, i));
+    for (size_t i = 0; i < TYPED(Vector_size)(__v); i++) {
+        printf("%4.4lf ", TYPED(Vector_at)(__v, i));
     }
     printf("|\n");
 }
 
 /**================================================================================================
- *!                                        Unary Vector Operators
+ *!                                        Unary TYPED(Vector)Operators
  *================================================================================================**/
 
 /**================================================================================================
@@ -192,55 +192,55 @@ void VECTOR_FN(print_as_row)(const Vector *__v) {
  *================================================================================================**/
 
 /**================================================================================================
- *!                                        Vector-Vector Operators
+ *!                                        Vector- TYPED(Vector)Operators
  *================================================================================================**/
 
 // Take the dot product of __u and __v in place, storing the results in u!
 // we are also just assuming that __u and __v are column (OR ROW) vectors of the same size
-MATRIX_TYPE TYPED_FN(vecdot)(const Vector *__u, const Vector *__v) {
+MATRIX_TYPE TYPED(vecdot)(const TYPED(Vector)*__u, const TYPED(Vector)*__v) {
     MATRIX_TYPE dot = 0;
     for (size_t i = 0; i < __u->nrows; i++) {
         for (size_t j = 0; j < __u->ncols; j++) {
-            dot += (*MAT_FN(acc)(__u, i, j)) * (*MAT_FN(acc)(__v, i, j));
+            dot += (*TYPED(matacc)(__u, i, j)) * (*TYPED(matacc)(__v, i, j));
         }
     }
     return dot;
 }
 
-MATRIX_TYPE VECTOR_FN(dot)(const Vector *__u, const Vector *__v) {
-    return VECTOR_FN(inner)(__u, __v);
+MATRIX_TYPE TYPED(Vector_dot)(const TYPED(Vector)*__u, const TYPED(Vector)*__v) {
+    return TYPED(Vector_inner)(__u, __v);
 }
 
-Vector *VECTOR_FN(hadamard)(const Vector *__u, const Vector *__v) {
+ TYPED(Vector)*TYPED(Vector_hadamard)(const TYPED(Vector)*__u, const TYPED(Vector)*__v) {
 
     // Create new matrix
-    Vector *new = VECTOR_FN(clone)(__u);
+    TYPED(Vector)*new = TYPED(Vector_clone)(__u);
 
-    MATITER_T u_it = VECTOR_FN(begin)(__u);
-    MATITER_T v_it = VECTOR_FN(begin)(__v);
-    MATITER_T new_it = VECTOR_FN(begin)(new);
+    TYPED(MatIter) u_it = TYPED(Vector_begin)(__u);
+    TYPED(MatIter) v_it = TYPED(Vector_begin)(__v);
+    TYPED(MatIter) new_it = TYPED(Vector_begin)(new);
 
-    const MATITER_T end = VECTOR_FN(end)(__u);
+    const TYPED(MatIter) end = TYPED(Vector_end)(__u);
 
-    for (u_it; !MATITER_FN(cmp)(u_it, end); u_it = MATITER_FN(next)(u_it), v_it = MATITER_FN(next)(v_it), new_it = MATITER_FN(next)(new_it)) {
-        MATITER_FN(set)(new_it, MATITER_FN(value)(u_it) * MATITER_FN(value)(v_it));
+    for (u_it; !TYPED(MatIter_cmp)(u_it, end); u_it = TYPED(MatIter_next)(u_it), v_it = TYPED(MatIter_next)(v_it), new_it = TYPED(MatIter_next)(new_it)) {
+        TYPED(MatIter_set)(new_it, TYPED(MatIter_value)(u_it) * TYPED(MatIter_value)(v_it));
     }
 
     return new;
 }
 
-MATRIX_TYPE VECTOR_FN(inner)(const Vector *__u, const Vector *__v) {
+MATRIX_TYPE TYPED(Vector_inner)(const TYPED(Vector)*__u, const TYPED(Vector)*__v) {
     // perform the appropriate checks
-    if (!MATRIX_FN(comp_add)(__u, __v)) {
+    if (!TYPED(Matrix_comp_add)(__u, __v)) {
         perror("Vectors are not compatible to take the inner product");
         return -1;
     }
 
-    return TYPED_FN(vecdot)(__u, __v);
+    return TYPED(vecdot)(__u, __v);
 }
 
 // Compute the outer product u * v_T
-MATRIX_T *VECTOR_FN(outer)(const Vector *__u, const Vector *__v) {
+TYPED(Matrix) *TYPED(Vector_outer)(const TYPED(Vector)*__u, const TYPED(Vector)*__v) {
 
     // This is really costly but fuck it I'm just gonna allocate two new vectors so I
     // dont have to footsy about with "is_col" logic
@@ -251,50 +251,50 @@ MATRIX_T *VECTOR_FN(outer)(const Vector *__u, const Vector *__v) {
 
     // But ima just do this:
 
-    Vector *u = VECTOR_FN(as_col)(__u);
-    Vector *v = VECTOR_FN(as_row)(__v);
+    TYPED(Vector)*u = TYPED(Vector_as_col)(__u);
+    TYPED(Vector)*v = TYPED(Vector_as_row)(__v);
 
-    MATRIX_T *out = MATRIX_FN(multiply)(u, v);
+    TYPED(Matrix) *out = TYPED(Matrix_multiply)(u, v);
 
-    MATRIX_FN(reset)(&u);
-    MATRIX_FN(reset)(&v);
+    TYPED(Matrix_reset)(&u);
+    TYPED(Matrix_reset)(&v);
 
     return out;
 }
 
-MATRIX_T *VECTOR_FN(orthogonal_projection)(const Vector *__v) {
+TYPED(Matrix) *TYPED(Vector_orthogonal_projection)(const TYPED(Vector)*__v) {
 
-    MATRIX_T *v_norm = VECTOR_FN(normalize)(__v);
+    TYPED(Matrix) *v_norm = TYPED(Vector_normalize)(__v);
 
-    MATRIX_T *outer = VECTOR_FN(outer)(v_norm, v_norm);
+    TYPED(Matrix) *outer = TYPED(Vector_outer)(v_norm, v_norm);
 
-    MATRIX_FN(reset)(&v_norm);
+    TYPED(Matrix_reset)(&v_norm);
 
     return outer;
 }
 
-Vector *TYPED_FN(vecproject)(const Vector *__v, const Vector *__u) {
+ TYPED(Vector)*TYPED(vecproject)(const TYPED(Vector)*__v, const TYPED(Vector)*__u) {
 
-    MATRIX_TYPE u_v = TYPED_FN(vecdot)(__u, __v);
-    MATRIX_TYPE u_u = TYPED_FN(vecdot)(__u, __u);
+    MATRIX_TYPE u_v = TYPED(vecdot)(__u, __v);
+    MATRIX_TYPE u_u = TYPED(vecdot)(__u, __u);
 
-    return MATRIX_FN(mult_scalar)(__u, u_v / u_u);
+    return TYPED(Matrix_mult_scalar)(__u, u_v / u_u);
 
 }
 
 // Take vector __v and project it ONTO __u
-Vector *VECTOR_FN(project_onto)(const Vector *__v, const Vector *__u) {
+ TYPED(Vector)*TYPED(Vector_project_onto)(const TYPED(Vector)*__v, const TYPED(Vector)*__u) {
 
-    if (!MATRIX_FN(comp_add)(__v, __u)) {
+    if (!TYPED(Matrix_comp_add)(__v, __u)) {
         perror("Vectors are not compatible to project onto");
         return NULL;
     }
-    if (!MATRIX_FN(is_vec)(__v) || !MATRIX_FN(is_vec)(__u)) {
+    if (!TYPED(Matrix_is_vec)(__v) || !TYPED(Matrix_is_vec)(__u)) {
         perror("Operands must be row or column vectors");
         return NULL;
     }
 
-    return TYPED_FN(vecproject)(__v, __u);
+    return TYPED(vecproject)(__v, __u);
 }
 
 
@@ -308,14 +308,14 @@ Vector *VECTOR_FN(project_onto)(const Vector *__v, const Vector *__u) {
  * The p-norm of a matrix is defined to be the pth root ( sum of |a_ij|^p )
  *
  */
-MATRIX_TYPE TYPED_FN(vecpnorm)(const Vector *__u, const int __p) {
+MATRIX_TYPE TYPED(vecpnorm)(const TYPED(Vector)*__u, const int __p) {
 
     MATRIX_TYPE sum = 0;
     MATRIX_TYPE *a = NULL;
 
     for (size_t i = 0; i < __u->nrows; i++) {
         for (size_t j = 0; j < __u->ncols; j++) {
-            a = MAT_FN(acc)(__u, i, j);
+            a = TYPED(matacc)(__u, i, j);
             sum += pow(*a, __p);
         }
     }
@@ -324,14 +324,14 @@ MATRIX_TYPE TYPED_FN(vecpnorm)(const Vector *__u, const int __p) {
 }
 
 // Euclidean norm
-MATRIX_TYPE TYPED_FN(vecnorm)(const Vector *__A) {
+MATRIX_TYPE TYPED(vecnorm)(const TYPED(Vector)*__A) {
 
     MATRIX_TYPE sum = 0;
     MATRIX_TYPE *a = NULL;
 
     for (size_t i = 0; i < __A->nrows; i++) {
         for (size_t j = 0; j < __A->ncols; j++) {
-            a = MAT_FN(acc)(__A, i, j);
+            a = TYPED(matacc)(__A, i, j);
             sum += (*a) * (*a);
         }
     }
@@ -339,32 +339,32 @@ MATRIX_TYPE TYPED_FN(vecnorm)(const Vector *__A) {
     return sqrt(sum);
 }
 
-void TYPED_FN(vecnormalize)(Vector *__u) {
+void TYPED(vecnormalize)( TYPED(Vector)*__u) {
 
-    MATRIX_TYPE norm = TYPED_FN(vecnorm)(__u);
-    MAT_FN(divscalar)(__u, norm);
+    MATRIX_TYPE norm = TYPED(vecnorm)(__u);
+    TYPED(matdivscalar)(__u, norm);
 }
 
 // Return the norm of a vector (checking bounds?)
-MATRIX_TYPE VECTOR_FN(norm)(const Vector *__u) {
-    return TYPED_FN(vecnorm)(__u);
+MATRIX_TYPE TYPED(Vector_norm)(const TYPED(Vector)*__u) {
+    return TYPED(vecnorm)(__u);
 }
 
-MATRIX_TYPE VECTOR_FN(pnorm)(const Vector *__u, const size_t __p) {
-    return TYPED_FN(vecpnorm)(__u, __p);
+MATRIX_TYPE TYPED(Vector_pnorm)(const TYPED(Vector)*__u, const size_t __p) {
+    return TYPED(vecpnorm)(__u, __p);
 }
 
 // return a normalized version of this vector
-Vector *VECTOR_FN(normalize)(const Vector *__u) {
+ TYPED(Vector)*TYPED(Vector_normalize)(const TYPED(Vector)*__u) {
 
-    Vector *v = MATRIX_FN(clone)(__u);
+    TYPED(Vector)*v = TYPED(Matrix_clone)(__u);
 
-    TYPED_FN(vecnormalize)(v);
+    TYPED(vecnormalize)(v);
     return v;
 }
 
 // Take a coliter and compute the pnorm
-MATRIX_TYPE TYPED_FN(ColIter_norm)(TYPED(ColIter) *__c) {
+MATRIX_TYPE TYPED(ColIter_norm)(TYPED(ColIter) *__c) {
     
 
 
@@ -374,9 +374,9 @@ MATRIX_TYPE TYPED_FN(ColIter_norm)(TYPED(ColIter) *__c) {
 
 // Resizing/reorienting
 // modify this vector in place so that it is a column vector (n rows, 1 col)
-Vector *TYPED_FN(ascol)(Vector *__v) {
+ TYPED(Vector)*TYPED(ascol)( TYPED(Vector)*__v) {
 
-    const size_t size = MATRIX_FN(size)(__v);
+    const size_t size = TYPED(Matrix_size)(__v);
 
     __v->ncols = 1;
     __v->nrows = size;
@@ -385,9 +385,9 @@ Vector *TYPED_FN(ascol)(Vector *__v) {
 }
 
 // modify this vector in place so that it is a column vector (n rows, 1 col)
-Vector *TYPED_FN(asrow)(Vector *__v) {
+ TYPED(Vector)*TYPED(asrow)( TYPED(Vector)*__v) {
 
-    const size_t size = MATRIX_FN(size)(__v);
+    const size_t size = TYPED(Matrix_size)(__v);
 
     __v->ncols = size;
     __v->nrows = 1;
@@ -397,17 +397,17 @@ Vector *TYPED_FN(asrow)(Vector *__v) {
 
 
 // Find the difference between vectors that are the same size.
-Vector *VECTOR_FN(difference)(const Vector *__v, const Vector *__u) {
-    if (MATRIX_FN(size)(__v) != MATRIX_FN(size)(__u));
-    return MATITER_FN(difference)(VECTOR_FN(begin)(__v), VECTOR_FN(end)(__v), VECTOR_FN(begin)(__u));
+ TYPED(Vector)*TYPED(Vector_difference)(const TYPED(Vector)*__v, const TYPED(Vector)*__u) {
+    if (TYPED(Matrix_size)(__v) != TYPED(Matrix_size)(__u));
+    return TYPED(MatIter_difference)(TYPED(Vector_begin)(__v), TYPED(Vector_end)(__v), TYPED(Vector_begin)(__u));
 }
 
 // Find the EUCLIDEAN DISTANCE between two vectors. Returns -1 if the vectors are not the same size
-MATRIX_TYPE VECTOR_FN(distance)(const Vector *__v, const Vector *__u) {
-    Vector *diff = VECTOR_FN(difference)(__v, __u);
+MATRIX_TYPE TYPED(Vector_distance)(const TYPED(Vector)*__v, const TYPED(Vector)*__u) {
+    TYPED(Vector)*diff = TYPED(Vector_difference)(__v, __u);
 
-    MATRIX_TYPE dist = VECTOR_FN(norm)(diff);
-    MATRIX_FN(reset)(&diff);
+    MATRIX_TYPE dist = TYPED(Vector_norm)(diff);
+    TYPED(Matrix_reset)(&diff);
 
     return dist;
 }

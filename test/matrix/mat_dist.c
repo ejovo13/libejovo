@@ -17,38 +17,38 @@ int main() {
 
 void t_unif() {
 
-    Vector *v = VECTOR_FN(runif)(100000, 0, 10);
+    Vector_d*v = Vector_runif_d(100000, 0, 10);
 
     printf("========== Uniform [0, 10] ==========\n");
-    printf("Mean(v): %lf\n", VECTOR_FN(iter_mean)(v));
-    printf("TYPED_FN(std)(v): %lf\n", VECTOR_FN(iter_std)(v));
-    printf("TYPED_FN(var)(v): %lf\n", VECTOR_FN(iter_var)(v));
+    printf("Mean(v): %lf\n", Vector_iter_mean_d(v));
+    printf("std_d(v): %lf\n", Vector_iter_std_d(v));
+    printf("var_d(v): %lf\n", Vector_iter_var_d(v));
 
-    MATRIX_FN(free)(v);
+    Matrix_free_d(v);
 
 }
 
 void t_norm() {
 
-    Vector *v = VECTOR_FN(rnorm)(100000, 0, 1);
+    Vector_d*v = Vector_rnorm_d(100000, 0, 1);
 
     printf("========== Norm [0, 1] ==========\n");
-    printf("Mean(v): %lf\n", VECTOR_FN(iter_mean)(v));
-    printf("TYPED_FN(std)(v): %lf\n", VECTOR_FN(iter_std)(v));
-    printf("TYPED_FN(var)(v): %lf\n", VECTOR_FN(iter_var)(v));
+    printf("Mean(v): %lf\n", Vector_iter_mean_d(v));
+    printf("std_d(v): %lf\n", Vector_iter_std_d(v));
+    printf("var_d(v): %lf\n", Vector_iter_var_d(v));
 
-    MATRIX_FN(free)(v);
+    Matrix_free_d(v);
 }
 
 void t_exp() {
 
-    Vector *v = VECTOR_FN(rexp)(100000, 5);
+    Vector_d*v = Vector_rexp_d(100000, 5);
 
     printf("========== Exp [5] ==========\n");
-    printf("Mean(v): %lf\n", VECTOR_FN(iter_mean)(v));
-    printf("TYPED_FN(std)(v): %lf\n", VECTOR_FN(iter_std)(v));
-    printf("var(v): %lf\n", VECTOR_FN(iter_var)(v));
+    printf("Mean(v): %lf\n", Vector_iter_mean_d(v));
+    printf("std_d(v): %lf\n", Vector_iter_std_d(v));
+    printf("var(v): %lf\n", Vector_iter_var_d(v));
 
-    MATRIX_FN(free)(v);
+    Matrix_free_d(v);
 
 }

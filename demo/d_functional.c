@@ -8,23 +8,23 @@ int main() {
 
     ejovo_seed();
 
-    Vector *v = TYPED_FN(asrow)(linspace_d(-2, 5, 15));
-    Vector *v_exp = map_d(v, exp);
+    Vector_d*v = asrow_d(linspace_d(-2, 5, 15));
+    Vector_d*v_exp = map_d(v, exp);
 
-    MATRIX_FN(print)(v);
-    MATRIX_FN(print)(v_exp);
+    Matrix_print_d(v);
+    Matrix_print_d(v_exp);
 
-    MATRIX_FN(reset)(&v);
+    Matrix_reset_d(&v);
 
-    v = VECTOR_FN(rnorm)(15, 0, 1);
+    v = Vector_rnorm_d(15, 0, 1);
 
-    MATRIX_FN(print)(v);
+    Matrix_print_d(v);
 
-    Vector *outliers = TYPED_FN(filter)(v, outside_std);
-    Vector *values = TYPED_FN(filter_if_not)(v, outside_std);
+    Vector_d*outliers = filter_d(v, outside_std);
+    Vector_d*values = filter_if_not_d(v, outside_std);
 
-    MATRIX_FN(print)(outliers);
-    MATRIX_FN(print)(values);
+    Matrix_print_d(outliers);
+    Matrix_print_d(values);
 
     return 0;
 

@@ -4,8 +4,9 @@
 // functions that deal with the creation of iterator objects
 
 #include "matrix.h"
+#include "matrix/matrix_getset.h"
 
-// TODO I need to add checks for some of my iterator functions like matdiagend -> MATRIX_FN(diag_end)
+// TODO I need to add checks for some of my iterator functions like matdiagend -> TYPED(Matrix_diag_end)
 
 /**================================================================================================
  *!                                        Special Types of Iterators
@@ -13,17 +14,17 @@
 // Should have row, col, diagonal iterators. There are even some special iterators like "checkerboards"
 // that can hit every other element.
 
-MATITER_T MAT_FN(diagbegin)(const MATRIX_T *__m, const int __d);
+TYPED(MatIter) TYPED(matdiagbegin)(const TYPED(Matrix) *__m, const int __d);
 
-MATITER_T MAT_FN(diagend)(const MATRIX_T *__m, const int __d);
+TYPED(MatIter) TYPED(matdiagend)(const TYPED(Matrix) *__m, const int __d);
 
-void MATITER_FN(print)(const MATITER_T __begin, const MATITER_T __end);
+void TYPED(MatIter_print)(const TYPED(MatIter) __begin, const TYPED(MatIter) __end);
 
 
 // The 0th diagonal will start at the position __m(0, 0)
 // The 1st diagonal will start at the position __m(0, 1)
 // The -1  diagonal will start at the position __m(1, 0)
-// MATITER_T MATRIX_FN(diag_begin)(const MATRIX_T *__m, const int __d);
+// TYPED(MatIter) TYPED(Matrix_diag_begin)(const TYPED(Matrix) *__m, const int __d);
 
 
 
@@ -34,181 +35,181 @@ void MATITER_FN(print)(const MATITER_T __begin, const MATITER_T __end);
  *!                                        RowCol and ColIter
  *================================================================================================**/
 
-MATRIX_TYPE TYPED_FN(Iter_dot)(const MATITER_T __r, const MATITER_T __rend, const MATITER_T __c);
+MATRIX_TYPE TYPED(Iter_dot)(const TYPED(MatIter) __r, const TYPED(MatIter) __rend, const TYPED(MatIter) __c);
 
 /**=======================================================================================================================
- *!                                           MATRIX_T Interface to Iter functions
+ *!                                           TYPED(Matrix) Interface to Iter functions
  *=======================================================================================================================**/
 
-void MATRIX_FN(print_row)(const MATRIX_T *__A, size_t __i);
+void TYPED(Matrix_print_row)(const TYPED(Matrix) *__A, size_t __i);
 
-void MATRIX_FN(print_col)(const MATRIX_T *__A, size_t __j);
+void TYPED(Matrix_print_col)(const TYPED(Matrix) *__A, size_t __j);
 
 
-void MATRIX_FN(print_diag)(const MATRIX_T *__A, size_t __d);
+void TYPED(Matrix_print_diag)(const TYPED(Matrix) *__A, size_t __d);
 
-// Here I want to be able to manipulate the functions defined above to create clean and simple MATRIX_T api
+// Here I want to be able to manipulate the functions defined above to create clean and simple TYPED(Matrix) api
 
 // let's start simple and add rows together
 
 // matrix elementary row operation (add two rows)
-void MAT_FN(rowop_add)(MATRIX_T *__A, const size_t __r1, const size_t __r2, const size_t __col_offset);
+void TYPED(matrowop_add)(TYPED(Matrix) *__A, const size_t __r1, const size_t __r2, const size_t __col_offset);
 
 // matrix elementary row operation (add two rows)
-void MAT_FN(rowop_add_scaled)(MATRIX_T *__A, const size_t __r1, const size_t __r2, const MATRIX_TYPE __k, const size_t __col_offset);
+void TYPED(matrowop_add_scaled)(TYPED(Matrix) *__A, const size_t __r1, const size_t __r2, const MATRIX_TYPE __k, const size_t __col_offset);
 
-void MATRIX_FN(rowop_add)(MATRIX_T *__A, const size_t __r1, const size_t __r2);
+void TYPED(Matrix_rowop_add)(TYPED(Matrix) *__A, const size_t __r1, const size_t __r2);
 
-void MATRIX_FN(rowop_add_offset)(MATRIX_T *__A, const size_t __r1, const size_t __r2, const size_t __col_offset);
+void TYPED(Matrix_rowop_add_offset)(TYPED(Matrix) *__A, const size_t __r1, const size_t __r2, const size_t __col_offset);
 
-void MATRIX_FN(rowop_add_scaled)(MATRIX_T *__A, const size_t __r1, const size_t __r2, const MATRIX_TYPE __k);
+void TYPED(Matrix_rowop_add_scaled)(TYPED(Matrix) *__A, const size_t __r1, const size_t __r2, const MATRIX_TYPE __k);
 
-MATRIX_TYPE MATRIX_FN(row_min)(const MATRIX_T *__A, const size_t __i);
+MATRIX_TYPE TYPED(Matrix_row_min)(const TYPED(Matrix) *__A, const size_t __i);
 
-MATRIX_TYPE MATRIX_FN(row_max)(const MATRIX_T *__A, const size_t __i);
+MATRIX_TYPE TYPED(Matrix_row_max)(const TYPED(Matrix) *__A, const size_t __i);
 
-MATRIX_TYPE MATRIX_FN(col_min)(const MATRIX_T *__A, const size_t __j);
+MATRIX_TYPE TYPED(Matrix_col_min)(const TYPED(Matrix) *__A, const size_t __j);
 
-MATRIX_TYPE MATRIX_FN(col_max)(const MATRIX_T *__A, const size_t __j);
+MATRIX_TYPE TYPED(Matrix_col_max)(const TYPED(Matrix) *__A, const size_t __j);
 
-MATRIX_TYPE MATRIX_FN(diag_min)(const MATRIX_T *__A, const size_t __j);
+MATRIX_TYPE TYPED(Matrix_diag_min)(const TYPED(Matrix) *__A, const size_t __j);
 
-MATRIX_TYPE MATRIX_FN(diag_max)(const MATRIX_T *__A, const size_t __j);
+MATRIX_TYPE TYPED(Matrix_diag_max)(const TYPED(Matrix) *__A, const size_t __j);
 
-MATRIX_TYPE MATRIX_FN(row_prod)(const MATRIX_T *__A, const size_t __i);
+MATRIX_TYPE TYPED(Matrix_row_prod)(const TYPED(Matrix) *__A, const size_t __i);
 
-MATRIX_TYPE MATRIX_FN(col_prod)(const MATRIX_T *__A, const size_t __i);
+MATRIX_TYPE TYPED(Matrix_col_prod)(const TYPED(Matrix) *__A, const size_t __i);
 
-MATRIX_TYPE MATRIX_FN(diag_prod)(const MATRIX_T *__A, const size_t __i);
-
-
-MATRIX_TYPE MATRIX_FN(row_sum)(const MATRIX_T *__A, const size_t __i);
-
-MATRIX_TYPE MATRIX_FN(col_sum)(const MATRIX_T *__A, const size_t __i);
-
-MATRIX_TYPE MATRIX_FN(diag_sum)(const MATRIX_T *__A, const size_t __i);
+MATRIX_TYPE TYPED(Matrix_diag_prod)(const TYPED(Matrix) *__A, const size_t __i);
 
 
+MATRIX_TYPE TYPED(Matrix_row_sum)(const TYPED(Matrix) *__A, const size_t __i);
 
-MATITER_T MAT_FN(colpos)(const MATRIX_T *__A, size_t __i, size_t __j);
+MATRIX_TYPE TYPED(Matrix_col_sum)(const TYPED(Matrix) *__A, const size_t __i);
+
+MATRIX_TYPE TYPED(Matrix_diag_sum)(const TYPED(Matrix) *__A, const size_t __i);
+
+
+
+TYPED(MatIter) TYPED(matcolpos)(const TYPED(Matrix) *__A, size_t __i, size_t __j);
 
 // return a new Matumn Iterator that points to the final element in this column
-MATITER_T MATRIX_FN(col_end)(const MATRIX_T *__A, size_t __j);
+TYPED(MatIter) TYPED(Matrix_col_end)(const TYPED(Matrix) *__A, size_t __j);
 
-MATITER_T MATRIX_FN(col_begin)(const MATRIX_T *__A, size_t __j);
+TYPED(MatIter) TYPED(Matrix_col_begin)(const TYPED(Matrix) *__A, size_t __j);
 
-MATITER_T MAT_FN(colbegin)(const MATRIX_T *__A, size_t __i);
+TYPED(MatIter) TYPED(matcolbegin)(const TYPED(Matrix) *__A, size_t __i);
 
-MATITER_T MAT_FN(colend)(const MATRIX_T *__A, size_t __i);
+TYPED(MatIter) TYPED(matcolend)(const TYPED(Matrix) *__A, size_t __i);
 
-MATITER_T MAT_FN(rowpos)(const MATRIX_T *__A, size_t __i, size_t __j);
+TYPED(MatIter) TYPED(matrowpos)(const TYPED(Matrix) *__A, size_t __i, size_t __j);
 
 // get row iterator without checking bounds
-MATITER_T MAT_FN(rowbegin)(const MATRIX_T *__A, size_t __i);
+TYPED(MatIter) TYPED(matrowbegin)(const TYPED(Matrix) *__A, size_t __i);
 
-MATITER_T MAT_FN(rowend)(const MATRIX_T *__A, size_t __i);
+TYPED(MatIter) TYPED(matrowend)(const TYPED(Matrix) *__A, size_t __i);
 
 // return a new Column Iterator that points to the final element in this column
-MATITER_T MATRIX_FN(row_end)(const MATRIX_T *__A, size_t __i);
+TYPED(MatIter) TYPED(Matrix_row_end)(const TYPED(Matrix) *__A, size_t __i);
 
-MATITER_T MATRIX_FN(row_begin)(const MATRIX_T *__A, size_t __i);
+TYPED(MatIter) TYPED(Matrix_row_begin)(const TYPED(Matrix) *__A, size_t __i);
 
 /**=======================================================================================================================
  *!                                                   MIter that has more general capabilities
  *=======================================================================================================================**/
-MATITER_T MATITER_NEW(MATRIX_TYPE *__ptr, size_t __ptr_diff);
+TYPED(MatIter) MATITER_NEW(MATRIX_TYPE *__ptr, size_t __ptr_diff);
 
-MATITER_T MATITER_FN(null)();
+TYPED(MatIter) TYPED(MatIter_null)();
 
-bool MATITER_FN(is_null)(MATITER_T __i);
+bool TYPED(MatIter_is_null)(TYPED(MatIter) __i);
 
 // Increment the row iter
-MATITER_T MATITER_FN(next)(MATITER_T __c);
+TYPED(MatIter) TYPED(MatIter_next)(TYPED(MatIter) __c);
 
 // Return true if the __lhs and __rhs point to the same element
-bool MATITER_FN(cmp)(const MATITER_T __lhs, const MATITER_T __rhs);
+bool TYPED(MatIter_cmp)(const TYPED(MatIter) __lhs, const TYPED(MatIter) __rhs);
 
-MATRIX_TYPE MATITER_FN(value)(const MATITER_T __c);
+MATRIX_TYPE TYPED(MatIter_value)(const TYPED(MatIter) __c);
 
 // Return the number of iteration between begin and end
-size_t MATITER_FN(length)(const MATITER_T begin, const MATITER_T end);
+size_t TYPED(MatIter_length)(const TYPED(MatIter) begin, const TYPED(MatIter) end);
 
 /**========================================================================
  *!                           Functional Iter functions
  *========================================================================**/
-MATRIX_TYPE MATITER_FN(sum)(const MATITER_T __begin, const MATITER_T __end);
+MATRIX_TYPE TYPED(MatIter_sum)(const TYPED(MatIter) __begin, const TYPED(MatIter) __end);
 
-MATRIX_TYPE MATITER_FN(prod)(const MATITER_T __begin, const MATITER_T __end);
-
-// Get the maximum value in a row
-MATRIX_TYPE MATITER_FN(max)(MATITER_T __a, const MATITER_T __b);
+MATRIX_TYPE TYPED(MatIter_prod)(const TYPED(MatIter) __begin, const TYPED(MatIter) __end);
 
 // Get the maximum value in a row
-MATRIX_TYPE MATITER_FN(min)(MATITER_T __a, const MATITER_T __b);
+MATRIX_TYPE TYPED(MatIter_max)(TYPED(MatIter) __a, const TYPED(MatIter) __b);
+
+// Get the maximum value in a row
+MATRIX_TYPE TYPED(MatIter_min)(TYPED(MatIter) __a, const TYPED(MatIter) __b);
 
 /**================================================================================================
- *!                                        MATITER_T basic utility routines - SINGLE
+ *!                                        TYPED(MatIter) basic utility routines - SINGLE
  *================================================================================================**/
 
-void MATITER_FN(set)(MATITER_T __r, const MATRIX_TYPE __k);
+void TYPED(MatIter_set)(TYPED(MatIter) __r, const MATRIX_TYPE __k);
 
-void MATITER_FN(add_k)(MATITER_T __r, const MATRIX_TYPE __k);
+void TYPED(MatIter_add_k)(TYPED(MatIter) __r, const MATRIX_TYPE __k);
 
-void MATITER_FN(sub_k)(MATITER_T __r, const MATRIX_TYPE __k);
+void TYPED(MatIter_sub_k)(TYPED(MatIter) __r, const MATRIX_TYPE __k);
 
-void MATITER_FN(mult_k)(MATITER_T __r, const MATRIX_TYPE __k);
+void TYPED(MatIter_mult_k)(TYPED(MatIter) __r, const MATRIX_TYPE __k);
 
-void MATITER_FN(div_k)(MATITER_T __r, const MATRIX_TYPE __k);
+void TYPED(MatIter_div_k)(TYPED(MatIter) __r, const MATRIX_TYPE __k);
 
-void MATITER_FN(set_ptr)(MATITER_T __r, const MATRIX_TYPE *__ptr);
+void TYPED(MatIter_set_ptr)(TYPED(MatIter) __r, const MATRIX_TYPE *__ptr);
 
-void MATITER_FN(add_ptr)(MATITER_T __r, const MATRIX_TYPE *__ptr);
+void TYPED(MatIter_add_ptr)(TYPED(MatIter) __r, const MATRIX_TYPE *__ptr);
 
-void MATITER_FN(sub_ptr)(MATITER_T __r, const MATRIX_TYPE *__ptr);
+void TYPED(MatIter_sub_ptr)(TYPED(MatIter) __r, const MATRIX_TYPE *__ptr);
 
-void MATITER_FN(mult_ptr)(MATITER_T __r, const MATRIX_TYPE *__ptr);
+void TYPED(MatIter_mult_ptr)(TYPED(MatIter) __r, const MATRIX_TYPE *__ptr);
 
-void MATITER_FN(div_ptr)(MATITER_T __r, const MATRIX_TYPE *__ptr);
+void TYPED(MatIter_div_ptr)(TYPED(MatIter) __r, const MATRIX_TYPE *__ptr);
 
-void MATITER_FN(set_iter)(MATITER_T __a, const MATITER_T __b);
+void TYPED(MatIter_set_iter)(TYPED(MatIter) __a, const TYPED(MatIter) __b);
 
-void MATITER_FN(set_iter_pow)(MATITER_T __a, const MATITER_T __b, double __n);
+void TYPED(MatIter_set_iter_pow)(TYPED(MatIter) __a, const TYPED(MatIter) __b, double __n);
 
-void MATITER_FN(add_iter)(MATITER_T __a, const MATITER_T __b);
+void TYPED(MatIter_add_iter)(TYPED(MatIter) __a, const TYPED(MatIter) __b);
 
-void MATITER_FN(add_iter_scaled)(MATITER_T __a, const MATITER_T __b, const MATRIX_TYPE __k);
+void TYPED(MatIter_add_iter_scaled)(TYPED(MatIter) __a, const TYPED(MatIter) __b, const MATRIX_TYPE __k);
 
-void MATITER_FN(sub_iter)(MATITER_T __a, const MATITER_T __b);
+void TYPED(MatIter_sub_iter)(TYPED(MatIter) __a, const TYPED(MatIter) __b);
 
-void MATITER_FN(mult_iter)(MATITER_T __a, const MATITER_T __b);
+void TYPED(MatIter_mult_iter)(TYPED(MatIter) __a, const TYPED(MatIter) __b);
 
-void MATITER_FN(div_iter)(MATITER_T __a, const MATITER_T __b);
+void TYPED(MatIter_div_iter)(TYPED(MatIter) __a, const TYPED(MatIter) __b);
 
 
 
 
 
 /**================================================================================================
- *!                                        MATITER_T basic utility routines - ROW
+ *!                                        TYPED(MatIter) basic utility routines - ROW
  *================================================================================================**/
 
 // Set the elements of a row when given a row iterator and a value k
-void MATITER_FN(row_set_k)(const MATITER_T __rbegin, const MATITER_T __rend, const MATRIX_TYPE __k);
+void TYPED(MatIter_row_set_k)(const TYPED(MatIter) __rbegin, const TYPED(MatIter) __rend, const MATRIX_TYPE __k);
 
 // Set the elements of a row when given a row iterator and another starting iterator
-void MATITER_FN(row_set_iter)(const MATITER_T __rbegin, const MATITER_T __rend, const MATITER_T __bbegin);
+void TYPED(MatIter_row_set_iter)(const TYPED(MatIter) __rbegin, const TYPED(MatIter) __rend, const TYPED(MatIter) __bbegin);
 
 
-void MATITER_FN(row_add_k)(const MATITER_T __rbegin, const MATITER_T __rend, const MATRIX_TYPE __k);
+void TYPED(MatIter_row_add_k)(const TYPED(MatIter) __rbegin, const TYPED(MatIter) __rend, const MATRIX_TYPE __k);
 
-void MATITER_FN(row_sub_k)(const MATITER_T __rbegin, const MATITER_T __rend, const MATRIX_TYPE __k);
+void TYPED(MatIter_row_sub_k)(const TYPED(MatIter) __rbegin, const TYPED(MatIter) __rend, const MATRIX_TYPE __k);
 
-void MATITER_FN(row_mult_k)(const MATITER_T __rbegin, const MATITER_T __rend, const MATRIX_TYPE __k);
+void TYPED(MatIter_row_mult_k)(const TYPED(MatIter) __rbegin, const TYPED(MatIter) __rend, const MATRIX_TYPE __k);
 
-void MATITER_FN(row_div_k)(const MATITER_T __rbegin, const MATITER_T __rend, const MATRIX_TYPE __k);
+void TYPED(MatIter_row_div_k)(const TYPED(MatIter) __rbegin, const TYPED(MatIter) __rend, const MATRIX_TYPE __k);
 
 // Add to row __a the elements of row __b
-void MATITER_FN(row_add_row)(const MATITER_T __abegin, const MATITER_T __aend, const MATITER_T __bbegin);
+void TYPED(MatIter_row_add_row)(const TYPED(MatIter) __abegin, const TYPED(MatIter) __aend, const TYPED(MatIter) __bbegin);
 
 
 /**================================================================================================
@@ -218,15 +219,15 @@ void MATITER_FN(row_add_row)(const MATITER_T __abegin, const MATITER_T __aend, c
 // Appy functions are a way to iterate a ColIter until we reach the "end" point
 
 
-void MATITER_FN(apply)(const MATITER_T __rbegin, const MATITER_T __rend, TYPED(MatIterFn) __fn);
+void TYPED(MatIter_apply)(const TYPED(MatIter) __rbegin, const TYPED(MatIter) __rend, TYPED(MatIterFn) __fn);
 
-void MATITER_FN(apply_k)(const MATITER_T __rbegin, const MATITER_T __rend, const MATRIX_TYPE __k, TYPED(MatIterFn_k) __fn_k);
+void TYPED(MatIter_apply_k)(const TYPED(MatIter) __rbegin, const TYPED(MatIter) __rend, const MATRIX_TYPE __k, TYPED(MatIterFn_k) __fn_k);
 
-void MATITER_FN(apply_ptr)(const MATITER_T __rbegin, const MATITER_T __rend, const MATRIX_TYPE *__ptr, TYPED(MatIterFn_ptr) __fn_ptr);
+void TYPED(MatIter_apply_ptr)(const TYPED(MatIter) __rbegin, const TYPED(MatIter) __rend, const MATRIX_TYPE *__ptr, TYPED(MatIterFn_ptr) __fn_ptr);
 
-void MATITER_FN(apply_iter)(const MATITER_T __abegin, const MATITER_T __aend, const MATITER_T __bbegin, TYPED(MatIterFn_iter) __fn_iter);
+void TYPED(MatIter_apply_iter)(const TYPED(MatIter) __abegin, const TYPED(MatIter) __aend, const TYPED(MatIter) __bbegin, TYPED(MatIterFn_iter) __fn_iter);
 
-void MATITER_FN(apply_iter_scaled)(const MATITER_T __abegin, const MATITER_T __aend, const MATITER_T __bbegin, const MATRIX_TYPE __k, TYPED(MatIterFn_iter_k) __fn_iter_k);
+void TYPED(MatIter_apply_iter_scaled)(const TYPED(MatIter) __abegin, const TYPED(MatIter) __aend, const TYPED(MatIter) __bbegin, const MATRIX_TYPE __k, TYPED(MatIterFn_iter_k) __fn_iter_k);
 
 /**================================================================================================
  *!                                        Mat manipulations using apply functions
@@ -235,64 +236,64 @@ void MATITER_FN(apply_iter_scaled)(const MATITER_T __abegin, const MATITER_T __a
 /**======================
  *!    Scalar operations
  *========================**/
-void MATITER_FN(apply_set_k)(MATITER_T __rbegin, const MATITER_T __rend, const MATRIX_TYPE __k);
+void TYPED(MatIter_apply_set_k)(TYPED(MatIter) __rbegin, const TYPED(MatIter) __rend, const MATRIX_TYPE __k);
 
-void MATITER_FN(apply_add_k)(MATITER_T __rbegin, const MATITER_T __rend, const MATRIX_TYPE __k);
+void TYPED(MatIter_apply_add_k)(TYPED(MatIter) __rbegin, const TYPED(MatIter) __rend, const MATRIX_TYPE __k);
 
-void MATITER_FN(apply_sub_k)(MATITER_T __rbegin, const MATITER_T __rend, const MATRIX_TYPE __k);
+void TYPED(MatIter_apply_sub_k)(TYPED(MatIter) __rbegin, const TYPED(MatIter) __rend, const MATRIX_TYPE __k);
 
-void MATITER_FN(apply_mult_k)(MATITER_T __rbegin, const MATITER_T __rend, const MATRIX_TYPE __k);
+void TYPED(MatIter_apply_mult_k)(TYPED(MatIter) __rbegin, const TYPED(MatIter) __rend, const MATRIX_TYPE __k);
 
-void MATITER_FN(apply_div_k)(MATITER_T __rbegin, const MATITER_T __rend, const MATRIX_TYPE __k);
+void TYPED(MatIter_apply_div_k)(TYPED(MatIter) __rbegin, const TYPED(MatIter) __rend, const MATRIX_TYPE __k);
 
 /**======================
  *!    Pointer operations
  *========================**/
 
-void MATITER_FN(apply_set_ptr)(MATITER_T __rbegin, const MATITER_T __rend, const MATRIX_TYPE *__ptr);
+void TYPED(MatIter_apply_set_ptr)(TYPED(MatIter) __rbegin, const TYPED(MatIter) __rend, const MATRIX_TYPE *__ptr);
 
-void MATITER_FN(apply_add_ptr)(MATITER_T __rbegin, const MATITER_T __rend, const MATRIX_TYPE *__ptr);
+void TYPED(MatIter_apply_add_ptr)(TYPED(MatIter) __rbegin, const TYPED(MatIter) __rend, const MATRIX_TYPE *__ptr);
 
-void MATITER_FN(apply_sub_ptr)(MATITER_T __rbegin, const MATITER_T __rend, const MATRIX_TYPE *__ptr);
+void TYPED(MatIter_apply_sub_ptr)(TYPED(MatIter) __rbegin, const TYPED(MatIter) __rend, const MATRIX_TYPE *__ptr);
 
-void MATITER_FN(apply_mult_ptr)(MATITER_T __rbegin, const MATITER_T __rend, const MATRIX_TYPE *__ptr);
+void TYPED(MatIter_apply_mult_ptr)(TYPED(MatIter) __rbegin, const TYPED(MatIter) __rend, const MATRIX_TYPE *__ptr);
 
-void MATITER_FN(apply_div_ptr)(MATITER_T __rbegin, const MATITER_T __rend, const MATRIX_TYPE *__ptr);
+void TYPED(MatIter_apply_div_ptr)(TYPED(MatIter) __rbegin, const TYPED(MatIter) __rend, const MATRIX_TYPE *__ptr);
 
 /**======================
  *!    Iterator operations
  *========================**/
 
-void MATITER_FN(apply_set_iter)(MATITER_T __abegin, const MATITER_T __aend, MATITER_T __bbegin);
+void TYPED(MatIter_apply_set_iter)(TYPED(MatIter) __abegin, const TYPED(MatIter) __aend, TYPED(MatIter) __bbegin);
 
-void MATITER_FN(apply_set_iter_pow)(MATITER_T __abegin, const MATITER_T __aend, MATITER_T __bbegin, double __n);
+void TYPED(MatIter_apply_set_iter_pow)(TYPED(MatIter) __abegin, const TYPED(MatIter) __aend, TYPED(MatIter) __bbegin, double __n);
 
-void MATITER_FN(apply_add_iter)(MATITER_T __abegin, const MATITER_T __aend, MATITER_T __bbegin);
+void TYPED(MatIter_apply_add_iter)(TYPED(MatIter) __abegin, const TYPED(MatIter) __aend, TYPED(MatIter) __bbegin);
 
-void MATITER_FN(apply_sub_iter)(MATITER_T __abegin, const MATITER_T __aend, MATITER_T __bbegin);
+void TYPED(MatIter_apply_sub_iter)(TYPED(MatIter) __abegin, const TYPED(MatIter) __aend, TYPED(MatIter) __bbegin);
 
-void MATITER_FN(apply_mult_iter)(MATITER_T __abegin, const MATITER_T __aend, MATITER_T __bbegin);
+void TYPED(MatIter_apply_mult_iter)(TYPED(MatIter) __abegin, const TYPED(MatIter) __aend, TYPED(MatIter) __bbegin);
 
-void MATITER_FN(apply_div_iter)(MATITER_T __abegin, const MATITER_T __aend, MATITER_T __bbegin);
+void TYPED(MatIter_apply_div_iter)(TYPED(MatIter) __abegin, const TYPED(MatIter) __aend, TYPED(MatIter) __bbegin);
 
 /**======================
  *!    add iter scaled
  *========================**/
-void MATITER_FN(apply_add_iter_scaled)(MATITER_T __abegin, const MATITER_T __aend, MATITER_T __bbegin, const MATRIX_TYPE __k);
+void TYPED(MatIter_apply_add_iter_scaled)(TYPED(MatIter) __abegin, const TYPED(MatIter) __aend, TYPED(MatIter) __bbegin, const MATRIX_TYPE __k);
 
-MATRIX_T *MATRIX_FN(set_col_iter)(MATRIX_T *__m, size_t __j, MATITER_T __source);
+TYPED(Matrix) *TYPED(Matrix_set_col_iter)(TYPED(Matrix) *__m, size_t __j, TYPED(MatIter) __source);
 
 // THIS FUNCTION MODIFIES IN PLACE
-MATRIX_T *MATRIX_FN(set_row_iter)(MATRIX_T *__m, size_t __i, MATITER_T __source);
+TYPED(Matrix) *TYPED(Matrix_set_row_iter)(TYPED(Matrix) *__m, size_t __i, TYPED(MatIter) __source);
 
-MATITER_T MATRIX_FN(row_begin_from_col)(const MATRIX_T *__A, size_t __i, size_t __j);
+TYPED(MatIter) TYPED(Matrix_row_begin_from_col)(const TYPED(Matrix) *__A, size_t __i, size_t __j);
 
-MATITER_T MATRIX_FN(col_begin_from_row)(const MATRIX_T *__A, size_t __j, size_t __i);
+TYPED(MatIter) TYPED(Matrix_col_begin_from_row)(const TYPED(Matrix) *__A, size_t __j, size_t __i);
 
-MATITER_T MATRIX_FN(diag_end)(const MATRIX_T *__m, const int __d);
+TYPED(MatIter) TYPED(Matrix_diag_end)(const TYPED(Matrix) *__m, const int __d);
 
-MATITER_T MATRIX_FN(diag_begin)(const MATRIX_T *__m, const int __d);
+TYPED(MatIter) TYPED(Matrix_diag_begin)(const TYPED(Matrix) *__m, const int __d);
 
-Vector *MATITER_FN(difference)(MATITER_T __abegin, const MATITER_T __aend, MATITER_T __bbegin);
+ TYPED(Vector)*TYPED(MatIter_difference)(TYPED(MatIter) __abegin, const TYPED(MatIter) __aend, TYPED(MatIter) __bbegin);
 
 #endif

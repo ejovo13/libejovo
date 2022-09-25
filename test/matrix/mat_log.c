@@ -19,36 +19,36 @@ double lambda_gt5(double x) {
 
 void t_logical() {
 
-    MATRIX_T *m = MATRIX_FN(rand)(13, 8);
+    Matrix_d *m = Matrix_rand_d(13, 8);
 
-    MATRIX_FN(print)(m);
+    Matrix_print_d(m);
 
-    MATRIX_T *logical = MATRIX_FN(as_logical)(m, lambda_gt5);
-    MATRIX_FN(print)(logical);
+    Matrix_d *logical = Matrix_as_logical_d(m, lambda_gt5);
+    Matrix_print_d(logical);
 
-    MATRIX_T *logic_5 = MATRIX_FN(gt)(m, 5);
-    MATRIX_T *logic_lt5 = MATRIX_FN(lt)(m, 5);
-    MATRIX_FN(print)(logic_lt5);
-
-
-    MATRIX_T *true_mat = MATRIX_FN(as_true)(m);
-    MATRIX_FN(print)(true_mat);
-
-    assert(TYPED_FN(Logical_all)(true_mat));
-
-    assert(MATRIX_FN(is_logical)(logical));
-    assert(!MATRIX_FN(is_logical)(m));
-
-    MAT_FN(setmask)(m, logical, 0);
-    MATRIX_FN(print)(m);
-
-    MATRIX_T *gt5 = MATRIX_FN(filter_mask)(m, TYPED_FN(Logical_not)(logical));
-    MATRIX_FN(print)(gt5);
+    Matrix_d *logic_5 = Matrix_gt_d(m, 5);
+    Matrix_d *logic_lt5 = Matrix_lt_d(m, 5);
+    Matrix_print_d(logic_lt5);
 
 
-    MATRIX_FN(reset)(&m);
-    MATRIX_FN(reset)(&logical);
-    MATRIX_FN(reset)(&true_mat);
-    MATRIX_FN(reset)(&gt5);
+    Matrix_d *true_mat = Matrix_as_true_d(m);
+    Matrix_print_d(true_mat);
+
+    assert(Logical_all_d(true_mat));
+
+    assert(Matrix_is_logical_d(logical));
+    assert(!Matrix_is_logical_d(m));
+
+    matsetmask_d(m, logical, 0);
+    Matrix_print_d(m);
+
+    Matrix_d *gt5 = Matrix_filter_mask_d(m, Logical_not_d(logical));
+    Matrix_print_d(gt5);
+
+
+    Matrix_reset_d(&m);
+    Matrix_reset_d(&logical);
+    Matrix_reset_d(&true_mat);
+    Matrix_reset_d(&gt5);
 
 }

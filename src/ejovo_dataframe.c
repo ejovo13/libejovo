@@ -83,7 +83,7 @@ Chain *newChainVar(int __count, ...) {
 /**========================================================================
  *!                           Space functions
  *========================================================================**/
-Space *newSpace(Vector *__v) {
+Space *newSpace( Vector_d *__v) {
 
     Space *space = (Space *) malloc(sizeof(Space));
 
@@ -93,7 +93,7 @@ Space *newSpace(Vector *__v) {
     return space;
 }
 
-Space *appendSpace(Space *__space, Vector *__v) {
+Space *appendSpace(Space *__space, Vector_d *__v) {
 
     if (!__space) return newSpace(__v);
 
@@ -114,14 +114,14 @@ Space *newSpaceVar(int __count, ...) {
     va_list ptr;
 
     va_start(ptr, __count);
-    Vector *v = va_arg(ptr, Vector *);
+    Vector_d *v = va_arg(ptr, Vector_d *);
 
     if (__count == 0) return NULL;
 
     Space *space = newSpace(v);
 
     for (int i = 1; i < __count; i++) {
-        appendSpace(space, va_arg(ptr, Vector *));
+        appendSpace(space, va_arg(ptr, Vector_d *));
     }
 
     return space;
@@ -172,7 +172,7 @@ bool uniformSpace(const Space *__space) {
 
     while (it->next) {
 
-        if (!MATRIX_FN(comp_add)(it->data, it->next->data)) return false;
+        if (!Matrix_comp_add_d(it->data, it->next->data)) return false;
         it = it->next;
     }
 
@@ -258,22 +258,22 @@ void foreachVector(const DataFrame *__df, vector_fn fn) {
 }
 
 // print the name of the col and then the first __nel elements
-void printDataFrameCol(const String *__str, const Vector *__v) {
+void printDataFrameCol(const String *__str, const Vector_d *__v) {
 
     print(__str);
     printf(": ");
 
     int nel = 10;
     // Print the first __nel elements
-    int n = nel < MATRIX_FN(size)(__v) ? nel : MATRIX_FN(size)(__v); // get the smaller element
+    int n = nel < Matrix_size_d(__v) ? nel : Matrix_size_d(__v); // get the smaller element
 
     printf("{");
 
     for (int i = 0; i < n - 1; i++) {
-        printf("%7.3lf, ", VECTOR_FN(at)(__v, i));
+        printf("%7.3lf, ", Vector_at_d(__v, i));
     }
 
-    printf("%7.3lf}\n", VECTOR_FN(at)(__v, n - 1));
+    printf("%7.3lf}\n", Vector_at_d(__v, n - 1));
 
 }
 
@@ -281,7 +281,7 @@ void printDataFrame(const DataFrame *__df) {
 
     // first print the dimension and number of cols
 
-    int nobs = MATRIX_FN(size)(__df->space->data);
+    int nobs = Matrix_size_d(__df->space->data);
 
     printf("Df with %d observations and %d colums\n", nobs, dimDataFrame(__df));
     foreachSV(__df, printDataFrameCol);
@@ -306,7 +306,7 @@ void writeDelimiter(const DataFrame *__df, const char *__filename, const char de
 
     // now iterate through all of vectors, accessing the ith print at each point.
 
-    int size = VECTOR_FN(size)(__df->space->data);
+    int size = Vector_size_d(__df->space->data);
 
     for (int i = 0; i < size; i++) {
 
@@ -314,10 +314,10 @@ void writeDelimiter(const DataFrame *__df, const char *__filename, const char de
 
         while (it->next) {
 
-            fprintf(f, "%lf%c", VECTOR_FN(at)(it->data, i), delim);
+            fprintf(f, "%lf%c", Vector_at_d(it->data, i), delim);
             it = it->next;
         }
-        fprintf(f, "%lf\n", VECTOR_FN(at)(it->data, i));
+        fprintf(f, "%lf\n", Vector_at_d(it->data, i));
     }
 
     fclose(f);
@@ -347,7 +347,7 @@ void writeGP(const DataFrame *__df, const char *__filename) {
 
     // now iterate through all of vectors, accessing the ith print at each point.
 
-    int size = VECTOR_FN(size)(__df->space->data);
+    int size = Vector_size_d(__df->space->data);
 
     for (int i = 0; i < size; i++) {
 
@@ -355,10 +355,10 @@ void writeGP(const DataFrame *__df, const char *__filename) {
 
         while (it->next) {
 
-            fprintf(f, "%lf ", VECTOR_FN(at)(it->data, i));
+            fprintf(f, "%lf ", Vector_at_d(it->data, i));
             it = it->next;
         }
-        fprintf(f, "%lf\n", VECTOR_FN(at)(it->data, i));
+        fprintf(f, "%lf\n", Vector_at_d(it->data, i));
     }
 
     fclose(f);
@@ -367,7 +367,7 @@ void writeGP(const DataFrame *__df, const char *__filename) {
 
 // Return a pointer to the column in question
 // Columns shall be ZERO indexed
-Vector *getColDF(const DataFrame *__df, int __j) {
+ Vector_d *getColDF(const DataFrame *__df, int __j) {
 
     if (!__df) return NULL;
 
@@ -382,11 +382,11 @@ Vector *getColDF(const DataFrame *__df, int __j) {
     else return NULL;
 }
 
-Vector *save_doubles(double_fn fn, int n) {
+ Vector_d *save_doubles(double_fn fn, int n) {
     // Allocate a row vector of appropriate space
-    Vector *out = MATRIX_FN(new)(1, n);
+    Vector_d *out = Matrix_new_d(1, n);
 
-    for (int i = 0; i < MATRIX_FN(size)(out); i++) {
+    for (int i = 0; i < Matrix_size_d(out); i++) {
         out->data[i] = fn();
     }
 

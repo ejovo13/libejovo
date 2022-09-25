@@ -24,7 +24,7 @@ int main() {
 
 void t_mat_alloc() {
 
-    MATRIX_T *m = MAT_FN(alloc)(10, 10);
+    Matrix_d *m = matalloc_d(10, 10);
 
     assert(m);
     assert(m->data);
@@ -34,12 +34,12 @@ void t_mat_alloc() {
     // This is because the values are uninitialized
 
 
-    MATRIX_FN(set)(m, 5, 5, 100);
-    // MATRIX_FN(print)(m);
-    MATRIX_FN(reset)(&m);
-    MATRIX_FN(free)(m);
+    Matrix_set_d(m, 5, 5, 100);
+    // Matrix_print_d(m);
+    Matrix_reset_d(&m);
+    Matrix_free_d(m);
     printf("Should be null: %x\n", m);
-    MATRIX_FN(reset)(&m);
+    Matrix_reset_d(&m);
 
 }
 
@@ -47,11 +47,11 @@ void t_mat_clone() {
 
     ejovo_seed();
 
-    MATRIX_T *m = MATRIX_FN(rand)(5, 5);
-    MATRIX_T *m_clone = MAT_FN(clone)(m);
+    Matrix_d *m = Matrix_rand_d(5, 5);
+    Matrix_d *m_clone = matclone_d(m);
 
-    MATRIX_FN(reset)(&m);
-    MATRIX_FN(free)(m_clone);
+    Matrix_reset_d(&m);
+    Matrix_free_d(m_clone);
 
 
 }
@@ -60,26 +60,26 @@ void t_mat_catch() {
 
     ejovo_seed();
 
-    MATRIX_T *m = MATRIX_FN(rand)(10, 10);
-    MATRIX_T *m1 = NULL;
-    MATRIX_FN(catch)(&m1, MAT_FN(clone)(m));
-    MATRIX_FN(catch)(&m1, MATRIX_FN(add)(m, m1));
+    Matrix_d *m = Matrix_rand_d(10, 10);
+    Matrix_d *m1 = NULL;
+    Matrix_catch_d(&m1, matclone_d(m));
+    Matrix_catch_d(&m1, Matrix_add_d(m, m1));
 
-    MATRIX_FN(free)(m);
-    MATRIX_FN(free)(m1);
+    Matrix_free_d(m);
+    Matrix_free_d(m1);
 
 }
 
 void t_vector_linspace() {
 
-    Vector *v = VECTOR_FN(linspace)(1, 0, 4);
-    assert(VECTOR_FN(first)(v) == 1);
+    Vector_d*v = Vector_linspace_d(1, 0, 4);
+    assert(Vector_first_d(v) == 1);
 
-    MATRIX_FN(print)(v);
+    Matrix_print_d(v);
 
-    assert(VECTOR_FN(last)(v) == 0);
+    assert(Vector_last_d(v) == 0);
 
-    MATRIX_FN(reset)(&v);
+    Matrix_reset_d(&v);
 
 
 }

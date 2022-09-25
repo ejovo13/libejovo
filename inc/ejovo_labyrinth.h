@@ -2,12 +2,17 @@
 #define EJOVO_LABYRINTH
 
 #include "stdbool.h"
-#include "ejovo_matrix_generic.h"
+#include <stddef.h>
+// #define MATRIX_TYPE int
+// #include "ejovo_matrix_generic.h"
+// #include "matrix/matrix_d.h"
+#include "ejovo_matrix.h"
 
 // This file contains some functions to generate a labyrinth and then later how to solve the maze
-#ifndef MATRIX_TYPE
-#define MATRIX_TYPE int
-#endif
+// #ifndef MATRIX_TYPE
+// #define MATRIX_TYPE int
+// #endif
+
 
 typedef enum piece_e {
     V_PIPE, // Vertical pipe
@@ -28,7 +33,7 @@ typedef enum piece_e {
 typedef struct labyrinth_piece_t {
 
     // contain a 3 by 3 matrix and one field that is the PIECE_TYPE enum
-    MATRIX_T *mat;
+    Matrix_d *mat;
     PIECE_TYPE type;
 
 } LabPiece;
@@ -36,25 +41,25 @@ typedef struct labyrinth_piece_t {
 
 
 
-MATRIX_T *MATRIX_FN(from)(const MATRIX_TYPE *__arr, size_t __nrows, size_t __ncols);
+Matrix_d *TYPED(Matrix_from)(const MATRIX_TYPE *__arr, size_t __nrows, size_t __ncols);
 
 
 // Using this for a piece that is 3x3
 MATRIX_TYPE *piece_array(MATRIX_TYPE __1, MATRIX_TYPE __2, MATRIX_TYPE __3, MATRIX_TYPE __4, MATRIX_TYPE __5, MATRIX_TYPE __6, MATRIX_TYPE __7, MATRIX_TYPE __8, MATRIX_TYPE __9);
 
 // Pass an enum value and get the 3 x 3 matrix that corresponds to this piece
-MATRIX_T *get_piece_matrix(PIECE_TYPE __t);
+Matrix_d *get_piece_matrix(PIECE_TYPE __t);
 
 LabPiece *get_piece(PIECE_TYPE __t);
 
 void print_piece(LabPiece *__p, size_t __n);
 
-LabPiece *get_piece_from_matrix(MATRIX_T *__m, size_t __i, size_t __j);
+LabPiece *get_piece_from_matrix(Matrix_d *__m, size_t __i, size_t __j);
 
 
-void print_matrix_as_lab(MATRIX_T *__m);
+void print_matrix_as_lab(Matrix_d *__m);
 
-MATRIX_T *create_checkerboard(size_t __nrows, size_t __ncols);
+Matrix_d *create_checkerboard(size_t __nrows, size_t __ncols);
 
 typedef enum directions_s {
 
@@ -83,9 +88,9 @@ PIECE_TYPE get_open_piece_type(DIRECTION __d);
 PIECE_TYPE get_open_piece_type_2(DIRECTION __d1, DIRECTION __d2);
 
 // Create a path through the matrix from the top to the bottom
-void create_path(MATRIX_T *__m, size_t __start_j, size_t __end_j);
+void create_path(Matrix_d *__m, size_t __start_j, size_t __end_j);
 
-MATRIX_T *create_maze(size_t __nrows, size_t __ncols);
+Matrix_d *create_maze(size_t __nrows, size_t __ncols);
 
 typedef struct cell_t {
     size_t i;
@@ -99,6 +104,6 @@ typedef struct cell_stack_t {
 
 } CellStack;
 
-void generate_path(MATRIX_T *__maze, CellStack *__stack, size_t __celli, size_t __cellj);
+void generate_path(Matrix_d *__maze, CellStack *__stack, size_t __celli, size_t __cellj);
 
 #endif

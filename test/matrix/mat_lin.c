@@ -46,94 +46,94 @@ int main() {
 
 void t_mat__pow() {
 
-    MATRIX_T *sq = get_square();
+    Matrix_d *sq = get_square();
 
-    MATRIX_FN(catch)(&sq, MATRIX_FN(pow)(sq, 3));
-    MATRIX_T *sq_3 = MATRIX_FN(from)(
+    Matrix_catch_d(&sq, Matrix_pow_d(sq, 3));
+    Matrix_d *sq_3 = Matrix_from_d(
         (double[]) {10681.000000, 10490.000000, 11813.000000, 7830.000000, 11105.000000, 11420.000000, 7055.000000, 8967.000000, 6871.000000, 6046.000000, 7185.000000, 4899.000000, 6720.000000, 7045.000000, 3862.000000, 5637.000000, 7845.000000, 6869.000000, 7820.000000, 5215.000000, 7603.000000, 7571.000000, 4555.000000, 5906.000000, 11428.000000, 10243.000000, 11794.000000, 7442.000000, 10729.000000, 11454.000000, 6503.000000, 9057.000000, 12614.000000, 11574.000000, 13027.000000, 8291.000000, 12173.000000, 12708.000000, 7485.000000, 9773.000000, 9346.000000, 8532.000000, 10264.000000, 6262.000000, 9355.000000, 9328.000000, 5478.000000, 7607.000000, 9630.000000, 8960.000000, 10087.000000, 6510.000000, 9374.000000, 10434.000000, 5873.000000, 7757.000000, 10936.000000, 10037.000000, 11457.000000, 7264.000000, 10773.000000, 11155.000000, 6747.000000, 8662.000000},
         8, 8);
 
-    assert(MAT_FN(cmp)(sq, sq_3)); // Verify the matrix power computation.
+    assert(matcmp_d(sq, sq_3)); // Verify the matrix power computation.
 
-    MATRIX_FN(free)(sq);
-    MATRIX_FN(free)(sq_3);
+    Matrix_free_d(sq);
+    Matrix_free_d(sq_3);
 }
 
 void t_mat__det() {
 
-    MATRIX_T *s = get_square();
-    assert(MATRIX_FN(det)(s) == 5853640);
-    MATRIX_FN(free)(s);
+    Matrix_d *s = get_square();
+    assert(Matrix_det_d(s) == 5853640);
+    Matrix_free_d(s);
 
-    MATRIX_T *id = MATRIX_FN(identity)(3); // Anything higher than this and the complexity fucking explodes
-    assert(MATRIX_FN(det)(id) == 1.0);
-    MATRIX_FN(free)(id);
+    Matrix_d *id = Matrix_identity_d(3); // Anything higher than this and the complexity fucking explodes
+    assert(Matrix_det_d(id) == 1.0);
+    Matrix_free_d(id);
 }
 
 void t_mat_cdr_check() {
 
     ejovo_seed();
 
-    MATRIX_T *m1 = MATRIX_FN(rand)(2, 2);
-    MATRIX_T *m2 = MATRIX_FN(rand)(2, 2);
+    Matrix_d *m1 = Matrix_rand_d(2, 2);
+    Matrix_d *m2 = Matrix_rand_d(2, 2);
 
-    MATRIX_FN(print)(m1);
-    MATRIX_FN(print)(m2);
+    Matrix_print_d(m1);
+    Matrix_print_d(m2);
 
-    printf("m2 c2 dot with m1 r 1: %lf\n", MAT_FN(cdr_check)(m1, m2, 0, 1));
+    printf("m2 c2 dot with m1 r 1: %lf\n", matcdr_check_d(m1, m2, 0, 1));
 
-    MATRIX_T *wide = get_wide();
-    MATRIX_T *sq = get_square();
+    Matrix_d *wide = get_wide();
+    Matrix_d *sq = get_square();
 
-    MATRIX_FN(free)(wide);
-    MATRIX_FN(free)(sq);
+    Matrix_free_d(wide);
+    Matrix_free_d(sq);
 
-    MATRIX_FN(free)(m1);
-    MATRIX_FN(free)(m2);
+    Matrix_free_d(m1);
+    Matrix_free_d(m2);
 
 }
 
 void t_mat_mul() {
 
-    MATRIX_T *tall = get_tall();
-    MATRIX_T *sq = get_square();
-    MATRIX_T *sq_tall = MATRIX_FN(multiply)(sq, tall);
+    Matrix_d *tall = get_tall();
+    Matrix_d *sq = get_square();
+    Matrix_d *sq_tall = Matrix_multiply_d(sq, tall);
 
-    MATRIX_T *true_value = MATRIX_FN(from)(
+    Matrix_d *true_value = Matrix_from_d(
         (double[]) {280.000000, 250.000000, 221.000000, 204.000000, 116.000000, 143.000000, 138.000000, 89.000000, 169.000000, 154.000000, 160.000000, 87.000000, 233.000000, 225.000000, 222.000000, 165.000000, 296.000000, 257.000000, 258.000000, 172.000000, 224.000000, 202.000000, 271.000000, 120.000000, 234.000000, 164.000000, 181.000000, 147.000000, 269.000000, 201.000000, 229.000000, 176.000000},
         8, 4);
 
-    assert(MAT_FN(cmp)(sq_tall, true_value));
+    assert(matcmp_d(sq_tall, true_value));
 
-    MATRIX_FN(free)(tall);
-    MATRIX_FN(free)(sq);
-    MATRIX_FN(free)(sq_tall);
-    MATRIX_FN(free)(true_value);
+    Matrix_free_d(tall);
+    Matrix_free_d(sq);
+    Matrix_free_d(sq_tall);
+    Matrix_free_d(true_value);
 }
 
 void t_colnorm() {
 
     ejovo_seed();
 
-    MATRIX_T *m = MATRIX_FN(rand)(5, 5);
-    MATRIX_FN(print)(m);
-    printf("Colnorm: %lf\n", MATRIX_FN(col_norm)(m, 3));
+    Matrix_d *m = Matrix_rand_d(5, 5);
+    Matrix_print_d(m);
+    printf("Colnorm: %lf\n", Matrix_col_norm_d(m, 3));
 
-    MATRIX_FN(free)(m);
+    Matrix_free_d(m);
 }
 
 void t_mat_normcol() {
 
     ejovo_seed();
 
-    MATRIX_T *m = MATRIX_FN(rand)(5, 5);
-    MATRIX_FN(print)(m);
-    MATRIX_FN(normalize_col)(m, 3);
-    MATRIX_FN(print)(m);
-    MATRIX_FN(normalize_cols)(m);
-    MATRIX_FN(print)(m);
+    Matrix_d *m = Matrix_rand_d(5, 5);
+    Matrix_print_d(m);
+    Matrix_normalize_col_d(m, 3);
+    Matrix_print_d(m);
+    Matrix_normalize_cols_d(m);
+    Matrix_print_d(m);
 
-    MATRIX_FN(free)(m);
+    Matrix_free_d(m);
 
 }
 
@@ -141,10 +141,10 @@ void t_frobenius() {
 
     ejovo_seed();
 
-    MATRIX_T *m = MATRIX_FN(rand)(5, 5);
-    MATRIX_FN(print)(m);
-    printf("||m||_f = %lf\n", MATRIX_FN(frobenius)(m));
-    MATRIX_FN(free)(m);
+    Matrix_d *m = Matrix_rand_d(5, 5);
+    Matrix_print_d(m);
+    printf("||m||_f = %lf\n", Matrix_frobenius_d(m));
+    Matrix_free_d(m);
 
 }
 
@@ -154,56 +154,56 @@ void t_mat_lu() {
 
     ejovo_seed();
 
-    MATRIX_T *m = MATRIX_FN(random)(3, 3, 1, 10);
-    MATRIX_FN(print)(m);
+    Matrix_d *m = Matrix_random_d(3, 3, 1, 10);
+    Matrix_print_d(m);
 
-    MATRIX_T *U = MATRIX_FN(clone)(m);
+    Matrix_d *U = Matrix_clone_d(m);
 
-    printf("MATRIX_T cloned\n");
+    printf("Matrix_d cloned\n");
 
-    MATRIX_T *L = MAT_FN(lu_nopivot)(U);
-    MATRIX_FN(print)(L);
-    MATRIX_FN(print)(U);
+    Matrix_d *L = matlu_nopivot_d(U);
+    Matrix_print_d(L);
+    Matrix_print_d(U);
 
 
 
     printf("L * U = \n");
 
-    MATRIX_FN(print)(MATRIX_FN(anon)(MATRIX_FN(multiply)(L, U)));
+    Matrix_print_d(Matrix_anon_d(Matrix_multiply_d(L, U)));
 
-    MATRIX_FN(free)(m);
-    MATRIX_FN(free)(U);
-    MATRIX_FN(free)(L);
+    Matrix_free_d(m);
+    Matrix_free_d(U);
+    Matrix_free_d(L);
 
 
-    MATRIX_T *A = MATRIX_FN(rand)(3, 3);
-    Vector *b = VECTOR_FN(rand)(3);
+    Matrix_d *A = Matrix_rand_d(3, 3);
+    Vector_d*b = Vector_rand_d(3);
 
-    Vector *x = MATRIX_FN(solve_lu)(A, b);
+    Vector_d*x = Matrix_solve_lu_d(A, b);
 
-    MATRIX_FN(print)(A);
-    MATRIX_FN(free)(A);
-    MATRIX_FN(free)(b);
-    MATRIX_FN(free)(x);
-    MATRIX_FN(anon_free)();
+    Matrix_print_d(A);
+    Matrix_free_d(A);
+    Matrix_free_d(b);
+    Matrix_free_d(x);
+    Matrix_anon_free_d();
 
 }
 
 void t_matrix_lu() {
 
-    MATRIX_T *m = MATRIX_FN(random)(10, 10, 1, 12);
+    Matrix_d *m = Matrix_random_d(10, 10, 1, 12);
 
-    TYPED(LU) lu = MATRIX_FN(lu)(m);
+    LU_d lu = Matrix_lu_d(m);
 
-    MATRIX_FN(print)(m);
+    Matrix_print_d(m);
     printf("\n LU decomposition: \n");
 
-    MATRIX_FN(print)(lu.L);
-    MATRIX_FN(print)(lu.U);
+    Matrix_print_d(lu.L);
+    Matrix_print_d(lu.U);
 
-    MATRIX_FN(free)(lu.L);
-    MATRIX_FN(free)(lu.U);
-    MATRIX_FN(free)(m);
+    Matrix_free_d(lu.L);
+    Matrix_free_d(lu.U);
+    Matrix_free_d(m);
 
 }
 
@@ -211,167 +211,167 @@ void t_jacobi() {
 
     printf("=============Jacobi iteration===================\n");
 
-    MATRIX_T *catch = NULL;
+    Matrix_d *catch = NULL;
 
     ejovo_seed();
-    // MATRIX_T *A = MATRIX_FN(tridiagonal)(15);
-    // MATRIX_T *A = MATRIX_FN(rand)(3, 3);
+    // Matrix_d *A = Matrix_tridiagonal_d(15);
+    // Matrix_d *A = Matrix_rand_d(3, 3);
 
     // wtf so my jacobi iteration works just fine when the b vector is the same....
 
     double data[] = {4, -1, 0, 1, 0, -1, 4, -1, 0, 1, 0, -1, 4, -1, 0, 1, 0, -1, 4, -1, 0, 1, 0, -1, 4}; // éléments de la matrice du livre, arrangé en ordre "row-major"
 
-    MATRIX_T *A = MATRIX_FN(from)(data, 5, 5); // Créer une 5 x 5 matrice de data
-    // Vector *b = MATRIX_FN(value)(3, 1, 100); // creer b = [100, 100, 100, 100, 100]^T
-    // Vector *b = MATRIX_FN(rand)(15, 1); // creer b = [100, 100, 100, 100, 100]^T
-    Vector *b = MATRIX_FN(rand)(5, 1); // creer b = [100, 100, 100, 100, 100]^T
+    Matrix_d *A = Matrix_from_d(data, 5, 5); // Créer une 5 x 5 matrice de data
+    // Vector_d*b = Matrix_value_d(3, 1, 100); // creer b = [100, 100, 100, 100, 100]^T
+    // Vector_d*b = Matrix_rand_d(15, 1); // creer b = [100, 100, 100, 100, 100]^T
+    Vector_d*b = Matrix_rand_d(5, 1); // creer b = [100, 100, 100, 100, 100]^T
 
-    // Vector *x = TYPED_FN(jacobi_iteration)(A, b, MATRIX_FN(new)(15, 1), 0.0001); // Tester l'algorithme avec x^0 = [0, 0, 0, 0, 0]^T, tolerance 0.0001
-    Vector *x = TYPED_FN(jacobi_iteration)(A, b, MATRIX_FN(catch)(&catch, MATRIX_FN(new)(5, 1)), 0.0001); // Tester l'algorithme avec x^0 = [0, 0, 0, 0, 0]^T, tolerance 0.0001
+    // Vector_d*x = jacobi_iteration_d(A, b, Matrix_new_d(15, 1), 0.0001); // Tester l'algorithme avec x^0 = [0, 0, 0, 0, 0]^T, tolerance 0.0001
+    Vector_d*x = jacobi_iteration_d(A, b, Matrix_catch_d(&catch, Matrix_new_d(5, 1)), 0.0001); // Tester l'algorithme avec x^0 = [0, 0, 0, 0, 0]^T, tolerance 0.0001
 
     // Afficher a l'écran les résultats
     printf("A: ");
-    MATRIX_FN(print)(A);
+    Matrix_print_d(A);
     // printf("b: ");
-    // MATRIX_FN(print)(b);
+    // Matrix_print_d(b);
     printf("x: ");
-    MATRIX_FN(print)(x);
+    Matrix_print_d(x);
 
-    MATRIX_FN(catch)(&x, MATRIX_FN(solve_lu)(A, b));
+    Matrix_catch_d(&x, Matrix_solve_lu_d(A, b));
     printf("Exact solution: ");
-    MATRIX_FN(print)(x);
+    Matrix_print_d(x);
 
-    // MATRIX_FN(set)(A, 0, 2, 0);
-    // MATRIX_FN(set)(A, 2, 0, 0); // make matrix diagonal??
+    // Matrix_set_d(A, 0, 2, 0);
+    // Matrix_set_d(A, 2, 0, 0); // make matrix diagonal??
 
-    // Vector *b = MATRIX_FN(value)(24, 1, 500);
-    // Vector *b = MATRIX_FN(rand)(24, 1);
+    // Vector_d*b = Matrix_value_d(24, 1, 500);
+    // Vector_d*b = Matrix_rand_d(24, 1);
 
     // printf("Ax = ");
-    // MATRIX_FN(print)(MATRIX_FN(multiply)(A, x));
+    // Matrix_print_d(Matrix_multiply_d(A, x));
 
-    MATRIX_FN(free)(A);
-    MATRIX_FN(free)(b);
-    MATRIX_FN(free)(x);
-    MATRIX_FN(free)(catch);
-    // MATRIX_T *B = MATRIX_FN(tridiagonal)(10);
-    // MATRIX_FN(print)(B);
-    // MATRIX_FN(free)(B);
+    Matrix_free_d(A);
+    Matrix_free_d(b);
+    Matrix_free_d(x);
+    Matrix_free_d(catch);
+    // Matrix_d *B = Matrix_tridiagonal_d(10);
+    // Matrix_print_d(B);
+    // Matrix_free_d(B);
 
 
 }
 
 void t_vandermonde() {
 
-    MATRIX_T *v = VECTOR_FN(runif)(10, -3, 3);
+    Matrix_d *v = Vector_runif_d(10, -3, 3);
 
-    MATRIX_FN(print)(v);
+    Matrix_print_d(v);
 
-    MATRIX_T *V = MATRIX_FN(vandermonde)(v);
+    Matrix_d *V = Matrix_vandermonde_d(v);
 
-    MATRIX_T *Vr = MATRIX_FN(vandermonde_reduced)(v, 3);
-    MATRIX_T *Vr_t = MATRIX_FN(transpose)(Vr);
+    Matrix_d *Vr = Matrix_vandermonde_reduced_d(v, 3);
+    Matrix_d *Vr_t = Matrix_transpose_d(Vr);
 
 
-    MATRIX_FN(print)(V);
-    MATRIX_FN(print)(Vr);
-    MATRIX_FN(print)(Vr_t);
+    Matrix_print_d(V);
+    Matrix_print_d(Vr);
+    Matrix_print_d(Vr_t);
 
-    MATRIX_FN(print)(MATRIX_FN(anon)(MATRIX_FN(multiply)(Vr_t, Vr)));
+    Matrix_print_d(Matrix_anon_d(Matrix_multiply_d(Vr_t, Vr)));
 
-    MATRIX_FN(anon_free)();
-    MATRIX_FN(reset)(&V);
-    MATRIX_FN(reset)(&Vr);
-    MATRIX_FN(reset)(&Vr_t);
-    MATRIX_FN(reset)(&v);
+    Matrix_anon_free_d();
+    Matrix_reset_d(&V);
+    Matrix_reset_d(&Vr);
+    Matrix_reset_d(&Vr_t);
+    Matrix_reset_d(&v);
 
-    MATRIX_T *r = TYPED_FN(ascol)(range_d(1, 100, 24));
+    Matrix_d *r = ascol_d(range_d(1, 100, 24));
 
-    MATRIX_FN(print)(r);
+    Matrix_print_d(r);
 
-    TYPED_FN(asrow)(r);
+    asrow_d(r);
 
-    v = TYPED_FN(asrow)(TYPED_FN(vector)(5, 1.0, 13.0, -24.0, 14.0, 4.1));
+    v = asrow_d(vector_d(5, 1.0, 13.0, -24.0, 14.0, 4.1));
 
-    MATRIX_FN(print)(v);
+    Matrix_print_d(v);
 
-    MATRIX_FN(print)(r);
+    Matrix_print_d(r);
 
-    MATRIX_FN(free)(v);
-    MATRIX_FN(free)(r);
+    Matrix_free_d(v);
+    Matrix_free_d(r);
 
 
 }
 
 void t_gausselim() {
 
-    MATRIX_T *A = MATRIX_FN(id)(3, 3);
-    MATRIX_FN(set)(A, 1, 1, 2);
-    MATRIX_FN(set)(A, 1, 2, 2);
-    MATRIX_FN(set)(A, 1, 0, 3);
-    MATRIX_FN(set)(A, 0, 2, 5);
+    Matrix_d *A = Matrix_id_d(3, 3);
+    Matrix_set_d(A, 1, 1, 2);
+    Matrix_set_d(A, 1, 2, 2);
+    Matrix_set_d(A, 1, 0, 3);
+    Matrix_set_d(A, 0, 2, 5);
 
-    MATRIX_FN(print)(A);
+    Matrix_print_d(A);
 
-    MATRIX_T *b = MATRIX_FN(value)(3, 1, 1);
+    Matrix_d *b = Matrix_value_d(3, 1, 1);
 
-    MATRIX_T *x = TYPED_FN(gausselim)(A, b);
+    Matrix_d *x = gausselim_d(A, b);
 
-    MATRIX_FN(print)(x);
+    Matrix_print_d(x);
 
-    MATRIX_T *Ax = MATRIX_FN(multiply)(A, x);
+    Matrix_d *Ax = Matrix_multiply_d(A, x);
 
-    MATRIX_FN(print)(Ax);
+    Matrix_print_d(Ax);
 
-    MATRIX_FN(reset)(&A);
-    MATRIX_FN(reset)(&b);
-    MATRIX_FN(reset)(&x);
-    MATRIX_FN(reset)(&Ax);
+    Matrix_reset_d(&A);
+    Matrix_reset_d(&b);
+    Matrix_reset_d(&x);
+    Matrix_reset_d(&Ax);
 
 }
 
 void t_gausselim_rand() {
 
-    MATRIX_T *A = MATRIX_FN(random)(5, 5, 1, 5);
-    MATRIX_T *b = MATRIX_FN(ones)(5, 5);
-    MATRIX_T *x = TYPED_FN(gausselim)(A, b);
+    Matrix_d *A = Matrix_random_d(5, 5, 1, 5);
+    Matrix_d *b = Matrix_ones_d(5, 5);
+    Matrix_d *x = gausselim_d(A, b);
 
-    MATRIX_T *Ax = MATRIX_FN(multiply)(A, x);
+    Matrix_d *Ax = Matrix_multiply_d(A, x);
 
-    MATRIX_FN(print)(Ax);
+    Matrix_print_d(Ax);
 
-    MATRIX_FN(reset)(&A);
-    MATRIX_FN(reset)(&b);
-    MATRIX_FN(reset)(&x);
-    MATRIX_FN(reset)(&Ax);
+    Matrix_reset_d(&A);
+    Matrix_reset_d(&b);
+    Matrix_reset_d(&x);
+    Matrix_reset_d(&Ax);
 
 }
 
 void t_inverse() {
 
-    MATRIX_T *not_square = MATRIX_FN(new)(10, 5);
+    Matrix_d *not_square = Matrix_new_d(10, 5);
 
-    assert(!MATRIX_FN(inverse)(not_square));
+    assert(!Matrix_inverse_d(not_square));
 
-    MATRIX_T *id = MATRIX_FN(id)(4, 4);
-    MATRIX_T *id_inv = MATRIX_FN(inverse)(id);
+    Matrix_d *id = Matrix_id_d(4, 4);
+    Matrix_d *id_inv = Matrix_inverse_d(id);
 
-    assert(MAT_FN(cmp)(id, id_inv));
+    assert(matcmp_d(id, id_inv));
 
     // Curated so that |A| = 1
-    MATRIX_T *A = MATRIX_FN(from)((double []) {8.0, 3.0, 5.0, 2.0}, 2, 2);
-    MATRIX_T *A_inv = MATRIX_FN(inverse)(A);
+    Matrix_d *A = Matrix_from_d((double []) {8.0, 3.0, 5.0, 2.0}, 2, 2);
+    Matrix_d *A_inv = Matrix_inverse_d(A);
 
-    MATRIX_T *A_true_inv = MATRIX_FN(from)((double []) {2.0, -3.0, -5.0, 8.0}, 2, 2);
+    Matrix_d *A_true_inv = Matrix_from_d((double []) {2.0, -3.0, -5.0, 8.0}, 2, 2);
 
-    assert(MATRIX_FN(det)(A) == 1.0);
-    assert(MAT_FN(cmp)(A_inv, A_true_inv));
+    assert(Matrix_det_d(A) == 1.0);
+    assert(matcmp_d(A_inv, A_true_inv));
 
-    MATRIX_FN(free)(not_square);
-    MATRIX_FN(free)(id);
-    MATRIX_FN(free)(id_inv);
-    MATRIX_FN(free)(A);
-    MATRIX_FN(free)(A_inv);
-    MATRIX_FN(free)(A_true_inv);
+    Matrix_free_d(not_square);
+    Matrix_free_d(id);
+    Matrix_free_d(id_inv);
+    Matrix_free_d(A);
+    Matrix_free_d(A_inv);
+    Matrix_free_d(A_true_inv);
 
 }

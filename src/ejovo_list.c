@@ -488,7 +488,7 @@ double Polynome_eval(const Polynome *__p, double __x) {
 
 }
 
-Vector *Polynome_eval_vec(const Polynome *__p, const Vector *__v) {
+Vector_d *Polynome_eval_vec(const Polynome *__p, const Vector_d *__v) {
 
 
 

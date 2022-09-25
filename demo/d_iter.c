@@ -6,29 +6,29 @@ int main() {
 
     ejovo_seed();
 
-    MATRIX_T *m = MATRIX_FN(rnorm)(10, 5, 0, 1);
+    Matrix_d *m = Matrix_rnorm_d(10, 5, 0, 1);
 
-    MATRIX_FN(print_fixed)(m);
+    Matrix_print_fixed_d(m);
 
 
     // Let's try and extract a new matrix whose columns are [1, 1, 1]
 
-    Vector *ind = TYPED_FN(vector)(3, 1.0, 0.0, 4.0);
+    Vector_d*ind = vector_d(3, 1.0, 0.0, 4.0);
 
-    MATRIX_T *new = MATRIX_FN(extract_cols)(m, ind);
+    Matrix_d *new = Matrix_extract_cols_d(m, ind);
 
-    MATRIX_FN(print_fixed)(MATRIX_FN(anon)(new));
-    // MATRIX_FN(print_fixed)(new);
+    Matrix_print_fixed_d(Matrix_anon_d(new));
+    // Matrix_print_fixed_d(new);
 
     // Let's now extract a few rows
-    new = MATRIX_FN(extract_rows)(m, MAT_FN(anon)(3, 0.0, 5.0, 2.0));
+    new = Matrix_extract_rows_d(m, matanon_d(3, 0.0, 5.0, 2.0));
 
-    // MATRIX_FN(print_fixed)(new);
+    // Matrix_print_fixed_d(new);
 
-    MATRIX_FN(anon)(new);
-    MATRIX_FN(anon_free)();
-    MATRIX_FN(reset)(&ind);
-    MATRIX_FN(reset)(&m);
+    Matrix_anon_d(new);
+    Matrix_anon_free_d();
+    Matrix_reset_d(&ind);
+    Matrix_reset_d(&m);
 
 
     return 0;

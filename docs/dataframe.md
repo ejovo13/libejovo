@@ -19,12 +19,12 @@ Hopefully these names aren't too confusing; A `Chain` is simply a linked list wh
 
 ###### Construction
 
-What's really awesome about `libejovo` is that we can use C's variadic functions to instantiate a `Chain` and `Space` quite easily. For example, imagine that we wanted to study how different distributions behave. We can generate samples of size `n` from a given distribution using the functions defined under the `MATRIX_FN(dist)` submodule
+What's really awesome about `libejovo` is that we can use C's variadic functions to instantiate a `Chain` and `Space` quite easily. For example, imagine that we wanted to study how different distributions behave. We can generate samples of size `n` from a given distribution using the functions defined under the `TYPED(Matrix_dist)` submodule
 
 ```
-Vector *rnorm = VECTOR_FN(rnorm)(1000, 0, 1);    // 1000 samples of X ~ N(0, 1)
-Vector *runif = VECTOR_FN(runif)(1000, -10, 10); // 1000 samples of X ~ U(-10, 10)
-Vector *rexp  = VECTOR_FN(rexp) (1000, 3);     // 1000 samples of an exponential distribution with rate parameter `3`
+ TYPED(Vector)*rnorm = TYPED(Vector_rnorm)(1000, 0, 1);    // 1000 samples of X ~ N(0, 1)
+ TYPED(Vector)*runif = TYPED(Vector_runif)(1000, -10, 10); // 1000 samples of X ~ U(-10, 10)
+ TYPED(Vector)*rexp  = TYPED(Vector_rexp) (1000, 3);     // 1000 samples of an exponential distribution with rate parameter `3`
 ```
 
 We can easily wrap these three `Vector`s up into a `Space` in two different ways. Either we can manually add them one by one:

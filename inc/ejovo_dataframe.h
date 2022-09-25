@@ -32,14 +32,14 @@ Chain *newChainVar(int __count, ...);
  *========================================================================**/
 typedef struct space_t {
 
-    Vector *data;
+    Vector_d *data;
     struct space_t *next;
 
 } Space;
 
-Space *newSpace(Vector *__v);
+Space *newSpace( Vector_d *__v);
 
-Space *appendSpace(Space *__space, Vector *__v);
+Space *appendSpace(Space *__space, Vector_d *__v);
 
 Space *newSpaceVar(int __count, ...);
 
@@ -73,9 +73,9 @@ DataFrame *newDataFrame(Chain *__chain, Space *__space);
 
 int dimDataFrame(const DataFrame *__df);
 
-typedef void (* string_vector_fn) (const String *, const Vector *);
+typedef void (* string_vector_fn) (const String *, const Vector_d *);
 typedef void (* string_fn) (String *);
-typedef void (* vector_fn) (Vector *);
+typedef void (* vector_fn) ( Vector_d *);
 
 void foreachSV(const DataFrame *__df, string_vector_fn fn);
 
@@ -84,7 +84,7 @@ void foreachString(const DataFrame *__df, string_fn fn);
 void foreachVector(const DataFrame *__df, vector_fn fn);
 
 // print the name of the col and then the first __nel elements
-void printDataFrameCol(const String *__str, const Vector *__v);
+void printDataFrameCol(const String *__str, const Vector_d *__v);
 
 void printDataFrame(const DataFrame *__df);
 
@@ -98,7 +98,7 @@ void writeGP(const DataFrame *__df, const char *__filename);
 
 // Return a pointer to the column in question
 // Columns shall be ZERO indexed
-Vector *getColDF(const DataFrame *__df, int __j);
+ Vector_d *getColDF(const DataFrame *__df, int __j);
 
 /**========================================================================
  *!                           History functions
@@ -108,4 +108,4 @@ Vector *getColDF(const DataFrame *__df, int __j);
 // null
 typedef double (*double_fn)(void);
 
-Vector *save_doubles(double_fn fn, int n);
+ Vector_d *save_doubles(double_fn fn, int n);

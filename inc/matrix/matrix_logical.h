@@ -1,7 +1,7 @@
 #ifndef MATRIX_LOGICAL_H
 #define MATRIX_LOGICAL_H
 
-// This module contains essential routines to deal with a "logical" MATRIX_T data type that is represented
+// This module contains essential routines to deal with a "logical" TYPED(Matrix) data type that is represented
 // by A matrix that is UNIQUELY ones and zeros
 
 #include <stdbool.h>
@@ -18,68 +18,68 @@
 extern MATRIX_TYPE TYPED(TRUE);
 extern MATRIX_TYPE TYPED(FALSE);
 
-typedef MATRIX_T Logical;
-typedef MATRIX_TYPE (* pred_fn) (MATRIX_TYPE);
+typedef TYPED(Matrix) TYPED(Logical);
+typedef MATRIX_TYPE (* TYPED(pred_fn)) (MATRIX_TYPE);
 
-// A Logical MATRIX_T shall be typedef'd as a "Mask" to express intent
+// A Logical TYPED(Matrix) shall be typedef'd as a "Mask" to express intent
 // This is used as a predicate function. Can be used to make a "true"
 // matrix that is the same size as a passed matrix with
-// MATRIX_FN(as_logical)(m, true_fn); as MATRIX_FN(as_logical) will accept a
+// TYPED(Matrix_as_logical)(m, true_fn); as TYPED(Matrix_as_logical) will accept a
 // predicate as an argument
-MATRIX_TYPE TYPED_FN(true_fn)(MATRIX_TYPE d);
+MATRIX_TYPE TYPED(true_fn)(MATRIX_TYPE d);
 
-MATRIX_TYPE TYPED_FN(NOT)(MATRIX_TYPE d);
+MATRIX_TYPE TYPED(NOT)(MATRIX_TYPE d);
 
-MATRIX_TYPE TYPED_FN(AND)(MATRIX_TYPE a, MATRIX_TYPE b);
+MATRIX_TYPE TYPED(AND)(MATRIX_TYPE a, MATRIX_TYPE b);
 
-MATRIX_TYPE TYPED_FN(OR)(MATRIX_TYPE a, MATRIX_TYPE b);
+MATRIX_TYPE TYPED(OR)(MATRIX_TYPE a, MATRIX_TYPE b);
 
 // First routine that I should implement is having the notion of "if the vector is logical"
-bool MATRIX_FN(is_logical)(const MATRIX_T *__log);
+bool TYPED(Matrix_is_logical)(const TYPED(Matrix) *__log);
 
 
-bool VECTOR_FN(is_logical)(const Vector *__log);
+bool TYPED(Vector_is_logical)(const TYPED(Vector)*__log);
 
 // I need to be able to create logical vectors now...
-int MATRIX_FN(mask_count)(const MATRIX_T *__mask);
+int TYPED(Matrix_mask_count)(const TYPED(Matrix) *__mask);
 
 // Create a logical vector that is the same size as another matrix and set all of it's values to true.
-int VECTOR_FN(mask_count)(const Vector *__mask);
+int TYPED(Vector_mask_count)(const TYPED(Vector)*__mask);
 
 // An alternative way to count the value is to count the non zero values
 
 
 // Create a new logical matrix/vector from a current matrix and a predicate
-MATRIX_T *MATRIX_FN(as_logical)(const MATRIX_T *__m, pred_fn __fn);
+TYPED(Matrix) *TYPED(Matrix_as_logical)(const TYPED(Matrix) *__m, TYPED(pred_fn) __fn);
 
-MATRIX_T *MATRIX_FN(as_true)(const MATRIX_T *__m);
+TYPED(Matrix) *TYPED(Matrix_as_true)(const TYPED(Matrix) *__m);
 
-Logical *MATRIX_FN(lt)(const MATRIX_T *__m, MATRIX_TYPE __k);
+TYPED(Logical) *TYPED(Matrix_lt)(const TYPED(Matrix) *__m, MATRIX_TYPE __k);
 
 // Return a Logical mask of all the values in __m that are <= __k
-Logical *MATRIX_FN(lteq)(const MATRIX_T *__m, MATRIX_TYPE __k);
+TYPED(Logical) *TYPED(Matrix_lteq)(const TYPED(Matrix) *__m, MATRIX_TYPE __k);
 
 // Return a Logical mask of all the values in __m that are > lt __k
-Logical *MATRIX_FN(gt)(const MATRIX_T *__m, MATRIX_TYPE __k);
+TYPED(Logical) *TYPED(Matrix_gt)(const TYPED(Matrix) *__m, MATRIX_TYPE __k);
 
 // Return a Logical mask of all the values in __m that are >= __k
-Logical *MATRIX_FN(gteq)(const MATRIX_T *__m, MATRIX_TYPE __k);
+TYPED(Logical) *TYPED(Matrix_gteq)(const TYPED(Matrix) *__m, MATRIX_TYPE __k);
 
 // Wherever the mask is true, set __m to the __val
-void MAT_FN(setmask)(MATRIX_T *__m, const MATRIX_T *__mask, MATRIX_TYPE __val);
+void TYPED(matsetmask)(TYPED(Matrix) *__m, const TYPED(Matrix) *__mask, MATRIX_TYPE __val);
 
-void MAT_FN(setpred)(MATRIX_T *__m, pred_fn __predicate, MATRIX_TYPE __val);
+void TYPED(matsetpred)(TYPED(Matrix) *__m, TYPED(pred_fn) __predicate, MATRIX_TYPE __val);
 
 // Return a column vector of elements that correspond to a particular mask
-Vector *MATRIX_FN(filter_mask)(const MATRIX_T *__m, const MATRIX_T *__mask);
+ TYPED(Vector)*TYPED(Matrix_filter_mask)(const TYPED(Matrix) *__m, const TYPED(Matrix) *__mask);
 
 // return true if count == size of the mask
-bool TYPED_FN(Logical_all)(const MATRIX_T *__mask);
+bool TYPED(Logical_all)(const TYPED(Matrix) *__mask);
 
 // return true is any of the logical components are true
-bool TYPED_FN(Logical_any)(const MATRIX_T *__mask);
+bool TYPED(Logical_any)(const TYPED(Matrix) *__mask);
 
 // Return !__mask
-Logical *TYPED_FN(Logical_not)(const MATRIX_T *__mask);
+TYPED(Logical) *TYPED(Logical_not)(const TYPED(Matrix) *__mask);
 
 #endif

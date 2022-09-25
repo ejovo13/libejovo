@@ -10,7 +10,7 @@
 
 #include "ejovo_matrix_generic.h"
 
-// Function declaration for VECTOR_FN(map) function
+// Function declaration for Vector_map_d function
 double x_sq(double x);
 
 int main() {
@@ -21,43 +21,43 @@ int main() {
      *!   Compute the dot product of sin and cos over the interval [0, 2PI]
      *========================================================================**/
 
-    // Create a new Vector of x values from -pi to pi.
-    Vector *x = VECTOR_FN(linspace)(-PI, PI, 500);
+    // Create a new Vector_dof x values from -pi to pi.
+    Vector_d*x = Vector_linspace_d(-PI, PI, 500);
 
-    Vector *cosx = VECTOR_FN(map)(x, cos);
-    Vector *sinx = VECTOR_FN(map)(x, sin);
+    Vector_d*cosx = Vector_map_d(x, cos);
+    Vector_d*sinx = Vector_map_d(x, sin);
 
-    double dp = VECTOR_FN(dot)(cosx, sinx); // should be 0!!!
+    double dp = Vector_dot_d(cosx, sinx); // should be 0!!!
 
     printf("Dot product of sinx and cosx: %lf\n", dp);
-    printf("Dot product of cosx and cosx: %lf\n", VECTOR_FN(dot)(cosx, cosx));
-    printf("Dot product of sinx and sinx: %lf\n", VECTOR_FN(dot)(sinx, sinx));
+    printf("Dot product of cosx and cosx: %lf\n", Vector_dot_d(cosx, cosx));
+    printf("Dot product of sinx and sinx: %lf\n", Vector_dot_d(sinx, sinx));
 
     printf("x:    ");
-    VECTOR_FN(print_head)(x, 30);
+    Vector_print_head_d(x, 30);
 
     printf("cosx: ");
-    VECTOR_FN(print_head)(cosx, 30);
+    Vector_print_head_d(cosx, 30);
 
     printf("sinx: ");
-    VECTOR_FN(print_head)(sinx, 30);
+    Vector_print_head_d(sinx, 30);
 
     /**========================================================================
      *! Alternatively, we can compute the dot product as a matrix multiplication
      *========================================================================**/
 
-    MATRIX_T *dp_m = MATRIX_FN(multiply)(TYPED_FN(asrow)(sinx), cosx); // MATRIX_FN(multiply) returns a matrix
+    Matrix_d *dp_m = Matrix_multiply_d(asrow_d(sinx), cosx); // Matrix_multiply_d returns a matrix
 
-    // In this case, dp_m only has one element that we access with MATRIX_FN(first)
-    printf("MATRIX_T multiplication dp: %lf\n", MATRIX_FN(first)(dp_m));
+    // In this case, dp_m only has one element that we access with Matrix_first_d
+    printf("Matrix_d multiplication dp: %lf\n", Matrix_first_d(dp_m));
 
     /**========================================================================
      *! We could even compute the dot product using element-wise multiplication
      *========================================================================**/
-    MATRIX_T *hadamard_product = VECTOR_FN(hadamard)(sinx, cosx);
+    Matrix_d *hadamard_product = Vector_hadamard_d(sinx, cosx);
 
     // Then, the sum of the hadamard_product is the dot product
-    printf("Sum of element-wise multiplication: %lf\n", VECTOR_FN(sum)(hadamard_product));
+    printf("Sum of element-wise multiplication: %lf\n", Vector_sum_d(hadamard_product));
 
 
 
@@ -65,53 +65,53 @@ int main() {
      *!                   Let's showcase some projections
      *========================================================================**/
 
-    Vector *u = TYPED_FN(vector)(3, 10.0, -1.3, 14.6);
-    Vector *v = TYPED_FN(vector)(3, 1.0, 2.0, 3.0);
+    Vector_d*u = vector_d(3, 10.0, -1.3, 14.6);
+    Vector_d*v = vector_d(3, 1.0, 2.0, 3.0);
 
-    MATRIX_T *proj_v = VECTOR_FN(orthogonal_projection)(v);
+    Matrix_d *proj_v = Vector_orthogonal_projection_d(v);
 
-    Vector *proj_v_of_u = VECTOR_FN(project_onto)(u, v);
-    Vector *proj_v_mat_u = MATRIX_FN(multiply)(proj_v, u);
+    Vector_d*proj_v_of_u = Vector_project_onto_d(u, v);
+    Vector_d*proj_v_mat_u = Matrix_multiply_d(proj_v, u);
 
     // Both these projections are mathematically equal
-    MATRIX_FN(print)(proj_v_of_u);
-    MATRIX_FN(print)(proj_v_mat_u);
+    Matrix_print_d(proj_v_of_u);
+    Matrix_print_d(proj_v_mat_u);
 
 
     /**========================================================================
      *!                Here's an example of the map functionality
      *========================================================================**/
 
-    Vector *r = VECTOR_FN(range)(1, 50, 2);
-    Vector *r_sq = VECTOR_FN(map)(r, x_sq);
+    Vector_d*r = Vector_range_d(1, 50, 2);
+    Vector_d*r_sq = Vector_map_d(r, x_sq);
 
     printf("r    :\t");
-    MATRIX_FN(print)(r);
+    Matrix_print_d(r);
     printf("r.^2 :\t");
-    MATRIX_FN(print)(r_sq);
+    Matrix_print_d(r_sq);
 
 
     // This is largely unnecessary since at the end of the programs execution memory will stop. However, when writing your own routines
     // if is important to clean up matrices that are allocated temporarily during certain operations.
-    VECTOR_FN(reset)(&x);
-    VECTOR_FN(reset)(&cosx);
-    VECTOR_FN(reset)(&sinx);
-    VECTOR_FN(reset)(&r);
-    VECTOR_FN(reset)(&r_sq);
-    VECTOR_FN(reset)(&u);
-    VECTOR_FN(reset)(&v);
-    VECTOR_FN(reset)(&proj_v);
-    VECTOR_FN(reset)(&proj_v_of_u);
-    VECTOR_FN(reset)(&proj_v_mat_u);
-    VECTOR_FN(reset)(&hadamard_product);
-    VECTOR_FN(reset)(&dp_m);
+    Vector_reset_d(&x);
+    Vector_reset_d(&cosx);
+    Vector_reset_d(&sinx);
+    Vector_reset_d(&r);
+    Vector_reset_d(&r_sq);
+    Vector_reset_d(&u);
+    Vector_reset_d(&v);
+    Vector_reset_d(&proj_v);
+    Vector_reset_d(&proj_v_of_u);
+    Vector_reset_d(&proj_v_mat_u);
+    Vector_reset_d(&hadamard_product);
+    Vector_reset_d(&dp_m);
 
 
-    MATRIX_FN(anon_free)(); // Free any leftover anonymous matrices
+    Matrix_anon_free_d(); // Free any leftover anonymous matrices
 
 }
 
-// Custom function for use with VECTOR_FN(map)
+// Custom function for use with Vector_map_d
 double x_sq(double x) {
     return x * x;
 }

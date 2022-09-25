@@ -5,12 +5,12 @@
 ### Map
 Use `map` to return a newly allocated vector whose elements `y_i = f(x_i)`, that is the function applied to each element of an input `Vector`.
 
-`map` is a _higher order function_ which accepts a `Vector *` and a function with the signature `double (* function) (double)`. Note that this means that the function we pass in as argument has to be defined somewhere and visible to the calling scope. For example, if we have included the `math.h` library then we can use `exp` with `map` since `exp` is a function that maps a double to a double.
+`map` is a _higher order function_ which accepts a ` TYPED(Vector)*` and a function with the signature `double (* function) (double)`. Note that this means that the function we pass in as argument has to be defined somewhere and visible to the calling scope. For example, if we have included the `math.h` library then we can use `exp` with `map` since `exp` is a function that maps a double to a double.
 
 Here's an example where we apply the function `exp` to the `15` equally spaced points between `[-2, 5]`
 ```
-Vector *v = TYPED_FN(asrow)(linspace(-2, 5, 15));
-Vector *v_exp = map(v, exp);
+ TYPED(Vector)*v = TYPED(asrow)(linspace(-2, 5, 15));
+ TYPED(Vector)*v_exp = map(v, exp);
 ```
 <!-- Which outputs: -->
 ![this photo](../media/map_test.png)
@@ -21,18 +21,18 @@ Whereas `map` returns a newly allocated vector, `apply` is a convenient function
 If, for example, we are stringing together multiple functions, then we can use `apply` to avoid creating an anonymous matrix.
 
 ```
-Vector *v = apply(range(1, 10, 2), exp)
+ TYPED(Vector)*v = apply(range(1, 10, 2), exp)
 ```
 
 This function call applies the exponential function and modifies the vector that was returned by `range` in-place, avoiding an extra matrix getting allocated for no reason.
 
 ### Filter
 
-As the name suggests, `filter` allows us to select only the elements from a given vector that meet our criteria. Just like `map`, `filter` is a higher-order function that accepts a `Vector *` and a function that accepts a `double` and returns a `bool`. Yes! This time our function returns a `bool` - known as the `predicate`. `filter` will iterate along a vector and only pull out the elements that return `true` when passed to the `predicate`.
+As the name suggests, `filter` allows us to select only the elements from a given vector that meet our criteria. Just like `map`, `filter` is a higher-order function that accepts a ` TYPED(Vector)*` and a function that accepts a `double` and returns a `bool`. Yes! This time our function returns a `bool` - known as the `predicate`. `filter` will iterate along a vector and only pull out the elements that return `true` when passed to the `predicate`.
 
 Let's see this in action to better understand whats going on.
 ```
-Vector *v = VECTOR_FN(rnorm)(15, 0, 1);
+ TYPED(Vector)*v = TYPED(Vector_rnorm)(15, 0, 1);
 ```
 We generate a new `Vector` whose elements are normally distributed. Let's define somewhere in our file a new function that returns true if `|x| > 1`, meaning that `x` is outside the standard deviation of our distribution.
 
@@ -47,13 +47,13 @@ bool outside_std(double x) {
 Armed with this new function we can pull out the elements that are not within 1 standard deviation of `0`.
 
 ```
-Vector *outliers = TYPED_FN(filter)(v, outside_std);
+ TYPED(Vector)*outliers = TYPED(filter)(v, outside_std);
 ```
 
 We can filter the elements that return `false` when evaluated by the predicate with `filter_if_not`:
 
 ```
-Vector *values = filter_if_not(v, outside_std);
+ TYPED(Vector)*values = filter_if_not(v, outside_std);
 ```
 
 
@@ -65,7 +65,7 @@ Named functions are useful to pass as arguments to higher order functions like `
 The identity function is in this module is `Id`
 
 ```
-double x =TYPED_FN(Id)(3.0); // x = 3.0
+double x =TYPED(Id)(3.0); // x = 3.0
 ```
 
 <!-- One interesting way to use the identity function is to clone a matrix: -->
@@ -76,4 +76,4 @@ We have named `f(x) = x^2` in C as `x_squared`.
 
 ###### x_cubed
 
-`f(x) = x^3` is named `TYPED_FN(x_cubed)`.
+`f(x) = x^3` is named `TYPED(x_cubed)`.

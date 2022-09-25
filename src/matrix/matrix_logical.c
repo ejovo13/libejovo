@@ -1,45 +1,45 @@
-// This module contains essential routines to deal with a "logical" MATRIX_T data type that is represented
+// This module contains essential routines to deal with a "logical" TYPED(Matrix) data type that is represented
 // by A matrix that is UNIQUELY ones and zeros
-#include "ejovo_matrix_generic.h"
-// #include "ejovo_matrix.h"
+// #include "ejovo_matrix_generic.h"
+#include "ejovo_matrix.h"
 // #include "matrix_logical.h"
 
 MATRIX_TYPE TYPED(TRUE) = 1.0;
 MATRIX_TYPE TYPED(FALSE) = 0.0;
 
-// A Logical MATRIX_T shall be typedef'd as a "Mask" to express intent
+// A Logical TYPED(Matrix) shall be typedef'd as a "Mask" to express intent
 // This is used as a predicate function. Can be used to make a "true"
 // matrix that is the same size as a passed matrix with
-// MATRIX_FN(as_logical)(m, true_fn); as MATRIX_FN(as_logical) will accept a
+// TYPED(Matrix_as_logical)(m, true_fn); as TYPED(Matrix_as_logical) will accept a
 // predicate as an argument
-MATRIX_TYPE TYPED_FN(true_fn)(MATRIX_TYPE d) {
+MATRIX_TYPE TYPED(true_fn)(MATRIX_TYPE d) {
     return TYPED(TRUE);
 }
 
-MATRIX_TYPE TYPED_FN(NOT)(MATRIX_TYPE d) {
+MATRIX_TYPE TYPED(NOT)(MATRIX_TYPE d) {
     if (d == TYPED(FALSE)) return TYPED(TRUE);
     else return TYPED(FALSE);
 }
 
-MATRIX_TYPE TYPED_FN(AND)(MATRIX_TYPE a, MATRIX_TYPE b) {
+MATRIX_TYPE TYPED(AND)(MATRIX_TYPE a, MATRIX_TYPE b) {
     return (a == TYPED(TRUE)) && (b == TYPED(TRUE));
 }
 
-MATRIX_TYPE TYPED_FN(OR)(MATRIX_TYPE a, MATRIX_TYPE b) {
+MATRIX_TYPE TYPED(OR)(MATRIX_TYPE a, MATRIX_TYPE b) {
     return (a == TYPED(TRUE)) || (b == TYPED(TRUE));
 }
 
 // First routine that I should implement is having the notion of "if the vector is logical"
-bool MATRIX_FN(is_logical)(const MATRIX_T *__log) {
+bool TYPED(Matrix_is_logical)(const TYPED(Matrix) *__log) {
 
     // All of the elements MUST be either 1.0 or 0.0
-    MATITER_T it = MATRIX_FN(begin)(__log);
-    MATITER_T end = MATRIX_FN(end)(__log);
+    TYPED(MatIter) it = TYPED(Matrix_begin)(__log);
+    TYPED(MatIter) end = TYPED(Matrix_end)(__log);
     MATRIX_TYPE val = 0;
 
-    for (it; !MATITER_FN(cmp)(it, end); it = MATITER_FN(next)(it)) {
+    for (it; !TYPED(MatIter_cmp)(it, end); it = TYPED(MatIter_next)(it)) {
 
-        val = MATITER_FN(value)(it);
+        val = TYPED(MatIter_value)(it);
         if (!(val == TYPED(TRUE) || val == TYPED(FALSE))) {
             // printf("%lf registered as different \n", val);
             return false;
@@ -50,111 +50,111 @@ bool MATRIX_FN(is_logical)(const MATRIX_T *__log) {
 }
 
 
-bool VECTOR_FN(is_logical)(const Vector *__log) {
-    return MATRIX_FN(is_logical)(__log);
+bool TYPED(Vector_is_logical)(const TYPED(Vector)*__log) {
+    return TYPED(Matrix_is_logical)(__log);
 }
 
 // I need to be able to create logical vectors now...
-int MATRIX_FN(mask_count)(const MATRIX_T *__mask) {
-    return VECTOR_FN(mask_count)(__mask);
+int TYPED(Matrix_mask_count)(const TYPED(Matrix) *__mask) {
+    return TYPED(Vector_mask_count)(__mask);
 }
 
 // Create a logical vector that is the same size as another matrix and set all of it's values to true.
-int VECTOR_FN(mask_count)(const Vector *__mask) {
+int TYPED(Vector_mask_count)(const TYPED(Vector)*__mask) {
 
-    if (!MATRIX_FN(is_logical)(__mask)) return -1;
+    if (!TYPED(Matrix_is_logical)(__mask)) return -1;
 
-    return TYPED_FN(sum)(__mask);
+    return TYPED(sum)(__mask);
 }
 
 // An alternative way to count the value is to count the non zero values
 
 
 // Create a new logical matrix/vector from a current matrix and a predicate
-MATRIX_T *MATRIX_FN(as_logical)(const MATRIX_T *__m, pred_fn __fn) {
+TYPED(Matrix) *TYPED(Matrix_as_logical)(const TYPED(Matrix) *__m, TYPED(pred_fn) __fn) {
 
-    MATRIX_T *log = MAT_FN(alloc)(__m->nrows, __m->ncols);
+    TYPED(Matrix) *log = TYPED(matalloc)(__m->nrows, __m->ncols);
 
-    MATITER_T end = MATRIX_FN(end)(__m);
-    MATITER_T logit = MATRIX_FN(begin)(log);
+    TYPED(MatIter) end = TYPED(Matrix_end)(__m);
+    TYPED(MatIter) logit = TYPED(Matrix_begin)(log);
 
-    // printf("logit points to: %lf\n", MATITER_FN(value)(logit));
+    // printf("logit points to: %lf\n", TYPED(MatIter_value)(logit));
 
-    for (MATITER_T it = MATRIX_FN(begin)(__m); !MATITER_FN(cmp)(it, end); it = MATITER_FN(next)(it), logit = MATITER_FN(next)(logit)) {
-        // printf("Processing: %lf\n", MATITER_FN(value)(it));
-        MATITER_FN(set)(logit, __fn(MATITER_FN(value)(it)));
+    for (TYPED(MatIter) it = TYPED(Matrix_begin)(__m); !TYPED(MatIter_cmp)(it, end); it = TYPED(MatIter_next)(it), logit = TYPED(MatIter_next)(logit)) {
+        // printf("Processing: %lf\n", TYPED(MatIter_value)(it));
+        TYPED(MatIter_set)(logit, __fn(TYPED(MatIter_value)(it)));
     }
 
     return log;
 }
 
 // Return a Logical mask of all the values in __m that are lt __k
-Logical *MATRIX_FN(lt)(const MATRIX_T *__m, MATRIX_TYPE __k) {
+TYPED(Logical) *TYPED(Matrix_lt)(const TYPED(Matrix) *__m, MATRIX_TYPE __k) {
 
-    MATRIX_T *log = MAT_FN(alloc)(__m->nrows, __m->ncols);
+    TYPED(Matrix) *log = TYPED(matalloc)(__m->nrows, __m->ncols);
 
-    MATITER_T end = MATRIX_FN(end)(__m);
-    MATITER_T logit = MATRIX_FN(begin)(log);
+    TYPED(MatIter) end = TYPED(Matrix_end)(__m);
+    TYPED(MatIter) logit = TYPED(Matrix_begin)(log);
 
-    // printf("logit points to: %lf\n", MATITER_FN(value)(logit));
+    // printf("logit points to: %lf\n", TYPED(MatIter_value)(logit));
 
-    for (MATITER_T it = MATRIX_FN(begin)(__m); !MATITER_FN(cmp)(it, end); it = MATITER_FN(next)(it), logit = MATITER_FN(next)(logit)) {
-        // printf("Processing: %lf\n", MATITER_FN(value)(it));
-        MATITER_FN(set)(logit, MATITER_FN(value)(it) < __k);
+    for (TYPED(MatIter) it = TYPED(Matrix_begin)(__m); !TYPED(MatIter_cmp)(it, end); it = TYPED(MatIter_next)(it), logit = TYPED(MatIter_next)(logit)) {
+        // printf("Processing: %lf\n", TYPED(MatIter_value)(it));
+        TYPED(MatIter_set)(logit, TYPED(MatIter_value)(it) < __k);
     }
 
     return log;
 }
 
 // Return a Logical mask of all the values in __m that are <= __k
-Logical *MATRIX_FN(lteq)(const MATRIX_T *__m, MATRIX_TYPE __k) {
+TYPED(Logical) *TYPED(Matrix_lteq)(const TYPED(Matrix) *__m, MATRIX_TYPE __k) {
 
-    MATRIX_T *log = MAT_FN(alloc)(__m->nrows, __m->ncols);
+    TYPED(Matrix) *log = TYPED(matalloc)(__m->nrows, __m->ncols);
 
-    MATITER_T end = MATRIX_FN(end)(__m);
-    MATITER_T logit = MATRIX_FN(begin)(log);
+    TYPED(MatIter) end = TYPED(Matrix_end)(__m);
+    TYPED(MatIter) logit = TYPED(Matrix_begin)(log);
 
-    // printf("logit points to: %lf\n", MATITER_FN(value)(logit));
+    // printf("logit points to: %lf\n", TYPED(MatIter_value)(logit));
 
-    for (MATITER_T it = MATRIX_FN(begin)(__m); !MATITER_FN(cmp)(it, end); it = MATITER_FN(next)(it), logit = MATITER_FN(next)(logit)) {
-        // printf("Processing: %lf\n", MATITER_FN(value)(it));
-        MATITER_FN(set)(logit, MATITER_FN(value)(it) <= __k);
+    for (TYPED(MatIter) it = TYPED(Matrix_begin)(__m); !TYPED(MatIter_cmp)(it, end); it = TYPED(MatIter_next)(it), logit = TYPED(MatIter_next)(logit)) {
+        // printf("Processing: %lf\n", TYPED(MatIter_value)(it));
+        TYPED(MatIter_set)(logit, TYPED(MatIter_value)(it) <= __k);
     }
 
     return log;
 }
 
 // Return a Logical mask of all the values in __m that are > lt __k
-Logical *MATRIX_FN(gt)(const MATRIX_T *__m, MATRIX_TYPE __k) {
+TYPED(Logical) *TYPED(Matrix_gt)(const TYPED(Matrix) *__m, MATRIX_TYPE __k) {
 
-    MATRIX_T *log = MAT_FN(alloc)(__m->nrows, __m->ncols);
+    TYPED(Matrix) *log = TYPED(matalloc)(__m->nrows, __m->ncols);
 
-    MATITER_T end = MATRIX_FN(end)(__m);
-    MATITER_T logit = MATRIX_FN(begin)(log);
+    TYPED(MatIter) end = TYPED(Matrix_end)(__m);
+    TYPED(MatIter) logit = TYPED(Matrix_begin)(log);
 
-    // printf("logit points to: %lf\n", MATITER_FN(value)(logit));
+    // printf("logit points to: %lf\n", TYPED(MatIter_value)(logit));
 
-    for (MATITER_T it = MATRIX_FN(begin)(__m); !MATITER_FN(cmp)(it, end); it = MATITER_FN(next)(it), logit = MATITER_FN(next)(logit)) {
-        // printf("Processing: %lf\n", MATITER_FN(value)(it));
-        MATITER_FN(set)(logit, MATITER_FN(value)(it) > __k);
+    for (TYPED(MatIter) it = TYPED(Matrix_begin)(__m); !TYPED(MatIter_cmp)(it, end); it = TYPED(MatIter_next)(it), logit = TYPED(MatIter_next)(logit)) {
+        // printf("Processing: %lf\n", TYPED(MatIter_value)(it));
+        TYPED(MatIter_set)(logit, TYPED(MatIter_value)(it) > __k);
     }
 
     return log;
 }
 
 // Return a Logical mask of all the values in __m that are >= __k
-Logical *MATRIX_FN(gteq)(const MATRIX_T *__m, MATRIX_TYPE __k) {
+TYPED(Logical) *TYPED(Matrix_gteq)(const TYPED(Matrix) *__m, MATRIX_TYPE __k) {
 
-    MATRIX_T *log = MAT_FN(alloc)(__m->nrows, __m->ncols);
+    TYPED(Matrix) *log = TYPED(matalloc)(__m->nrows, __m->ncols);
 
-    MATITER_T end = MATRIX_FN(end)(__m);
-    MATITER_T logit = MATRIX_FN(begin)(log);
+    TYPED(MatIter) end = TYPED(Matrix_end)(__m);
+    TYPED(MatIter) logit = TYPED(Matrix_begin)(log);
 
-    // printf("logit points to: %lf\n", MATITER_FN(value)(logit));
+    // printf("logit points to: %lf\n", TYPED(MatIter_value)(logit));
 
-    for (MATITER_T it = MATRIX_FN(begin)(__m); !MATITER_FN(cmp)(it, end); it = MATITER_FN(next)(it), logit = MATITER_FN(next)(logit)) {
-        // printf("Processing: %lf\n", MATITER_FN(value)(it));
-        MATITER_FN(set)(logit, MATITER_FN(value)(it) >= __k);
+    for (TYPED(MatIter) it = TYPED(Matrix_begin)(__m); !TYPED(MatIter_cmp)(it, end); it = TYPED(MatIter_next)(it), logit = TYPED(MatIter_next)(logit)) {
+        // printf("Processing: %lf\n", TYPED(MatIter_value)(it));
+        TYPED(MatIter_set)(logit, TYPED(MatIter_value)(it) >= __k);
     }
 
     return log;
@@ -165,47 +165,47 @@ Logical *MATRIX_FN(gteq)(const MATRIX_T *__m, MATRIX_TYPE __k) {
 
 
 
-MATRIX_T *MATRIX_FN(as_true)(const MATRIX_T *__m) {
-    return MATRIX_FN(as_logical)(__m, TYPED(true_fn));
+TYPED(Matrix) *TYPED(Matrix_as_true)(const TYPED(Matrix) *__m) {
+    return TYPED(Matrix_as_logical)(__m, TYPED(true_fn));
 }
 
 // Wherever the mask is true, set __m to the __val
-void MAT_FN(setmask)(MATRIX_T *__m, const MATRIX_T *__mask, MATRIX_TYPE __val) {
+void TYPED(matsetmask)(TYPED(Matrix) *__m, const TYPED(Matrix) *__mask, MATRIX_TYPE __val) {
 
-    MATITER_T it_mask = MATRIX_FN(begin)(__mask);
+    TYPED(MatIter) it_mask = TYPED(Matrix_begin)(__mask);
 
-    for (MATITER_T it = MATRIX_FN(begin)(__m); !MATITER_FN(cmp)(it, MATRIX_FN(end)(__m)); it = MATITER_FN(next)(it), it_mask = MATITER_FN(next)(it_mask)) {
+    for (TYPED(MatIter) it = TYPED(Matrix_begin)(__m); !TYPED(MatIter_cmp)(it, TYPED(Matrix_end)(__m)); it = TYPED(MatIter_next)(it), it_mask = TYPED(MatIter_next)(it_mask)) {
 
-        if (MATITER_FN(value)(it_mask) == TYPED(TRUE)) MATITER_FN(set)(it, __val);
+        if (TYPED(MatIter_value)(it_mask) == TYPED(TRUE)) TYPED(MatIter_set)(it, __val);
     }
 }
 
-void MAT_FN(setpred)(MATRIX_T *__m, pred_fn __predicate, MATRIX_TYPE __val) {
+void TYPED(matsetpred)(TYPED(Matrix) *__m, TYPED(pred_fn) __predicate, MATRIX_TYPE __val) {
 
-    for (MATITER_T it = MATRIX_FN(begin)(__m); !MATITER_FN(cmp)(it, MATRIX_FN(end)(__m)); it = MATITER_FN(next)(it)) {
-        if (__predicate(MATITER_FN(value)(it)) == TYPED(TRUE)) MATITER_FN(set)(it, __val);
+    for (TYPED(MatIter) it = TYPED(Matrix_begin)(__m); !TYPED(MatIter_cmp)(it, TYPED(Matrix_end)(__m)); it = TYPED(MatIter_next)(it)) {
+        if (__predicate(TYPED(MatIter_value)(it)) == TYPED(TRUE)) TYPED(MatIter_set)(it, __val);
     }
 }
 
 // Return a column vector of elements that correspond to a particular mask
-Vector *MATRIX_FN(filter_mask)(const MATRIX_T *__m, const MATRIX_T *__mask) {
+ TYPED(Vector)*TYPED(Matrix_filter_mask)(const TYPED(Matrix) *__m, const TYPED(Matrix) *__mask) {
 
     // First thing to do is a forward pass to count the number of nonzeros
-    int count = VECTOR_FN(mask_count)(__mask);
+    int count = TYPED(Vector_mask_count)(__mask);
 
     // Now allocate a new column vector
     if (count == -1) return NULL;
 
-    Vector *new = MAT_FN(alloc)(count, 1);
+    TYPED(Vector)*new = TYPED(matalloc)(count, 1);
 
-    MATITER_T nit = MATRIX_FN(begin)(new);
-    MATITER_T mask_it = MATRIX_FN(begin)(__mask);
+    TYPED(MatIter) nit = TYPED(Matrix_begin)(new);
+    TYPED(MatIter) mask_it = TYPED(Matrix_begin)(__mask);
 
-    for (MATITER_T it = MATRIX_FN(begin)(__m); !MATITER_FN(cmp)(it, MATRIX_FN(end)(__m)); it = MATITER_FN(next)(it), mask_it = MATITER_FN(next)(mask_it)) {
+    for (TYPED(MatIter) it = TYPED(Matrix_begin)(__m); !TYPED(MatIter_cmp)(it, TYPED(Matrix_end)(__m)); it = TYPED(MatIter_next)(it), mask_it = TYPED(MatIter_next)(mask_it)) {
 
-        if (MATITER_FN(value)(mask_it) == TYPED(TRUE)) {
-            MATITER_FN(set)(nit, MATITER_FN(value)(it));
-            nit = MATITER_FN(next)(nit);
+        if (TYPED(MatIter_value)(mask_it) == TYPED(TRUE)) {
+            TYPED(MatIter_set)(nit, TYPED(MatIter_value)(it));
+            nit = TYPED(MatIter_next)(nit);
         }
     }
 
@@ -213,24 +213,24 @@ Vector *MATRIX_FN(filter_mask)(const MATRIX_T *__m, const MATRIX_T *__mask) {
 }
 
 // return true if count == size of the mask
-bool TYPED_FN(Logical_all)(const MATRIX_T *__mask) {
-    return (MATRIX_FN(mask_count)(__mask) == MATRIX_FN(size)(__mask));
+bool TYPED(Logical_all)(const TYPED(Matrix) *__mask) {
+    return (TYPED(Matrix_mask_count)(__mask) == TYPED(Matrix_size)(__mask));
 }
 
 // return true is any of the logical components are true
-bool TYPED_FN(Logical_any)(const MATRIX_T *__mask) {
+bool TYPED(Logical_any)(const TYPED(Matrix) *__mask) {
 
-    MATITER_T it = MATRIX_FN(begin)(__mask);
-    MATITER_T end = MATRIX_FN(end)(__mask);
+    TYPED(MatIter) it = TYPED(Matrix_begin)(__mask);
+    TYPED(MatIter) end = TYPED(Matrix_end)(__mask);
 
-    for (it; !MATITER_FN(cmp)(it, end); it = MATITER_FN(next)(it)) {
-        if (MATITER_FN(value)(it) == TYPED(TRUE)) return true;
+    for (it; !TYPED(MatIter_cmp)(it, end); it = TYPED(MatIter_next)(it)) {
+        if (TYPED(MatIter_value)(it) == TYPED(TRUE)) return true;
     }
 
     return false;
 }
 
 // Return !__mask
-Logical *TYPED_FN(Logical_not)(const MATRIX_T *__mask) {
-    return TYPED_FN(map)(__mask, TYPED(NOT));
+TYPED(Logical) *TYPED(Logical_not)(const TYPED(Matrix) *__mask) {
+    return TYPED(map)(__mask, TYPED(NOT));
 }
