@@ -215,92 +215,139 @@ double f2(double x) {
     return 4.5 * pow(x, 5.8) + 15.3 * pow(x, 4.3) + 2.4 * pow(x, 1.8) + 3.4 * pow(x, .5);
 }
 
+/**========================================================================
+ *!                      Benchmarking matrix operations
+ *========================================================================**/
+// Let's brainstorm a bit. What are the most common operations that I
+// will be performing?
+
+// Allocation.
+// Looping through all of the elements.
+// Adding two matrices together.
+// MAPPING functions to the matrix
+// Computing norms?
+// Computing the difference between two matrices
+
+
+void t_matrix_allocation() {
+
+    const size_t SIZE_OF_MATRIX = 1E8;
+    Clock *clock = Clock_new();
+
+    // How long does it take to allocate a matrix of size SIZE_OF_MATRIX?
+    Clock_tic(clock);
+    Matrix_i* mi = Matrix_new_i(SIZE_OF_MATRIX, 1);
+    Clock_toc(clock);
+
+    fprintf(stderr, "Took: %lf s to allocate %x size %lu\n", elapsed_time(clock), mi, SIZE_OF_MATRIX);
+
+    Matrix_free_i(mi);
+}
+
+/**========================================================================
+ *!                           New Main
+ *========================================================================**/
 int main() {
 
-    // Let's test some basic operations of an established array of sizes
-
-    // Matrix_d *sizes = linspace_d()
-    Matrix_d *sizes = logspace_d(2, 4, 10);
-
-    ejovo_seed();
-
-    #ifdef PCG_RANDOM
-        DEFAULT_RNG = unif_pcg;
-    #endif
-
-    // Matrix_print_d(sizes); 
-
-    // printf("n, op_times");
-    for (int i = 0; i < length(sizes); i++) {
-
-        // time_matrix_op(sizes->data[i], Matrix_add_d, "add"); // Oh, lol, these are both O(n^2)
-        // time_matrix_op(sizes->data[i], Matrix_multiply_d, "times");
-        // time_matrix_times_vector(sizes->data[i]); // O(n^2)
-
+    for (int i = 0; i < 20; i++) {
+        t_matrix_allocation();
     }
 
-    // Compute the number of addition flops by adding two row 
-    // vectors of size n
-    // Vector_d*N = logspace_d(1, 9, 9);
-    const int len = 20;
-
-    Vector_d*N = reshape_d(logspace_d(1, 4, len), len, 1);
-    Vector_d*op_times = Matrix_new_d(len, 1);
-
-    // Matrix_print_d(N);
-    // Matrix_print_d(op_times);
-
-    // // Count the number of flops
-    // printf("n, init_time, op_time, flops\n");
-    for (int i = 0; i < length(N); i++) {
-    //    compute_flops(N->data[i]); 
-       op_times->data[i] = compute_flops_On2(N->data[i]); 
-    }
-
-    // Now we can actually write the N values and op_times to a file
-    DataFrame *df = newDataFrame(newChainVar(2, "n", "op_times"), newSpaceVar(2, N, op_times));
-
-    writeGP(df, "test_bench.gp");
-
-    Vector_d*x = reshape_d(linspace_d(2, 100, 1000), 100, 1);
-    // Vector_d*y = map_d(x, log);
-    Vector_d*y = map_d(x, x_cubed_d);
-    // Vector_d*y = Matrix_clone_d(x);
-
-    Vector_d*a_lin = loglog_regression_d(N, op_times);
-    Vector_d*a_log = linear_regression_d(N, op_times);
-    // Vector_d*xy_lin = linear_regression_d(x, y);
-    // Vector_d*xy_log = logistical_regression(x, y);
-    Vector_d*x3_reg = least_squares_d(x, y, 3);
-    Vector_d*x3_log = loglog_regression_d(x, y);
-    Vector_d*fn_reg = least_squares_d(x, map_d(x, f), 3);
-    Vector_d*f2_log = loglog_regression_d(x, map_d(x, f2));
-    // Vector_d*
-
-    print_polynomial(x3_log);
-    print_polynomial(fn_reg);
-    print_polynomial(f2_log);
-
-    DataFrame *df2 = newDataFrame(newChainVar(4, "x", "y", "fx", "f2"),
-        newSpaceVar(4, x, y, map_d(x, f), map_d(x, f2)));
-
-    writeGP(df2, "test_bench2.gp");
 
 
 
-
-    // Matrix_print_d(a_lin);
-    // Matrix_print_fixed_d(a_log);
-    // Matrix_print_d(xy_lin);
-    // Matrix_print_d(xy_log);
-    Matrix_print_d(x3_reg);
-    Matrix_print_d(x3_log);
-    Matrix_print_d(fn_reg);
-
-    // for (int i = 0; i < length(N); i++) {
-    //     printf("%d %lf\n", (int) N->data[i], op_times->data[i]);
-    // }
-
-
-    return 0;
 }
+
+
+/**========================================================================
+ *!                           Old main
+ *========================================================================**/
+// int main() {
+
+//     // Let's test some basic operations of an established array of sizes
+
+//     // Matrix_d *sizes = linspace_d()
+//     Matrix_d *sizes = logspace_d(2, 4, 10);
+
+//     ejovo_seed();
+
+//     #ifdef PCG_RANDOM
+//         DEFAULT_RNG = unif_pcg;
+//     #endif
+
+//     // Matrix_print_d(sizes); 
+
+//     // printf("n, op_times");
+//     for (int i = 0; i < length(sizes); i++) {
+
+//         // time_matrix_op(sizes->data[i], Matrix_add_d, "add"); // Oh, lol, these are both O(n^2)
+//         // time_matrix_op(sizes->data[i], Matrix_multiply_d, "times");
+//         // time_matrix_times_vector(sizes->data[i]); // O(n^2)
+
+//     }
+
+//     // Compute the number of addition flops by adding two row 
+//     // vectors of size n
+//     // Vector_d*N = logspace_d(1, 9, 9);
+//     const int len = 20;
+
+//     Vector_d*N = reshape_d(logspace_d(1, 4, len), len, 1);
+//     Vector_d*op_times = Matrix_new_d(len, 1);
+
+//     // Matrix_print_d(N);
+//     // Matrix_print_d(op_times);
+
+//     // // Count the number of flops
+//     // printf("n, init_time, op_time, flops\n");
+//     for (int i = 0; i < length(N); i++) {
+//     //    compute_flops(N->data[i]); 
+//        op_times->data[i] = compute_flops_On2(N->data[i]); 
+//     }
+
+//     // Now we can actually write the N values and op_times to a file
+//     DataFrame *df = newDataFrame(newChainVar(2, "n", "op_times"), newSpaceVar(2, N, op_times));
+
+//     writeGP(df, "test_bench.gp");
+
+//     Vector_d*x = reshape_d(linspace_d(2, 100, 1000), 100, 1);
+//     // Vector_d*y = map_d(x, log);
+//     Vector_d*y = map_d(x, x_cubed_d);
+//     // Vector_d*y = Matrix_clone_d(x);
+
+//     Vector_d*a_lin = loglog_regression_d(N, op_times);
+//     Vector_d*a_log = linear_regression_d(N, op_times);
+//     // Vector_d*xy_lin = linear_regression_d(x, y);
+//     // Vector_d*xy_log = logistical_regression(x, y);
+//     Vector_d*x3_reg = least_squares_d(x, y, 3);
+//     Vector_d*x3_log = loglog_regression_d(x, y);
+//     Vector_d*fn_reg = least_squares_d(x, map_d(x, f), 3);
+//     Vector_d*f2_log = loglog_regression_d(x, map_d(x, f2));
+//     // Vector_d*
+
+//     print_polynomial(x3_log);
+//     print_polynomial(fn_reg);
+//     print_polynomial(f2_log);
+
+//     DataFrame *df2 = newDataFrame(newChainVar(4, "x", "y", "fx", "f2"),
+//         newSpaceVar(4, x, y, map_d(x, f), map_d(x, f2)));
+
+//     writeGP(df2, "test_bench2.gp");
+
+
+
+
+//     // Matrix_print_d(a_lin);
+//     // Matrix_print_fixed_d(a_log);
+//     // Matrix_print_d(xy_lin);
+//     // Matrix_print_d(xy_log);
+//     Matrix_print_d(x3_reg);
+//     Matrix_print_d(x3_log);
+//     Matrix_print_d(fn_reg);
+
+//     // for (int i = 0; i < length(N); i++) {
+//     //     printf("%d %lf\n", (int) N->data[i], op_times->data[i]);
+//     // }
+
+
+//     return 0;
+// }
