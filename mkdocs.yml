@@ -9,4 +9,4 @@ theme:
   # name: mkdocs
   name: readthedocs
   # nav_style: dark
-  # hljs_style: monokai
+  hljs_style: monokai
