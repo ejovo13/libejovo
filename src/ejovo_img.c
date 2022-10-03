@@ -38,6 +38,7 @@ Matrix_d *normalize_minmax(Matrix_d *A) {
         Vector_set_d(A, i, 255 * (atd(A, i) - low) / (high - low));
     }
     // matsetind_i()
+    return A;
 }
 
 void writePPM(const img_t *img, const char *filename) {
