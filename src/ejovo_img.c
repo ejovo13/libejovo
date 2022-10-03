@@ -34,8 +34,7 @@ Matrix_d *normalize_minmax(Matrix_d *A) {
     double high = max_d(A);
 
     FOREACH(A) {
-        // *(atp(A, i)) = 
-        Vector_set_d(A, i, 255 * (atd(A, i) - low) / (high - low));
+        A->data[i] = 255 * (atd(A, i) - low) / (high - low);
     }
     // matsetind_i()
     return A;
