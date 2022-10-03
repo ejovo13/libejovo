@@ -54,6 +54,8 @@ void writePPM(const img_t *img, const char *filename);
 
 void write_ppm_gray(const Matrix_i *image, const char *filename);
 
+void write_ppm_gray_d(const Matrix_d *image, const char *filename);
+
 void write_ppm_grayscale(const Matrix_i *image, const char *filename, double scale);
 
 // img_t *toGrayscale(const imt_t *img) {

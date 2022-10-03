@@ -99,6 +99,33 @@ void write_ppm_gray(const Matrix_i *image, const char *filename) {
 
 }
 
+void write_ppm_gray_d(const Matrix_d *image, const char *filename) {
+
+    FILE *file, *file_bin;
+    // Start off the first couple lines with ASCII
+    file = fopen(filename, "w");
+    fprintf(file, "P6\n");
+    fprintf(file, "%zu %zu\n", image->ncols, image->nrows);
+    fprintf(file, "255\n");
+    // fclose(file);
+
+    // file_bin = fopen(filename, "ab");
+    // file = fopen(filename, "ab");
+    
+    FORIJ(image
+        ,
+            ,
+            char pixel = matat_d(image, i, j);
+            fprintf(file, "%c%c%c", pixel, pixel, pixel);
+
+        , 
+        continue;
+    );
+
+    fclose(file);
+
+}
+
 // If we know the max value (for example 100), then we can 
 // scale the output image by multiplying by (255 / 100)
 void write_ppm_grayscale(const Matrix_i *image, const char *filename, double scaling) {
