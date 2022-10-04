@@ -4,6 +4,7 @@
 // Provide functions that allow us to create a bitmap given a Img structure
 #include <stdlib.h>
 #include "ejovo_matrix_generic.h"
+#include "ejovo_color.h"
 
 // #include "matrix/matrix_i.h"
 
@@ -58,6 +59,7 @@ void write_ppm_gray_d(const Matrix_d *image, const char *filename);
 
 void write_ppm_grayscale(const Matrix_i *image, const char *filename, double scale);
 
+void write_ppm_color_minmax_d(const Matrix_d *image, const ColorPalette *cp, double min, double max, const char *filename);
 // img_t *toGrayscale(const imt_t *img) {
 
 // }

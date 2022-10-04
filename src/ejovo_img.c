@@ -153,7 +153,43 @@ void write_ppm_grayscale(const Matrix_i *image, const char *filename, double sca
 
     fclose(file);
 
+}
 
+// Write a Matrix_d to a .ppm file using a mapping from [min, max] -> [0, 255] and then applying 
+// a color palette
+void write_ppm_color_minmax_d(const Matrix_d *image, const ColorPalette *cp, double min, double max, const char *filename) {
+
+    // First thing to do is simply create the color palette
+    Matrix_i *colors = ColorPalette_to_matrix(cp, 256);
+
+    FILE *file;
+    // Start off the first couple lines with ASCII
+    file = fopen(filename, "w");
+    fprintf(file, "P6\n");
+    fprintf(file, "%zu %zu\n", image->ncols, image->nrows);
+    fprintf(file, "255\n");
+    // fclose(file);
+
+    // file_bin = fopen(filename, "ab");
+    // file = fopen(filename, "ab");
+    int color_index = 0;
+    double scaling = 255.0 / (max - min);
+    
+    for (int i = 0; i < image->nrows; i++) {
+        for (int j = 0; j < image->ncols; j++) {
+
+            // compute the color index based on the value
+            color_index = matat_d(image, i, j) * scaling;
+
+            char r = matat_i(colors, color_index, 0);
+            char g = matat_i(colors, color_index, 1);
+            char b = matat_i(colors, color_index, 2);
+            fprintf(file, "%c%c%c", r, g, b);
+
+        }
+    }
+
+    fclose(file);
 
 }
 
