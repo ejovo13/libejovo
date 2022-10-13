@@ -460,14 +460,14 @@ TYPED(Matrix) *TYPED(Matrix_solve_lu)(const TYPED(Matrix) *__A, const TYPED(Vect
     MATRIX_TYPE b_i = 0;
 
     // traverse the lower matrix
-    for (int i = 0; i < lu.L->nrows; i++) {
+    for (size_t i = 0; i < lu.L->nrows; i++) {
 
         // printf("i before loop: %d\n", i);
         b_i = TYPED(Matrix_at)(__b, i, 0);
         // printf("traversing L");
 
         // traverse x_j
-        for (int j = 0; j < i; j++) {
+        for (size_t j = 0; j < i; j++) {
             // printf("i in loop: %d\n", i);
 
             // printf("processing i: %d, j: %d, b_i: %lf, lu_i,j: %lf\n", i, j, b_i, TYPED(Matrix_at)(lu.L, i, j));
@@ -536,7 +536,7 @@ TYPED(Matrix) *TYPED(gausselim)(const TYPED(Matrix) *__A, const TYPED(Matrix) *_
             return NULL;
         }
 
-        TYPED(Row_switch)(aug, ind, pivot_index, j);
+        TYPED(Row_switch)(ind, pivot_index, j);
 
         // Perform elementary row operations.
         for (size_t i = j + 1; i < __A->nrows; i++) {
@@ -555,13 +555,13 @@ TYPED(Matrix) *TYPED(gausselim)(const TYPED(Matrix) *__A, const TYPED(Matrix) *_
     double x_ij = 0;
 
     // Iterate through the columns of x
-    for (int j = 0; j < x->ncols; j++) {
+    for (size_t j = 0; j < x->ncols; j++) {
         // Traverse the indices vector backwards:
         for (int i = x->nrows - 1; i >= 0; i--) {
 
             x_ij = TYPED(Matrix_at)(aug, ind->data[i], j + __A->ncols); // Initialize xi to bi,j
 
-            for (int k = i; k < x->nrows - 1; k++) {
+            for (size_t k = i; k < x->nrows - 1; k++) {
                 x_ij -= TYPED(Matrix_at)(x, k + 1, j) * TYPED(Matrix_at)(aug, ind->data[i], k + 1);
             }
 
@@ -655,7 +655,7 @@ TYPED(Matrix) *TYPED(Matrix_inverse)(const TYPED(Matrix) *__A) {
         #ifdef MATRIX_COMPLEX
             if ( cabs(TYPED(Vector_at)(res, r)) > cabs(__crit) ) {
         #else
-            if ( fabs(TYPED(Vector_at)(res, r)) > __crit ) {
+            if ( TYPED(ejovo_fabs)(res->data[r]) > __crit ) {
         #endif
                 all_res_pass = false;
             }
@@ -703,7 +703,7 @@ TYPED(Matrix) *TYPED(Matrix_inverse)(const TYPED(Matrix) *__A) {
 
 // These elementary operations will be considered low level and don't consider checking bounds...
 // void TYPED(Matrix_switch_rows)(OrderedTYPED(Matrix) m, size_t __r1, size_t __r2) {
-void TYPED(Row_switch)(const TYPED(Matrix) *__m, TYPED(Index) *__ind, size_t __r1, size_t __r2) {
+void TYPED(Row_switch)(TYPED(Index) *__ind, size_t __r1, size_t __r2) {
 
     double tmp = __ind->data[__r1];
 

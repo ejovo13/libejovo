@@ -263,7 +263,7 @@ void printDataFrameCol(const String *__str, const Vector_d *__v) {
     print(__str);
     printf(": ");
 
-    int nel = 10;
+    size_t nel = 10;
     // Print the first __nel elements
     int n = nel < Matrix_size_d(__v) ? nel : Matrix_size_d(__v); // get the smaller element
 
@@ -386,7 +386,7 @@ void writeGP(const DataFrame *__df, const char *__filename) {
     // Allocate a row vector of appropriate space
     Vector_d *out = Matrix_new_d(1, n);
 
-    for (int i = 0; i < Matrix_size_d(out); i++) {
+    for (size_t i = 0; i < Matrix_size_d(out); i++) {
         out->data[i] = fn();
     }
 

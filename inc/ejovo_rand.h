@@ -1,7 +1,7 @@
 #ifndef EJOVO_RAND
 #define EJOVO_RAND
 
-
+#include <assert.h>
 #include <stdlib.h>
 #include <math.h>
 #include <time.h>

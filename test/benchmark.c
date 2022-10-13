@@ -205,8 +205,8 @@ void print_polynomial(const Vector_d*a) {
 
     const size_t degree = length(a) - 1;
 
-    for (int i = 0; i < degree; i++) {
-        printf("%lf*x**%d + ", a->data[i], i);
+    for (size_t i = 0; i < degree; i++) {
+        printf("%lf*x**%lu + ", a->data[i], i);
     }
 
     printf("%lf*x**%lu\n", a->data[degree], degree);
@@ -238,7 +238,7 @@ int main() {
     // Matrix_print_d(sizes); 
 
     // printf("n, op_times");
-    for (int i = 0; i < length(sizes); i++) {
+    for (size_t i = 0; i < length(sizes); i++) {
 
         // time_matrix_op(sizes->data[i], Matrix_add_d, "add"); // Oh, lol, these are both O(n^2)
         // time_matrix_op(sizes->data[i], Matrix_multiply_d, "times");
@@ -259,7 +259,7 @@ int main() {
 
     // // Count the number of flops
     // printf("n, init_time, op_time, flops\n");
-    for (int i = 0; i < length(N); i++) {
+    for (size_t i = 0; i < length(N); i++) {
     //    compute_flops(N->data[i]); 
        op_times->data[i] = compute_flops_On2(N->data[i]); 
     }

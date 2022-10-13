@@ -79,7 +79,7 @@ TYPED(MatIter) TYPED(Matrix_diag_begin)(const TYPED(Matrix) *__m, const int __d)
         }
     } else if (__d > 0) {
 
-        if (__d >= __m->ncols) {
+        if ((size_t) __d >= __m->ncols) {
             perror("===TYPED(Matrix_diag_begin)===");
             perror("Not enough columns to accomodate diagonal");
             return TYPED(MatIter_null)();
@@ -100,7 +100,7 @@ TYPED(MatIter) TYPED(Matrix_diag_end)(const TYPED(Matrix) *__m, const int __d) {
         }
     } else if (__d > 0) {
 
-        if (__d >= __m->ncols) {
+        if ((size_t) __d >= __m->ncols) {
             perror("===TYPED(Matrix_diag_end)===");
             perror("Not enough columns to accomodate diagonal");
             return TYPED(MatIter_null)();

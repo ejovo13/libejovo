@@ -147,7 +147,7 @@ MATRIX_TYPE TYPED(sum)(const TYPED(Matrix) *__m) {
     MATRIX_TYPE somme = 0;
     MATRIX_TYPE *data = __m->data;
     const size_t n = TYPED(Matrix_size)(__m);
-    for (int i = 0; i < n; i++) {
+    for (size_t i = 0; i < n; i++) {
         somme += data[i];
     }
     return somme;

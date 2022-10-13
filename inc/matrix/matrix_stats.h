@@ -100,7 +100,7 @@ static inline MATRIX_TYPE TYPED(ejovo_log) (const MATRIX_TYPE x) {
 }
 
 static inline MATRIX_TYPE TYPED(ejovo_fabs) (const MATRIX_TYPE x) {
-    return fabs(x);
+    return fabs((double) x);
 }
 
  TYPED(Vector)*TYPED(loglog_regression)(const TYPED(Vector)*__x, const TYPED(Vector)*__y);

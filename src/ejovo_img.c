@@ -175,8 +175,8 @@ void write_ppm_color_minmax_d(const Matrix_d *image, const ColorPalette *cp, dou
     int color_index = 0;
     double scaling = 255.0 / (max - min);
     
-    for (int i = 0; i < image->nrows; i++) {
-        for (int j = 0; j < image->ncols; j++) {
+    for (size_t i = 0; i < image->nrows; i++) {
+        for (size_t j = 0; j < image->ncols; j++) {
 
             // compute the color index based on the value
             color_index = matat_d(image, i, j) * scaling;

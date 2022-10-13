@@ -10,10 +10,10 @@ gcc -E -P matrix_c.h -I../../inc > matrix_c.i
 # Now go ahead and compute the line number of the first occurrence 
 # of const extern double PI
 
-START_LINE_D=$( grep -n -m1 "const extern double PI" matrix_d.i | cut -f1 -d:)
-START_LINE_F=$( grep -n -m1 "const extern double PI" matrix_f.i | cut -f1 -d:)
-START_LINE_I=$( grep -n -m1 "const extern double PI" matrix_i.i | cut -f1 -d:)
-START_LINE_C=$( grep -n -m1 "const extern double PI" matrix_c.i | cut -f1 -d:)
+START_LINE_D=$( grep -n -m1 "extern const double PI" matrix_d.i | cut -f1 -d:)
+START_LINE_F=$( grep -n -m1 "extern const double PI" matrix_f.i | cut -f1 -d:)
+START_LINE_I=$( grep -n -m1 "extern const double PI" matrix_i.i | cut -f1 -d:)
+START_LINE_C=$( grep -n -m1 "extern const double PI" matrix_c.i | cut -f1 -d:)
 
 # Now save the outputs into a single file
 

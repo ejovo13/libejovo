@@ -107,7 +107,7 @@ double time_passed_sum_loop() {
     Clock_tic(clock);
     double loop_sum = 0;
     double *data = m->data;
-    for (int i = 0; i < Matrix_size_d(m); i++) {
+    for (size_t i = 0; i < Matrix_size_d(m); i++) {
         loop_sum += data[i];
     }
     fprintf(stderr, "%lf, ", loop_sum);

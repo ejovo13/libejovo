@@ -41,10 +41,10 @@
 
 #define MAX_STEP_SIZE 100000
 
-const extern double PI;
-const extern double TWO_PI;
-const extern double HALF_PI;
-const extern double EPS;
+extern const double PI;
+extern const double TWO_PI;
+extern const double HALF_PI;
+extern const double EPS;
 
 // TYPED(Matrix_get)
 // struct Matrix_complex;

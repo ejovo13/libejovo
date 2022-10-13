@@ -160,7 +160,7 @@ MATRIX_TYPE *TYPED(Vector_access)(const TYPED(Vector)*__v, size_t __i) {
 // apply a function to the objects of a
  TYPED(Vector)*TYPED(Vector_map)(const TYPED(Vector)*__v, TYPED(function) __fn) {
     TYPED(Vector)*v_mapped = TYPED(Matrix_clone)(__v);
-    for (int i = 0; i < TYPED(Vector_size)(__v); i++) {
+    for (size_t i = 0; i < TYPED(Vector_size)(__v); i++) {
         TYPED(Vector_set)(v_mapped, i, __fn(TYPED(Vector_at)(__v, i)));
     }
     return v_mapped;
@@ -402,7 +402,7 @@ MATRIX_TYPE TYPED(Vector_pnorm)(const TYPED(Vector)*__u, const size_t __p) {
 
 // Find the difference between vectors that are the same size.
  TYPED(Vector)*TYPED(Vector_difference)(const TYPED(Vector)*__v, const TYPED(Vector)*__u) {
-    if (TYPED(Matrix_size)(__v) != TYPED(Matrix_size)(__u));
+    assert(TYPED(Matrix_size)(__v) == TYPED(Matrix_size)(__u));
     return TYPED(MatIter_difference)(TYPED(Vector_begin)(__v), TYPED(Vector_end)(__v), TYPED(Vector_begin)(__u));
 }
 

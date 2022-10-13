@@ -230,7 +230,7 @@ void TYPED(matsetpred)(TYPED(Matrix) *__m, TYPED(pred_fn) __predicate, MATRIX_TY
 
 // return true if count == size of the mask
 bool TYPED(Logical_all)(const TYPED(Matrix) *__mask) {
-    return (TYPED(Matrix_mask_count)(__mask) == TYPED(Matrix_size)(__mask));
+    return ((size_t) TYPED(Matrix_mask_count)(__mask) == TYPED(Matrix_size)(__mask));
 }
 
 // return true is any of the logical components are true

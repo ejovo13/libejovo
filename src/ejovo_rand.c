@@ -28,7 +28,8 @@ struct xoshiro256ss_state XOSHIRO_RNG = { .s = {0, 0, 0, 0}};
 void seed_xoshiro256ss(struct xoshiro256ss_state * state) {
     // if on linux, seed the 256 bits with a system call of getrandom
     #ifdef __linux
-        getrandom(state, 32, 0);
+        ssize_t bytes_read = getrandom(state, 32, 0);
+        assert(bytes_read > 0);
     #else
 
         uint32_t * data = malloc(32); // allocate 32 bytes of memory, where each uint32_t is 4 bytes, so 8 uint32_t's

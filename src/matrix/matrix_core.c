@@ -395,7 +395,7 @@ TYPED(Matrix) * TYPED(Matrix_random)(size_t __nrows, size_t __ncols, int __min, 
     //     }
     // }
     
-    for (int i = 0; i < TYPED(Matrix_size)(m); i++) {
+    for (size_t i = 0; i < TYPED(Matrix_size)(m); i++) {
         m->data[i] = unifi(__min, __max);
     }
 
@@ -605,7 +605,9 @@ void TYPED(Matrix_summary)(const TYPED(Matrix) *__m) {
 
 void TYPED(Vector_print_head)(const TYPED(Matrix) *__m, int __n) {
 
-    int n = TYPED(Vector_size)(__m) < __n ? TYPED(Vector_size)(__m) : __n;
+    assert(__n >= 0);
+
+    size_t n = TYPED(Vector_size)(__m) < (size_t) __n ? TYPED(Vector_size)(__m) : (size_t) __n;
 
     TYPED(Matrix_summary)(__m);
     printf("| ");

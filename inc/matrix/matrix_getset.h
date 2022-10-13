@@ -201,15 +201,15 @@ static inline void TYPED(matsetcol)(TYPED(Matrix) *__A, size_t __i, size_t __j, 
 // matsetrow_add_k
 
 // multiply the row of a matrix times the value __k
-void TYPED(matsetrow_mult_k)(TYPED(Matrix) *__A, TYPED(MatIter) __r, const TYPED(MatIter) __row_end, MATRIX_TYPE __k);
+void TYPED(matsetrow_mult_k)(TYPED(MatIter) __r, const TYPED(MatIter) __row_end, MATRIX_TYPE __k);
 
 // multiply the row of a matrix times the value __k
-void TYPED(matsetrow_div_k)(TYPED(Matrix) *__A, TYPED(MatIter) __r, const TYPED(MatIter) __row_end, MATRIX_TYPE __k);
+void TYPED(matsetrow_div_k)(TYPED(MatIter) __r, const TYPED(MatIter) __row_end, MATRIX_TYPE __k);
 // multiply the row of a matrix times the value __k
-void TYPED(matsetrow_add_k)(TYPED(Matrix) *__A, TYPED(MatIter) __r, const TYPED(MatIter) __row_end, MATRIX_TYPE __k);
+void TYPED(matsetrow_add_k)(TYPED(MatIter) __r, const TYPED(MatIter) __row_end, MATRIX_TYPE __k);
 
 // multiply the row of a matrix times the value __k
-void TYPED(matsetrow_sub_k)(TYPED(Matrix) *__A, TYPED(MatIter) __r, const TYPED(MatIter) __row_end, MATRIX_TYPE __k);
+void TYPED(matsetrow_sub_k)(TYPED(MatIter) __r, const TYPED(MatIter) __row_end, MATRIX_TYPE __k);
 
 int TYPED(Matrix_mult_row_k)(TYPED(Matrix) *__A, const size_t __i, const MATRIX_TYPE __k);
 
@@ -219,15 +219,15 @@ int TYPED(Matrix_add_row_k)(TYPED(Matrix) *__A, const size_t __i, const MATRIX_T
 int TYPED(Matrix_sub_row_k)(TYPED(Matrix) *__A, const size_t __i, const MATRIX_TYPE __k);
 
 // editing columns now
-void TYPED(matsetcol_mult_k)(TYPED(Matrix) *__A, TYPED(MatIter) __c, const TYPED(MatIter) __col_end, MATRIX_TYPE __k);
+void TYPED(matsetcol_mult_k)(TYPED(MatIter) __c, const TYPED(MatIter) __col_end, MATRIX_TYPE __k);
 
 // multiply the col of a matrix times the value __k
-void TYPED(matsetcol_div_k)(TYPED(Matrix) *__A, TYPED(MatIter) __c, const TYPED(MatIter) __col_end, MATRIX_TYPE __k);
+void TYPED(matsetcol_div_k)(TYPED(MatIter) __c, const TYPED(MatIter) __col_end, MATRIX_TYPE __k);
 // multiply the col of a matrix times the value __k
-void TYPED(matsetcol_add_k)(TYPED(Matrix) *__A, TYPED(MatIter) __c, const TYPED(MatIter) __col_end, MATRIX_TYPE __k);
+void TYPED(matsetcol_add_k)(TYPED(MatIter) __c, const TYPED(MatIter) __col_end, MATRIX_TYPE __k);
 
 // multiply the col of a matrix times the value __k
-void TYPED(matsetcol_sub_k)(TYPED(Matrix) *__A, TYPED(MatIter) __c, const TYPED(MatIter) __col_end, MATRIX_TYPE __k);
+void TYPED(matsetcol_sub_k)(TYPED(MatIter) __c, const TYPED(MatIter) __col_end, MATRIX_TYPE __k);
 
 int TYPED(Matrix_mult_col_k)(TYPED(Matrix) *__A, const size_t __i, const MATRIX_TYPE __k);
 

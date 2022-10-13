@@ -166,7 +166,7 @@
 // matsetrow_add_k
 
 // multiply the row of a matrix times the value __k
-void TYPED(matsetrow_mult_k)(TYPED(Matrix) *__A, TYPED(MatIter) __r, const TYPED(MatIter) __row_end, MATRIX_TYPE __k) {
+void TYPED(matsetrow_mult_k)(TYPED(MatIter) __r, const TYPED(MatIter) __row_end, MATRIX_TYPE __k) {
 
     while(! TYPED(MatIter_cmp)(__r, __row_end)) { // while we haven't reached the end,
         TYPED(multscalar)(__r.ptr, __k);
@@ -176,7 +176,7 @@ void TYPED(matsetrow_mult_k)(TYPED(Matrix) *__A, TYPED(MatIter) __r, const TYPED
 }
 
 // multiply the row of a matrix times the value __k
-void TYPED(matsetrow_div_k)(TYPED(Matrix) *__A, TYPED(MatIter) __r, const TYPED(MatIter) __row_end, MATRIX_TYPE __k) {
+void TYPED(matsetrow_div_k)(TYPED(MatIter) __r, const TYPED(MatIter) __row_end, MATRIX_TYPE __k) {
 
     while(! TYPED(MatIter_cmp)(__r, __row_end)) { // while we haven't reached the end,
         TYPED(divscalar)(__r.ptr, __k);
@@ -185,7 +185,7 @@ void TYPED(matsetrow_div_k)(TYPED(Matrix) *__A, TYPED(MatIter) __r, const TYPED(
 
 }
 // multiply the row of a matrix times the value __k
-void TYPED(matsetrow_add_k)(TYPED(Matrix) *__A, TYPED(MatIter) __r, const TYPED(MatIter) __row_end, MATRIX_TYPE __k) {
+void TYPED(matsetrow_add_k)(TYPED(MatIter) __r, const TYPED(MatIter) __row_end, MATRIX_TYPE __k) {
 
     while(! TYPED(MatIter_cmp)(__r, __row_end)) { // while we haven't reached the end,
         TYPED(addscalar)(__r.ptr, __k);
@@ -195,7 +195,7 @@ void TYPED(matsetrow_add_k)(TYPED(Matrix) *__A, TYPED(MatIter) __r, const TYPED(
 }
 
 // multiply the row of a matrix times the value __k
-void TYPED(matsetrow_sub_k)(TYPED(Matrix) *__A, TYPED(MatIter) __r, const TYPED(MatIter) __row_end, MATRIX_TYPE __k) {
+void TYPED(matsetrow_sub_k)(TYPED(MatIter) __r, const TYPED(MatIter) __row_end, MATRIX_TYPE __k) {
 
     while(! TYPED(MatIter_cmp)(__r, __row_end)) { // while we haven't reached the end,
         TYPED(subscalar)(__r.ptr, __k);
@@ -209,7 +209,7 @@ int TYPED(Matrix_mult_row_k)(TYPED(Matrix) *__A, const size_t __i, const MATRIX_
     const TYPED(MatIter) row_end = TYPED(Matrix_row_end)(__A, __i);
     TYPED(MatIter) row_begin = TYPED(Matrix_row_begin)(__A, __i);
 
-    TYPED(matsetrow_mult_k)(__A, row_begin, row_end, __k);
+    TYPED(matsetrow_mult_k)(row_begin, row_end, __k);
     return EXIT_SUCCESS;
 
 }
@@ -219,7 +219,7 @@ int TYPED(Matrix_div_row_k)(TYPED(Matrix) *__A, const size_t __i, const MATRIX_T
     const TYPED(MatIter) row_end = TYPED(Matrix_row_end)(__A, __i);
     TYPED(MatIter) row_begin = TYPED(Matrix_row_begin)(__A, __i);
 
-    TYPED(matsetrow_div_k)(__A, row_begin, row_end, __k);
+    TYPED(matsetrow_div_k)(row_begin, row_end, __k);
     return EXIT_SUCCESS;
 
 }
@@ -229,7 +229,7 @@ int TYPED(Matrix_add_row_k)(TYPED(Matrix) *__A, const size_t __i, const MATRIX_T
     const TYPED(MatIter) row_end = TYPED(Matrix_row_end)(__A, __i);
     TYPED(MatIter) row_begin = TYPED(Matrix_row_begin)(__A, __i);
 
-    TYPED(matsetrow_add_k)(__A, row_begin, row_end, __k);
+    TYPED(matsetrow_add_k)(row_begin, row_end, __k);
     return EXIT_SUCCESS;
 
 }
@@ -239,13 +239,13 @@ int TYPED(Matrix_sub_row_k)(TYPED(Matrix) *__A, const size_t __i, const MATRIX_T
     const TYPED(MatIter) row_end = TYPED(Matrix_row_end)(__A, __i);
     TYPED(MatIter) row_begin = TYPED(Matrix_row_begin)(__A, __i);
 
-    TYPED(matsetrow_sub_k)(__A, row_begin, row_end, __k);
+    TYPED(matsetrow_sub_k)(row_begin, row_end, __k);
     return EXIT_SUCCESS;
 
 }
 
 // editing columns now
-void TYPED(matsetcol_mult_k)(TYPED(Matrix) *__A, TYPED(MatIter) __c, const TYPED(MatIter) __col_end, MATRIX_TYPE __k) {
+void TYPED(matsetcol_mult_k)(TYPED(MatIter) __c, const TYPED(MatIter) __col_end, MATRIX_TYPE __k) {
 
     while(! TYPED(MatIter_cmp)(__c, __col_end)) { // while we haven't reached the end,
         TYPED(multscalar)(__c.ptr, __k);
@@ -255,7 +255,7 @@ void TYPED(matsetcol_mult_k)(TYPED(Matrix) *__A, TYPED(MatIter) __c, const TYPED
 }
 
 // multiply the col of a matrix times the value __k
-void TYPED(matsetcol_div_k)(TYPED(Matrix) *__A, TYPED(MatIter) __c, const TYPED(MatIter) __col_end, MATRIX_TYPE __k) {
+void TYPED(matsetcol_div_k)(TYPED(MatIter) __c, const TYPED(MatIter) __col_end, MATRIX_TYPE __k) {
 
     while(! TYPED(MatIter_cmp)(__c, __col_end)) { // while we haven't reached the end,
         TYPED(divscalar)(__c.ptr, __k);
@@ -264,7 +264,7 @@ void TYPED(matsetcol_div_k)(TYPED(Matrix) *__A, TYPED(MatIter) __c, const TYPED(
 
 }
 // multiply the col of a matrix times the value __k
-void TYPED(matsetcol_add_k)(TYPED(Matrix) *__A, TYPED(MatIter) __c, const TYPED(MatIter) __col_end, MATRIX_TYPE __k) {
+void TYPED(matsetcol_add_k)(TYPED(MatIter) __c, const TYPED(MatIter) __col_end, MATRIX_TYPE __k) {
 
     while(! TYPED(MatIter_cmp)(__c, __col_end)) { // while we haven't reached the end,
         TYPED(addscalar)(__c.ptr, __k);
@@ -274,7 +274,7 @@ void TYPED(matsetcol_add_k)(TYPED(Matrix) *__A, TYPED(MatIter) __c, const TYPED(
 }
 
 // multiply the col of a matrix times the value __k
-void TYPED(matsetcol_sub_k)(TYPED(Matrix) *__A, TYPED(MatIter) __c, const TYPED(MatIter) __col_end, MATRIX_TYPE __k) {
+void TYPED(matsetcol_sub_k)(TYPED(MatIter) __c, const TYPED(MatIter) __col_end, MATRIX_TYPE __k) {
 
     while(! TYPED(MatIter_cmp)(__c, __col_end)) { // while we haven't reached the end,
         TYPED(subscalar)(__c.ptr, __k);
@@ -288,7 +288,7 @@ int TYPED(Matrix_mult_col_k)(TYPED(Matrix) *__A, const size_t __i, const MATRIX_
     const TYPED(MatIter) col_end = TYPED(Matrix_col_end)(__A, __i);
     TYPED(MatIter) col_begin = TYPED(Matrix_col_begin)(__A, __i);
 
-    TYPED(matsetcol_mult_k)(__A, col_begin, col_end, __k);
+    TYPED(matsetcol_mult_k)(col_begin, col_end, __k);
     return EXIT_SUCCESS;
 
 }
@@ -298,7 +298,7 @@ int TYPED(Matrix_div_col_k)(TYPED(Matrix) *__A, const size_t __i, const MATRIX_T
     const TYPED(MatIter) col_end = TYPED(Matrix_col_end)(__A, __i);
     TYPED(MatIter) col_begin = TYPED(Matrix_col_begin)(__A, __i);
 
-    TYPED(matsetcol_div_k)(__A, col_begin, col_end, __k);
+    TYPED(matsetcol_div_k)(col_begin, col_end, __k);
     return EXIT_SUCCESS;
 
 }
@@ -308,7 +308,7 @@ int TYPED(Matrix_add_col_k)(TYPED(Matrix) *__A, const size_t __i, const MATRIX_T
     const TYPED(MatIter) col_end = TYPED(Matrix_col_end)(__A, __i);
     TYPED(MatIter) col_begin = TYPED(Matrix_col_begin)(__A, __i);
 
-    TYPED(matsetcol_add_k)(__A, col_begin, col_end, __k);
+    TYPED(matsetcol_add_k)(col_begin, col_end, __k);
     return EXIT_SUCCESS;
 
 }
@@ -318,7 +318,7 @@ int TYPED(Matrix_sub_col_k)(TYPED(Matrix) *__A, const size_t __i, const MATRIX_T
     const TYPED(MatIter) col_end = TYPED(Matrix_col_end)(__A, __i);
     TYPED(MatIter) col_begin = TYPED(Matrix_col_begin)(__A, __i);
 
-    TYPED(matsetcol_sub_k)(__A, col_begin, col_end, __k);
+    TYPED(matsetcol_sub_k)(col_begin, col_end, __k);
     return EXIT_SUCCESS;
 
 }

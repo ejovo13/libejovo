@@ -27,10 +27,10 @@
         OUTSIDE_LOOP\
     } \
 
-const extern double PI;
-const extern double TWO_PI;
-const extern double HALF_PI;
-const extern double EPS;
+extern const double PI;
+extern const double TWO_PI;
+extern const double HALF_PI;
+extern const double EPS;
 typedef struct Matrix_d {
     double *data;
     size_t nrows;
@@ -324,18 +324,18 @@ static inline void matsetcol_d(Matrix_d *__A, size_t __i, size_t __j, const doub
         *(col_start + (__A->nrows * i)) = __src[i];
     }
 }
-void matsetrow_mult_k_d(Matrix_d *__A, MatIter_d __r, const MatIter_d __row_end, double __k);
-void matsetrow_div_k_d(Matrix_d *__A, MatIter_d __r, const MatIter_d __row_end, double __k);
-void matsetrow_add_k_d(Matrix_d *__A, MatIter_d __r, const MatIter_d __row_end, double __k);
-void matsetrow_sub_k_d(Matrix_d *__A, MatIter_d __r, const MatIter_d __row_end, double __k);
+void matsetrow_mult_k_d(MatIter_d __r, const MatIter_d __row_end, double __k);
+void matsetrow_div_k_d(MatIter_d __r, const MatIter_d __row_end, double __k);
+void matsetrow_add_k_d(MatIter_d __r, const MatIter_d __row_end, double __k);
+void matsetrow_sub_k_d(MatIter_d __r, const MatIter_d __row_end, double __k);
 int Matrix_mult_row_k_d(Matrix_d *__A, const size_t __i, const double __k);
 int Matrix_div_row_k_d(Matrix_d *__A, const size_t __i, const double __k);
 int Matrix_add_row_k_d(Matrix_d *__A, const size_t __i, const double __k);
 int Matrix_sub_row_k_d(Matrix_d *__A, const size_t __i, const double __k);
-void matsetcol_mult_k_d(Matrix_d *__A, MatIter_d __c, const MatIter_d __col_end, double __k);
-void matsetcol_div_k_d(Matrix_d *__A, MatIter_d __c, const MatIter_d __col_end, double __k);
-void matsetcol_add_k_d(Matrix_d *__A, MatIter_d __c, const MatIter_d __col_end, double __k);
-void matsetcol_sub_k_d(Matrix_d *__A, MatIter_d __c, const MatIter_d __col_end, double __k);
+void matsetcol_mult_k_d(MatIter_d __c, const MatIter_d __col_end, double __k);
+void matsetcol_div_k_d(MatIter_d __c, const MatIter_d __col_end, double __k);
+void matsetcol_add_k_d(MatIter_d __c, const MatIter_d __col_end, double __k);
+void matsetcol_sub_k_d(MatIter_d __c, const MatIter_d __col_end, double __k);
 int Matrix_mult_col_k_d(Matrix_d *__A, const size_t __i, const double __k);
 int Matrix_div_col_k_d(Matrix_d *__A, const size_t __i, const double __k);
 int Matrix_add_col_k_d(Matrix_d *__A, const size_t __i, const double __k);
@@ -612,7 +612,7 @@ static inline double ejovo_log_d (const double x) {
     return log(x);
 }
 static inline double ejovo_fabs_d (const double x) {
-    return fabs(x);
+    return fabs((double) x);
 }
  Vector_d*loglog_regression_d(const Vector_d*__x, const Vector_d*__y);
  Vector_d*least_squares_d(const Vector_d*__x, const Vector_d*__y, int degree);
@@ -735,10 +735,10 @@ Matrix_d *Stochastic_rexp_d(size_t __n, double __rate);
  Vector_d*Vector_prob_unif_d(size_t __n);
  Vector_d*compute_row_sums_d(const Matrix_d *__m);
  Vector_d*compute_col_sums_d(const Matrix_d *__m);
-const extern double PI;
-const extern double TWO_PI;
-const extern double HALF_PI;
-const extern double EPS;
+extern const double PI;
+extern const double TWO_PI;
+extern const double HALF_PI;
+extern const double EPS;
 typedef struct Matrix_f {
     float *data;
     size_t nrows;
@@ -1032,18 +1032,18 @@ static inline void matsetcol_f(Matrix_f *__A, size_t __i, size_t __j, const floa
         *(col_start + (__A->nrows * i)) = __src[i];
     }
 }
-void matsetrow_mult_k_f(Matrix_f *__A, MatIter_f __r, const MatIter_f __row_end, float __k);
-void matsetrow_div_k_f(Matrix_f *__A, MatIter_f __r, const MatIter_f __row_end, float __k);
-void matsetrow_add_k_f(Matrix_f *__A, MatIter_f __r, const MatIter_f __row_end, float __k);
-void matsetrow_sub_k_f(Matrix_f *__A, MatIter_f __r, const MatIter_f __row_end, float __k);
+void matsetrow_mult_k_f(MatIter_f __r, const MatIter_f __row_end, float __k);
+void matsetrow_div_k_f(MatIter_f __r, const MatIter_f __row_end, float __k);
+void matsetrow_add_k_f(MatIter_f __r, const MatIter_f __row_end, float __k);
+void matsetrow_sub_k_f(MatIter_f __r, const MatIter_f __row_end, float __k);
 int Matrix_mult_row_k_f(Matrix_f *__A, const size_t __i, const float __k);
 int Matrix_div_row_k_f(Matrix_f *__A, const size_t __i, const float __k);
 int Matrix_add_row_k_f(Matrix_f *__A, const size_t __i, const float __k);
 int Matrix_sub_row_k_f(Matrix_f *__A, const size_t __i, const float __k);
-void matsetcol_mult_k_f(Matrix_f *__A, MatIter_f __c, const MatIter_f __col_end, float __k);
-void matsetcol_div_k_f(Matrix_f *__A, MatIter_f __c, const MatIter_f __col_end, float __k);
-void matsetcol_add_k_f(Matrix_f *__A, MatIter_f __c, const MatIter_f __col_end, float __k);
-void matsetcol_sub_k_f(Matrix_f *__A, MatIter_f __c, const MatIter_f __col_end, float __k);
+void matsetcol_mult_k_f(MatIter_f __c, const MatIter_f __col_end, float __k);
+void matsetcol_div_k_f(MatIter_f __c, const MatIter_f __col_end, float __k);
+void matsetcol_add_k_f(MatIter_f __c, const MatIter_f __col_end, float __k);
+void matsetcol_sub_k_f(MatIter_f __c, const MatIter_f __col_end, float __k);
 int Matrix_mult_col_k_f(Matrix_f *__A, const size_t __i, const float __k);
 int Matrix_div_col_k_f(Matrix_f *__A, const size_t __i, const float __k);
 int Matrix_add_col_k_f(Matrix_f *__A, const size_t __i, const float __k);
@@ -1320,7 +1320,7 @@ static inline float ejovo_log_f (const float x) {
     return log(x);
 }
 static inline float ejovo_fabs_f (const float x) {
-    return fabs(x);
+    return fabs((double) x);
 }
  Vector_f*loglog_regression_f(const Vector_f*__x, const Vector_f*__y);
  Vector_f*least_squares_f(const Vector_f*__x, const Vector_f*__y, int degree);
@@ -1443,10 +1443,10 @@ Matrix_f *Stochastic_rexp_f(size_t __n, double __rate);
  Vector_f*Vector_prob_unif_f(size_t __n);
  Vector_f*compute_row_sums_f(const Matrix_f *__m);
  Vector_f*compute_col_sums_f(const Matrix_f *__m);
-const extern double PI;
-const extern double TWO_PI;
-const extern double HALF_PI;
-const extern double EPS;
+extern const double PI;
+extern const double TWO_PI;
+extern const double HALF_PI;
+extern const double EPS;
 typedef struct Matrix_i {
     int *data;
     size_t nrows;
@@ -1740,18 +1740,18 @@ static inline void matsetcol_i(Matrix_i *__A, size_t __i, size_t __j, const int 
         *(col_start + (__A->nrows * i)) = __src[i];
     }
 }
-void matsetrow_mult_k_i(Matrix_i *__A, MatIter_i __r, const MatIter_i __row_end, int __k);
-void matsetrow_div_k_i(Matrix_i *__A, MatIter_i __r, const MatIter_i __row_end, int __k);
-void matsetrow_add_k_i(Matrix_i *__A, MatIter_i __r, const MatIter_i __row_end, int __k);
-void matsetrow_sub_k_i(Matrix_i *__A, MatIter_i __r, const MatIter_i __row_end, int __k);
+void matsetrow_mult_k_i(MatIter_i __r, const MatIter_i __row_end, int __k);
+void matsetrow_div_k_i(MatIter_i __r, const MatIter_i __row_end, int __k);
+void matsetrow_add_k_i(MatIter_i __r, const MatIter_i __row_end, int __k);
+void matsetrow_sub_k_i(MatIter_i __r, const MatIter_i __row_end, int __k);
 int Matrix_mult_row_k_i(Matrix_i *__A, const size_t __i, const int __k);
 int Matrix_div_row_k_i(Matrix_i *__A, const size_t __i, const int __k);
 int Matrix_add_row_k_i(Matrix_i *__A, const size_t __i, const int __k);
 int Matrix_sub_row_k_i(Matrix_i *__A, const size_t __i, const int __k);
-void matsetcol_mult_k_i(Matrix_i *__A, MatIter_i __c, const MatIter_i __col_end, int __k);
-void matsetcol_div_k_i(Matrix_i *__A, MatIter_i __c, const MatIter_i __col_end, int __k);
-void matsetcol_add_k_i(Matrix_i *__A, MatIter_i __c, const MatIter_i __col_end, int __k);
-void matsetcol_sub_k_i(Matrix_i *__A, MatIter_i __c, const MatIter_i __col_end, int __k);
+void matsetcol_mult_k_i(MatIter_i __c, const MatIter_i __col_end, int __k);
+void matsetcol_div_k_i(MatIter_i __c, const MatIter_i __col_end, int __k);
+void matsetcol_add_k_i(MatIter_i __c, const MatIter_i __col_end, int __k);
+void matsetcol_sub_k_i(MatIter_i __c, const MatIter_i __col_end, int __k);
 int Matrix_mult_col_k_i(Matrix_i *__A, const size_t __i, const int __k);
 int Matrix_div_col_k_i(Matrix_i *__A, const size_t __i, const int __k);
 int Matrix_add_col_k_i(Matrix_i *__A, const size_t __i, const int __k);
@@ -2028,7 +2028,7 @@ static inline int ejovo_log_i (const int x) {
     return log(x);
 }
 static inline int ejovo_fabs_i (const int x) {
-    return fabs(x);
+    return fabs((double) x);
 }
  Vector_i*loglog_regression_i(const Vector_i*__x, const Vector_i*__y);
  Vector_i*least_squares_i(const Vector_i*__x, const Vector_i*__y, int degree);
@@ -2151,10 +2151,10 @@ Matrix_i *Stochastic_rexp_i(size_t __n, double __rate);
  Vector_i*Vector_prob_unif_i(size_t __n);
  Vector_i*compute_row_sums_i(const Matrix_i *__m);
  Vector_i*compute_col_sums_i(const Matrix_i *__m);
-const extern double PI;
-const extern double TWO_PI;
-const extern double HALF_PI;
-const extern double EPS;
+extern const double PI;
+extern const double TWO_PI;
+extern const double HALF_PI;
+extern const double EPS;
 typedef struct Matrix_c {
     double _Complex *data;
     size_t nrows;
@@ -2448,18 +2448,18 @@ static inline void matsetcol_c(Matrix_c *__A, size_t __i, size_t __j, const doub
         *(col_start + (__A->nrows * i)) = __src[i];
     }
 }
-void matsetrow_mult_k_c(Matrix_c *__A, MatIter_c __r, const MatIter_c __row_end, double _Complex __k);
-void matsetrow_div_k_c(Matrix_c *__A, MatIter_c __r, const MatIter_c __row_end, double _Complex __k);
-void matsetrow_add_k_c(Matrix_c *__A, MatIter_c __r, const MatIter_c __row_end, double _Complex __k);
-void matsetrow_sub_k_c(Matrix_c *__A, MatIter_c __r, const MatIter_c __row_end, double _Complex __k);
+void matsetrow_mult_k_c(MatIter_c __r, const MatIter_c __row_end, double _Complex __k);
+void matsetrow_div_k_c(MatIter_c __r, const MatIter_c __row_end, double _Complex __k);
+void matsetrow_add_k_c(MatIter_c __r, const MatIter_c __row_end, double _Complex __k);
+void matsetrow_sub_k_c(MatIter_c __r, const MatIter_c __row_end, double _Complex __k);
 int Matrix_mult_row_k_c(Matrix_c *__A, const size_t __i, const double _Complex __k);
 int Matrix_div_row_k_c(Matrix_c *__A, const size_t __i, const double _Complex __k);
 int Matrix_add_row_k_c(Matrix_c *__A, const size_t __i, const double _Complex __k);
 int Matrix_sub_row_k_c(Matrix_c *__A, const size_t __i, const double _Complex __k);
-void matsetcol_mult_k_c(Matrix_c *__A, MatIter_c __c, const MatIter_c __col_end, double _Complex __k);
-void matsetcol_div_k_c(Matrix_c *__A, MatIter_c __c, const MatIter_c __col_end, double _Complex __k);
-void matsetcol_add_k_c(Matrix_c *__A, MatIter_c __c, const MatIter_c __col_end, double _Complex __k);
-void matsetcol_sub_k_c(Matrix_c *__A, MatIter_c __c, const MatIter_c __col_end, double _Complex __k);
+void matsetcol_mult_k_c(MatIter_c __c, const MatIter_c __col_end, double _Complex __k);
+void matsetcol_div_k_c(MatIter_c __c, const MatIter_c __col_end, double _Complex __k);
+void matsetcol_add_k_c(MatIter_c __c, const MatIter_c __col_end, double _Complex __k);
+void matsetcol_sub_k_c(MatIter_c __c, const MatIter_c __col_end, double _Complex __k);
 int Matrix_mult_col_k_c(Matrix_c *__A, const size_t __i, const double _Complex __k);
 int Matrix_div_col_k_c(Matrix_c *__A, const size_t __i, const double _Complex __k);
 int Matrix_add_col_k_c(Matrix_c *__A, const size_t __i, const double _Complex __k);
@@ -2736,7 +2736,7 @@ static inline double _Complex ejovo_log_c (const double _Complex x) {
     return log(x);
 }
 static inline double _Complex ejovo_fabs_c (const double _Complex x) {
-    return fabs(x);
+    return fabs((double) x);
 }
  Vector_c*loglog_regression_c(const Vector_c*__x, const Vector_c*__y);
  Vector_c*least_squares_c(const Vector_c*__x, const Vector_c*__y, int degree);

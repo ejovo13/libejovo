@@ -449,7 +449,7 @@ int TYPED(MatIter_max_index)(TYPED(MatIter) begin, const TYPED(MatIter) end) {
 
     for (size_t i = 1; !TYPED(MatIter_cmp)(it, end); it = TYPED(MatIter_next)(it), i++) {
     #ifdef MATRIX_COMPLEX
-        if (cabs(TYPED(MatIter_value)(it)) > cabs(max)) {
+        if (cabs(TYPED(MatIter_value)(it)) > fabs(max)) {
     #else
         if (TYPED(MatIter_value)(it) > max) {
     #endif
@@ -470,7 +470,7 @@ int TYPED(MatIter_min_index)(TYPED(MatIter) begin, const TYPED(MatIter) end) {
 
     for (size_t i = 1; !TYPED(MatIter_cmp)(it, end); it = TYPED(MatIter_next)(it), i++) {
     #ifdef MATRIX_COMPLEX
-        if (cabs(TYPED(MatIter_value)(it)) < cabs(min)) {
+        if (cabs(TYPED(MatIter_value)(it)) < fabs(min)) {
     #else
         if (TYPED(MatIter_value)(it) < min) {
     #endif

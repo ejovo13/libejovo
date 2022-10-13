@@ -170,7 +170,7 @@ TYPED(Matrix) *TYPED(Matrix_vandermonde_reduced)(const TYPED(Vector)*__v, size_t
 
 // These elementary operations will be considered low level and don't consider checking bounds...
 // void TYPED(Matrix_switch_rows)(OrderedTYPED(Matrix) m, size_t __r1, size_t __r2) {
-void TYPED(Row_switch)(const TYPED(Matrix) *__m, TYPED(Index) *__ind, size_t __r1, size_t __r2);
+void TYPED(Row_switch)(TYPED(Index) *__ind, size_t __r1, size_t __r2);
 
 void TYPED(Row_multiply)(TYPED(Matrix) *__m, TYPED(Index) *__ind, size_t __r, double __k);
 
