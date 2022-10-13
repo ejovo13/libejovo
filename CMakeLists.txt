@@ -44,6 +44,8 @@ add_compile_options(
     $<$<CONFIG:DEBUG>:-Og>
     -Wall
     # -Wextra
+    # -Wunused-variable
+    -Wno-unused-result
     -Werror
     # -Werror=no-unused-parameter
     # -Wno-unused-parameter
