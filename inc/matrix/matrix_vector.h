@@ -23,7 +23,7 @@
 
  TYPED(Vector)*TYPED(Vector_random)(size_t __nrows, int __min, int __max);
 
- TYPED(Vector)*TYPED(Vector_from)(const double* __arr, size_t __nrows);
+ TYPED(Vector)*TYPED(Vector_from)(const MATRIX_TYPE* __arr, size_t __nrows);
 
  TYPED(Vector)*TYPED(Vector_clone)(const TYPED(Vector)*__v);
 

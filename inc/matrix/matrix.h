@@ -50,20 +50,21 @@ const extern double EPS;
 // struct Matrix_complex;
 // struct Matrix_bool;
 
-// #define DECLARE_MATRIX(TYPE) typedef struct Matrix_ ## TYPE {\
-//     TYPE *data;\
-//     size_t nrows;\
-//     size_t ncols;\
-// } Matrix_ ## TYPE\
+#define DECLARE_MATRIX(TYPE) typedef struct Matrix_ ## TYPE {\
+    TYPE *data;\
+    size_t nrows;\
+    size_t ncols;\
+} Matrix_ ## TYPE\
 
-// #ifdef DECLARE_NUMERIC_TYPES
+#ifdef DECLARE_NUMERIC_TYPES
 
-//     DECLARE_MATRIX(int);
-//     DECLARE_MATRIX(float);
-//     DECLARE_MATRIX(double);
+    DECLARE_MATRIX(int);
+    DECLARE_MATRIX(float);
+    DECLARE_MATRIX(double);
 
-// #endif
+#endif
 
+// #ifndef MATRIX_INT_DEFINED
 // DEFINE_MATRIX()
 
 
@@ -75,12 +76,11 @@ const extern double EPS;
  * For example, two matrices can be added to each other if and only if they are the same size; *
  */
 typedef struct TYPED(Matrix) {
-    MATRIX_TYPE *data; // SUPER IMPORTANT!!! I am declaring that the underlying data
-                                // is only ever accessed by one pointer! In terms of Rust,
-                                // data is the only owner of the matrix elements
+    MATRIX_TYPE *data;
     size_t nrows;
     size_t ncols;
 } TYPED(Matrix);
+
 
 
 

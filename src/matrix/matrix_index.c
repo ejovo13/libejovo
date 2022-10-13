@@ -5,9 +5,21 @@
 #include "matrix/matrix_index.h"
 // A new typedef of "Index" is a type of TYPED(Vector)whose values are integers
 
+// Low level function
+MATRIX_TYPE TYPED(floor)(MATRIX_TYPE a) {
+    return floor(a);
+}
+
 // Use your functional tools to simply cast __m to a floor
- TYPED(Vector)*TYPED(Matrix_as_index)(const TYPED(Matrix) *__m) {
-    return TYPED(apply)(TYPED(map)(__m, floor), fabs); // Ok this is neat but now I think that it actually has 0 utility...
+TYPED(Matrix) *TYPED(Matrix_as_index)(const TYPED(Matrix) *__m) {
+
+    // Convert __m to an integer matrix with a cast to integer
+    TYPED(Matrix) *ind = TYPED(Matrix_new)(__m->nrows, __m->ncols);
+    for (size_t i = 0; i < TYPED(Matrix_size)(ind); i++) {
+        ind->data[i] = TYPED(floor)(__m->data[i]);
+    }
+
+    return ind; // Ok this is neat but now I think that it actually has 0 utility...
 }
 
 // Take a supposed index matrix and scrub it -- making sure that all of the elements fall within
@@ -33,7 +45,7 @@
     TYPED(MatIter) out_it = TYPED(Matrix_begin)(out);
     TYPED(MatIter) end = TYPED(Matrix_end)(__ind);
 
-    for (it; !TYPED(MatIter_cmp)(it, end); it = TYPED(MatIter_next)(it)) {
+    for (; !TYPED(MatIter_cmp)(it, end); it = TYPED(MatIter_next)(it)) {
         val = TYPED(MatIter_value)(it);
         if (val >= 0 && val <= (len - 1)) {
             TYPED(MatIter_set)(out_it, floor(val)); // save the integer index
@@ -66,7 +78,7 @@
     TYPED(MatIter) out_it = TYPED(Matrix_begin)(out);
     TYPED(MatIter) end = TYPED(Matrix_end)(__ind);
 
-    for (it; !TYPED(MatIter_cmp)(it, end); it = TYPED(MatIter_next)(it)) {
+    for (; !TYPED(MatIter_cmp)(it, end); it = TYPED(MatIter_next)(it)) {
         val = TYPED(MatIter_value)(it);
         if (val >= 0 && val <= (__m->ncols - 1)) {
             TYPED(MatIter_set)(out_it, floor(val)); // save the integer index
@@ -97,7 +109,7 @@
     TYPED(MatIter) out_it = TYPED(Matrix_begin)(out);
     TYPED(MatIter) end = TYPED(Matrix_end)(__ind);
 
-    for (it; !TYPED(MatIter_cmp)(it, end); it = TYPED(MatIter_next)(it)) {
+    for (; !TYPED(MatIter_cmp)(it, end); it = TYPED(MatIter_next)(it)) {
         val = TYPED(MatIter_value)(it);
         if (val >= 0 && val <= (__m->nrows - 1)) {
             TYPED(MatIter_set)(out_it, floor(val)); // save the integer index
@@ -119,7 +131,7 @@
     TYPED(MatIter) out_it = TYPED(Matrix_begin)(out);
     TYPED(MatIter) end = TYPED(Matrix_end)(__ind);
 
-    for (it; !TYPED(MatIter_cmp)(it, end); it = TYPED(MatIter_next)(it), out_it = TYPED(MatIter_next)(out_it)) {
+    for (; !TYPED(MatIter_cmp)(it, end); it = TYPED(MatIter_next)(it), out_it = TYPED(MatIter_next)(out_it)) {
         TYPED(MatIter_set)(out_it, TYPED(matget)(__m, TYPED(MatIter_value)(it)));
     }
 
@@ -164,7 +176,7 @@
 
     TYPED(MatIter) end = TYPED(Matrix_end)(__log);
 
-    for (it; !TYPED(MatIter_cmp)(it, end); it = TYPED(MatIter_next)(it), m_it = TYPED(MatIter_next)(m_it)) {
+    for (; !TYPED(MatIter_cmp)(it, end); it = TYPED(MatIter_next)(it), m_it = TYPED(MatIter_next)(m_it)) {
         if (TYPED(MatIter_value)(it) == TYPED(TRUE)) {
             TYPED(MatIter_set)(out_it, TYPED(MatIter_value)(m_it));
             out_it = TYPED(MatIter_next)(out_it);
@@ -290,7 +302,7 @@ TYPED(Matrix) *TYPED(matsetind)(TYPED(Matrix) *__m, const TYPED(Matrix) *__ind, 
     TYPED(MatIter) end = TYPED(Matrix_end)(__ind);
     TYPED(MatIter) val_end = TYPED(Matrix_end)(__val);
 
-    for (it; !TYPED(MatIter_cmp)(it, end); it = TYPED(MatIter_next)(it), val_it = TYPED(MatIter_next)(val_it)) {
+    for (; !TYPED(MatIter_cmp)(it, end); it = TYPED(MatIter_next)(it), val_it = TYPED(MatIter_next)(val_it)) {
         if (TYPED(MatIter_cmp)(val_it, val_end)) val_it = TYPED(Matrix_begin)(__val); // loop back the value if we have passed the end
         __m->data[(int) TYPED(MatIter_value)(it)] = TYPED(MatIter_value)(val_it);
     }

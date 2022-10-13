@@ -14,6 +14,17 @@
 #define MATRIX_TYPE double
 #define TYPE_SUFFIX _d 
 
+// #ifndef MATRIX_DOUBLE_DEFINED
+// #define MATRIX_DOUBLE_DEFINED
+
+//     typedef struct Matrix_d {
+//         double *data;
+//         size_t nrows;
+//         size_t ncols;
+//     } Matrix_d;
+
+// #endif
+
 #include "ejovo_matrix.h"
 
 #endif // MATRIX_D_H

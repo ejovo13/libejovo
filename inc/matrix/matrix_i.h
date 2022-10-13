@@ -13,6 +13,18 @@
 #define MATRIX_TYPE int
 #define TYPE_SUFFIX _i
 
+
+// #ifndef MATRIX_INT_DEFINED
+// #define MATRIX_INT_DEFINED
+
+//     typedef struct Matrix_i {
+//         int *data;
+//         size_t nrows;
+//         size_t ncols;
+//     } Matrix_i;
+
+// #endif
+
 #include "ejovo_matrix.h"
 
 #endif // MATRIX_I_H

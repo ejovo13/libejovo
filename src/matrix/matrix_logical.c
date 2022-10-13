@@ -37,7 +37,7 @@ bool TYPED(Matrix_is_logical)(const TYPED(Matrix) *__log) {
     TYPED(MatIter) end = TYPED(Matrix_end)(__log);
     MATRIX_TYPE val = 0;
 
-    for (it; !TYPED(MatIter_cmp)(it, end); it = TYPED(MatIter_next)(it)) {
+    for (; !TYPED(MatIter_cmp)(it, end); it = TYPED(MatIter_next)(it)) {
 
         val = TYPED(MatIter_value)(it);
         if (!(val == TYPED(TRUE) || val == TYPED(FALSE))) {
@@ -239,7 +239,7 @@ bool TYPED(Logical_any)(const TYPED(Matrix) *__mask) {
     TYPED(MatIter) it = TYPED(Matrix_begin)(__mask);
     TYPED(MatIter) end = TYPED(Matrix_end)(__mask);
 
-    for (it; !TYPED(MatIter_cmp)(it, end); it = TYPED(MatIter_next)(it)) {
+    for (; !TYPED(MatIter_cmp)(it, end); it = TYPED(MatIter_next)(it)) {
         if (TYPED(MatIter_value)(it) == TYPED(TRUE)) return true;
     }
 

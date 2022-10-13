@@ -12,10 +12,18 @@
 #include "matrix_getset.h"
 
 // A new typedef of "Index" is a type of TYPED(Vector)whose values are integers
+// #ifndef MATRIX_INT_DEFINED
+// #define MATRIX_INT_DEFINED
 
+//     typedef struct Matrix_i {
+//         int *data;
+//         size_t nrows;
+//         size_t ncols;
+//     } Matrix_i;
 
+// #endif
 // Use your functional tools to simply cast __m to a floor
- TYPED(Vector)*TYPED(Matrix_as_index)(const TYPED(Matrix) *__m);
+TYPED(Matrix) *TYPED(Matrix_as_index)(const TYPED(Matrix) *__m);
 
 // Take a supposed index matrix and scrub it -- making sure that all of the elements fall within
 // the true bounds of __m
@@ -88,18 +96,18 @@ TYPED(Matrix) *TYPED(Matrix_extract_cols)(const TYPED(Matrix) *__m, TYPED(Index)
 /**================================================================================================
  *!              Utility functions for dealing with indices -- probably shouldnt be exported
  *================================================================================================**/
-static bool TYPED(is_int)(double x) {
+static inline bool TYPED(is_int)(double x) {
     return x == floor(x);
 }
 
 // Return true if all of the elements in __ind are valid column indices of __m
-static bool TYPED(are_col_indices_valid)(const TYPED(Matrix) *__m, const TYPED(Index) *__ind) {
+static inline bool TYPED(are_col_indices_valid)(const TYPED(Matrix) *__m, const TYPED(Index) *__ind) {
 
     // loop through the __index vector
     TYPED(MatIter) it = TYPED(Matrix_begin)(__ind);
     const TYPED(MatIter) end = TYPED(Matrix_begin)(__ind);
 
-    for(it; !TYPED(MatIter_cmp)(it, end); it = TYPED(MatIter_next)(it)) {
+    for(; !TYPED(MatIter_cmp)(it, end); it = TYPED(MatIter_next)(it)) {
 
         double val = TYPED(MatIter_value)(it);
         // make sure the elements of __ind are positive, integers, and within __m's column range
@@ -110,13 +118,14 @@ static bool TYPED(are_col_indices_valid)(const TYPED(Matrix) *__m, const TYPED(I
 }
 
 // Return true if all of the elements in __ind are valid column indices of __m
-static bool TYPED(are_row_indices_valid)(const TYPED(Matrix) *__m, const TYPED(Index) *__ind) {
+static inline bool TYPED(are_row_indices_valid)(const TYPED(Matrix) *__m, const TYPED(Index) *__ind) {
+
 
     // loop through the __index vector
     TYPED(MatIter) it = TYPED(Matrix_begin)(__ind);
     const TYPED(MatIter) end = TYPED(Matrix_begin)(__ind);
 
-    for(it; !TYPED(MatIter_cmp)(it, end); it = TYPED(MatIter_next)(it)) {
+    for(; !TYPED(MatIter_cmp)(it, end); it = TYPED(MatIter_next)(it)) {
 
         double val = TYPED(MatIter_value)(it);
         // make sure the elements of __ind are positive, integers, and within __m's column range

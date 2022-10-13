@@ -378,13 +378,31 @@ MatIter_d matrowbegin_d(const Matrix_d *__A, size_t __i);
 MatIter_d matrowend_d(const Matrix_d *__A, size_t __i);
 MatIter_d Matrix_row_end_d(const Matrix_d *__A, size_t __i);
 MatIter_d Matrix_row_begin_d(const Matrix_d *__A, size_t __i);
-MatIter_d MatIter_new_d(double *__ptr, size_t __ptr_diff);
-MatIter_d MatIter_null_d();
-_Bool MatIter_is_null_d(MatIter_d __i);
-MatIter_d MatIter_next_d(MatIter_d __c);
-_Bool MatIter_cmp_d(const MatIter_d __lhs, const MatIter_d __rhs);
-double MatIter_value_d(const MatIter_d __c);
-size_t MatIter_length_d(const MatIter_d begin, const MatIter_d end);
+static inline MatIter_d MatIter_new_d(double *__ptr, size_t __ptr_diff) {
+    MatIter_d c = {.ptr = __ptr, .ptr_diff = __ptr_diff};
+    return c;
+}
+static inline MatIter_d MatIter_null_d() {
+    MatIter_d null = {.ptr = ((void *)0), .ptr_diff = 0};
+    return null;
+}
+static inline _Bool MatIter_is_null_d(MatIter_d __i) {
+    return __i.ptr == ((void *)0);
+}
+static inline MatIter_d MatIter_next_d(MatIter_d __c) {
+    MatIter_d next = {.ptr = __c.ptr += __c.ptr_diff, .ptr_diff = __c.ptr_diff};
+    return next;
+}
+static inline _Bool MatIter_cmp_d(const MatIter_d __lhs, const MatIter_d __rhs) {
+    return __lhs.ptr == __rhs.ptr;
+}
+static inline double MatIter_value_d(const MatIter_d __c) {
+    return *(__c.ptr);
+}
+static inline size_t MatIter_length_d(const MatIter_d begin, const MatIter_d end) {
+    size_t diff = end.ptr - begin.ptr;
+    return diff / begin.ptr_diff;
+}
 double MatIter_sum_d(const MatIter_d __begin, const MatIter_d __end);
 double MatIter_prod_d(const MatIter_d __begin, const MatIter_d __end);
 double MatIter_max_d(MatIter_d __a, const MatIter_d __b);
@@ -583,6 +601,12 @@ double cor_d(const Matrix_d *__x, const Matrix_d *__y);
 double cmoment_d(const Vector_d*__v, int __k);
 double rmoment_d(const Vector_d*__v, int __k);
  Vector_d*linear_regression_d(const Vector_d*__x, const Vector_d*__y);
+static inline double ejovo_log_d (const double x) {
+    return log(x);
+}
+static inline double ejovo_fabs_d (const double x) {
+    return fabs(x);
+}
  Vector_d*loglog_regression_d(const Vector_d*__x, const Vector_d*__y);
  Vector_d*least_squares_d(const Vector_d*__x, const Vector_d*__y, int degree);
 Matrix_d *runif_d(int n, double a, double b);
@@ -631,7 +655,7 @@ void matsetpred_d(Matrix_d *__m, pred_fn_d __predicate, double __val);
 _Bool Logical_all_d(const Matrix_d *__mask);
 _Bool Logical_any_d(const Matrix_d *__mask);
 Logical_d *Logical_not_d(const Matrix_d *__mask);
- Vector_d*Matrix_as_index_d(const Matrix_d *__m);
+Matrix_d *Matrix_as_index_d(const Matrix_d *__m);
  Vector_d*Matrix_scrub_index_d(const Matrix_d *__m, const Index_d *__ind);
  Vector_d*matindex_d(const Matrix_d *__m, const Index_d *__ind);
  Vector_d*Matrix_index_d(const Matrix_d *__m, const Index_d *__ind);
@@ -658,22 +682,22 @@ Matrix_d *Matrix_extract_rows_d(const Matrix_d *__m, Index_d *__ind);
 Matrix_d *Matrix_extract_cols_d(const Matrix_d *__m, Index_d *__ind);
  Vector_d*Matrix_scrub_col_index_d(const Matrix_d *__m, const Index_d *__ind);
  Vector_d*Matrix_scrub_row_index_d(const Matrix_d *__m, const Index_d *__ind);
-static _Bool is_int_d(double x) {
+static inline _Bool is_int_d(double x) {
     return x == floor(x);
 }
-static _Bool are_col_indices_valid_d(const Matrix_d *__m, const Index_d *__ind) {
+static inline _Bool are_col_indices_valid_d(const Matrix_d *__m, const Index_d *__ind) {
     MatIter_d it = Matrix_begin_d(__ind);
     const MatIter_d end = Matrix_begin_d(__ind);
-    for(it; !MatIter_cmp_d(it, end); it = MatIter_next_d(it)) {
+    for(; !MatIter_cmp_d(it, end); it = MatIter_next_d(it)) {
         double val = MatIter_value_d(it);
         if (val < 0 || !is_int_d(val) || val >= __m->ncols) return 0;
     }
     return 1;
 }
-static _Bool are_row_indices_valid_d(const Matrix_d *__m, const Index_d *__ind) {
+static inline _Bool are_row_indices_valid_d(const Matrix_d *__m, const Index_d *__ind) {
     MatIter_d it = Matrix_begin_d(__ind);
     const MatIter_d end = Matrix_begin_d(__ind);
-    for(it; !MatIter_cmp_d(it, end); it = MatIter_next_d(it)) {
+    for(; !MatIter_cmp_d(it, end); it = MatIter_next_d(it)) {
         double val = MatIter_value_d(it);
         if (val < 0 || !is_int_d(val) || val >= __m->nrows) return 0;
     }
@@ -1055,13 +1079,31 @@ MatIter_f matrowbegin_f(const Matrix_f *__A, size_t __i);
 MatIter_f matrowend_f(const Matrix_f *__A, size_t __i);
 MatIter_f Matrix_row_end_f(const Matrix_f *__A, size_t __i);
 MatIter_f Matrix_row_begin_f(const Matrix_f *__A, size_t __i);
-MatIter_f MatIter_new_f(float *__ptr, size_t __ptr_diff);
-MatIter_f MatIter_null_f();
-_Bool MatIter_is_null_f(MatIter_f __i);
-MatIter_f MatIter_next_f(MatIter_f __c);
-_Bool MatIter_cmp_f(const MatIter_f __lhs, const MatIter_f __rhs);
-float MatIter_value_f(const MatIter_f __c);
-size_t MatIter_length_f(const MatIter_f begin, const MatIter_f end);
+static inline MatIter_f MatIter_new_f(float *__ptr, size_t __ptr_diff) {
+    MatIter_f c = {.ptr = __ptr, .ptr_diff = __ptr_diff};
+    return c;
+}
+static inline MatIter_f MatIter_null_f() {
+    MatIter_f null = {.ptr = ((void *)0), .ptr_diff = 0};
+    return null;
+}
+static inline _Bool MatIter_is_null_f(MatIter_f __i) {
+    return __i.ptr == ((void *)0);
+}
+static inline MatIter_f MatIter_next_f(MatIter_f __c) {
+    MatIter_f next = {.ptr = __c.ptr += __c.ptr_diff, .ptr_diff = __c.ptr_diff};
+    return next;
+}
+static inline _Bool MatIter_cmp_f(const MatIter_f __lhs, const MatIter_f __rhs) {
+    return __lhs.ptr == __rhs.ptr;
+}
+static inline float MatIter_value_f(const MatIter_f __c) {
+    return *(__c.ptr);
+}
+static inline size_t MatIter_length_f(const MatIter_f begin, const MatIter_f end) {
+    size_t diff = end.ptr - begin.ptr;
+    return diff / begin.ptr_diff;
+}
 float MatIter_sum_f(const MatIter_f __begin, const MatIter_f __end);
 float MatIter_prod_f(const MatIter_f __begin, const MatIter_f __end);
 float MatIter_max_f(MatIter_f __a, const MatIter_f __b);
@@ -1077,7 +1119,7 @@ void MatIter_sub_ptr_f(MatIter_f __r, const float *__ptr);
 void MatIter_mult_ptr_f(MatIter_f __r, const float *__ptr);
 void MatIter_div_ptr_f(MatIter_f __r, const float *__ptr);
 void MatIter_set_iter_f(MatIter_f __a, const MatIter_f __b);
-void MatIter_set_iter_pow_f(MatIter_f __a, const MatIter_f __b, double __n);
+void MatIter_set_iter_pow_f(MatIter_f __a, const MatIter_f __b, float __n);
 void MatIter_add_iter_f(MatIter_f __a, const MatIter_f __b);
 void MatIter_add_iter_scaled_f(MatIter_f __a, const MatIter_f __b, const float __k);
 void MatIter_sub_iter_f(MatIter_f __a, const MatIter_f __b);
@@ -1174,7 +1216,7 @@ void Row_addition_k_f(Matrix_f *__m, Index_f *__ind, size_t __r1, size_t __r2, d
  Vector_f*Vector_from_iter_f(MatIter_f __begin, MatIter_f __end);
  Vector_f*Vector_rand_f(size_t __nrows);
  Vector_f*Vector_random_f(size_t __nrows, int __min, int __max);
- Vector_f*Vector_from_f(const double* __arr, size_t __nrows);
+ Vector_f*Vector_from_f(const float* __arr, size_t __nrows);
  Vector_f*Vector_clone_f(const Vector_f*__v);
  Vector_f*Vector_from_matrix_f(const Matrix_f *__m);
  Vector_f*Vector_as_col_f(const Vector_f*__v);
@@ -1260,6 +1302,12 @@ float cor_f(const Matrix_f *__x, const Matrix_f *__y);
 float cmoment_f(const Vector_f*__v, int __k);
 float rmoment_f(const Vector_f*__v, int __k);
  Vector_f*linear_regression_f(const Vector_f*__x, const Vector_f*__y);
+static inline float ejovo_log_f (const float x) {
+    return log(x);
+}
+static inline float ejovo_fabs_f (const float x) {
+    return fabs(x);
+}
  Vector_f*loglog_regression_f(const Vector_f*__x, const Vector_f*__y);
  Vector_f*least_squares_f(const Vector_f*__x, const Vector_f*__y, int degree);
 Matrix_f *runif_f(int n, float a, float b);
@@ -1308,7 +1356,7 @@ void matsetpred_f(Matrix_f *__m, pred_fn_f __predicate, float __val);
 _Bool Logical_all_f(const Matrix_f *__mask);
 _Bool Logical_any_f(const Matrix_f *__mask);
 Logical_f *Logical_not_f(const Matrix_f *__mask);
- Vector_f*Matrix_as_index_f(const Matrix_f *__m);
+Matrix_f *Matrix_as_index_f(const Matrix_f *__m);
  Vector_f*Matrix_scrub_index_f(const Matrix_f *__m, const Index_f *__ind);
  Vector_f*matindex_f(const Matrix_f *__m, const Index_f *__ind);
  Vector_f*Matrix_index_f(const Matrix_f *__m, const Index_f *__ind);
@@ -1335,22 +1383,22 @@ Matrix_f *Matrix_extract_rows_f(const Matrix_f *__m, Index_f *__ind);
 Matrix_f *Matrix_extract_cols_f(const Matrix_f *__m, Index_f *__ind);
  Vector_f*Matrix_scrub_col_index_f(const Matrix_f *__m, const Index_f *__ind);
  Vector_f*Matrix_scrub_row_index_f(const Matrix_f *__m, const Index_f *__ind);
-static _Bool is_int_f(double x) {
+static inline _Bool is_int_f(double x) {
     return x == floor(x);
 }
-static _Bool are_col_indices_valid_f(const Matrix_f *__m, const Index_f *__ind) {
+static inline _Bool are_col_indices_valid_f(const Matrix_f *__m, const Index_f *__ind) {
     MatIter_f it = Matrix_begin_f(__ind);
     const MatIter_f end = Matrix_begin_f(__ind);
-    for(it; !MatIter_cmp_f(it, end); it = MatIter_next_f(it)) {
+    for(; !MatIter_cmp_f(it, end); it = MatIter_next_f(it)) {
         double val = MatIter_value_f(it);
         if (val < 0 || !is_int_f(val) || val >= __m->ncols) return 0;
     }
     return 1;
 }
-static _Bool are_row_indices_valid_f(const Matrix_f *__m, const Index_f *__ind) {
+static inline _Bool are_row_indices_valid_f(const Matrix_f *__m, const Index_f *__ind) {
     MatIter_f it = Matrix_begin_f(__ind);
     const MatIter_f end = Matrix_begin_f(__ind);
-    for(it; !MatIter_cmp_f(it, end); it = MatIter_next_f(it)) {
+    for(; !MatIter_cmp_f(it, end); it = MatIter_next_f(it)) {
         double val = MatIter_value_f(it);
         if (val < 0 || !is_int_f(val) || val >= __m->nrows) return 0;
     }
@@ -1732,13 +1780,31 @@ MatIter_i matrowbegin_i(const Matrix_i *__A, size_t __i);
 MatIter_i matrowend_i(const Matrix_i *__A, size_t __i);
 MatIter_i Matrix_row_end_i(const Matrix_i *__A, size_t __i);
 MatIter_i Matrix_row_begin_i(const Matrix_i *__A, size_t __i);
-MatIter_i MatIter_new_i(int *__ptr, size_t __ptr_diff);
-MatIter_i MatIter_null_i();
-_Bool MatIter_is_null_i(MatIter_i __i);
-MatIter_i MatIter_next_i(MatIter_i __c);
-_Bool MatIter_cmp_i(const MatIter_i __lhs, const MatIter_i __rhs);
-int MatIter_value_i(const MatIter_i __c);
-size_t MatIter_length_i(const MatIter_i begin, const MatIter_i end);
+static inline MatIter_i MatIter_new_i(int *__ptr, size_t __ptr_diff) {
+    MatIter_i c = {.ptr = __ptr, .ptr_diff = __ptr_diff};
+    return c;
+}
+static inline MatIter_i MatIter_null_i() {
+    MatIter_i null = {.ptr = ((void *)0), .ptr_diff = 0};
+    return null;
+}
+static inline _Bool MatIter_is_null_i(MatIter_i __i) {
+    return __i.ptr == ((void *)0);
+}
+static inline MatIter_i MatIter_next_i(MatIter_i __c) {
+    MatIter_i next = {.ptr = __c.ptr += __c.ptr_diff, .ptr_diff = __c.ptr_diff};
+    return next;
+}
+static inline _Bool MatIter_cmp_i(const MatIter_i __lhs, const MatIter_i __rhs) {
+    return __lhs.ptr == __rhs.ptr;
+}
+static inline int MatIter_value_i(const MatIter_i __c) {
+    return *(__c.ptr);
+}
+static inline size_t MatIter_length_i(const MatIter_i begin, const MatIter_i end) {
+    size_t diff = end.ptr - begin.ptr;
+    return diff / begin.ptr_diff;
+}
 int MatIter_sum_i(const MatIter_i __begin, const MatIter_i __end);
 int MatIter_prod_i(const MatIter_i __begin, const MatIter_i __end);
 int MatIter_max_i(MatIter_i __a, const MatIter_i __b);
@@ -1754,7 +1820,7 @@ void MatIter_sub_ptr_i(MatIter_i __r, const int *__ptr);
 void MatIter_mult_ptr_i(MatIter_i __r, const int *__ptr);
 void MatIter_div_ptr_i(MatIter_i __r, const int *__ptr);
 void MatIter_set_iter_i(MatIter_i __a, const MatIter_i __b);
-void MatIter_set_iter_pow_i(MatIter_i __a, const MatIter_i __b, double __n);
+void MatIter_set_iter_pow_i(MatIter_i __a, const MatIter_i __b, int __n);
 void MatIter_add_iter_i(MatIter_i __a, const MatIter_i __b);
 void MatIter_add_iter_scaled_i(MatIter_i __a, const MatIter_i __b, const int __k);
 void MatIter_sub_iter_i(MatIter_i __a, const MatIter_i __b);
@@ -1851,7 +1917,7 @@ void Row_addition_k_i(Matrix_i *__m, Index_i *__ind, size_t __r1, size_t __r2, d
  Vector_i*Vector_from_iter_i(MatIter_i __begin, MatIter_i __end);
  Vector_i*Vector_rand_i(size_t __nrows);
  Vector_i*Vector_random_i(size_t __nrows, int __min, int __max);
- Vector_i*Vector_from_i(const double* __arr, size_t __nrows);
+ Vector_i*Vector_from_i(const int* __arr, size_t __nrows);
  Vector_i*Vector_clone_i(const Vector_i*__v);
  Vector_i*Vector_from_matrix_i(const Matrix_i *__m);
  Vector_i*Vector_as_col_i(const Vector_i*__v);
@@ -1937,6 +2003,12 @@ int cor_i(const Matrix_i *__x, const Matrix_i *__y);
 int cmoment_i(const Vector_i*__v, int __k);
 int rmoment_i(const Vector_i*__v, int __k);
  Vector_i*linear_regression_i(const Vector_i*__x, const Vector_i*__y);
+static inline int ejovo_log_i (const int x) {
+    return log(x);
+}
+static inline int ejovo_fabs_i (const int x) {
+    return fabs(x);
+}
  Vector_i*loglog_regression_i(const Vector_i*__x, const Vector_i*__y);
  Vector_i*least_squares_i(const Vector_i*__x, const Vector_i*__y, int degree);
 Matrix_i *runif_i(int n, int a, int b);
@@ -1985,7 +2057,7 @@ void matsetpred_i(Matrix_i *__m, pred_fn_i __predicate, int __val);
 _Bool Logical_all_i(const Matrix_i *__mask);
 _Bool Logical_any_i(const Matrix_i *__mask);
 Logical_i *Logical_not_i(const Matrix_i *__mask);
- Vector_i*Matrix_as_index_i(const Matrix_i *__m);
+Matrix_i *Matrix_as_index_i(const Matrix_i *__m);
  Vector_i*Matrix_scrub_index_i(const Matrix_i *__m, const Index_i *__ind);
  Vector_i*matindex_i(const Matrix_i *__m, const Index_i *__ind);
  Vector_i*Matrix_index_i(const Matrix_i *__m, const Index_i *__ind);
@@ -2012,22 +2084,22 @@ Matrix_i *Matrix_extract_rows_i(const Matrix_i *__m, Index_i *__ind);
 Matrix_i *Matrix_extract_cols_i(const Matrix_i *__m, Index_i *__ind);
  Vector_i*Matrix_scrub_col_index_i(const Matrix_i *__m, const Index_i *__ind);
  Vector_i*Matrix_scrub_row_index_i(const Matrix_i *__m, const Index_i *__ind);
-static _Bool is_int_i(double x) {
+static inline _Bool is_int_i(double x) {
     return x == floor(x);
 }
-static _Bool are_col_indices_valid_i(const Matrix_i *__m, const Index_i *__ind) {
+static inline _Bool are_col_indices_valid_i(const Matrix_i *__m, const Index_i *__ind) {
     MatIter_i it = Matrix_begin_i(__ind);
     const MatIter_i end = Matrix_begin_i(__ind);
-    for(it; !MatIter_cmp_i(it, end); it = MatIter_next_i(it)) {
+    for(; !MatIter_cmp_i(it, end); it = MatIter_next_i(it)) {
         double val = MatIter_value_i(it);
         if (val < 0 || !is_int_i(val) || val >= __m->ncols) return 0;
     }
     return 1;
 }
-static _Bool are_row_indices_valid_i(const Matrix_i *__m, const Index_i *__ind) {
+static inline _Bool are_row_indices_valid_i(const Matrix_i *__m, const Index_i *__ind) {
     MatIter_i it = Matrix_begin_i(__ind);
     const MatIter_i end = Matrix_begin_i(__ind);
-    for(it; !MatIter_cmp_i(it, end); it = MatIter_next_i(it)) {
+    for(; !MatIter_cmp_i(it, end); it = MatIter_next_i(it)) {
         double val = MatIter_value_i(it);
         if (val < 0 || !is_int_i(val) || val >= __m->nrows) return 0;
     }
@@ -2409,13 +2481,31 @@ MatIter_c matrowbegin_c(const Matrix_c *__A, size_t __i);
 MatIter_c matrowend_c(const Matrix_c *__A, size_t __i);
 MatIter_c Matrix_row_end_c(const Matrix_c *__A, size_t __i);
 MatIter_c Matrix_row_begin_c(const Matrix_c *__A, size_t __i);
-MatIter_c MatIter_new_c(double _Complex *__ptr, size_t __ptr_diff);
-MatIter_c MatIter_null_c();
-_Bool MatIter_is_null_c(MatIter_c __i);
-MatIter_c MatIter_next_c(MatIter_c __c);
-_Bool MatIter_cmp_c(const MatIter_c __lhs, const MatIter_c __rhs);
-double _Complex MatIter_value_c(const MatIter_c __c);
-size_t MatIter_length_c(const MatIter_c begin, const MatIter_c end);
+static inline MatIter_c MatIter_new_c(double _Complex *__ptr, size_t __ptr_diff) {
+    MatIter_c c = {.ptr = __ptr, .ptr_diff = __ptr_diff};
+    return c;
+}
+static inline MatIter_c MatIter_null_c() {
+    MatIter_c null = {.ptr = ((void *)0), .ptr_diff = 0};
+    return null;
+}
+static inline _Bool MatIter_is_null_c(MatIter_c __i) {
+    return __i.ptr == ((void *)0);
+}
+static inline MatIter_c MatIter_next_c(MatIter_c __c) {
+    MatIter_c next = {.ptr = __c.ptr += __c.ptr_diff, .ptr_diff = __c.ptr_diff};
+    return next;
+}
+static inline _Bool MatIter_cmp_c(const MatIter_c __lhs, const MatIter_c __rhs) {
+    return __lhs.ptr == __rhs.ptr;
+}
+static inline double _Complex MatIter_value_c(const MatIter_c __c) {
+    return *(__c.ptr);
+}
+static inline size_t MatIter_length_c(const MatIter_c begin, const MatIter_c end) {
+    size_t diff = end.ptr - begin.ptr;
+    return diff / begin.ptr_diff;
+}
 double _Complex MatIter_sum_c(const MatIter_c __begin, const MatIter_c __end);
 double _Complex MatIter_prod_c(const MatIter_c __begin, const MatIter_c __end);
 double _Complex MatIter_max_c(MatIter_c __a, const MatIter_c __b);
@@ -2431,7 +2521,7 @@ void MatIter_sub_ptr_c(MatIter_c __r, const double _Complex *__ptr);
 void MatIter_mult_ptr_c(MatIter_c __r, const double _Complex *__ptr);
 void MatIter_div_ptr_c(MatIter_c __r, const double _Complex *__ptr);
 void MatIter_set_iter_c(MatIter_c __a, const MatIter_c __b);
-void MatIter_set_iter_pow_c(MatIter_c __a, const MatIter_c __b, double __n);
+void MatIter_set_iter_pow_c(MatIter_c __a, const MatIter_c __b, double _Complex __n);
 void MatIter_add_iter_c(MatIter_c __a, const MatIter_c __b);
 void MatIter_add_iter_scaled_c(MatIter_c __a, const MatIter_c __b, const double _Complex __k);
 void MatIter_sub_iter_c(MatIter_c __a, const MatIter_c __b);
@@ -2528,7 +2618,7 @@ void Row_addition_k_c(Matrix_c *__m, Index_c *__ind, size_t __r1, size_t __r2, d
  Vector_c*Vector_from_iter_c(MatIter_c __begin, MatIter_c __end);
  Vector_c*Vector_rand_c(size_t __nrows);
  Vector_c*Vector_random_c(size_t __nrows, int __min, int __max);
- Vector_c*Vector_from_c(const double* __arr, size_t __nrows);
+ Vector_c*Vector_from_c(const double _Complex* __arr, size_t __nrows);
  Vector_c*Vector_clone_c(const Vector_c*__v);
  Vector_c*Vector_from_matrix_c(const Matrix_c *__m);
  Vector_c*Vector_as_col_c(const Vector_c*__v);
@@ -2614,6 +2704,12 @@ double _Complex cor_c(const Matrix_c *__x, const Matrix_c *__y);
 double _Complex cmoment_c(const Vector_c*__v, int __k);
 double _Complex rmoment_c(const Vector_c*__v, int __k);
  Vector_c*linear_regression_c(const Vector_c*__x, const Vector_c*__y);
+static inline double _Complex ejovo_log_c (const double _Complex x) {
+    return log(x);
+}
+static inline double _Complex ejovo_fabs_c (const double _Complex x) {
+    return fabs(x);
+}
  Vector_c*loglog_regression_c(const Vector_c*__x, const Vector_c*__y);
  Vector_c*least_squares_c(const Vector_c*__x, const Vector_c*__y, int degree);
 Matrix_c *runif_c(int n, double _Complex a, double _Complex b);
@@ -2662,7 +2758,7 @@ void matsetpred_c(Matrix_c *__m, pred_fn_c __predicate, double _Complex __val);
 _Bool Logical_all_c(const Matrix_c *__mask);
 _Bool Logical_any_c(const Matrix_c *__mask);
 Logical_c *Logical_not_c(const Matrix_c *__mask);
- Vector_c*Matrix_as_index_c(const Matrix_c *__m);
+Matrix_c *Matrix_as_index_c(const Matrix_c *__m);
  Vector_c*Matrix_scrub_index_c(const Matrix_c *__m, const Index_c *__ind);
  Vector_c*matindex_c(const Matrix_c *__m, const Index_c *__ind);
  Vector_c*Matrix_index_c(const Matrix_c *__m, const Index_c *__ind);
@@ -2689,22 +2785,22 @@ Matrix_c *Matrix_extract_rows_c(const Matrix_c *__m, Index_c *__ind);
 Matrix_c *Matrix_extract_cols_c(const Matrix_c *__m, Index_c *__ind);
  Vector_c*Matrix_scrub_col_index_c(const Matrix_c *__m, const Index_c *__ind);
  Vector_c*Matrix_scrub_row_index_c(const Matrix_c *__m, const Index_c *__ind);
-static _Bool is_int_c(double x) {
+static inline _Bool is_int_c(double x) {
     return x == floor(x);
 }
-static _Bool are_col_indices_valid_c(const Matrix_c *__m, const Index_c *__ind) {
+static inline _Bool are_col_indices_valid_c(const Matrix_c *__m, const Index_c *__ind) {
     MatIter_c it = Matrix_begin_c(__ind);
     const MatIter_c end = Matrix_begin_c(__ind);
-    for(it; !MatIter_cmp_c(it, end); it = MatIter_next_c(it)) {
+    for(; !MatIter_cmp_c(it, end); it = MatIter_next_c(it)) {
         double val = MatIter_value_c(it);
         if (val < 0 || !is_int_c(val) || val >= __m->ncols) return 0;
     }
     return 1;
 }
-static _Bool are_row_indices_valid_c(const Matrix_c *__m, const Index_c *__ind) {
+static inline _Bool are_row_indices_valid_c(const Matrix_c *__m, const Index_c *__ind) {
     MatIter_c it = Matrix_begin_c(__ind);
     const MatIter_c end = Matrix_begin_c(__ind);
-    for(it; !MatIter_cmp_c(it, end); it = MatIter_next_c(it)) {
+    for(; !MatIter_cmp_c(it, end); it = MatIter_next_c(it)) {
         double val = MatIter_value_c(it);
         if (val < 0 || !is_int_c(val) || val >= __m->nrows) return 0;
     }

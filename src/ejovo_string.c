@@ -509,6 +509,7 @@ void println(const String *__str) {
 String *copyStr(const String *__str) {
 
     String *str = (String *) malloc(sizeof(String));
+    str->str = (char *) malloc(sizeof(char) * __str->len);
 
     str->len = __str->len;
     memcpy(str->str, __str->str, __str->len);

@@ -128,10 +128,10 @@ TYPED(Matrix) *TYPED(Matrix_transpose)(const TYPED(Matrix) *__m) {
         TYPED(MatIter) m_it = TYPED(Matrix_col_begin)(__m, i);
         TYPED(MatIter) m_end = TYPED(Matrix_col_end)(__m, i);
 
-        TYPED(MatIter) mt_end = TYPED(Matrix_row_end)(mt, i);
+        // TYPED(MatIter) mt_end = TYPED(Matrix_row_end)(mt, i);
         TYPED(MatIter) mt_it = TYPED(Matrix_row_begin)(mt, i);
 
-        for (m_it; !TYPED(MatIter_cmp)(m_it, m_end); m_it = TYPED(MatIter_next)(m_it), mt_it = TYPED(MatIter_next)(mt_it)) {
+        for (; !TYPED(MatIter_cmp)(m_it, m_end); m_it = TYPED(MatIter_next)(m_it), mt_it = TYPED(MatIter_next)(mt_it)) {
             TYPED(MatIter_set)(mt_it, TYPED(MatIter_value)(m_it));
         }
     }
@@ -413,7 +413,7 @@ TYPED(Matrix) *TYPED(Matrix_id)(size_t __m, size_t __n) {
     TYPED(MatIter) diag = TYPED(Matrix_diag_begin)(m, 0);
     const TYPED(MatIter) end = TYPED(Matrix_diag_end)(m, 0);
 
-    for (diag; !TYPED(MatIter_cmp)(diag, end); diag = TYPED(MatIter_next)(diag)) {
+    for (; !TYPED(MatIter_cmp)(diag, end); diag = TYPED(MatIter_next)(diag)) {
         TYPED(MatIter_set)(diag, 1);
     }
 

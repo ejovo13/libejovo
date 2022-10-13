@@ -40,7 +40,7 @@ TYPED(Matrix) *TYPED(Matrix_rexp)(size_t __m, size_t __n, double __rate) {
 // Low level routine that will modify a matrix in place
 TYPED(Matrix) *TYPED(as_stochastic)(TYPED(Matrix) *__m) {
 
-    TYPED(apply)(__m, fabs);
+    TYPED(apply)(__m, TYPED(ejovo_fabs));
 
     // No I want to normalize the rows based on their sums!!
     double sum = 0;
@@ -174,7 +174,7 @@ TYPED(Matrix) *TYPED(as_doubly_stochastic_DEPRECATED)(TYPED(Matrix) *__m) {
     // I will use an algorithm that first normalizes col 1 so that the sum is one, and
     // then row 1 so that the sum of the elements __m(1, 2:end) sum up to 1 - __m(1, 1)
     // I will then repeat this iteratively, moving along the matrix in diagonal blocks.
-    TYPED(apply)(__m, fabs);
+    TYPED(apply)(__m, TYPED(ejovo_fabs));
 
 
     // iterate along the diagonals.
@@ -238,7 +238,7 @@ TYPED(Matrix) *TYPED(Matrix_as_stochastic)(const TYPED(Matrix) *__m) {
 
     // first thing I should do is apply the absolute value function to the matrix
 
-    TYPED(Matrix) *m_pos = TYPED(map)(__m, fabs);
+    TYPED(Matrix) *m_pos = TYPED(map)(__m, TYPED(ejovo_fabs));
 
     // No I want to normalize the rows based on their sums!!
     double sum = 0;

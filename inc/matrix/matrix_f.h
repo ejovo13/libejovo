@@ -14,6 +14,17 @@
 #define MATRIX_TYPE float 
 #define TYPE_SUFFIX _f 
 
+// #ifndef MATRIX_FLOAT_DEFINED
+// #define MATRIX_FLOAT_DEFINED
+
+//     typedef struct Matrix_f {
+//         float *data;
+//         size_t nrows;
+//         size_t ncols;
+//     } Matrix_f;
+
+// #endif
+
 #include "ejovo_matrix.h"
 
 #endif // MATRIX_F_H

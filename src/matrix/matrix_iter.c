@@ -349,41 +349,41 @@ TYPED(MatIter) TYPED(Matrix_row_begin_from_col)(const TYPED(Matrix) *__A, size_t
 /**=======================================================================================================================
  *!                                                   MIter that has more general capabilities
  *=======================================================================================================================**/
-TYPED(MatIter) MATITER_NEW(MATRIX_TYPE *__ptr, size_t __ptr_diff) {
-    TYPED(MatIter) c = {.ptr = __ptr, .ptr_diff = __ptr_diff};
-    return c;
-}
+// TYPED(MatIter) MATITER_NEW(MATRIX_TYPE *__ptr, size_t __ptr_diff) {
+//     TYPED(MatIter) c = {.ptr = __ptr, .ptr_diff = __ptr_diff};
+//     return c;
+// }
 
-TYPED(MatIter) TYPED(MatIter_null)() {
-    TYPED(MatIter) null = {.ptr = NULL, .ptr_diff = 0};
-    return null;
-}
+// TYPED(MatIter) TYPED(MatIter_null)() {
+//     TYPED(MatIter) null = {.ptr = NULL, .ptr_diff = 0};
+//     return null;
+// }
 
-bool TYPED(MatIter_is_null)(TYPED(MatIter) __i) {
-    return __i.ptr == NULL;
-}
+// bool TYPED(MatIter_is_null)(TYPED(MatIter) __i) {
+//     return __i.ptr == NULL;
+// }
 
 // Increment the row iter
-TYPED(MatIter) TYPED(MatIter_next)(TYPED(MatIter) __c) {
-    TYPED(MatIter) next = {.ptr = __c.ptr += __c.ptr_diff, .ptr_diff = __c.ptr_diff};
-    return next;
-}
+// TYPED(MatIter) TYPED(MatIter_next)(TYPED(MatIter) __c) {
+//     TYPED(MatIter) next = {.ptr = __c.ptr += __c.ptr_diff, .ptr_diff = __c.ptr_diff};
+//     return next;
+// }
 
 // Return true if the __lhs and __rhs point to the same element
-bool TYPED(MatIter_cmp)(const TYPED(MatIter) __lhs, const TYPED(MatIter) __rhs) {
-    return __lhs.ptr == __rhs.ptr;
-}
+// bool TYPED(MatIter_cmp)(const TYPED(MatIter) __lhs, const TYPED(MatIter) __rhs) {
+//     return __lhs.ptr == __rhs.ptr;
+// }
 
-MATRIX_TYPE TYPED(MatIter_value)(const TYPED(MatIter) __c) {
-    return *(__c.ptr);
-}
+// MATRIX_TYPE TYPED(MatIter_value)(const TYPED(MatIter) __c) {
+//     return *(__c.ptr);
+// }
 
 // Return the number of iteration between begin and end
-size_t TYPED(MatIter_length)(const TYPED(MatIter) begin, const TYPED(MatIter) end) {
-    // printf("[TYPED(MatIter_length)]   end->ptr: %x, begin->ptr: %x\n", end->ptr, begin->ptr);
-    size_t diff = end.ptr - begin.ptr;
-    return diff / begin.ptr_diff;
-}
+// size_t TYPED(MatIter_length)(const TYPED(MatIter) begin, const TYPED(MatIter) end) {
+//     // printf("[TYPED(MatIter_length)]   end->ptr: %x, begin->ptr: %x\n", end->ptr, begin->ptr);
+//     size_t diff = end.ptr - begin.ptr;
+//     return diff / begin.ptr_diff;
+// }
 
 /**========================================================================
  *!                           Functional Iter functions
@@ -506,7 +506,7 @@ void TYPED(MatIter_set_iter)(TYPED(MatIter) __a, const TYPED(MatIter) __b) {
     *(__a.ptr) = *(__b.ptr);
 }
 
-void TYPED(MatIter_set_iter_pow)(TYPED(MatIter) __a, const TYPED(MatIter) __b, double __n) {
+void TYPED(MatIter_set_iter_pow)(TYPED(MatIter) __a, const TYPED(MatIter) __b, const MATRIX_TYPE __n) {
     *(__a.ptr) = pow(*(__b.ptr), __n);
 }
 
@@ -802,7 +802,7 @@ TYPED(Matrix) *TYPED(Matrix_set_row_iter)(TYPED(Matrix) *__m, size_t __i, TYPED(
 
     TYPED(MatIter) vout = TYPED(Vector_begin)(out);
 
-    for (__abegin; !TYPED(MatIter_cmp)(__abegin, __aend);     vout = TYPED(MatIter_next)(vout),
+    for (; !TYPED(MatIter_cmp)(__abegin, __aend);     vout = TYPED(MatIter_next)(vout),
                                                    __abegin = TYPED(MatIter_next)(__abegin),
                                                    __bbegin = TYPED(MatIter_next)(__bbegin))
     {

@@ -95,6 +95,14 @@ MATRIX_TYPE TYPED(rmoment)(const TYPED(Vector)*__v, int __k);
 
  TYPED(Vector)*TYPED(linear_regression)(const TYPED(Vector)*__x, const TYPED(Vector)*__y);
 
+static inline MATRIX_TYPE TYPED(ejovo_log) (const MATRIX_TYPE x) {
+    return log(x);
+}
+
+static inline MATRIX_TYPE TYPED(ejovo_fabs) (const MATRIX_TYPE x) {
+    return fabs(x);
+}
+
  TYPED(Vector)*TYPED(loglog_regression)(const TYPED(Vector)*__x, const TYPED(Vector)*__y);
 
  TYPED(Vector)*TYPED(least_squares)(const TYPED(Vector)*__x, const TYPED(Vector)*__y, int degree);

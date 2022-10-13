@@ -147,7 +147,7 @@ MATRIX_TYPE TYPED(head)(const TYPED(Matrix) *__m) {
     TYPED(MatIter) new_it = TYPED(Matrix_begin)(new);
     TYPED(MatIter) end = TYPED(Matrix_end)(__m);
 
-    for (it; !TYPED(MatIter_cmp)(it, end); it = TYPED(MatIter_next)(it), new_it = TYPED(MatIter_next)(new_it)) {
+    for (; !TYPED(MatIter_cmp)(it, end); it = TYPED(MatIter_next)(it), new_it = TYPED(MatIter_next)(new_it)) {
         TYPED(MatIter_set)(new_it, TYPED(MatIter_value)(it));
     }
 
@@ -170,7 +170,7 @@ MATRIX_TYPE TYPED(last)(const TYPED(Matrix) *__m) {
     TYPED(MatIter) end = TYPED(Matrix_end)(__m);
     end.ptr = end.ptr - end.ptr_diff;
 
-    for (it; !TYPED(MatIter_cmp)(it, end); it = TYPED(MatIter_next)(it), new_it = TYPED(MatIter_next)(new_it)) {
+    for (; !TYPED(MatIter_cmp)(it, end); it = TYPED(MatIter_next)(it), new_it = TYPED(MatIter_next)(new_it)) {
         TYPED(MatIter_set)(new_it, TYPED(MatIter_value)(it));
     }
 

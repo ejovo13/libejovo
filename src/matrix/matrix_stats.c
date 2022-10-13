@@ -316,8 +316,8 @@ MATRIX_TYPE TYPED(rmoment)(const TYPED(Vector)*__v, int __k) {
 
  TYPED(Vector)*TYPED(loglog_regression)(const TYPED(Vector)*__x, const TYPED(Vector)*__y) {
 
-    TYPED(Matrix) *logx = TYPED(map)(__x, log);
-    TYPED(Matrix) *logy = TYPED(map)(__y, log);
+    TYPED(Matrix) *logx = TYPED(map)(__x, TYPED(ejovo_log));
+    TYPED(Matrix) *logy = TYPED(map)(__y, TYPED(ejovo_log));
     TYPED(Vector)*out = TYPED(linear_regression)(logx, logy);
 
     TYPED(Matrix_free)(logx);

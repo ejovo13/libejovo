@@ -7,6 +7,7 @@
  *!                                        Constructors
  *================================================================================================**/
 
+#ifdef MATRIX_DOUBLE
 
  TYPED(Vector)*TYPED(vector)(int __count, ...) {
 
@@ -30,6 +31,8 @@
     return v;
 }
 
+#endif
+
 // Default to making a column vector
  TYPED(Vector)*TYPED(Vector_new)(size_t __nrows) {
     return TYPED(Matrix_new)(__nrows, 1);
@@ -47,7 +50,7 @@
     return v;
 }
 
- TYPED(Vector)*TYPED(Vector_from)(const double* __arr, size_t __nrows) {
+ TYPED(Vector)*TYPED(Vector_from)(const MATRIX_TYPE* __arr, size_t __nrows) {
     return TYPED(Matrix_from)(__arr, __nrows, 1);
 }
 
@@ -222,7 +225,7 @@ MATRIX_TYPE TYPED(Vector_dot)(const TYPED(Vector)*__u, const TYPED(Vector)*__v) 
 
     const TYPED(MatIter) end = TYPED(Vector_end)(__u);
 
-    for (u_it; !TYPED(MatIter_cmp)(u_it, end); u_it = TYPED(MatIter_next)(u_it), v_it = TYPED(MatIter_next)(v_it), new_it = TYPED(MatIter_next)(new_it)) {
+    for (; !TYPED(MatIter_cmp)(u_it, end); u_it = TYPED(MatIter_next)(u_it), v_it = TYPED(MatIter_next)(v_it), new_it = TYPED(MatIter_next)(new_it)) {
         TYPED(MatIter_set)(new_it, TYPED(MatIter_value)(u_it) * TYPED(MatIter_value)(v_it));
     }
 
