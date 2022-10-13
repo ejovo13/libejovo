@@ -43,20 +43,9 @@ add_compile_options(
     $<$<CONFIG:DEBUG>:-fno-omit-frame-pointer>
     $<$<CONFIG:DEBUG>:-Og>
     -Wall
-    # -Wextra
-    # -Wunused-variable
-    # -Wunused-result
-    # -Wno-unused-result
     -Werror
     -Wextra
     -std=c11
-    -Wno-unused-parameter
-    # -Wno-unused-parameter
-    # -Wno-unused-function
-    # -Wno-unused-value
-    # -Werror
-    # -Wimplicit
-    # -Wno-incompatible-pointer-types-discards-qualifiers
     # -fprofile-arcs
     # -ftest-coverage
     # --coverage

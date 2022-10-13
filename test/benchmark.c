@@ -101,7 +101,7 @@ void time_matrix_op(int n, mat_binop_fn binop, const char* str) {
     double total_time = elapsed_time(clock2);
 
     printf("=========================================\n");
-    // printf("= %s(A, B)  squares matrices with n: %d\n", str, n);
+    printf("= %s(A, B)  squares matrices with n: %d\n", str, n);
     printf("= \n");
     printf("= Init time:\t %lf\n", init_time);
     printf("= Op time:\t %lf\n", op_time);
@@ -196,9 +196,9 @@ double compute_flops_On2(int n) {
 }
 
 // Write a regression 
-void write_regression( Vector_d*x, Vector_d*y) {
+// void write_regression( Vector_d*x, Vector_d*y) {
 
-}
+// }
 
 // [2.4 12.5 -2.4 18.9] -> 2.4*x**0 + 12.5*x**1 + -2.4*x**2 + 18.9*x**3
 void print_polynomial(const Vector_d*a) {

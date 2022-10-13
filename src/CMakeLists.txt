@@ -53,6 +53,7 @@ set (EJOVO_LIB_HEADERS
     ${INC}/ejovo_time.h
     ${INC}/ejovo_img.h
     ${INC}/ejovo.h
+    ${INC}/ejovo_assert.h
     ${INC}/ejovo_matrix_generic.h
     # ${INC}/ejovo_simulation.h
 )

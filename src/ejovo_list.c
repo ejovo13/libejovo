@@ -263,27 +263,27 @@ List *List_init(void) {
     }
 }
 
-void List_delete_all(List *__list) {
+// void List_delete_all(List *__list) {
 
 
 
 
-}
+// }
 
-// remove the __nth node of our list and deallocate the memory associated
-void List_delete_node(List *__list, size_t __n) {
-
-
+// // remove the __nth node of our list and deallocate the memory associated
+// void List_delete_node(List *__list, size_t __n) {
 
 
-}
+
+
+// }
 
 // Remove all elements that have a double value of __c
-void List_delete_c(List *__list, double __c) {
+// void List_delete_c(List *__list, double __c) {
 
 
 
-}
+// }
 
 // Remove all elements that have an integer value of __n
 void List_delete_n(List *__list, int __n) {

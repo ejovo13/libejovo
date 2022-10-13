@@ -2,6 +2,7 @@
 // by A matrix that is UNIQUELY ones and zeros
 // #include "ejovo_matrix_generic.h"
 #include "ejovo_matrix.h"
+#include "ejovo_bin.h"
 // #include "matrix_logical.h"
 
 MATRIX_TYPE TYPED(TRUE) = 1.0;
@@ -13,6 +14,7 @@ MATRIX_TYPE TYPED(FALSE) = 0.0;
 // TYPED(Matrix_as_logical)(m, true_fn); as TYPED(Matrix_as_logical) will accept a
 // predicate as an argument
 MATRIX_TYPE TYPED(true_fn)(MATRIX_TYPE d) {
+    use(&d);
     return TYPED(TRUE);
 }
 
