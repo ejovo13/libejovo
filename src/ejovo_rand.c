@@ -29,6 +29,7 @@ void seed_xoshiro256ss(struct xoshiro256ss_state * state) {
     // if on linux, seed the 256 bits with a system call of getrandom
     #ifdef __linux
         ssize_t bytes_read = getrandom(state, 32, 0);
+        if (bytes_read != 32) { exit(EXIT_FAILURE); }
         assert(bytes_read > 0);
     #else
 
