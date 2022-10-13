@@ -114,7 +114,12 @@ char * plus_longue_expr(const char * const __expr_alg);
 char * int_to_string(int x);
 
 // Internal procedure to count the number of digits that an integer has
-static int nb_chiffres_(long x);
+static inline int nb_chiffres_(long x) {
+    // Return the number of digits for an integer
+    // nb_chiffres(-10) returns 2
+    // nb_chiffres(100) returns 3
+    return (int) log10((double) labs(x) ) + 1;
+}
 
 size_t count_words(const char * __string);
 

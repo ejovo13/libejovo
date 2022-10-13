@@ -14,7 +14,7 @@ Node *Node_new(double __c, int __n) {
 }
 
 void Node_print(const Node *__node) {
-    printf("Node at %x :=  .c: %lf, .n: %d, .next: %x\n", __node, __node->c, __node->n, __node->next);
+    printf("Node at %p :=  .c: %lf, .n: %d, .next: %p\n", __node, __node->c, __node->n, __node->next);
 }
 
 void Node_print_n(const Node *__node) {
@@ -410,6 +410,8 @@ Polynome *Polynome_ones(size_t __n) {
     for (size_t i = 0; i <= __n; i++) {
         List_append_node(poly, Node_new(1, i));
     }
+
+    return poly;
 }
 
 /**========================================================================
@@ -488,11 +490,11 @@ double Polynome_eval(const Polynome *__p, double __x) {
 
 }
 
-Vector_d *Polynome_eval_vec(const Polynome *__p, const Vector_d *__v) {
+// Vector_d *Polynome_eval_vec(const Polynome *__p, const Vector_d *__v) {
 
 
 
-}
+// }
 
 void Polynome_print(const Polynome *__p) {
 

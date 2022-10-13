@@ -181,7 +181,8 @@ MATRIX_TYPE TYPED(Vector_sum)(const TYPED(Vector)*__v) {
 void TYPED(Vector_print_as_row)(const TYPED(Vector)*__v) {
     printf("| ");
     for (size_t i = 0; i < TYPED(Vector_size)(__v); i++) {
-        printf("%4.4lf ", TYPED(Vector_at)(__v, i));
+        // printf("%4.4lf ", TYPED(Vector_at)(__v, i));
+        TYPED(print_el)(__v->data[i]);
     }
     printf("|\n");
 }
@@ -366,14 +367,14 @@ MATRIX_TYPE TYPED(Vector_pnorm)(const TYPED(Vector)*__u, const size_t __p) {
     return v;
 }
 
-// Take a coliter and compute the pnorm
-MATRIX_TYPE TYPED(ColIter_norm)(TYPED(ColIter) *__c) {
+// // Take a coliter and compute the pnorm
+// MATRIX_TYPE TYPED(ColIter_norm)(TYPED(ColIter) *__c) {
     
 
 
 
 
-}
+// }
 
 // Resizing/reorienting
 // modify this vector in place so that it is a column vector (n rows, 1 col)

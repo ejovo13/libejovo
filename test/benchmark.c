@@ -53,18 +53,19 @@ void time_matrix_times_vector(int n) {
     double op_time = elapsed_time(clock);
     double total_time = elapsed_time(clock2);
 
-    // printf("=========================================\n");
+    printf("=========================================\n");
     // printf("= %s(A, B)  squares matrices with n: %d\n", str, n);
-    // printf("= \n");
-    // printf("= Init time:\t %lf\n", init_time);
-    // printf("= Op time:\t %lf\n", op_time);
-    // printf("= Total time:\t %lf\n", total_time);
+    printf("= \n");
+    printf("= Init time:\t %lf\n", init_time);
+    printf("= Op time:\t %lf\n", op_time);
+    printf("= Total time:\t %lf\n", total_time);
     printf("%d, %lf\n", n, op_time);
 
     free(clock);
     free(clock2);
     Matrix_free_d(A);
     Matrix_free_d(b);
+    Matrix_free_d(c);
 
 
 
@@ -99,18 +100,19 @@ void time_matrix_op(int n, mat_binop_fn binop, const char* str) {
     double op_time = elapsed_time(clock);
     double total_time = elapsed_time(clock2);
 
-    // printf("=========================================\n");
+    printf("=========================================\n");
     // printf("= %s(A, B)  squares matrices with n: %d\n", str, n);
-    // printf("= \n");
-    // printf("= Init time:\t %lf\n", init_time);
-    // printf("= Op time:\t %lf\n", op_time);
-    // printf("= Total time:\t %lf\n", total_time);
+    printf("= \n");
+    printf("= Init time:\t %lf\n", init_time);
+    printf("= Op time:\t %lf\n", op_time);
+    printf("= Total time:\t %lf\n", total_time);
     printf("%d, %lf\n", n, op_time);
 
     free(clock);
     free(clock2);
     Matrix_free_d(a);
     Matrix_free_d(b);
+    Matrix_free_d(c);
 }
 
 void print_double_human(double a) {
@@ -149,7 +151,7 @@ void compute_flops_On(int n) {
     Matrix_d *r = runif_d(n, 0, 1);
     Clock_toc(my_clock);
 
-    double init_time = elapsed_time(my_clock);
+    // double init_time = elapsed_time(my_clock);
 
     Clock_tic(my_clock);
     double somme = sum_d(r); // Here we performed N floating point operations
@@ -157,6 +159,7 @@ void compute_flops_On(int n) {
     double op_time = elapsed_time(my_clock); 
     double op_per_s = n / op_time;
     // printf("%d, %lf, %lf, %lf, %.5e\n", n, init_time, times->data[i], somme, op_per_s);
+    printf("Sum: %lf\n", somme);
     print_double_human(op_per_s);
     printf("FLOPS\n");
     free(my_clock);
@@ -173,7 +176,7 @@ double compute_flops_On2(int n) {
     
     Clock_toc(my_clock);
 
-    double init_time = elapsed_time(my_clock);
+    // double init_time = elapsed_time(my_clock);
 
     Clock_tic(my_clock);
     Matrix_d *c = Matrix_add_d(a, b); // Operation that has complexity O(n^2)
@@ -184,6 +187,10 @@ double compute_flops_On2(int n) {
     print_double_human(op_per_s);
     printf("FLOPS\n");
     free(my_clock);
+
+    Matrix_free_d(a);
+    Matrix_free_d(b);
+    Matrix_free_d(c);
 
     return op_time;
 }
@@ -202,7 +209,7 @@ void print_polynomial(const Vector_d*a) {
         printf("%lf*x**%d + ", a->data[i], i);
     }
 
-    printf("%lf*x**%d\n", a->data[degree], degree);
+    printf("%lf*x**%lu\n", a->data[degree], degree);
 
 } 
 
@@ -301,6 +308,14 @@ int main() {
     //     printf("%d %lf\n", (int) N->data[i], op_times->data[i]);
     // }
 
+    Matrix_free_d(x);
+    Matrix_free_d(y);
+    Matrix_free_d(a_lin);
+    Matrix_free_d(a_log);
+    Matrix_free_d(x3_reg);
+    Matrix_free_d(x3_log);
+    Matrix_free_d(fn_reg);
+    Matrix_free_d(f2_log);
 
     return 0;
 }

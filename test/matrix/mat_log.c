@@ -51,4 +51,6 @@ void t_logical() {
     Matrix_reset_d(&true_mat);
     Matrix_reset_d(&gt5);
 
+    Matrix_free_d(logic_5);
+
 }

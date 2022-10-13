@@ -174,3 +174,17 @@ static inline Color ColorPalette_assign_color(const ColorPalette *cp, double x, 
 
 // Now I need a function to send a color palette to an integer matrix via linear interpolation
 Matrix_i *ColorPalette_to_matrix(const ColorPalette *cp, int n);
+
+/**========================================================================
+ *!                          Fixed Color Palettes
+ *========================================================================**/
+ColorPalette *viridis();
+ColorPalette *my_palette();
+ColorPalette *inferno();
+ColorPalette *magma();
+ColorPalette *plasma();
+ColorPalette *cp1();
+ColorPalette *cp2();
+ColorPalette *green();
+ColorPalette *purp();
+ColorPalette *red();

@@ -28,6 +28,7 @@ int main() {
     Complex z5 = Complex_exp(0.0);
     Complex z6 = Complex_aexp(3, M_PI);
 
+    Complex_print(*z4);
     Complex_print(z5);
     Complex_print(z6);
 

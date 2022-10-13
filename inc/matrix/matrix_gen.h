@@ -158,6 +158,12 @@ void Matrix_summary_d(const Matrix_d *m);
 void Matrix_print_all_digits_d(const Matrix_d *m);
 void Matrix_print_fixed_d(const Matrix_d *m);
 Matrix_d *Matrix_id_d(size_t m, size_t n);
+static inline void print_el_d(const double el) {
+    printf("%4.4lf ", el);
+}
+static inline void print_el_end_d(const double el) {
+    printf("%4.4lf}\n", el);
+}
 Matrix_d *Matrix_K_d(size_t __n);
 Matrix_d *Matrix_C_d(size_t __n);
 Matrix_d *Matrix_T_d(size_t __n);
@@ -207,7 +213,9 @@ Matrix_d *Matrix_div_scalar_d(const Matrix_d *__A, const double __k);
 void Matrix_mask_d(Matrix_d *__A, Mask_d __mask, EDITOR_d __operator);
 void Matrix_mask_2_d(Matrix_d *__A, Matrix_d *__B, Mask_d __mask, EDITOR_2_d __operator);
 void Matrix_mask_k_d(Matrix_d *__A, Mask_d __mask, EDITOR_K_d __operator, const double __k);
-_Bool Matrix_valid_bounds_d(const Matrix_d *__m, size_t __i, size_t __j);
+static inline _Bool Matrix_valid_bounds_d(const Matrix_d *__m, size_t __i, size_t __j) {
+    return (__i < __m->nrows && __j < __m->ncols);
+}
 _Bool matcmp_d(const Matrix_d *__A, const Matrix_d *__B);
 _Bool matcmp_bytes_d(const Matrix_d *__A, const Matrix_d *__B);
 _Bool Matrix_comp_add_d(const Matrix_d *__A, const Matrix_d *__B);
@@ -553,7 +561,6 @@ void vecnormalize_d( Vector_d*__u);
 double Vector_norm_d(const Vector_d*__u);
 double Vector_pnorm_d(const Vector_d*__u, const size_t __p);
  Vector_d*Vector_normalize_d(const Vector_d*__u);
-double ColIter_norm_d(ColIter_d *__c);
  Vector_d*ascol_d( Vector_d*__v);
  Vector_d*asrow_d( Vector_d*__v);
 double Vector_distance_d(const Vector_d*__v, const Vector_d*__u);
@@ -859,6 +866,12 @@ void Matrix_summary_f(const Matrix_f *m);
 void Matrix_print_all_digits_f(const Matrix_f *m);
 void Matrix_print_fixed_f(const Matrix_f *m);
 Matrix_f *Matrix_id_f(size_t m, size_t n);
+static inline void print_el_f(const float el) {
+    printf("%4.4f ", el);
+}
+static inline void print_el_end_f(const float el) {
+    printf("%4.4f}\n", el);
+}
 Matrix_f *Matrix_K_f(size_t __n);
 Matrix_f *Matrix_C_f(size_t __n);
 Matrix_f *Matrix_T_f(size_t __n);
@@ -908,7 +921,9 @@ Matrix_f *Matrix_div_scalar_f(const Matrix_f *__A, const float __k);
 void Matrix_mask_f(Matrix_f *__A, Mask_f __mask, EDITOR_f __operator);
 void Matrix_mask_2_f(Matrix_f *__A, Matrix_f *__B, Mask_f __mask, EDITOR_2_f __operator);
 void Matrix_mask_k_f(Matrix_f *__A, Mask_f __mask, EDITOR_K_f __operator, const float __k);
-_Bool Matrix_valid_bounds_f(const Matrix_f *__m, size_t __i, size_t __j);
+static inline _Bool Matrix_valid_bounds_f(const Matrix_f *__m, size_t __i, size_t __j) {
+    return (__i < __m->nrows && __j < __m->ncols);
+}
 _Bool matcmp_f(const Matrix_f *__A, const Matrix_f *__B);
 _Bool matcmp_bytes_f(const Matrix_f *__A, const Matrix_f *__B);
 _Bool Matrix_comp_add_f(const Matrix_f *__A, const Matrix_f *__B);
@@ -1254,7 +1269,6 @@ void vecnormalize_f( Vector_f*__u);
 float Vector_norm_f(const Vector_f*__u);
 float Vector_pnorm_f(const Vector_f*__u, const size_t __p);
  Vector_f*Vector_normalize_f(const Vector_f*__u);
-float ColIter_norm_f(ColIter_f *__c);
  Vector_f*ascol_f( Vector_f*__v);
  Vector_f*asrow_f( Vector_f*__v);
 float Vector_distance_f(const Vector_f*__v, const Vector_f*__u);
@@ -1560,6 +1574,12 @@ void Matrix_summary_i(const Matrix_i *m);
 void Matrix_print_all_digits_i(const Matrix_i *m);
 void Matrix_print_fixed_i(const Matrix_i *m);
 Matrix_i *Matrix_id_i(size_t m, size_t n);
+static inline void print_el_i(const int el) {
+    printf("%5d ", el);
+}
+static inline void print_el_end_i(const int el) {
+    printf("%5d}\n", el);
+}
 Matrix_i *Matrix_K_i(size_t __n);
 Matrix_i *Matrix_C_i(size_t __n);
 Matrix_i *Matrix_T_i(size_t __n);
@@ -1609,7 +1629,9 @@ Matrix_i *Matrix_div_scalar_i(const Matrix_i *__A, const int __k);
 void Matrix_mask_i(Matrix_i *__A, Mask_i __mask, EDITOR_i __operator);
 void Matrix_mask_2_i(Matrix_i *__A, Matrix_i *__B, Mask_i __mask, EDITOR_2_i __operator);
 void Matrix_mask_k_i(Matrix_i *__A, Mask_i __mask, EDITOR_K_i __operator, const int __k);
-_Bool Matrix_valid_bounds_i(const Matrix_i *__m, size_t __i, size_t __j);
+static inline _Bool Matrix_valid_bounds_i(const Matrix_i *__m, size_t __i, size_t __j) {
+    return (__i < __m->nrows && __j < __m->ncols);
+}
 _Bool matcmp_i(const Matrix_i *__A, const Matrix_i *__B);
 _Bool matcmp_bytes_i(const Matrix_i *__A, const Matrix_i *__B);
 _Bool Matrix_comp_add_i(const Matrix_i *__A, const Matrix_i *__B);
@@ -1955,7 +1977,6 @@ void vecnormalize_i( Vector_i*__u);
 int Vector_norm_i(const Vector_i*__u);
 int Vector_pnorm_i(const Vector_i*__u, const size_t __p);
  Vector_i*Vector_normalize_i(const Vector_i*__u);
-int ColIter_norm_i(ColIter_i *__c);
  Vector_i*ascol_i( Vector_i*__v);
  Vector_i*asrow_i( Vector_i*__v);
 int Vector_distance_i(const Vector_i*__v, const Vector_i*__u);
@@ -2261,6 +2282,12 @@ void Matrix_summary_c(const Matrix_c *m);
 void Matrix_print_all_digits_c(const Matrix_c *m);
 void Matrix_print_fixed_c(const Matrix_c *m);
 Matrix_c *Matrix_id_c(size_t m, size_t n);
+static inline void print_el_c(const double _Complex el) {
+    printf("(%4.4lf, %4.4lf) ", creal(el), cimag(el));
+}
+static inline void print_el_end_c(const double _Complex el) {
+    printf("(%4.4lf, %4.4lf)}\n", creal(el), cimag(el));
+}
 Matrix_c *Matrix_K_c(size_t __n);
 Matrix_c *Matrix_C_c(size_t __n);
 Matrix_c *Matrix_T_c(size_t __n);
@@ -2310,7 +2337,9 @@ Matrix_c *Matrix_div_scalar_c(const Matrix_c *__A, const double _Complex __k);
 void Matrix_mask_c(Matrix_c *__A, Mask_c __mask, EDITOR_c __operator);
 void Matrix_mask_2_c(Matrix_c *__A, Matrix_c *__B, Mask_c __mask, EDITOR_2_c __operator);
 void Matrix_mask_k_c(Matrix_c *__A, Mask_c __mask, EDITOR_K_c __operator, const double _Complex __k);
-_Bool Matrix_valid_bounds_c(const Matrix_c *__m, size_t __i, size_t __j);
+static inline _Bool Matrix_valid_bounds_c(const Matrix_c *__m, size_t __i, size_t __j) {
+    return (__i < __m->nrows && __j < __m->ncols);
+}
 _Bool matcmp_c(const Matrix_c *__A, const Matrix_c *__B);
 _Bool matcmp_bytes_c(const Matrix_c *__A, const Matrix_c *__B);
 _Bool Matrix_comp_add_c(const Matrix_c *__A, const Matrix_c *__B);
@@ -2656,7 +2685,6 @@ void vecnormalize_c( Vector_c*__u);
 double _Complex Vector_norm_c(const Vector_c*__u);
 double _Complex Vector_pnorm_c(const Vector_c*__u, const size_t __p);
  Vector_c*Vector_normalize_c(const Vector_c*__u);
-double _Complex ColIter_norm_c(ColIter_c *__c);
  Vector_c*ascol_c( Vector_c*__v);
  Vector_c*asrow_c( Vector_c*__v);
 double _Complex Vector_distance_c(const Vector_c*__v, const Vector_c*__u);

@@ -41,7 +41,7 @@ Matrix_d *normalize_minmax(Matrix_d *A) {
 }
 
 void writePPM(const img_t *img, const char *filename) {
-    FILE *file, *file_bin;
+    FILE *file;
     // Start off the first couple lines with ASCII
     file = fopen(filename, "w");
     fprintf(file, "P6\n");
@@ -73,7 +73,7 @@ void writePPM(const img_t *img, const char *filename) {
 
 void write_ppm_gray(const Matrix_i *image, const char *filename) {
 
-    FILE *file, *file_bin;
+    FILE *file;
     // Start off the first couple lines with ASCII
     file = fopen(filename, "w");
     fprintf(file, "P6\n");
@@ -101,7 +101,7 @@ void write_ppm_gray(const Matrix_i *image, const char *filename) {
 
 void write_ppm_gray_d(const Matrix_d *image, const char *filename) {
 
-    FILE *file, *file_bin;
+    FILE *file;
     // Start off the first couple lines with ASCII
     file = fopen(filename, "w");
     fprintf(file, "P6\n");
@@ -130,7 +130,7 @@ void write_ppm_gray_d(const Matrix_d *image, const char *filename) {
 // scale the output image by multiplying by (255 / 100)
 void write_ppm_grayscale(const Matrix_i *image, const char *filename, double scaling) {
 
-    FILE *file, *file_bin;
+    FILE *file;
     // Start off the first couple lines with ASCII
     file = fopen(filename, "w");
     fprintf(file, "P6\n");

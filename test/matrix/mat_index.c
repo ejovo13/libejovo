@@ -15,9 +15,9 @@ int main() {
     return 0;
 }
 
-static double is_neg(double x) {
-    return x < 0;
-}
+// static double is_neg(double x) {
+//     return x < 0;
+// }
 
 void t_index() {
 
@@ -53,6 +53,7 @@ void t_index() {
 
     // Matrix_print_d(Matrix_index_d(m, ind));
 
+    Matrix_free_d(m);
 
 }
 

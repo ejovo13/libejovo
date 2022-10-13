@@ -54,11 +54,12 @@ void TYPED(MatIter_print)(const TYPED(MatIter) __begin, const TYPED(MatIter) __e
     iter = TYPED(MatIter_next)(iter);
 
     while (! TYPED(MatIter_cmp)(iter, __end)) {
-        printf("%lf, ", *(iter.ptr - iter.ptr_diff)); //basically, print the previous value
+        // printf("%lf, ", *(iter.ptr - iter.ptr_diff)); //basically, print the previous value
+        TYPED(print_el)(*(iter.ptr - iter.ptr_diff));
         iter = TYPED(MatIter_next)(iter);
     }
 
-    printf("%lf}\n", *(iter.ptr - iter.ptr_diff)); //basically, print the previous value
+    TYPED(print_el_end)(*(iter.ptr - iter.ptr_diff)); //basically, print the previous value
 
 }
 

@@ -94,7 +94,7 @@ char *Color_to_hex(const Color col) {
 }
 
 void Color_print(const Color col) {
-    printf("r: %lu, g: %lu, b: %lu\n", col.r, col.g, col.b);    
+    printf("r: %d, g: %d, b: %d\n", col.r, col.g, col.b);    
 }
 
 void Color_print_hex(const Color col) {
@@ -153,4 +153,57 @@ Matrix_i *ColorPalette_to_matrix(const ColorPalette *cp, int n) {
     Matrix_free_d(new_x);
 
     return cp_out;
+}
+
+/**========================================================================
+ *!                          Fixed Color Palettes
+ *========================================================================**/
+ColorPalette *viridis() {
+    const char *p[] = {"#fde725", "#5ec962", "#21918c", "#3b528b", "#440154"};
+    return ColorPalette_new(p, 5);
+}
+
+ColorPalette *my_palette() {
+    const char *p[] = {"#fa0707", "#33e60b", "#0bd7e6", "#160be6", "#f20feb"};
+    return ColorPalette_new(p, 5);
+}
+
+ColorPalette *inferno() {
+    const char *p[] = {"#fcffa4", "#f98e09", "#bc3754", "#57106e", "#000004"};
+    return ColorPalette_new(p, 5);
+}
+
+ColorPalette *magma() {
+    const char *p[] = {"#fcfdbf", "#fc8961", "#b73779", "#51127c", "#000004"};
+    return ColorPalette_new(p, 5);
+}
+
+ColorPalette *plasma() {
+    const char *p[] = {"#f0f921", "#f89540", "#cc4778", "#7e03a8", "#0d0887"};
+    return ColorPalette_new(p, 5);
+}
+
+ColorPalette *cp1() {
+    const char *p[] = {"#541690", "#FF4949", "#FF8D29", "#FFCD38"};
+    return ColorPalette_new(p, 4);
+}
+
+ColorPalette *cp2() {
+    const char *p[] = {"#2F2519", "#4A3F35", "#FA7D09", "#FF4301"};
+    return ColorPalette_new(p, 4);
+}
+
+ColorPalette *green() {
+    const char *p[] = {"#000000", "#3E432E", "#616F39", "#A7D129"};
+    return ColorPalette_new(p, 4);
+}
+
+ColorPalette *purp() {
+    const char *p[] = {"#000000", "#3E065F", "#700B97", "#8E05C2"};
+    return ColorPalette_new(p, 4);
+}
+
+ColorPalette *red() {
+    const char *p[] = {"#000000", "#3D0000", "#950101", "#FF0000"};
+    return ColorPalette_new(p, 4);
 }

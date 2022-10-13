@@ -68,6 +68,7 @@ TYPED(Matrix) *TYPED(matanon)(int __count, ...) {
 // set all of the elements of __A to 0
 TYPED(Matrix) *TYPED(Matrix_clean)(TYPED(Matrix) *__A) {
     TYPED(Matrix_fill)(__A, 0);
+    return __A;
 }
 
 // copy the contents of matrix __src into __dest
@@ -460,7 +461,30 @@ void TYPED(matprint)(const TYPED(Matrix) *__m) {
     for (size_t i = 0; i < __m->nrows; i++) {
         printf("| ");
         for (size_t j = 0; j < __m->ncols; j++) {
-            printf("%4.4lf ", TYPED(matat)(__m, i, j));
+
+// #if defined MATRIX_DOUBLE
+// #elif defined MATRIX_FLOAT 
+// #elif defined MATRIX_INT
+// #elif defined MATRIX_COMPLEX
+// #endif
+
+        #if defined MATRIX_DOUBLE 
+
+            printf("%4.4lf ", TYPED(Matrix_at)(__m, i, j));
+
+        #elif defined MATRIX_FLOAT 
+
+            printf("%4.4f ", TYPED(Matrix_at)(__m, i, j));
+
+        #elif defined MATRIX_INT
+
+            printf("%5d ", TYPED(Matrix_at)(__m, i, j));
+
+        #elif defined MATRIX_COMPLEX
+
+            printf("(%4.4lf, %4.4lf) ", creal(matat_c(__m, i, j)), cimag(matat_c(__m, i, j)));
+
+        #endif
         }
 
         printf("|\n");
@@ -516,12 +540,33 @@ void TYPED(Matrix_print_fixed)(const TYPED(Matrix) *__m) {
     for (size_t i = 0; i < __m->nrows; i++) {
         printf("| ");
         for (size_t j = 0; j < __m->ncols; j++) {
+
+        #if defined MATRIX_DOUBLE 
+
             printf("%16.8lf ", TYPED(Matrix_at)(__m, i, j));
+
+        #elif defined MATRIX_FLOAT 
+
+            printf("%16.8f ", TYPED(Matrix_at)(__m, i, j));
+
+        #elif defined MATRIX_INT
+
+            printf("%10d ", TYPED(Matrix_at)(__m, i, j));
+
+        #elif defined MATRIX_COMPLEX
+
+            printf("(%16.8lf, %16.8lf) ", creal(matat_c(__m, i, j)), cimag(matat_c(__m, i, j)));
+
+        #endif
         }
 
         printf("|\n");
     }
 }
+
+#if defined MATRIX_INT
+
+#else 
 
 void TYPED(Matrix_print_all_digits)(const TYPED(Matrix) *__m) {
 
@@ -534,12 +579,20 @@ void TYPED(Matrix_print_all_digits)(const TYPED(Matrix) *__m) {
     for (size_t i = 0; i < __m->nrows; i++) {
         printf("| ");
         for (size_t j = 0; j < __m->ncols; j++) {
+#if defined MATRIX_COMPLEX
+            printf("(%.16lf, %.16lf) ", creal(matat_c(__m, i, j)), cimag(matat_c(__m, i, j)));
+#elif defined MATRIX_FLOAT
+            printf("%.16f ", TYPED(Matrix_at)(__m, i, j));
+#elif defined MATRIX_DOUBLE
             printf("%.16lf ", TYPED(Matrix_at)(__m, i, j));
+#endif
         }
+
 
         printf("|\n");
     }
 }
+#endif
 
 // Print in the {1, 2, 3} iter style
 void TYPED(Matrix_print_iter)(const TYPED(Matrix) *__m) {
@@ -557,7 +610,15 @@ void TYPED(Vector_print_head)(const TYPED(Matrix) *__m, int __n) {
     TYPED(Matrix_summary)(__m);
     printf("| ");
     for (size_t i = 0; i < n; i++) {
-        printf("%4.4lf ", TYPED(Vector_at)(__m, i));
+#if defined MATRIX_DOUBLE 
+            printf("%4.4lf ", __m->data[__n]);
+#elif defined MATRIX_FLOAT 
+            printf("%4.4f ", __m->data[__n]);
+#elif defined MATRIX_INT
+            printf("%5d ", __m->data[__n]);
+#elif defined MATRIX_COMPLEX
+            printf("(%4.4lf, %4.4lf) ", creal(__m->data[__n]), cimag(__m->data[__n]));
+#endif
     }
     printf("|\n");
 

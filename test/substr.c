@@ -7,6 +7,8 @@ int main() {
     char str[] = "Hello this is a large string!";
     size_t str_len = strlen(str);
 
+    printf("str_len: %lu\n", str_len);
+
     printf("substr(str, 0, 1): '%s'\n", substr(str, 0, 1));
     printf("substr(str, 5, 10): '%s'\n", substr(str, 5, 10));
     printf("substr(str, 0, 5): '%s'\n", substr(str, 0, 5));

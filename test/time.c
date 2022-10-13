@@ -27,7 +27,7 @@ double time_passed_xoroshiro() {
 
     double time = elapsed_time(clock);
 
-    fprintf(stderr, "%d", Matrix_size_d(m));
+    fprintf(stderr, "%lu", Matrix_size_d(m));
 
     free(clock);
     Matrix_free_d(m);
@@ -49,7 +49,7 @@ double time_passed_pcg() {
 
     double time = elapsed_time(clock);
 
-    fprintf(stderr, "%d", Matrix_size_d(m));
+    fprintf(stderr, "%lu", Matrix_size_d(m));
 
     free(clock);
     Matrix_free_d(m);

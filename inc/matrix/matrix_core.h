@@ -209,4 +209,30 @@ void TYPED(Matrix_print_fixed)(const TYPED(Matrix) *m);
 
 TYPED(Matrix) *TYPED(Matrix_id)(size_t m, size_t n);
 
+// printing
+
+static inline void TYPED(print_el)(const MATRIX_TYPE el) {
+#if defined MATRIX_DOUBLE 
+    printf("%4.4lf ", el);
+#elif defined MATRIX_FLOAT 
+    printf("%4.4f ", el);
+#elif defined MATRIX_INT
+    printf("%5d ", el);
+#elif defined MATRIX_COMPLEX
+    printf("(%4.4lf, %4.4lf) ", creal(el), cimag(el));
+#endif
+}
+
+static inline void TYPED(print_el_end)(const MATRIX_TYPE el) {
+#if defined MATRIX_DOUBLE 
+    printf("%4.4lf}\n", el);
+#elif defined MATRIX_FLOAT 
+    printf("%4.4f}\n", el);
+#elif defined MATRIX_INT
+    printf("%5d}\n", el);
+#elif defined MATRIX_COMPLEX
+    printf("(%4.4lf, %4.4lf)}\n", creal(el), cimag(el));
+#endif
+}
+
 #endif

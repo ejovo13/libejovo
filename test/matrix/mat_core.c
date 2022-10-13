@@ -38,7 +38,7 @@ void t_mat_alloc() {
     // Matrix_print_d(m);
     Matrix_reset_d(&m);
     Matrix_free_d(m);
-    printf("Should be null: %x\n", m);
+    printf("Should be null: %p\n", m);
     Matrix_reset_d(&m);
 
 }

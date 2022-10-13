@@ -151,7 +151,7 @@ MATRIX_TYPE TYPED(Vector_pnorm)(const TYPED(Vector)*__u, const size_t __p);
  TYPED(Vector)*TYPED(Vector_normalize)(const TYPED(Vector)*__u);
 
 // Take a coliter and compute the pnorm
-MATRIX_TYPE TYPED(ColIter_norm)(TYPED(ColIter) *__c);
+// MATRIX_TYPE TYPED(ColIter_norm)(TYPED(ColIter) *__c);
 
  TYPED(Vector)*TYPED(ascol)( TYPED(Vector)*__v);
 

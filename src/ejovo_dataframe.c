@@ -155,7 +155,7 @@ void printSpace(const Space *__space) {
     const Space *it = __space;
 
     while (it) {
-        printf("%x -> ", it->data);
+        printf("%p -> ", it->data);
         it = it->next;
     }
     printf("\n");

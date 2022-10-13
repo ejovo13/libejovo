@@ -153,8 +153,12 @@ TYPED(Matrix) *TYPED(as_doubly_stochastic)(TYPED(Matrix) *__m) {
     #endif
     );
 
-    printf("Exiting 'as_doubly_stochastic' with row_err: %lf, col_err: %lf, niter: %d\n", row_err, col_err, counter);
-    // if (counter == MAX_STOCHASTIC_ITERATIONS) printf("Reached max iterations\n");
+    // printf("Exiting 'as_doubly_stochastic' with row_err: %lf, col_err: %lf, niter: %d\n", row_err, col_err, counter);
+    printf("Exiting 'as_doubly_stochastic' with row_err: ");
+    TYPED(print_el)(row_err);
+    printf(", col_err: ");
+    TYPED(print_el)(col_err);
+    printf(", niter: %lu\n", counter);
 
     return __m;
 }

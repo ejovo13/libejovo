@@ -18,7 +18,7 @@ uint64_t rol64(uint64_t x, int k)
 	return (x << k) | (x >> (64 - k));
 }
 
-struct xoshiro256ss_state XOSHIRO_RNG = {0, 0, 0, 0};
+struct xoshiro256ss_state XOSHIRO_RNG = { .s = {0, 0, 0, 0}};
 
 #ifdef PCG_RANDOM
     pcg64_random_t PCG64_RNG;
@@ -231,12 +231,12 @@ int *fischer_yates(int n) {
         arr[i] = i + 1;
     }
 
+    int tmp = 0;
 
-    int tmp;
     // now go ahead and shuffle them
     for (int j = 0, i = n - 1; i > 0; i--) {
         j = unifi(0, i);
-        int tmp = arr[j];
+        tmp = arr[j];
         arr[j] = arr[i];
         arr[i] = tmp;
     }

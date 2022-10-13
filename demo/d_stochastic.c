@@ -109,6 +109,10 @@ int main() {
     Matrix_d *rainy = Matrix_from_d((double []) {0.6, .4, .2, .8}, 2, 2);
     Matrix_print_d(Matrix_pow_d(rainy, 20));
 
+    Matrix_free_d(v);
+    Matrix_free_d(error);
+    Matrix_free_d(stoch_exp);
+    Matrix_free_d(stoch_norm);
 
     return 0;
 }

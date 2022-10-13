@@ -30,7 +30,7 @@ int main() {
     Matrix_anon_free_d();
     Matrix_reset_d(&ind);
     Matrix_reset_d(&m);
-
+    Matrix_free_i(mi);
 
     return 0;
 }

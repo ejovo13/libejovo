@@ -3,17 +3,6 @@
 
 int main() {
 
-    const char *my_palette[] = {"#fa0707", "#33e60b", "#0bd7e6", "#160be6", "#f20feb"};
-    const char *viridis[] = {"#fde725", "#5ec962", "#21918c", "#3b528b", "#440154"};
-    const char *inferno[] = {"#fcffa4", "#f98e09", "#bc3754", "#57106e", "#000004"};
-    const char *magma[] = {"#fcfdbf", "#fc8961", "#b73779", "#51127c", "#000004"};
-    const char *plasma[] = {"#f0f921", "#f89540", "#cc4778", "#7e03a8", "#0d0887"};
-    const char *cp1[] = {"#541690", "#FF4949", "#FF8D29", "#FFCD38"};
-    const char *cp2[] = {"#2F2519", "#4A3F35", "#FA7D09", "#FF4301"};
-    const char *green[] = {"#000000", "#3E432E", "#616F39", "#A7D129"};
-    const char *purp[] = {"#000000", "#3E065F", "#700B97", "#8E05C2"};
-    const char *red[] = {"#000000", "#3D0000", "#950101", "#FF0000"};
-
     color_red();
 
     printf("ERROR: ");
@@ -35,7 +24,7 @@ int main() {
     Color_print(col);
     Color_print_hex(col);
 
-    ColorPalette *cp = ColorPalette_new(my_palette, 5);
+    ColorPalette *cp = viridis();
     ColorPalette_print(cp);
 
     Matrix_i *pal = ColorPalette_to_matrix(cp, 255);
@@ -68,6 +57,8 @@ int main() {
     // write_ppm_color_minmax_d(test_palette, ColorPalette_new(purp, 4), 0, 255, "purp.ppm"); 
     // write_ppm_color_minmax_d(test_palette, ColorPalette_new(red, 4), 0, 255, "red.ppm"); 
 
+
+    Matrix_free_i(pal);
 
     return 0;
 }

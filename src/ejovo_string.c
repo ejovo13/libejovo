@@ -433,13 +433,6 @@ size_t count_words(const char * __string) {
     return n_words;
 }
 
-static int nb_chiffres_(long x) {
-// Return the number of digits for an integer
-// nb_chiffres(-10) returns 2
-// nb_chiffres(100) returns 3
-    return (int) log10((double) labs(x) ) + 1;
-}
-
 char * int_to_string(int __x) {
 // Take an integer and return a null terminated string of that integer.
 // if the number is negative, take that into account and return a string that

@@ -313,18 +313,18 @@ void t_matrix_print() {
 
 }
 
-void t_mat_cdr() {
+// void t_mat_cdr() {
 
-    double data[] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
-    double data2[] = {4, 2, 5, 1, 9, 8, 3, 2, 1, 2, 4, 5};
-
-
-    Matrix_d *m1 = Matrix_from_d(data, 3, 3);
-    Matrix_d *m2 = Matrix_from_d(data2, 3, 3);
+//     double data[] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+//     double data2[] = {4, 2, 5, 1, 9, 8, 3, 2, 1, 2, 4, 5};
 
 
+//     Matrix_d *m1 = Matrix_from_d(data, 3, 3);
+//     Matrix_d *m2 = Matrix_from_d(data2, 3, 3);
 
-}
+    // TODO implement test
+
+// }
 
 void t_mat_setrow() {
 

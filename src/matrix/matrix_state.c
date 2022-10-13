@@ -4,9 +4,6 @@
 // #include "ejovo_matrix_generic.h"
 #include "ejovo_matrix.h"
 
-bool TYPED(Matrix_valid_bounds)(const TYPED(Matrix) *__m, size_t __i, size_t __j) {
-    return (__i < __m->nrows && __j < __m->ncols);
-}
 
 // return true if __A and __B have the same size and all of the elements are identical
 bool TYPED(matcmp)(const TYPED(Matrix) *__A, const TYPED(Matrix) *__B) {

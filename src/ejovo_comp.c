@@ -62,9 +62,9 @@ Complex Complex_mult(const Complex __z1, const Complex __z2) {
 
 }
 
-Complex Complex_div(const Complex __z1, const Complex __z2) {
-    // Complex z =
-}
+// Complex Complex_div(const Complex __z1, const Complex __z2) {
+//     // Complex z =
+// }
 
 // __z1 - __z2
 Complex Complex_sub(const Complex __z1, const Complex __z2) {
@@ -121,12 +121,13 @@ Complex Complex_zero(void) {
 Complex Complex_min(const Complex __z) {
 
     Complex z = {-__z.re, -__z.im};
+    return z;
 
 }
 
 // Compute the discrete fourier transform at a single frequency
-Complex DFTz_point(Fnz __fn, Complex __x ) {
+// Complex DFTz_point(Fnz __fn, Complex __x ) {
 
-}
+// }
 
 
