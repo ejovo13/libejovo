@@ -73,7 +73,8 @@ uint64_t pcg64_next(pcg64_random_t *rng) {
 
 void print_xoshiro256ss_state(struct xoshiro256ss_state * state) {
 
-    printf("State of random generator: %8lx, %8lx, %8lx, %8lx\n", state->s[0], state->s[1], state->s[2], state->s[3]);
+    // printf("State of random generator: %8lx, %8lx, %8lx, %8lx\n", state->s[0], state->s[1], state->s[2], state->s[3]);
+    printf("State of random generator: %8lu, %8lu, %8lu, %8lu\n", state->s[0], state->s[1], state->s[2], state->s[3]);
 
 }
 
