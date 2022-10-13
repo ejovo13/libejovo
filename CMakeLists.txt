@@ -46,6 +46,7 @@ add_compile_options(
     -Werror
     -Wextra
     -std=c11
+    -Wno-unused-result
     # -fprofile-arcs
     # -ftest-coverage
     # --coverage
