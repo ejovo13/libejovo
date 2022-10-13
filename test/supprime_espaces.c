@@ -19,5 +19,13 @@ int main() {
     // test removing tabs
     assert(strcmp(str3_stripped, supprime_espaces(test_str3)) == 0);
 
+    use(&test_str1);
+    use(&test_str2);
+    use(&test_str3);
+
+    use(&str1_stripped);
+    use(&str2_stripped);
+    use(&str3_stripped);
+
     return 0;
 }

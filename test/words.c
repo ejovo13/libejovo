@@ -18,6 +18,12 @@ int main() {
     assert(count_words(str3) == 5);
     assert(count_words(str4) == 9);
 
+    use(&str);
+    use(&str1);
+    use(&str2);
+    use(&str3);
+    use(&str4);
+
 
     return 0;
 }

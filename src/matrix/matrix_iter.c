@@ -72,7 +72,7 @@ TYPED(MatIter) TYPED(Matrix_diag_begin)(const TYPED(Matrix) *__m, const int __d)
     // compare the nrows. If __d is positive, we check the ncols
     if (__d < 0) {
 
-        if (abs(__d) >= __m->nrows) {
+        if ((size_t) abs(__d) >= __m->nrows) {
             perror("===TYPED(Matrix_diag_begin)===");
             perror("Not enough rows to accomodate diagonal");
             return TYPED(MatIter_null)();
@@ -93,7 +93,7 @@ TYPED(MatIter) TYPED(Matrix_diag_end)(const TYPED(Matrix) *__m, const int __d) {
 
     if (__d < 0) {
 
-        if (abs(__d) >= __m->nrows) {
+        if ((size_t) abs(__d) >= __m->nrows) {
             perror("===TYPED(Matrix_diag_end)===");
             perror("Not enough rows to accomodate diagonal");
             return TYPED(MatIter_null)();

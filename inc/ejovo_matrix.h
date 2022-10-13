@@ -15,6 +15,8 @@
         OUTSIDE_LOOP\
     } \
 
+#include "ejovo_assert.h"
+
 #include "matrix/generic_macros.h"
 
 #include "matrix/matrix.h"

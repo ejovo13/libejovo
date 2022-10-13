@@ -186,7 +186,7 @@ void t_length() {
     MatIter_d b = matrowbegin_d(wide, 0);
     MatIter_d e = matrowend_d(wide, 0);
 
-    assert(MatIter_length_d(b, e) == wide->ncols);
+    rassert(MatIter_length_d(b, e) == wide->ncols);
 
     Matrix_free_d(wide);
 

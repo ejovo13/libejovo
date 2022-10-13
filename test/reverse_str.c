@@ -27,5 +27,8 @@ int main() {
     // check that the reverse of a reversed string is the starting string
     assert(strcmp( reverse_string_n(reverse_string_n(test_str, num_chars), num_chars), test_str ) == 0);
 
+    use(&num_chars);
+    use(&test_str_reverse);
+
     return 0;
 }

@@ -4,6 +4,9 @@
 int main() {
 
     char test_str[] = "Hello this is a test string";
+
+    use(&test_str);
+
     char repeat[] = "HiHiHiHiHiHiHiHiHiHihi";
 
     // substrings
@@ -29,6 +32,19 @@ int main() {
     assert(strcmp(test_Hello, del_substr(test_str, Hello)) == 0);
     assert(strcmp(test_hello, del_substr(test_str, hello)) == 0);
     assert(strcmp("", del_substr(test_str, test_str)) == 0);  // Test removing the entire sub string
+
+    use(&repeat);
+    use(&substr1);
+    use(&substr2);
+    use(&hello);
+    use(&Hello);
+    // use(&test_hello);
+    use(&test1);
+    use(&test2);
+    use(&test3);
+    use(&test4);
+    use(&test_hello);
+    use(&test_Hello);
 
     return 0;
 }

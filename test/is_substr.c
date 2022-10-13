@@ -3,7 +3,11 @@
 
 int main() {
 
+    // #ifdef 
     char test_str[] = "Hello my friends I am a fancy \n test: string that contains\t very 999012 strange characters";
+
+    size_t nl = strlen(test_str);
+    printf("String:%s | %lu characters\n", test_str, nl);
 
     // Test for case
     assert(!is_substr(test_str, "hello"));
@@ -30,6 +34,8 @@ int main() {
     // Test for begining and ending sequences
     assert(is_substr(test_str, "Hello my friends"));
     assert(is_substr(test_str, " strange characters"));
+
+
 
     return 0;
 }

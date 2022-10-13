@@ -9,6 +9,10 @@
 #include "ejovo_rand.h"
 #include <stdint.h>
 
+static inline void use(void *thing) {
+    if (thing == NULL) exit(2);
+}
+
 // Should inlude functions that can print out the bit representation
 // of any type
 

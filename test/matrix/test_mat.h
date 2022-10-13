@@ -3,6 +3,7 @@
 #pragma once
 
 #include "ejovo_matrix_generic.h"
+#include "ejovo_assert.h"
 #include "ejovo_print.h"
 #include <assert.h>
 #include <stdbool.h>

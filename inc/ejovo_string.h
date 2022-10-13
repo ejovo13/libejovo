@@ -8,6 +8,8 @@
 #include <stdint.h>
 #include <math.h>
 
+#include "ejovo_bin.h"
+
 /** @file
  * @brief Provide essential string manipulation functions for use throughout the TP exercises.
  *

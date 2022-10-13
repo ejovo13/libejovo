@@ -1,5 +1,6 @@
 #include "ejovo_matrix_generic.h"
 #include <assert.h>
+#include "ejovo_assert.h"
 #include <stdbool.h>
 
 void t_mat_alloc();
@@ -141,13 +142,13 @@ void t_matrix_move() {
     printf("Address of arr_ptr: %p\n", arr_ptr);
     printf("Address of m->data: %p\n", m->data);
     // ASSERT THAT ARR_PTR IS NULL
-    assert(!arr_ptr);
+    rassert(!arr_ptr);
 
 
     // Verify that the two matrices are identical (and are using the same data)
     for (size_t i = 0; i < 3; i++) {
         for (size_t j = 0; j < 3; j++) {
-            assert(matat_d(m, i, j) == arr_copy[i * 3 + j]);
+            rassert(matat_d(m, i, j) == arr_copy[i * 3 + j]);
             // assert(matacc_d(m, i, j) == matacc_d(m1, 0, i * 3 + j)); // Verify that the pointers are in fact identical
         }
     }
@@ -170,14 +171,14 @@ void t_matrix_from() {
         for (size_t j = 0; j < 3; j++) {
 
             if (i == 1 && j == 0) {
-                assert(Matrix_at_d(m, i, j) == arr[i * 3 + j]);
-                assert(Matrix_at_d(m1, 0, i * 3 + j) != arr[i * 3 + j]); // we modified m1 so make sure that it is different
-                assert(Matrix_access_d(m, i, j) != Matrix_access_d(m1, 0, i * 3 + j)); // make sure the pointes are different.
+                rassert(Matrix_at_d(m, i, j) == arr[i * 3 + j]);
+                rassert(Matrix_at_d(m1, 0, i * 3 + j) != arr[i * 3 + j]); // we modified m1 so make sure that it is different
+                rassert(Matrix_access_d(m, i, j) != Matrix_access_d(m1, 0, i * 3 + j)); // make sure the pointes are different.
             } else {
 
-                assert(Matrix_at_d(m, i, j) == arr[i * 3 + j]);
-                assert(Matrix_at_d(m1, 0, i * 3 + j) == arr[i * 3 + j]); // we modified m1 so make sure that it is different
-                assert(Matrix_access_d(m, i, j) != Matrix_access_d(m1, 0, i * 3 + j)); // make sure the pointes are different.
+                rassert(Matrix_at_d(m, i, j) == arr[i * 3 + j]);
+                rassert(Matrix_at_d(m1, 0, i * 3 + j) == arr[i * 3 + j]); // we modified m1 so make sure that it is different
+                rassert(Matrix_access_d(m, i, j) != Matrix_access_d(m1, 0, i * 3 + j)); // make sure the pointes are different.
 
             }
         }
@@ -220,17 +221,17 @@ void t_matrix_valid_bounds() {
 
     Matrix_d *m1 = Matrix_new_d(50, 25);
 
-    assert(Matrix_valid_bounds_d(m1, 0, 0));
-    assert(Matrix_valid_bounds_d(m1, 10, 10));
-    assert(Matrix_valid_bounds_d(m1, 30, 10));
-    assert(Matrix_valid_bounds_d(m1, 49, 10));
-    assert(Matrix_valid_bounds_d(m1, 23, 24));
-    assert(Matrix_valid_bounds_d(m1, 49, 24));
+    rassert(Matrix_valid_bounds_d(m1, 0, 0));
+    rassert(Matrix_valid_bounds_d(m1, 10, 10));
+    rassert(Matrix_valid_bounds_d(m1, 30, 10));
+    rassert(Matrix_valid_bounds_d(m1, 49, 10));
+    rassert(Matrix_valid_bounds_d(m1, 23, 24));
+    rassert(Matrix_valid_bounds_d(m1, 49, 24));
 
-    assert(!Matrix_valid_bounds_d(m1, 10, 30));
-    assert(!Matrix_valid_bounds_d(m1, 50, 10));
-    assert(!Matrix_valid_bounds_d(m1, 49, 25));
-    assert(!Matrix_valid_bounds_d(m1, -3, 13));
+    rassert(!Matrix_valid_bounds_d(m1, 10, 30));
+    rassert(!Matrix_valid_bounds_d(m1, 50, 10));
+    rassert(!Matrix_valid_bounds_d(m1, 49, 25));
+    rassert(!Matrix_valid_bounds_d(m1, -3, 13));
 
     printf("t_Matrix_valid_bounds_d passed\n");
 }
@@ -290,8 +291,8 @@ void t_matrix_access() {
     double *el_ptr = Matrix_access_d(m1, 13, 4);
     double *el_ptr_nocheck = matacc_d(m1, 13, 4);
 
-    assert(el_ptr == el_ptr_nocheck);
-    assert(*el_ptr == 1.0);
+    rassert(el_ptr == el_ptr_nocheck);
+    rassert(*el_ptr == 1.0);
 
     el_ptr = Matrix_access_d(m1, 15, 15);
     assert(!el_ptr); // make sure that upon a bad access request el_ptr returns null
@@ -361,7 +362,7 @@ void t_matrix_set_row() {
     Matrix_d *m1 = Matrix_new_d(10, 10);
     Matrix_d *row = Matrix_rand_d(1, 10);
 
-    assert(Matrix_set_row_d(m1, 2, row) == EXIT_SUCCESS);
+    rassert(Matrix_set_row_d(m1, 2, row) == EXIT_SUCCESS);
 
     // Matrix_print_d(m1);
 
@@ -375,7 +376,7 @@ void t_matrix_set_col() {
     Matrix_d *m1 = Matrix_new_d(10, 10);
     Matrix_d *col = Matrix_rand_d(10, 1);
 
-    assert(Matrix_set_col_d(m1, 2, col) == EXIT_SUCCESS);
+    rassert(Matrix_set_col_d(m1, 2, col) == EXIT_SUCCESS);
 
     // Matrix_print_d(m1);
 
@@ -392,9 +393,9 @@ void t_matrix_get_col() {
     Matrix_d *null = Matrix_get_col_d(m1, -2);
     Matrix_d *null_2 = Matrix_get_col_d(m1, 12);
 
-    assert(col);
-    assert(!null);
-    assert(!null_2);
+    rassert(col);
+    rassert(!null);
+    rassert(!null_2);
 
     Matrix_print_d(m1);
 
@@ -413,14 +414,19 @@ void t_matrix_get_row() {
     Matrix_d *null2 = Matrix_get_row_d(m1, 10);
 
     // check that the values in row and row2 are the actual values in each row
-    assert(row);
-    assert(row2);
-    assert(!null);
-    assert(!null2);
+    rassert(row);
+    rassert(row2);
+    rassert(!null);
+    rassert(!null2);
 
     Matrix_print_d(m1);
     Matrix_print_d(row);
     Matrix_print_d(row2);
+
+    Matrix_free_d(m1);
+    Matrix_free_d(row);
+    Matrix_free_d(row2);
+
 }
 
 void t_matrix_times_vec() {
