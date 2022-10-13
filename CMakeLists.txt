@@ -45,8 +45,9 @@ add_compile_options(
     -Wall
     # -Wextra
     # -Wunused-variable
-    -Wno-unused-result
+    # -Wno-unused-result
     -Werror
+    -std=c11
     # -Werror=no-unused-parameter
     # -Wno-unused-parameter
     # -Wno-unused-function

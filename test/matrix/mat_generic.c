@@ -12,7 +12,7 @@ int main() {
     // Matrix_i *mi = Matrix_random_i(10, 2, 0, 100);
     // Matrix_f *mf = Matrix_new_f(10, 2);
 
-    Matrix_c *mc = Matrix_runif_c(5, 2, CMPLX(1, 0), CMPLX(0, 10));
+    Matrix_c *mc = Matrix_runif_c(5, 2, __builtin_complex(1., 0.), __builtin_complex(0., 10.));
     Matrix_c *mc1 = Matrix_value_c(5, 2, 2);
 
     Matrix_print_c(mc);

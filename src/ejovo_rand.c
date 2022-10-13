@@ -134,7 +134,7 @@ double unifd_rng(double a, double b, RNG_FN rng) {
 }
 
 double complex unifc_rng(double complex a, double complex b, RNG_FN rng) {
-    return CMPLX( unifd_rng(creal(a), creal(b), rng), 
+    return __builtin_complex( unifd_rng(creal(a), creal(b), rng), 
                   unifd_rng(cimag(a), cimag(b), rng) );
 }
 
@@ -162,7 +162,7 @@ double normd_rng(double mean, double std, RNG_FN rng) {
 }
 
 double complex normc_rng(double complex mean, double complex sigma, RNG_FN rng) {
-    return CMPLX( normd_rng(creal(mean), cabs(sigma), rng), 
+    return __builtin_complex( normd_rng(creal(mean), cabs(sigma), rng), 
                   normd_rng(cimag(mean), cabs(sigma), rng) );
 }
 

@@ -7,6 +7,10 @@
 
 #define COMPLEX_TYPE double
 
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+
 typedef struct complex_t {
 
     COMPLEX_TYPE re;

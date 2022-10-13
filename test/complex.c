@@ -1,6 +1,5 @@
 #include "ejovo_comp.h"
 
-
 int main() {
 
     Complex z = {4, 5};
