@@ -43,8 +43,8 @@ add_compile_options(
     $<$<CONFIG:DEBUG>:-fno-omit-frame-pointer>
     $<$<CONFIG:DEBUG>:-Og>
     -Wall
-    -Wextra
-    # -Werror
+    # -Wextra
+    -Werror
     # -Werror=no-unused-parameter
     # -Wno-unused-parameter
     # -Wno-unused-function
