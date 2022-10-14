@@ -80,6 +80,26 @@ MATRIX_TYPE TYPED(Vector_max)(const TYPED(Vector)*__v);
 
 MATRIX_TYPE TYPED(Vector_at)(const TYPED(Vector)*__v, size_t __i);
 
+static inline MATRIX_TYPE TYPED(vecat)(const TYPED(Vector)*__v, size_t i) {
+    return __v->data[i];
+}
+
+static inline MATRIX_TYPE *TYPED(vecacc)(const TYPED(Vector)*__v, size_t i) {
+    return &__v->data[i];
+}
+
+static inline void TYPED(vecset)(const TYPED(Vector)*__v, size_t i, MATRIX_TYPE k) {
+    __v->data[i] = k;
+}
+
+static inline MATRIX_TYPE *TYPED(vecptr)(const TYPED(Vector)*__v, size_t i) {
+    return &__v->data[i];
+}
+
+
+
+
+
 MATRIX_TYPE *TYPED(Vector_access)(const TYPED(Vector)*__v, size_t __i);
 
 // More abstract, functional pattern "map"

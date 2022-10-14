@@ -543,6 +543,18 @@ MatIter_d Vector_end_d(const Vector_d*__v);
 MatIter_d Vector_iter_d(const Vector_d*__v, size_t i);
 double Vector_max_d(const Vector_d*__v);
 double Vector_at_d(const Vector_d*__v, size_t __i);
+static inline double vecat_d(const Vector_d*__v, size_t i) {
+    return __v->data[i];
+}
+static inline double *vecacc_d(const Vector_d*__v, size_t i) {
+    return &__v->data[i];
+}
+static inline void vecset_d(const Vector_d*__v, size_t i, double k) {
+    __v->data[i] = k;
+}
+static inline double *vecptr_d(const Vector_d*__v, size_t i) {
+    return &__v->data[i];
+}
 double *Vector_access_d(const Vector_d*__v, size_t __i);
  Vector_d*Vector_map_d(const Vector_d*__v, function_d __fn);
 double Vector_sum_d(const Vector_d*__v);
@@ -600,6 +612,7 @@ double std_d(const Matrix_d *__m);
 double var_d(const Matrix_d *__m);
 double min_d(const Matrix_d *__m);
 double max_d(const Matrix_d *__m);
+double maxabs_d(const Matrix_d *__m);
 double rms_d(const Matrix_d *__m);
 double mean_squared_d(const Matrix_d *__m);
 double cov_d(const Matrix_d *__x, const Matrix_d *__y);
@@ -1251,6 +1264,18 @@ MatIter_f Vector_end_f(const Vector_f*__v);
 MatIter_f Vector_iter_f(const Vector_f*__v, size_t i);
 float Vector_max_f(const Vector_f*__v);
 float Vector_at_f(const Vector_f*__v, size_t __i);
+static inline float vecat_f(const Vector_f*__v, size_t i) {
+    return __v->data[i];
+}
+static inline float *vecacc_f(const Vector_f*__v, size_t i) {
+    return &__v->data[i];
+}
+static inline void vecset_f(const Vector_f*__v, size_t i, float k) {
+    __v->data[i] = k;
+}
+static inline float *vecptr_f(const Vector_f*__v, size_t i) {
+    return &__v->data[i];
+}
 float *Vector_access_f(const Vector_f*__v, size_t __i);
  Vector_f*Vector_map_f(const Vector_f*__v, function_f __fn);
 float Vector_sum_f(const Vector_f*__v);
@@ -1308,6 +1333,7 @@ float std_f(const Matrix_f *__m);
 float var_f(const Matrix_f *__m);
 float min_f(const Matrix_f *__m);
 float max_f(const Matrix_f *__m);
+float maxabs_f(const Matrix_f *__m);
 float rms_f(const Matrix_f *__m);
 float mean_squared_f(const Matrix_f *__m);
 float cov_f(const Matrix_f *__x, const Matrix_f *__y);
@@ -1959,6 +1985,18 @@ MatIter_i Vector_end_i(const Vector_i*__v);
 MatIter_i Vector_iter_i(const Vector_i*__v, size_t i);
 int Vector_max_i(const Vector_i*__v);
 int Vector_at_i(const Vector_i*__v, size_t __i);
+static inline int vecat_i(const Vector_i*__v, size_t i) {
+    return __v->data[i];
+}
+static inline int *vecacc_i(const Vector_i*__v, size_t i) {
+    return &__v->data[i];
+}
+static inline void vecset_i(const Vector_i*__v, size_t i, int k) {
+    __v->data[i] = k;
+}
+static inline int *vecptr_i(const Vector_i*__v, size_t i) {
+    return &__v->data[i];
+}
 int *Vector_access_i(const Vector_i*__v, size_t __i);
  Vector_i*Vector_map_i(const Vector_i*__v, function_i __fn);
 int Vector_sum_i(const Vector_i*__v);
@@ -2016,6 +2054,7 @@ int std_i(const Matrix_i *__m);
 int var_i(const Matrix_i *__m);
 int min_i(const Matrix_i *__m);
 int max_i(const Matrix_i *__m);
+int maxabs_i(const Matrix_i *__m);
 int rms_i(const Matrix_i *__m);
 int mean_squared_i(const Matrix_i *__m);
 int cov_i(const Matrix_i *__x, const Matrix_i *__y);
@@ -2667,6 +2706,18 @@ MatIter_c Vector_end_c(const Vector_c*__v);
 MatIter_c Vector_iter_c(const Vector_c*__v, size_t i);
 double _Complex Vector_max_c(const Vector_c*__v);
 double _Complex Vector_at_c(const Vector_c*__v, size_t __i);
+static inline double _Complex vecat_c(const Vector_c*__v, size_t i) {
+    return __v->data[i];
+}
+static inline double _Complex *vecacc_c(const Vector_c*__v, size_t i) {
+    return &__v->data[i];
+}
+static inline void vecset_c(const Vector_c*__v, size_t i, double _Complex k) {
+    __v->data[i] = k;
+}
+static inline double _Complex *vecptr_c(const Vector_c*__v, size_t i) {
+    return &__v->data[i];
+}
 double _Complex *Vector_access_c(const Vector_c*__v, size_t __i);
  Vector_c*Vector_map_c(const Vector_c*__v, function_c __fn);
 double _Complex Vector_sum_c(const Vector_c*__v);
@@ -2724,6 +2775,7 @@ double _Complex std_c(const Matrix_c *__m);
 double _Complex var_c(const Matrix_c *__m);
 double _Complex min_c(const Matrix_c *__m);
 double _Complex max_c(const Matrix_c *__m);
+double _Complex maxabs_c(const Matrix_c *__m);
 double _Complex rms_c(const Matrix_c *__m);
 double _Complex mean_squared_c(const Matrix_c *__m);
 double _Complex cov_c(const Matrix_c *__x, const Matrix_c *__y);

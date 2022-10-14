@@ -77,6 +77,8 @@ MATRIX_TYPE TYPED(min)(const TYPED(Matrix) *__m);
 
 MATRIX_TYPE TYPED(max)(const TYPED(Matrix) *__m);
 
+MATRIX_TYPE TYPED(maxabs)(const TYPED(Matrix) *__m);
+
 MATRIX_TYPE TYPED(rms)(const TYPED(Matrix) *__m);
 
 MATRIX_TYPE TYPED(mean_squared)(const TYPED(Matrix) *__m);

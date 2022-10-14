@@ -437,6 +437,37 @@ MATRIX_TYPE TYPED(MatIter_max)(TYPED(MatIter) __a, const TYPED(MatIter) __b) {
 
 }
 
+MATRIX_TYPE TYPED(MatIter_maxabs)(TYPED(MatIter) __a, const TYPED(MatIter) __b) {
+
+#ifdef MATRIX_COMPLEX
+    MATRIX_TYPE max = cabs(TYPED(MatIter_value)(__a));
+#elif defined MATRIX_INT
+    MATRIX_TYPE max = abs(TYPED(MatIter_value)(__a));
+// #elif defined MATRIX_FLOAT
+    // MATRIX_TYPE max = fabs(TYPED(MatIter_value)(__a));
+#else
+    MATRIX_TYPE max = fabs(TYPED(MatIter_value)(__a));
+#endif
+    __a = TYPED(MatIter_next)(__a);
+
+    // This is the TYPED(MatIter) idiom to traverse a row
+    while (!TYPED(MatIter_cmp)(__a, __b)) {
+#ifdef MATRIX_COMPLEX
+        if (cabs(TYPED(MatIter_value)(__a)) > cabs(max))
+#elif defined MATRIX_INT
+        if (abs(TYPED(MatIter_value)(__a)) > max)
+#else
+        if (fabs(TYPED(MatIter_value)(__a)) > max)
+#endif
+            max = TYPED(MatIter_value)(__a);
+
+        __a = TYPED(MatIter_next)(__a);
+    }
+
+    return max;
+
+}
+
 // Get the maximum value in a row
 MATRIX_TYPE TYPED(MatIter_min)(TYPED(MatIter) __a, const TYPED(MatIter) __b) {
 

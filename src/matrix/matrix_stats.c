@@ -173,6 +173,10 @@ MATRIX_TYPE TYPED(max)(const TYPED(Matrix) *__m) {
     return TYPED(Matrix_iterate)(__m, TYPED(MatIter_max));
 }
 
+MATRIX_TYPE TYPED(maxabs)(const TYPED(Matrix) *__m) {
+    return TYPED(Matrix_iterate)(__m, TYPED(MatIter_maxabs));
+}
+
 MATRIX_TYPE TYPED(rms)(const TYPED(Matrix) *__m) {
     return TYPED(Matrix_iterate)(__m, TYPED(MatIter_rms));
 }
