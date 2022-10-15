@@ -10,6 +10,28 @@ MATRIX_TYPE TYPED(MatIter_mean)(const TYPED(MatIter) __begin, const TYPED(MatIte
     return sum / TYPED(MatIter_length)(__begin, __end);
 }
 
+MATRIX_TYPE TYPED(MatIter_sumabs)(const TYPED(MatIter) __begin, const TYPED(MatIter) __end) {
+
+    TYPED(MatIter) iter = __begin;
+    MATRIX_TYPE sumabs = 0;
+
+    while (! TYPED(MatIter_cmp)(iter, __end)) {
+
+#if defined MATRIX_COMPLEX
+        sumabs += cabs(TYPED(MatIter_value)(iter));
+#elif defined MATRIX_INT
+        sumabs += abs(TYPED(MatIter_value)(iter));
+#else
+        sumabs += fabs(TYPED(MatIter_value)(iter));
+#endif
+// #elif defined MATRIX_
+        iter = TYPED(MatIter_next)(iter);
+    }
+
+    return sumabs;
+
+}
+
 MATRIX_TYPE TYPED(MatIter_sum_squared)(const TYPED(MatIter) __begin, const TYPED(MatIter) __end) {
 
     TYPED(MatIter) iter = __begin;
@@ -175,6 +197,10 @@ MATRIX_TYPE TYPED(max)(const TYPED(Matrix) *__m) {
 
 MATRIX_TYPE TYPED(maxabs)(const TYPED(Matrix) *__m) {
     return TYPED(Matrix_iterate)(__m, TYPED(MatIter_maxabs));
+}
+
+MATRIX_TYPE TYPED(sumabs)(const TYPED(Matrix) *__m) {
+    return TYPED(Matrix_iterate)(__m, TYPED(MatIter_sumabs));
 }
 
 MATRIX_TYPE TYPED(rms)(const TYPED(Matrix) *__m) {

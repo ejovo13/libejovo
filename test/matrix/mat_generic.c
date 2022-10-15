@@ -21,6 +21,16 @@ int main() {
     Matrix_print_c(Matrix_add_c(mc, mc1));
     Matrix_print_c(Matrix_hadamard_c(mc, mc1));
 
+    // Let me see how some random numbers behave
+
+    Matrix_i *indices = runif_i(10000000, 0, 100);
+    printf("mean: %lf", sum_i(indices) / (double) Matrix_size_i(indices));
+
+    printf("max_i: %d\n", max_i(indices));
+
+    // Matrix_print_i(indices);
+
+
 
     return 0;
 }

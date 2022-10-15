@@ -21,6 +21,8 @@ MATRIX_TYPE TYPED(MatIter_var)(const TYPED(MatIter) __begin, const TYPED(MatIter
 
 MATRIX_TYPE TYPED(MatIter_std)(const TYPED(MatIter) __begin, const TYPED(MatIter) __end);
 
+MATRIX_TYPE TYPED(MatIter_sumabs)(const TYPED(MatIter) __begin, const TYPED(MatIter) __end);
+
 MATRIX_TYPE TYPED(Vector_iter_sum)(const TYPED(Vector)*__v);
 
 MATRIX_TYPE TYPED(Vector_iter_prod)(const TYPED(Vector)*__v);
@@ -78,6 +80,8 @@ MATRIX_TYPE TYPED(min)(const TYPED(Matrix) *__m);
 MATRIX_TYPE TYPED(max)(const TYPED(Matrix) *__m);
 
 MATRIX_TYPE TYPED(maxabs)(const TYPED(Matrix) *__m);
+
+MATRIX_TYPE TYPED(sumabs)(const TYPED(Matrix) *__m);
 
 MATRIX_TYPE TYPED(rms)(const TYPED(Matrix) *__m);
 
