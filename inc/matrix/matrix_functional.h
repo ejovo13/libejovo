@@ -34,6 +34,8 @@ TYPED(Matrix) *TYPED(apply)(TYPED(Matrix) *__m, TYPED(function) fn);
 // will always return vectors because we can't preserve the size
 MATRIX_TYPE TYPED(head)(const TYPED(Matrix) *__m);
 
+TYPED(Matrix) *TYPED(take)(const TYPED(Matrix) *__m, int n_el);
+
  TYPED(Vector)*TYPED(tail)(const TYPED(Matrix) *__m);
 
 MATRIX_TYPE TYPED(last)(const TYPED(Matrix) *__m);

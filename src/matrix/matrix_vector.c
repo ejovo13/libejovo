@@ -328,20 +328,25 @@ MATRIX_TYPE TYPED(vecpnorm)(const TYPED(Vector)*__u, const int __p) {
 }
 
 // Euclidean norm
-MATRIX_TYPE TYPED(vecnorm)(const TYPED(Vector)*__A) {
+// MATRIX_TYPE TYPED(vecnorm)(const TYPED(Vector)*__A) {
 
-    MATRIX_TYPE sum = 0;
-    MATRIX_TYPE *a = NULL;
+//     MATRIX_TYPE sum = 0;
 
-    for (size_t i = 0; i < __A->nrows; i++) {
-        for (size_t j = 0; j < __A->ncols; j++) {
-            a = TYPED(matacc)(__A, i, j);
-            sum += (*a) * (*a);
-        }
-    }
+//     const size_t n = TYPED(Matrix_size)(__A);
 
-    return sqrt(sum);
-}
+//     for (size_t i = 0; i < n; i++) {
+//         sum += __A->data[i] * __A->data[i];
+//     }
+
+//     // for (size_t i = 0; i < __A->nrows; i++) {
+//     //     for (size_t j = 0; j < __A->ncols; j++) {
+//     //         a = TYPED(matacc)(__A, i, j);
+//     //         sum += (*a) * (*a);
+//     //     }
+//     // }
+
+//     return sqrt(sum);
+// }
 
 void TYPED(vecnormalize)( TYPED(Vector)*__u) {
 

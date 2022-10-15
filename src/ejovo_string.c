@@ -9,6 +9,32 @@ char * cpy_str(char * __input) {
     return new_str;
 }
 
+// Add a prefix to a string
+char *prepend(const char* __str, const char* __pre) {
+
+    // get length of str
+    int len_str = strlen(__str);
+    int len_pre = strlen(__pre);
+
+    // 
+    char *out = malloc(sizeof(*out) * len_str + len_pre + 1);
+    // add the first n bytes of len_str to out
+    memcpy(out, __pre, len_pre);
+    memcpy(out + len_pre, __str, len_str);
+    out[len_str + len_pre] = '\0';
+
+    return out;
+
+}
+
+// char *cat(const char* __s1, ...) {
+//     // As long as they are not not null
+
+// }
+
+
+
+
 // copy a NULL TERMINATED STRING into another one, specifiying ahead of time the length of the string to copy
 // We follow the convention established by string.h where strlen() returns the number of characters not including the null string;
 char * cpy_n_str(char * __input, size_t n) {

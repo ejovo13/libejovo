@@ -20,6 +20,10 @@ int main() {
     printf("slice(str, 5, -1): '%s'\n", slice(str, 5, -1));
     printf("slice(str, -25, 15): '%s'\n", slice(str, -25, 15));
 
+    const char *test_str = "helo";
+    // Test combining two strings
+    printf("len '%s': %lu\n", test_str, strlen(test_str));
+    printf("prepend('world', 'hello '): %s\n", prepend("world", "hello "));
 
     return 0;
 }

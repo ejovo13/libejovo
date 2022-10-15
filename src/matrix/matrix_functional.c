@@ -1,5 +1,11 @@
 // #include "ejovo_matrix_generic.h"
+#ifndef MATRIX_TYPE
+#define MATRIX_TYPE double
+#endif
+
+
 #include "ejovo_matrix.h"
+#include "ejovo/matrix/generic_macros.h"
 
 // The identity function...
 MATRIX_TYPE TYPED(Id)(MATRIX_TYPE x) {
@@ -158,8 +164,17 @@ MATRIX_TYPE TYPED(last)(const TYPED(Matrix) *__m) {
     return TYPED(Matrix_last)(__m);
 }
 
+
+TYPED(Matrix) *TYPED(take)(const TYPED(Matrix) *__m, int n_el) {
+    // copy n_el * sizeof(MATRIX_TYPE) bytes of memory from __m
+    // to output
+    TYPED(Matrix) *out = TYPED(matalloc)(1, n_el);
+    memcpy(out->data, __m->data, n_el * sizeof(MATRIX_TYPE));
+    return out;
+}
+
 // return the initial part of a Vector; TYPED(init)([A]:An) -> [A]
- TYPED(Vector)*TYPED(init)(const TYPED(Matrix) *__m) {
+TYPED(Vector)*TYPED(init)(const TYPED(Matrix) *__m) {
     if (TYPED(Matrix_size)(__m) <= 1) return NULL;
 
     TYPED(Matrix) *new = TYPED(Vector_new)(TYPED(Matrix_size)(__m) - 1);

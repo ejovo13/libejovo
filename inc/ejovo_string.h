@@ -30,6 +30,8 @@ char * cpy_str(char * __input);
  */
 char * cpy_n_str(char * __input, size_t __n);
 
+char *prepend(const char *__str, const char *__pre);
+
 /**
  *  Get a substr starting at position __start_index (INCLUSIVE) and ending at __end_index (EXCLUSIVE)
  *

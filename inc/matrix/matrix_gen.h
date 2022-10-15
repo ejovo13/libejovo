@@ -568,7 +568,14 @@ double Vector_dot_d(const Vector_d*__u, const Vector_d*__v);
 Matrix_d *Vector_outer_d(const Vector_d*__u, const Vector_d*__v);
 Matrix_d *Vector_orthogonal_projection_d(const Vector_d*__v);
 double vecpnorm_d(const Vector_d*__u, const int __p);
-double vecnorm_d(const Vector_d*__A);
+static inline double vecnorm_d(const Vector_d*__A) {
+    double sum = 0;
+    const size_t n = Matrix_size_d(__A);
+    for (size_t i = 0; i < n; i++) {
+        sum += __A->data[i] * __A->data[i];
+    }
+    return sqrt(sum);
+}
 void vecnormalize_d( Vector_d*__u);
 double Vector_norm_d(const Vector_d*__u);
 double Vector_pnorm_d(const Vector_d*__u, const size_t __p);
@@ -650,6 +657,7 @@ double x_cubed_d(double x);
 Matrix_d *map_d(const Matrix_d *__m, function_d fn);
 Matrix_d *apply_d(Matrix_d *__m, function_d fn);
 double head_d(const Matrix_d *__m);
+Matrix_d *take_d(const Matrix_d *__m, int n_el);
  Vector_d*tail_d(const Matrix_d *__m);
 double last_d(const Matrix_d *__m);
  Vector_d*init_d(const Matrix_d *__m);
@@ -1291,7 +1299,14 @@ float Vector_dot_f(const Vector_f*__u, const Vector_f*__v);
 Matrix_f *Vector_outer_f(const Vector_f*__u, const Vector_f*__v);
 Matrix_f *Vector_orthogonal_projection_f(const Vector_f*__v);
 float vecpnorm_f(const Vector_f*__u, const int __p);
-float vecnorm_f(const Vector_f*__A);
+static inline float vecnorm_f(const Vector_f*__A) {
+    float sum = 0;
+    const size_t n = Matrix_size_f(__A);
+    for (size_t i = 0; i < n; i++) {
+        sum += __A->data[i] * __A->data[i];
+    }
+    return sqrt(sum);
+}
 void vecnormalize_f( Vector_f*__u);
 float Vector_norm_f(const Vector_f*__u);
 float Vector_pnorm_f(const Vector_f*__u, const size_t __p);
@@ -1373,6 +1388,7 @@ float x_cubed_f(float x);
 Matrix_f *map_f(const Matrix_f *__m, function_f fn);
 Matrix_f *apply_f(Matrix_f *__m, function_f fn);
 float head_f(const Matrix_f *__m);
+Matrix_f *take_f(const Matrix_f *__m, int n_el);
  Vector_f*tail_f(const Matrix_f *__m);
 float last_f(const Matrix_f *__m);
  Vector_f*init_f(const Matrix_f *__m);
@@ -2014,7 +2030,14 @@ int Vector_dot_i(const Vector_i*__u, const Vector_i*__v);
 Matrix_i *Vector_outer_i(const Vector_i*__u, const Vector_i*__v);
 Matrix_i *Vector_orthogonal_projection_i(const Vector_i*__v);
 int vecpnorm_i(const Vector_i*__u, const int __p);
-int vecnorm_i(const Vector_i*__A);
+static inline int vecnorm_i(const Vector_i*__A) {
+    int sum = 0;
+    const size_t n = Matrix_size_i(__A);
+    for (size_t i = 0; i < n; i++) {
+        sum += __A->data[i] * __A->data[i];
+    }
+    return sqrt(sum);
+}
 void vecnormalize_i( Vector_i*__u);
 int Vector_norm_i(const Vector_i*__u);
 int Vector_pnorm_i(const Vector_i*__u, const size_t __p);
@@ -2096,6 +2119,7 @@ int x_cubed_i(int x);
 Matrix_i *map_i(const Matrix_i *__m, function_i fn);
 Matrix_i *apply_i(Matrix_i *__m, function_i fn);
 int head_i(const Matrix_i *__m);
+Matrix_i *take_i(const Matrix_i *__m, int n_el);
  Vector_i*tail_i(const Matrix_i *__m);
 int last_i(const Matrix_i *__m);
  Vector_i*init_i(const Matrix_i *__m);
@@ -2737,7 +2761,14 @@ double _Complex Vector_dot_c(const Vector_c*__u, const Vector_c*__v);
 Matrix_c *Vector_outer_c(const Vector_c*__u, const Vector_c*__v);
 Matrix_c *Vector_orthogonal_projection_c(const Vector_c*__v);
 double _Complex vecpnorm_c(const Vector_c*__u, const int __p);
-double _Complex vecnorm_c(const Vector_c*__A);
+static inline double _Complex vecnorm_c(const Vector_c*__A) {
+    double _Complex sum = 0;
+    const size_t n = Matrix_size_c(__A);
+    for (size_t i = 0; i < n; i++) {
+        sum += __A->data[i] * __A->data[i];
+    }
+    return sqrt(sum);
+}
 void vecnormalize_c( Vector_c*__u);
 double _Complex Vector_norm_c(const Vector_c*__u);
 double _Complex Vector_pnorm_c(const Vector_c*__u, const size_t __p);
@@ -2819,6 +2850,7 @@ double _Complex x_cubed_c(double _Complex x);
 Matrix_c *map_c(const Matrix_c *__m, function_c fn);
 Matrix_c *apply_c(Matrix_c *__m, function_c fn);
 double _Complex head_c(const Matrix_c *__m);
+Matrix_c *take_c(const Matrix_c *__m, int n_el);
  Vector_c*tail_c(const Matrix_c *__m);
 double _Complex last_c(const Matrix_c *__m);
  Vector_c*init_c(const Matrix_c *__m);

@@ -42,6 +42,10 @@ void t_func() {
     Vector_d*r = range_d(1, 10, 2);
     Matrix_print_d(r);
 
+    // Get the first 10 elements of a vector;
+
+    Vector_d *v_take = take_d(v, 10);
+    Matrix_print_d(v_take);
 
 
 

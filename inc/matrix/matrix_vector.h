@@ -158,7 +158,27 @@ TYPED(Matrix) *TYPED(Vector_orthogonal_projection)(const TYPED(Vector)*__v);
 MATRIX_TYPE TYPED(vecpnorm)(const TYPED(Vector)*__u, const int __p);
 
 // Euclidean norm
-MATRIX_TYPE TYPED(vecnorm)(const TYPED(Vector)*__A);
+// MATRIX_TYPE TYPED(vecnorm)(const TYPED(Vector)*__A);
+
+static inline MATRIX_TYPE TYPED(vecnorm)(const TYPED(Vector)*__A) {
+
+    MATRIX_TYPE sum = 0;
+
+    const size_t n = TYPED(Matrix_size)(__A);
+
+    for (size_t i = 0; i < n; i++) {
+        sum += __A->data[i] * __A->data[i];
+    }
+
+    // for (size_t i = 0; i < __A->nrows; i++) {
+    //     for (size_t j = 0; j < __A->ncols; j++) {
+    //         a = TYPED(matacc)(__A, i, j);
+    //         sum += (*a) * (*a);
+    //     }
+    // }
+
+    return sqrt(sum);
+}
 
 void TYPED(vecnormalize)( TYPED(Vector)*__u);
 

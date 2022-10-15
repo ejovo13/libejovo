@@ -30,6 +30,13 @@ int main() {
 
     // Matrix_print_i(indices);
 
+    Matrix_i *vec = Matrix_new_i(4, 3);
+
+    for (int i = 0; i < 12; i++) {
+        vec->data[i] = i;
+    }
+
+    Matrix_print_i(vec);
 
 
     return 0;
