@@ -5,7 +5,6 @@
 
 
 #include "ejovo_matrix.h"
-#include "ejovo/matrix/generic_macros.h"
 
 // The identity function...
 MATRIX_TYPE TYPED(Id)(MATRIX_TYPE x) {
