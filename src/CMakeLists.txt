@@ -78,6 +78,7 @@ set (EJOVO_MATRIX_HEADERS
     ${INC}/matrix/matrix_f.h
     ${INC}/matrix/matrix_i.h
     ${INC}/matrix/matrix_c.h
+    ${INC}/matrix/generic_macros.h
 )
 
 # set (PCG_HEADERS
