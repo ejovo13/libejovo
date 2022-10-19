@@ -609,17 +609,17 @@ void TYPED(Vector_print_head)(const TYPED(Matrix) *__m, int __n) {
 
     size_t n = TYPED(Vector_size)(__m) < (size_t) __n ? TYPED(Vector_size)(__m) : (size_t) __n;
 
-    TYPED(Matrix_summary)(__m);
+    // TYPED(Matrix_summary)(__m);
     printf("| ");
     for (size_t i = 0; i < n; i++) {
 #if defined MATRIX_DOUBLE 
-            printf("%4.4lf ", __m->data[__n]);
+            printf("%4.4lf ", __m->data[i]);
 #elif defined MATRIX_FLOAT 
-            printf("%4.4f ", __m->data[__n]);
+            printf("%4.4f ", __m->data[i]);
 #elif defined MATRIX_INT
-            printf("%5d ", __m->data[__n]);
+            printf("%5d ", __m->data[i]);
 #elif defined MATRIX_COMPLEX
-            printf("(%4.4lf, %4.4lf) ", creal(__m->data[__n]), cimag(__m->data[__n]));
+            printf("(%4.4lf, %4.4lf) ", creal(__m->data[i]), cimag(__m->data[i]));
 #endif
     }
     printf("|\n");
