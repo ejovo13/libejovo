@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include "ejovo_matrix_generic.h"
 #include "ejovo_color.h"
+#include "ejovo_string.h"
 
 // #include "matrix/matrix_i.h"
 
@@ -42,6 +43,7 @@ static inline int*atp(const Matrix_i *__A, size_t lin_index) {
     return &(__A->data[lin_index]);
 }
 
+
 // // set value at the linear index
 // static inline Matrix_i *TYPED(matsetlin)(Matrix_i *A, size_t lin_index, int val) {
 //     A->data[lin_index] = val;
@@ -64,4 +66,38 @@ void write_ppm_color_minmax_d(const Matrix_d *image, const ColorPalette *cp, dou
 
 // }
 
+
+/**========================================================================
+ *!                           PGM functionality for optical flow
+ *========================================================================**/
+Matrix_i *read_pgm(const char *filename);
+
+
+typedef struct optical_flow_t {
+
+    Matrix_d *u;
+    Matrix_d *v;
+    Matrix_i *Ix;
+    Matrix_i *Iy;
+    Matrix_i *It;
+
+} optical_flow_t;
+
+typedef double (* function2_d) (double, double);
+
+optical_flow_t calc_optical_flow_hs(const Matrix_i *f0, const Matrix_i *f1, int nb_iter);
+
+Matrix_d *map2_d(const Matrix_d *__x, const Matrix_d *__y, function2_d __f_xy);
+
+Matrix_i *d_to_i(const Matrix_d *dub);
+
+double euler(double x, double y);
+
+Matrix_i *img_x_gradient(const Matrix_i *frame);
+
+Matrix_i *img_y_gradient(const Matrix_i *frame);
+
+void update_flow_field(Matrix_d *u, Matrix_d *v, const Matrix_i* I_x, const Matrix_i* I_y, const Matrix_i* I_t);
+
+void save_optical_flow(const char *prefix, optical_flow_t flow);
 #endif
