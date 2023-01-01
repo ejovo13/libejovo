@@ -56,9 +56,123 @@ int main() {
     // writeMP4(laplacianVideo(vid), "vid_laplace.mp4");
     // writeMP4(laplacianVideo(vid50), "vid_50_laplace.mp4");
     // writeMP4(laplacianVideo(vid40), "vid_40_laplace.mp4");
-    writeMP4(laplacianVideo(vid20), "vid_20_laplace.mp4");
+    // writeMP4(laplacianVideo(vid20), "vid_20_laplace.mp4");
 
     // writeMP4(v, "v.mp4");
+
+    char const filename_melee[] = "melee.mp4";
+
+    Video *melee = fromMP4(filename_melee);
+    printVideoInfo(melee);
+
+    // writeMP4(filterVideo(melee, 100), "melee_100.mp4");
+    // writeMP4(filterVideo(melee, 200), "melee_200.mp4");
+    // writeMP4(filterVideo(melee, 150), "melee_150.mp4");
+
+    // test the diff_u8 function
+
+    printf("%u \n", diff_u8(255, 0));
+    
+    // Video *melee
+
+    // writeMP4(gradientXVideo(melee), "melee_Ix.mp4");
+    // writeMP4(gradientYVideo(melee), "melee_Iy.mp4");
+    // writeMP4(gradientTVideo(melee), "melee_It.mp4");
+    // writeMP4(laplacianVideo(melee), "melee_la.mp4");
+    // writeMP4(filterVideo(gradientTVideo(melee), 150), "melee_It_150.mp4");
+
+    // writeMP4(hornSchunckVideo(melee, 20, 0.5), "melee_hs.mp4");
+
+    // printf("Trying to load 'melee_move.mp4'\n");
+    // Video *movement = fromMP4("melee_move.mp4");
+    // printVideoInfo(movement);
+    // writeMP4(filterVideo(movement, 40), "melee_move_40.mp4");
+
+    // writeMP4(hornSchunckVideo(movement, 20, 0.5), "melee_move_hs.mp4");
+    // writeMP4(filterVideo(hornSchunckVideo(movement, 20, 0.5), 50), "melee_move_hs_filter.mp4");
+
+    // Video *csgo_bots = fromMP4("csgo_bots.mp4");
+    // printVideoInfo(csgo_bots);
+
+    // writeMP4(gradientTVideo(csgo_bots), "csgo_It.mp4");
+    // writeMP4(filterVideo(gradientTVideo(csgo_bots), 134), "csgo_It_7.mp4");
+
+    // writeMP4(hornSchunckVideo(csgo_bots, 10, 0.25), "csgo_hs.mp4");
+    // writeMP4(filterVideo(hornSchunckVideo(csgo_bots, 10, 0.25), 15), "csgo_hs_15.mp4");
+    // writeMP4(laplacianVideo(filterVideo(hornSchunckVideo(csgo_bots, 10, 0.25), 15)), "csgo_la_hs_15.mp4");
+
+    // writeMP4(hornSchunckVideo(v, 10, 0.25), "v_hs.mp4");
+
+    // Video *chess_long = fromMP4("chess_long.mp4");
+    // printVideoInfo(chess_long);
+
+    // // Video *chess_500 = takeFrames(chess_long, 500);
+    // Video *chess_500 = fromMP4("chess_500.mp4");
+
+    // writeMP4(hornSchunckVideo(chess_500, 10, 0.3), "chess_500_hs.mp4");
+    // writeMP4(chess_500, "chess_500.mp4");
+
+    // Video *chess_arcade = fromMP4("chess_arcade.mp4");
+    // Video *chess_400 = takeFrames(chess_arcade, 400);
+    // Video *chess_400 = fromMP4("chess_arcade_400.mp4");
+    // // writeMP4(chess_400, "chess_arcade_400.mp4");
+
+    // // writeMP4(hornSchunckVideo(chess_400, 30, 0.5), "chess_arcade_hs_a10.mp4");
+    // writeMP4(filterVideo(hornSchunckVideo(chess_400, 30, 0.5), 50), "chess_arcade_hs_filter.mp4");
+
+    // writeMP4(laplacianVideo(chess_400), "chess_arcade_la");
+    // writeMP4(gradientXVideo(chess_400), "chess_arcade_ix");
+    // writeMP4(gradientYVideo(chess_400), "chess_arcade_iy");
+    // writeMP4(gradientTVideo(chess_400), "chess_arcade_it");
+
+    // Try and load in an avi file
+
+    /**========================================================================
+     *!                           Draco 0
+     *========================================================================**/
+    // const char draco[] = "draco.avi";
+
+    // printf("fps: %d\n", ffmpeg_get_fps(draco));
+    // printf("res: %dx%d\n", ffmpeg_get_w(draco), ffmpeg_get_w(draco));
+
+    // Video *v_draco = fromMP4(draco);
+    // v_draco->fps = 30;
+    // printVideoInfo(v_draco);
+
+    // writeMP4(v_draco, "draco.mp4");
+
+    // Video *v_draco_200 = filterVideo(v_draco, 200);
+
+    // // now apply horn and shunk to v_draco
+    // writeMP4(v_draco_200, "draco_200.mp4"); 
+
+    // writeMP4(hornSchunckVideo(v_draco_200, 20, 0.5), "draco_200_hs.mp4"); 
+
+
+    /**========================================================================
+     *!                           Draco 1
+     *========================================================================**/
+    Video *draco2 = fromMP4("draco2.avi");
+    draco2->fps = 10;
+    Video *f100_draco2 = filterVideo(draco2, 100);
+    Video *f200_draco2 = filterVideo(draco2, 200);
+
+    // writeMP4(draco2, "draco2.mp4");
+    // writeMP4(f100_draco2, "draco2_f100.mp4");
+    // writeMP4(f200_draco2, "draco2_f200.mp4");
+
+    // writeMP4(hornSchunckVideo(draco2, 30, 0.5), "draco2_hs.mp4");
+
+    // get the pixel averages of the world video
+    writePGM(pixelAverages_b(v), "test_averages.pgm");
+
+    Video *still = frameToVideo(examineFrame(v, 100), 30, 10);
+    printVideoInfo(still);
+
+    writePGM(pixelAverages_b(still), "v_f100_avg.pgm");
+
+    // writeMP4(frameToVideo(examineFrame(v, 100), 30, 5), "v_f100.mp4");
+    writeMP4(still, "v_f100.mp4");
 
     return 0;
 }

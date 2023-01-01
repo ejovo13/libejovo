@@ -4,7 +4,7 @@
 
 void t_load_pgm();
 void t_optical_flow();
-void update_flow_field(Matrix_d *u, Matrix_d *v, const Matrix_i* I_x, const Matrix_i* I_y, const Matrix_i* I_t);
+// void update_flow_field(Matrix_d *u, Matrix_d *v, const Matrix_i* I_x, const Matrix_i* I_y, const Matrix_i* I_t);
 
 
 int main() {
@@ -103,12 +103,11 @@ void t_optical_flow() {
     f1 = read_pgm("f36.pgm");
     Matrix_i *f2 = read_pgm("f37.pgm");
 
-    flow = calc_optical_flow_hs(f0, f1, nb_iter);
+    flow = calc_optical_flow_hs(f0, f1, nb_iter, 0.5);
     save_optical_flow("moving_bodies2_", flow);
 
-    flow = calc_optical_flow_hs(f1, f2, nb_iter);
+    flow = calc_optical_flow_hs(f1, f2, nb_iter, 0.5);
     save_optical_flow("mb_1_2_", flow);
-
 
 
 }

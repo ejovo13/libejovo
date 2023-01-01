@@ -65,13 +65,31 @@ Video *fromMP4(const char *filename) {
     // Now read the rest of the content or something
 
     fflush(pipein);
-    pclose(pipein);
+    // pclose(pipein);
+
+    fprintf(stderr, "pipes flushed\n");
 
     free(buffer);
+    printf("'%s' succesfully read\n", filename);
 
     return video;
 }
 
+Video *fromAVI(const char *filename);
+
+
+
+Video *takeFrames(const Video *video, int __n) {
+
+    int n = __n < video->n_frames ? __n : video->n_frames;
+
+    Video *out = newVideo(video->width, video->height, n, video->fps);
+    for (int i = 0; i < n; i++) {
+        out->frames[i] = Matrix_clone_b(video->frames[i]);
+    }
+
+    return out;
+}
 
 // Take a video object and write it to .mp4 using ffmpeg
 // and using a grayscale video
@@ -145,6 +163,21 @@ Video *gradientYVideo(const Video *video) {
     return out;
 }
 
+// Compute the gradient in time of two fra.es
+Video *gradientTVideo(const Video *video) {
+
+    Video *out = newVideo(video->width, video->height, video->n_frames - 1, video->fps);
+
+    // now let's create the individual frames
+
+    for (int i = 0; i < video->n_frames - 1; i++) {
+        out->frames[i] = gradientT(video->frames[i], video->frames[i + 1]);
+    }
+
+    return out;
+
+}
+
 Video *laplacianVideo(const Video *video) {
 
     Video *out = newVideo(video->width, video->height, video->n_frames, video->fps);
@@ -153,6 +186,16 @@ Video *laplacianVideo(const Video *video) {
 
     for (int i = 0; i < video->n_frames; i++) {
         out->frames[i] = laplacian(video->frames[i]);
+    }
+
+    return out;
+}
+
+Video *hornSchunckVideo(const Video *video, int nb_iter, double alpha) {
+    Video *out = newVideo(video->width, video->height, video->n_frames - 1, video->fps);
+
+    for (int i = 0; i < video->n_frames - 1; i++) {
+        out->frames[i] = hornSchunckMagnitude(video->frames[i], video->frames[i + 1], nb_iter, alpha);
     }
 
     return out;
@@ -317,3 +360,39 @@ int ffmpeg_get_n_frames(const char *filename) {
 
     return n_frames;
 }
+
+// Let's get some video analysis functions that can compute, for example, the variance of each pixel.
+// To compute the variance of every single pixel, first we are going to go ahead and compute a static matrix that contains the average value for each pixel across time.
+
+// get the average value of a pixel across time
+Matrix_b *pixelAverages_b(const Video* video) {
+    // Initialize a byte matrix to store the average
+    Matrix_b *out = Matrix_new_b(video->height, video->width);
+    FORIJ(out, int sum = 0;
+    ,
+        // across t, sum up the pixels)
+        for (int t = 0; t < video->n_frames; t++) {
+            sum += matat_b(video->frames[t], i, j);
+        }
+
+        *matacc_b(out, i, j) = sum / (double) video->n_frames;
+        // printf("avg(%d, %d) = %lf, sum = %d\n", i, j, sum / (double) video->n_frames, sum);
+    ,
+    )
+
+    return out;
+}
+
+// Take a single frame and turn it into a video
+Video *frameToVideo(const Matrix_b *frame, int fps, double s) {
+
+    Video *out = newVideo(frame->ncols, frame->nrows, fps * s, fps);
+
+    // now just clone the frame n_frames times
+    for (int i = 0; i < out->n_frames; i++) {
+        out->frames[i] = Matrix_clone_b(frame);
+    }
+
+    return out;
+}
+

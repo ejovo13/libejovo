@@ -24,6 +24,7 @@ typedef struct {
 
 
 
+uint8_t diff_u8(uint8_t a, uint8_t b);
 
 
 // Make sure that all of the matricese are the same size
@@ -130,7 +131,7 @@ typedef struct optical_flow_t {
 
 typedef double (* function2_d) (double, double);
 
-optical_flow_t calc_optical_flow_hs(const Matrix_i *f0, const Matrix_i *f1, int nb_iter);
+optical_flow_t calc_optical_flow_hs(const Matrix_i *f0, const Matrix_i *f1, int nb_iter, double alpha);
 
 Matrix_d *map2_d(const Matrix_d *__x, const Matrix_d *__y, function2_d __f_xy);
 
@@ -142,7 +143,16 @@ Matrix_i *img_x_gradient(const Matrix_i *frame);
 
 Matrix_i *img_y_gradient(const Matrix_i *frame);
 
-void update_flow_field(Matrix_d *u, Matrix_d *v, const Matrix_i* I_x, const Matrix_i* I_y, const Matrix_i* I_t);
+void update_flow_field(Matrix_d *u, Matrix_d *v, const Matrix_i* I_x, const Matrix_i* I_y, const Matrix_i* I_t, double alpha);
 
 void save_optical_flow(const char *prefix, optical_flow_t flow);
+
+Matrix_b *hornSchunckMagnitude(const Matrix_b *__f0, const Matrix_b *__f1, int nb_iter, double alpha);
+
+Matrix_b *dToBitmap(const Matrix_d *__values, double min, double max);
+
+Matrix_b *d_to_b(const Matrix_d *__values);
+
+Matrix_d *opticalMagnitude(const optical_flow_t uv);
+
 #endif

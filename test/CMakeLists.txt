@@ -63,23 +63,44 @@ endmacro()
 
 add_subdirectory(matrix)
 
-
+macro copy_file(filename)
+    file (
+        COPY ${CMAKE_CURRENT_SOURCE_DIR}/${filename}
+        DESTINATION ${CMAKE_CURRENT_BINARY_DIR}
+    )
+endmacro()
 
 foreach(T ${TESTS})
     ejovo_add_test(${T})
 endforeach(T)
 
-file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/f0.pgm
-    DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+copy_file(f0.pgm)
+copy_file(f1.pgm)
+copy_file(mbf0.pgm.pgm)
+copy_file(mbf1.pgm)
+copy_file(c60.pgm)
+copy_file(c60t.pgm)
+copy_file(f35.pgm)
+copy_file(f36.pgm)
+copy_file(f37.pgm)
+copy_file(chess_long.mp4)
+copy_file(draco.avi)
+copy_file(draco2.avi)
+copy_file(melee_move.mp4)
+copy_file(melee.mp4)
+copy_file(test.mp4)
 
-file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/f1.pgm
-    DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+# file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/f0.pgm
+    # DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
-file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/mbf0.pgm
-    DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+# file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/f1.pgm
+#     DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
-file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/mbf1.pgm
-    DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+# file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/mbf0.pgm
+#     DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
+# file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/mbf1.pgm
+#     DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 # file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/coastguard060t.pgm
 #     DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/cg0.pgm)

@@ -57,10 +57,19 @@ Video *laplacianVideo(const Video *video);
 
 Video *cloneVideo(const Video *video);
 
+Video *hornSchunckVideo(const Video *video, int nb_iter, double alpha);
+
+// Take n frames from a video
+Video *takeFrames(const Video *video, int __n);
+
 // Need a function to compute the time difference.
 // All we really have to do is subtract the next frame with 
 // this frame
 Video *gradientTVideo(const Video *video);
+
+Matrix_b *pixelAverages_b(const Video* video);
+
+Video *frameToVideo(const Matrix_b *frame, int fps, double s);
 
 // Compute the number of bytes held by a single frame of this video
 static inline int frameSize(const Video* video) {
@@ -86,6 +95,9 @@ static inline const Matrix_b *examineFrame(const Video *video, int n) {
     return video->frames[n];
 }
 
+// Convert frames to integer matrices so
+
+// When I perform the subtraction, I can just map the result by dividing by 2 and then adding 255 / 2 = 127.5
 
 
 #endif // EJOVO_VID_H
