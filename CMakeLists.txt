@@ -4,11 +4,33 @@ project("Ejovo lib")
 enable_language(C)
 
 include(CTest)
+set(CMAKE_CXX_STANDARD 14)
 
+# include(FetchContent)
+# FetchContent_Declare(
+#   googletest
+#   URL https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip
+# )
+# For Windows: Prevent overriding the parent project's compiler/linker settings
+# set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+# FetchContent_MakeAvailable(googletest)
 # enable_testing(ON)
 
 # include(GNU)
 
+# set(CMAKE_PREFIX_PATH ${CMAKE_SOURCE_DIR}/FindFFmpeg.cmake)
+set(CMAKE_PREFIX_PATH ${CMAKE_SOURCE_DIR})
+set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR})
+find_package(FFmpeg)
+
+message("==== CMAKE_MODULE_PATH: ${CMAKE_MODULE_PATH}")
+
+if (FFMPEG_FOUND) 
+message("===== Ffmpeg found")
+add_compile_definitions(LIBJOVO_FFMPEG_FOUND)
+else()
+message(FATAL_ERROR "You fucked up")
+endif()
 # We must have the c implementation of pcg-c installed
 # which can be found here: https://github.com/imneme/pcg-c
 find_library(PCG_RANDOM_LIBRARY

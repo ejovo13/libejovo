@@ -90,38 +90,26 @@ copy_file(melee_move.mp4)
 copy_file(melee.mp4)
 copy_file(test.mp4)
 
-# file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/f0.pgm
-    # DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+# ============================================
+#            Google tests
+# ============================================
+# include(GoogleTest)
 
-# file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/f1.pgm
-#     DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+# # Add source file of tests
+# macro(gtest_add_src src_name) 
+#     add_executable(${src_name} ${src_name}.cc)
+#     target_link_libraries(${src_name} GTest::gtest_main ejovo)
+#     target_link_directories(${src_name} PUBLIC ${TEST_INC})
+#     gtest_discover_tests(${src_name} hello_gtest)
+# endmacro()
 
-# file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/mbf0.pgm
-#     DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+# add_executable(hello_gtest hello_gtest.cc)
+# target_link_libraries(hello_gtest GTest::gtest_main ejovo)
+# target_link_directories(hello_gtest PUBLIC ${TEST_INC})
+# gtest_discover_tests(hello_gtest)
 
-# file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/mbf1.pgm
-#     DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
-# file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/coastguard060t.pgm
-#     DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/cg0.pgm)
 
-# file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/coastguard061.pgm
-#     DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/cg1.pgm)
-
-file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/c60.pgm
-    DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
-
-file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/c60t.pgm
-    DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
-
-file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/f35.pgm
-    DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
-
-file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/f36.pgm
-    DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
-
-file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/f37.pgm
-    DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 # Flags for profiling on local machine
 
 # target_compile_options(test_mathad_speed PUBLIC -pg -g)

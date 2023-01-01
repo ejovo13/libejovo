@@ -103,8 +103,9 @@ int main() {
 
     // writeMP4(hornSchunckVideo(v, 10, 0.25), "v_hs.mp4");
 
-    // Video *chess_long = fromMP4("chess_long.mp4");
-    // printVideoInfo(chess_long);
+    fprintf(stderr, "chess_long.mp4..\n");
+    Video *chess_long = fromMP4("chess_long.mp4");
+    printVideoInfo(chess_long);
 
     // // Video *chess_500 = takeFrames(chess_long, 500);
     // Video *chess_500 = fromMP4("chess_500.mp4");
