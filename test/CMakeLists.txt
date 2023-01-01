@@ -63,7 +63,7 @@ endmacro()
 
 add_subdirectory(matrix)
 
-macro copy_file(filename)
+macro (copy_file filename)
     file (
         COPY ${CMAKE_CURRENT_SOURCE_DIR}/${filename}
         DESTINATION ${CMAKE_CURRENT_BINARY_DIR}
@@ -76,7 +76,7 @@ endforeach(T)
 
 copy_file(f0.pgm)
 copy_file(f1.pgm)
-copy_file(mbf0.pgm.pgm)
+copy_file(mbf0.pgm)
 copy_file(mbf1.pgm)
 copy_file(c60.pgm)
 copy_file(c60t.pgm)
