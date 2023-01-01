@@ -29,7 +29,7 @@ if (FFMPEG_FOUND)
 message("===== Ffmpeg found")
 add_compile_definitions(LIBJOVO_FFMPEG_FOUND)
 else()
-message(FATAL_ERROR "You fucked up")
+message(FATAL_ERROR "ffmpeg is a required package but was not found")
 endif()
 # We must have the c implementation of pcg-c installed
 # which can be found here: https://github.com/imneme/pcg-c
