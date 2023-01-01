@@ -21,6 +21,7 @@ list(APPEND TESTS
     pcg
     benchmark
     img
+    vidTest
     # rand
 )
 

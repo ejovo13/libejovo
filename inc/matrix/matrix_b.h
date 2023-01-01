@@ -1,7 +1,7 @@
-// complex matrix version
+// byte matrix version
 
-#ifndef MATRIX_C_H
-#define MATRIX_C_H
+#ifndef MATRIX_B_H
+#define MATRIX_B_H
 
 // Matrix of doubles
 
@@ -11,12 +11,12 @@
 #undef MATRIX_FLOAT
 #undef MATRIX_INT
 #undef MATRIX_DOUBLE
-#undef MATRIX_BYTE
+#undef MATRIX_COMPLEX
 
 
-#define MATRIX_COMPLEX
-#define MATRIX_TYPE double complex
-#define TYPE_SUFFIX _c
+#define MATRIX_BYTE
+#define MATRIX_TYPE uint8_t
+#define TYPE_SUFFIX _b
 
 // #ifndef MATRIX_CMOPLEX_DEFINED
 // #define MATRIX_COMPLEX_DEFINED

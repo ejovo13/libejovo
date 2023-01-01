@@ -220,6 +220,8 @@ static inline void TYPED(print_el)(const MATRIX_TYPE el) {
     printf("%5d ", el);
 #elif defined MATRIX_COMPLEX
     printf("(%4.4lf, %4.4lf) ", creal(el), cimag(el));
+#elif defined MATRIX_BYTE
+    printf("%3u ", el);
 #endif
 }
 
@@ -232,6 +234,8 @@ static inline void TYPED(print_el_end)(const MATRIX_TYPE el) {
     printf("%5d}\n", el);
 #elif defined MATRIX_COMPLEX
     printf("(%4.4lf, %4.4lf)}\n", creal(el), cimag(el));
+#elif defined MATRIX_BYTE
+    printf("%u", el);
 #endif
 }
 

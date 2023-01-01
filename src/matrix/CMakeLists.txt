@@ -34,6 +34,7 @@ add_library(ejovo_matrix_double OBJECT matrix_d.c)
 add_library(ejovo_matrix_int OBJECT matrix_i.c)
 add_library(ejovo_matrix_float OBJECT matrix_f.c)
 add_library(ejovo_matrix_complex OBJECT matrix_c.c)
+add_library(ejovo_matrix_byte OBJECT matrix_b.c)
 
 # Defining FIRST_COMPILATION_PASS allows me to add the definitions for M_PI and a few other 
 # constants ONLY ONCE
@@ -45,6 +46,7 @@ target_include_directories(ejovo_matrix_double PUBLIC ${INC}/matrix)
 target_include_directories(ejovo_matrix_int PUBLIC ${INC}/matrix)
 target_include_directories(ejovo_matrix_float PUBLIC ${INC}/matrix)
 target_include_directories(ejovo_matrix_complex PUBLIC ${INC}/matrix)
+target_include_directories(ejovo_matrix_byte PUBLIC ${INC}/matrix)
 
 
 # set_target_properties(ejovo_matrix PROPERTIES

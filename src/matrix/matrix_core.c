@@ -520,6 +520,10 @@ void TYPED(Matrix_print)(const TYPED(Matrix) *__m) {
 
             printf("(%4.4lf, %4.4lf) ", creal(matat_c(__m, i, j)), cimag(matat_c(__m, i, j)));
 
+        #elif defined MATRIX_BYTE
+
+            print_el_b(matat_b(__m, i, j));
+
         #endif
 
 

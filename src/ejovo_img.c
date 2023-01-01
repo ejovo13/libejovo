@@ -40,6 +40,36 @@ Matrix_d *normalize_minmax(Matrix_d *A) {
     return A;
 }
 
+// pgm uses grayscale
+// ppm uses 24 bits
+
+void writePGM(const Matrix_b *img, const char *filename) {
+    FILE *file;
+    // Start off the first couple lines with ASCII
+    file = fopen(filename, "w");
+    fprintf(file, "P5\n");
+    fprintf(file, "%zu %zu\n", img->ncols, img->nrows);
+    fprintf(file, "255\n");
+    // fclose(file);
+
+    // file_bin = fopen(filename, "ab");
+    // file = fopen(filename, "ab");
+    
+    FORIJ(img
+        , 
+            ,
+            // fill the buffer
+            // fwrite((void *) buffer, sizeof(uint8_t), 3, file);
+            fprintf(file, "%c", matat_b(img, i, j));
+
+        , 
+        continue;
+    );
+
+    fclose(file);
+}
+
+
 void writePPM(const img_t *img, const char *filename) {
     FILE *file;
     // Start off the first couple lines with ASCII
@@ -306,6 +336,65 @@ Matrix_i *img_y_gradient(const Matrix_i *frame) {
     return I_y;
 }
 
+Matrix_b *gradientX(const Matrix_b *img) {
+
+    Matrix_b *I_x = Matrix_new_b(img->nrows, img->ncols);
+
+    for (size_t i = 0; i < img->nrows; i++) {
+        for (size_t j = 0; j < img->ncols - 1; j++) {
+            uint8_t x  = matat_b(img, i, j);
+            uint8_t xi = matat_b(img, i, j + 1); 
+            matset_b(I_x, i, j, xi - x);
+        }
+    }
+
+    return I_x;
+}
+
+Matrix_b *gradientY(const Matrix_b *img) {
+
+    Matrix_b *I_y = Matrix_new_b(img->nrows, img->ncols);
+
+    for (size_t i = 0; i < img->nrows - 1; i++) {
+        for (size_t j = 0; j < img->ncols; j++) {
+            uint8_t y  = matat_b(img, i, j);
+            uint8_t yi = matat_b(img, i + 1, j); 
+            matset_b(I_y, i, j, yi - y);
+        }
+    }
+
+    return I_y;
+}
+
+// The problem with this function is sometimes I'm going to be returning
+// negative values (if the intensity drops) and those are going to wrap 
+// around when using uint8_t...
+//
+// How do I deal with negative values?
+//
+// The range of values for each location changes from [0, 255] to [-255, 255]
+Matrix_b *gradientT(const Matrix_b *img_0, const Matrix_b *img_1) {
+    return Matrix_subtract_b(img_1, img_0);
+}
+
+Matrix_b *laplacian(const Matrix_b *img) {
+
+    // I'll reference the original img when computing the new values
+    Matrix_b *out = Matrix_new_b(img->nrows, img->ncols);
+
+    for (size_t i = 1; i < img->nrows - 1; i++) {
+        for (size_t j = 1; j < img->ncols - 1; j++) {
+            *matacc_b(out, i, j) = matat_b(img, i - 1, j) +
+                                   matat_b(img, i,     j - 1) +
+                                   matat_b(img, i + 1, j) +
+                                   matat_b(img, i    , j + 1) -
+                               4 * matat_b(img, i    , j);
+        }
+    }
+
+    return out;
+}
+
 double local_average(const Matrix_d *__m, int i, int j) {
 
     // check border conditions
@@ -314,7 +403,7 @@ double local_average(const Matrix_d *__m, int i, int j) {
 
 void update_flow_field(Matrix_d *u, Matrix_d *v, const Matrix_i* I_x, const Matrix_i* I_y, const Matrix_i* I_t) {
 
-    double lambda = 1;
+    double lambda = 0.5;
     // double mu_v = mean_d(v);
     // double mu_u = mean_d(u);
     double mu_v = 0;
@@ -376,7 +465,7 @@ void update_flow_field(Matrix_d *u, Matrix_d *v, const Matrix_i* I_x, const Matr
 optical_flow_t calc_optical_flow_hs(const Matrix_i *f0, const Matrix_i *f1, int nb_iter) {
 
     // Let's compute the differece
-    Matrix_i *I_t = Matrix_subtract_i(f0, f1);
+    Matrix_i *I_t = Matrix_subtract_i(f1, f0);
     Matrix_i *I_x = img_x_gradient(f0);
     Matrix_i *I_y = img_y_gradient(f0);
 
@@ -403,8 +492,8 @@ void save_optical_flow(const char *prefix, optical_flow_t flow) {
     write_ppm_gray(d_to_i(mag), prepend("mag.ppm", prefix));
     // write_ppm_color_minmax_d(mag, viridis(), -10, 10, prepend("mag_vir.ppm", prefix));
     write_ppm_gray(d_to_i(dir), prepend("dir.ppm", prefix));
-    // write_ppm_gray(flow.It, prepend("diff.ppm", prefix));
-    // write_ppm_gray(flow.Ix, prepend("Ix.ppm", prefix));
-    // write_ppm_gray(flow.Iy, prepend("Iy.ppm", prefix));
+    write_ppm_gray(flow.It, prepend("diff.ppm", prefix));
+    write_ppm_gray(flow.Ix, prepend("Ix.ppm", prefix));
+    write_ppm_gray(flow.Iy, prepend("Iy.ppm", prefix));
 
 }

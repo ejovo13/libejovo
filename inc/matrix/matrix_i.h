@@ -8,6 +8,7 @@
 #undef MATRIX_FLOAT
 #undef MATRIX_DOUBLE
 #undef MATRIX_COMPLEX
+#undef MATRIX_BYTE
 
 #define MATRIX_INT
 #define MATRIX_TYPE int

@@ -2951,3 +2951,734 @@ Matrix_c *Stochastic_rexp_c(size_t __n, double __rate);
  Vector_c*Vector_prob_unif_c(size_t __n);
  Vector_c*compute_row_sums_c(const Matrix_c *__m);
  Vector_c*compute_col_sums_c(const Matrix_c *__m);
+extern const double PI;
+extern const double TWO_PI;
+extern const double HALF_PI;
+extern const double EPS;
+typedef struct Matrix_b {
+    uint8_t *data;
+    size_t nrows;
+    size_t ncols;
+} Matrix_b;
+extern Matrix_b *g_ANON_b;
+typedef struct {
+    uint8_t *ptr;
+    size_t ncols;
+} ColIter_b;
+typedef struct {
+    uint8_t *ptr;
+    size_t ptr_diff;
+} RowIter_b;
+typedef struct {
+    uint8_t *ptr;
+    size_t ptr_diff;
+} MatIter_b;
+typedef Matrix_b Vector_b;
+typedef void (* EDITOR_b) (uint8_t *);
+typedef void (* EDITOR_2_b) (uint8_t *, uint8_t *);
+typedef void (* EDITOR_K_b) (uint8_t *, uint8_t);
+typedef _Bool (* Mask_b) (uint8_t *);
+typedef struct {
+    Matrix_b *L;
+    Matrix_b *U;
+} LU_b;
+typedef struct {
+    Matrix_b *L;
+    Matrix_b *U;
+    Vector_b*P;
+} LUP_b;
+typedef struct {
+    Matrix_b *L;
+    Matrix_b *D;
+    Vector_b*U;
+} LDU_b;
+typedef void (* MatIterFn_b) (MatIter_b);
+typedef void (* MatIterFn_k_b) (MatIter_b, uint8_t);
+typedef void (* MatIterFn_ptr_b) (MatIter_b, const uint8_t *);
+typedef void (* MatIterFn_iter_b) (MatIter_b, MatIter_b);
+typedef void (* MatIterFn_iter_k_b) (MatIter_b, MatIter_b, const uint8_t);
+typedef void (* ColIterFn_b) (ColIter_b *);
+typedef void (* ColIterFn_k_b) (ColIter_b*, uint8_t);
+typedef void (* ColIterFn_ptr_b) (ColIter_b*, const uint8_t *);
+typedef void (* ColIterFn_iter_b) (ColIter_b*, ColIter_b*);
+typedef void (* RowIterFn_b) (RowIter_b*);
+typedef void (* RowIterFn_k_b) (RowIter_b*, uint8_t);
+typedef void (* RowIterFn_ptr_b) (RowIter_b*, const uint8_t *);
+typedef void (* RowIterFn_iter_b) (RowIter_b*, RowIter_b*);
+typedef void (* RowIterFn_iter_k_b) (RowIter_b*, RowIter_b*, const uint8_t);
+typedef uint8_t (* function_b) (uint8_t);
+typedef _Bool (* predicate_fn_b) (uint8_t);
+typedef Matrix_b Index_b;
+static inline Matrix_b *matalloc_b(size_t __nrows, size_t __ncols) {
+    Matrix_b *x = (Matrix_b *) malloc(sizeof(Matrix_b));
+    uint8_t *data = (uint8_t *) malloc(sizeof(uint8_t) * (__nrows * __ncols));
+    x->data = data;
+    x->nrows = __nrows;
+    x->ncols = __ncols;
+    return x;
+}
+Matrix_b *matvec_b(double k);
+Matrix_b *matanon_b(int __count, ...);
+static inline void matfree_b(Matrix_b *__A) {
+    free(__A->data);
+    free(__A);
+}
+static inline void Matrix_free_b(Matrix_b *__A) {
+    if (__A) {
+        if (__A->data) free(__A->data);
+        free(__A);
+    }
+}
+static inline void Matrix_reset_b(Matrix_b **__A_ptr) {
+    if (*__A_ptr) {
+        if ((*__A_ptr)->data) free((*__A_ptr)->data);
+        free (*__A_ptr);
+    }
+    *__A_ptr = ((void *)0);
+}
+Matrix_b *Matrix_renew_b(Matrix_b *A, int m, int n);
+static inline _Bool matcpy_b(Matrix_b *restrict __dest, const Matrix_b *restrict __src) {
+    memcpy(__dest->data, __src->data, sizeof(uint8_t)*(__src->nrows * __src->ncols));
+    __dest->ncols = __src->ncols;
+    __dest->nrows = __src->nrows;
+    if(__dest && __src && __dest->data) {
+        return 1;
+    } else {
+        return 0;
+    }
+}
+Matrix_b * matclone_b(const Matrix_b *restrict __src);
+Matrix_b *Matrix_catch_b(Matrix_b **__lhs_ptr, Matrix_b *__anon_rhs);
+Matrix_b *Matrix_anon_b(Matrix_b *__anon_rhs);
+void Matrix_anon_free_b();
+Matrix_b *Matrix_transpose_b(const Matrix_b *m);
+Matrix_b *Matrix_shallow_copy_b(const Matrix_b *rhs);
+Matrix_b *Matrix_take_b(Matrix_b *rhs);
+Matrix_b * Matrix_new_b(int nrows, int ncols);
+Matrix_b *Matrix_move_b(uint8_t **arr_ptr, size_t nrows, size_t ncols);
+Matrix_b *Matrix_from_b(const uint8_t *arr, size_t nrows, size_t ncols);
+Matrix_b *Matrix_colvec_b(const uint8_t *arr, size_t nrows);
+Matrix_b *Matrix_rowvec_b(const uint8_t *arr, size_t ncols);
+Matrix_b * Matrix_clone_b(const Matrix_b *restrict src);
+Matrix_b * Matrix_ones_b(size_t nrows, size_t ncols);
+Matrix_b * Matrix_ij_b(size_t nrows, size_t ncols);
+ Vector_b*linspace_b(uint8_t start, uint8_t end, int N);
+ Vector_b*range_b(int start, int end, int diff);
+uint8_t raisedBy10_b(uint8_t input);
+ Vector_b*logspace_b(double start, double end, int n);
+ Vector_b*Vector_linspace_b(uint8_t start, uint8_t end, int N);
+ Vector_b*Vector_range_b(double start, int end, int diff);
+Matrix_b *Matrix_diagonal_b(size_t n);
+Matrix_b *Matrix_tridiagonal_b(size_t n);
+Matrix_b * Matrix_value_b(size_t nrows, size_t ncols, uint8_t value);
+Matrix_b * Matrix_random_b(size_t nrows, size_t ncols, int min, int max);
+Matrix_b * Matrix_rand_b(size_t nrows, size_t ncols);
+Matrix_b * Matrix_identity_b(size_t n);
+void matprint_b(const Matrix_b *m);
+void Matrix_print_b(const Matrix_b *m);
+void Vector_print_head_b(const Matrix_b *m, int n);
+void Matrix_print_iter_b(const Matrix_b *m);
+void Matrix_summary_b(const Matrix_b *m);
+void Matrix_print_all_digits_b(const Matrix_b *m);
+void Matrix_print_fixed_b(const Matrix_b *m);
+Matrix_b *Matrix_id_b(size_t m, size_t n);
+static inline void print_el_b(const uint8_t el) {
+    printf("%3u ", el);
+}
+static inline void print_el_end_b(const uint8_t el) {
+    printf("%u", el);
+}
+Matrix_b *Matrix_K_b(size_t __n);
+Matrix_b *Matrix_C_b(size_t __n);
+Matrix_b *Matrix_T_b(size_t __n);
+Matrix_b *Matrix_B_b(size_t __n);
+static inline void add_each_b(uint8_t *__a, uint8_t *__b) {
+    (*__a) += (*__b);
+}
+static inline void sub_each_b(uint8_t *__a, uint8_t *__b) {
+    (*__a) -= (*__b);
+}
+static inline void mult_each_b(uint8_t *__a, uint8_t *__b) {
+    (*__a) *= (*__b);
+}
+static inline void div_each_b(uint8_t *__a, uint8_t *__b) {
+    (*__a) /= (*__b);
+}
+static inline void multscalar_b(uint8_t *__el, uint8_t __k) {
+    (*__el) *= __k;
+}
+static inline void addscalar_b(uint8_t *__el, uint8_t __k) {
+    (*__el) += __k;
+}
+static inline void divscalar_b(uint8_t *__el, uint8_t __k) {
+    (*__el) /= __k;
+}
+static inline void subscalar_b(uint8_t *__el, uint8_t __k) {
+    (*__el) -= __k;
+}
+void Matrix_foreach_b(Matrix_b *__A, EDITOR_b __fnc);
+void Matrix_foreach_2_b(Matrix_b *__A, const Matrix_b *__B, EDITOR_2_b __fnc);
+void Matrix_foreach_k_b(Matrix_b *__A, EDITOR_K_b __fnc, uint8_t __k);
+void matadd_foreach_b(Matrix_b *__A, const Matrix_b *__B);
+void matsub_foreach_b(Matrix_b *__A, const Matrix_b *__B);
+void matmult_foreach_b(Matrix_b *__A, const Matrix_b *__B);
+void matdiv_foreach_b(Matrix_b *__A, const Matrix_b *__B);
+void matmultscalar_b(Matrix_b *__A, const uint8_t __k);
+void mataddscalar_b(Matrix_b *__A, const uint8_t __k);
+void matdivscalar_b(Matrix_b *__A, const uint8_t __k);
+void matsubscalar_b(Matrix_b *__A, const uint8_t __k);
+uint8_t matsum_b(const Matrix_b *__A);
+uint8_t matmin_b(const Matrix_b *__A);
+uint8_t matmax_b(const Matrix_b *__A);
+Matrix_b *Matrix_mult_scalar_b(const Matrix_b *__A, const uint8_t __k);
+Matrix_b *Matrix_add_scalar_b(const Matrix_b *__A, const uint8_t __k);
+Matrix_b *Matrix_sub_scalar_b(const Matrix_b *__A, const uint8_t __k);
+Matrix_b *Matrix_div_scalar_b(const Matrix_b *__A, const uint8_t __k);
+void Matrix_mask_b(Matrix_b *__A, Mask_b __mask, EDITOR_b __operator);
+void Matrix_mask_2_b(Matrix_b *__A, Matrix_b *__B, Mask_b __mask, EDITOR_2_b __operator);
+void Matrix_mask_k_b(Matrix_b *__A, Mask_b __mask, EDITOR_K_b __operator, const uint8_t __k);
+static inline _Bool Matrix_valid_bounds_b(const Matrix_b *__m, size_t __i, size_t __j) {
+    return (__i < __m->nrows && __j < __m->ncols);
+}
+_Bool matcmp_b(const Matrix_b *__A, const Matrix_b *__B);
+_Bool matcmp_bytes_b(const Matrix_b *__A, const Matrix_b *__B);
+_Bool Matrix_comp_add_b(const Matrix_b *__A, const Matrix_b *__B);
+_Bool Matrix_comp_mult_b(const Matrix_b *__A, const Matrix_b *__B);
+static inline size_t Matrix_size_b(const Matrix_b *__A) {
+    return __A->nrows * __A->ncols;
+}
+_Bool Matrix_is_square_b(const Matrix_b *__A);
+_Bool Matrix_is_row_b(const Matrix_b *__A);
+_Bool Matrix_is_col_b(const Matrix_b *__A);
+_Bool Matrix_is_vec_b(const Matrix_b *__A);
+size_t Matrix_rect_limit_b(const Matrix_b *__A);
+static inline Matrix_b *reshape_b(Matrix_b *__m, size_t __nrow, size_t __ncol) {
+    __m->nrows = __nrow;
+    __m->ncols = __ncol;
+    return __m;
+}
+static inline uint8_t matget_b(const Matrix_b *__m, size_t __i) {
+    return __m->data[__i];
+}
+static inline void matset_b(Matrix_b *__m, size_t __i, size_t __j, uint8_t __value) {
+    __m->data[__i * __m->ncols + __j] = __value;
+}
+static inline uint8_t matat_b(const Matrix_b *__m, size_t __i, size_t __j) {
+    return __m->data[__i * __m->ncols + __j];
+}
+static inline uint8_t *matacc_b(const Matrix_b *__m, size_t __i, size_t __j) {
+    return __m->data + (__i * __m->ncols + __j);
+}
+static inline void setelement_b(uint8_t *__el, const uint8_t __value) {
+    *__el = __value;
+}
+static inline void matswap_b(uint8_t *__a, uint8_t *__b) {
+    uint8_t temp = *__a;
+    *(__a) = *(__b);
+    *(__b) = temp;
+}
+static inline uint8_t Matrix_first_b(const Matrix_b *__m) {
+    return matat_b(__m, 0, 0);
+}
+static inline uint8_t Matrix_last_b(const Matrix_b *__m) {
+    return matat_b(__m, __m->nrows - 1, __m->ncols - 1);
+}
+static inline MatIter_b Matrix_begin_b(const Matrix_b *__m) {
+    MatIter_b b = {.ptr = __m->data, .ptr_diff = 1};
+    return b;
+}
+static inline MatIter_b Matrix_end_b(const Matrix_b *__m) {
+    MatIter_b e = {.ptr = matacc_b(__m, __m->nrows - 1, __m->ncols), .ptr_diff = 1};
+    return e;
+}
+static inline int Matrix_set_b(Matrix_b * __m, size_t __i, size_t __j, uint8_t __value) {
+    if (Matrix_valid_bounds_b(__m, __i, __j)) {
+        __m->data[__i*__m->ncols + __j] = __value;
+        return 0;
+    } else {
+        fprintf(stderr, "**WARNING** Trying to access array element out of bounds. (set)\n");
+        return 1;
+    }
+}
+static inline uint8_t *matacc_check_b(const Matrix_b *__m, size_t __i, size_t __j) {
+    if (Matrix_valid_bounds_b(__m, __i, __j)) {
+        return __m->data + (__i*__m->ncols + __j);
+    } else {
+        fprintf(stderr, "**WARNING** Trying to access array element out of bounds. (access)\n");
+        return ((void *)0);
+    }
+}
+static inline uint8_t *Matrix_access_b(const Matrix_b * __m, size_t __i, size_t __j) {
+    return matacc_check_b(__m, __i, __j);
+}
+static inline uint8_t Matrix_at_b(const Matrix_b *__m, size_t __i, size_t __j) {
+    if (Matrix_valid_bounds_b(__m, __i, __j)) {
+        return __m->data[__i * __m->ncols + __j];
+    } else {
+        fprintf(stderr, "**WARNING** Trying to access array element out of bounds. (at)\n");
+        return -1;
+    }
+}
+static inline void matcpyele_unsafe_b(Matrix_b *__dest, size_t __istart, size_t __iend, size_t __jstart, size_t __jend, const Matrix_b *__src) {
+    for (size_t i = __istart, irow = 0; i <= __iend; i++, irow++) {
+        for (size_t j = __jstart, jcol = 0; j <= __jend; j++, jcol++) {
+            Matrix_set_b(__dest, i, j, Matrix_at_b(__src, irow, jcol));
+        }
+    }
+}
+static inline int matcpyele_b(Matrix_b * __dest, size_t __istart, size_t __iend, size_t __jstart, size_t __jend, const Matrix_b * __src) {
+    if (__iend < __istart || __jend < __jstart || __iend >= __dest->nrows || __jend >= __dest->ncols) {
+        perror("Selected submatrix is not contained within Parent Matrix\n");
+        return -1;
+    }
+    if (__src->nrows != (__iend - __istart + 1) || __src->ncols != (__jend - __jstart + 1)) {
+        perror("Selected submatrix not the same size as the src matrix to copy\n");
+        return -2;
+    }
+    matcpyele_unsafe_b(__dest, __istart, __iend, __jstart, __jend, __src);
+    return 0;
+}
+static inline void matsetrow_b(Matrix_b *__A, size_t __i, size_t __j, const uint8_t *__src, size_t __n) {
+    uint8_t *row_start = matacc_b(__A, __i, __j);
+    memcpy((void *) row_start, (void *) __src, sizeof(uint8_t) * __n);
+}
+static inline void matsetcol_b(Matrix_b *__A, size_t __i, size_t __j, const uint8_t *__src, size_t __n) {
+    uint8_t *col_start = matacc_b(__A, __i, __j);
+    for (size_t i = 0; i < __n; i++) {
+        *(col_start + (__A->nrows * i)) = __src[i];
+    }
+}
+void matsetrow_mult_k_b(MatIter_b __r, const MatIter_b __row_end, uint8_t __k);
+void matsetrow_div_k_b(MatIter_b __r, const MatIter_b __row_end, uint8_t __k);
+void matsetrow_add_k_b(MatIter_b __r, const MatIter_b __row_end, uint8_t __k);
+void matsetrow_sub_k_b(MatIter_b __r, const MatIter_b __row_end, uint8_t __k);
+int Matrix_mult_row_k_b(Matrix_b *__A, const size_t __i, const uint8_t __k);
+int Matrix_div_row_k_b(Matrix_b *__A, const size_t __i, const uint8_t __k);
+int Matrix_add_row_k_b(Matrix_b *__A, const size_t __i, const uint8_t __k);
+int Matrix_sub_row_k_b(Matrix_b *__A, const size_t __i, const uint8_t __k);
+void matsetcol_mult_k_b(MatIter_b __c, const MatIter_b __col_end, uint8_t __k);
+void matsetcol_div_k_b(MatIter_b __c, const MatIter_b __col_end, uint8_t __k);
+void matsetcol_add_k_b(MatIter_b __c, const MatIter_b __col_end, uint8_t __k);
+void matsetcol_sub_k_b(MatIter_b __c, const MatIter_b __col_end, uint8_t __k);
+int Matrix_mult_col_k_b(Matrix_b *__A, const size_t __i, const uint8_t __k);
+int Matrix_div_col_k_b(Matrix_b *__A, const size_t __i, const uint8_t __k);
+int Matrix_add_col_k_b(Matrix_b *__A, const size_t __i, const uint8_t __k);
+int Matrix_sub_col_k_b(Matrix_b *__A, const size_t __i, const uint8_t __k);
+int Matrix_set_row_b(Matrix_b *__A, size_t __i, const Matrix_b *__cow);
+int Matrix_set_col_b(Matrix_b *__A, size_t __j, const Matrix_b *__col);
+Matrix_b *Matrix_get_col_b(const Matrix_b *__A, size_t __j);
+Matrix_b *Matrix_get_row_b(const Matrix_b *__A, size_t __i);
+Matrix_b * submat_b(const Matrix_b * __A, size_t __istart, size_t __iend, size_t __jstart, size_t __jend);
+Matrix_b * Matrix_submat_b(const Matrix_b * __A, size_t __istart, size_t __iend, size_t __jstart, size_t __jend);
+Matrix_b * Matrix_minor_b(const Matrix_b * __A, size_t __irow, size_t __icol);
+void matfill_b(Matrix_b *__A, const uint8_t __value);
+void Matrix_fill_b(Matrix_b * __A, const uint8_t value);
+void Matrix_fill_mask_b(Matrix_b *__A, Mask_b __mask, const uint8_t __value);
+Matrix_b *Matrix_rcat_b(const Matrix_b *__A, const Matrix_b *__B);
+Matrix_b *Matrix_ccat_b(const Matrix_b *__A, const Matrix_b *__B);
+MatIter_b matdiagbegin_b(const Matrix_b *__m, const int __d);
+MatIter_b matdiagend_b(const Matrix_b *__m, const int __d);
+void MatIter_print_b(const MatIter_b __begin, const MatIter_b __end);
+uint8_t Iter_dot_b(const MatIter_b __r, const MatIter_b __rend, const MatIter_b __c);
+void Matrix_print_row_b(const Matrix_b *__A, size_t __i);
+void Matrix_print_col_b(const Matrix_b *__A, size_t __j);
+void Matrix_print_diag_b(const Matrix_b *__A, size_t __d);
+void matrowop_add_b(Matrix_b *__A, const size_t __r1, const size_t __r2, const size_t __col_offset);
+void matrowop_add_scaled_b(Matrix_b *__A, const size_t __r1, const size_t __r2, const uint8_t __k, const size_t __col_offset);
+void Matrix_rowop_add_b(Matrix_b *__A, const size_t __r1, const size_t __r2);
+void Matrix_rowop_add_offset_b(Matrix_b *__A, const size_t __r1, const size_t __r2, const size_t __col_offset);
+void Matrix_rowop_add_scaled_b(Matrix_b *__A, const size_t __r1, const size_t __r2, const uint8_t __k);
+uint8_t Matrix_row_min_b(const Matrix_b *__A, const size_t __i);
+uint8_t Matrix_row_max_b(const Matrix_b *__A, const size_t __i);
+uint8_t Matrix_col_min_b(const Matrix_b *__A, const size_t __j);
+uint8_t Matrix_col_max_b(const Matrix_b *__A, const size_t __j);
+uint8_t Matrix_diag_min_b(const Matrix_b *__A, const size_t __j);
+uint8_t Matrix_diag_max_b(const Matrix_b *__A, const size_t __j);
+uint8_t Matrix_row_prod_b(const Matrix_b *__A, const size_t __i);
+uint8_t Matrix_col_prod_b(const Matrix_b *__A, const size_t __i);
+uint8_t Matrix_diag_prod_b(const Matrix_b *__A, const size_t __i);
+uint8_t Matrix_row_sum_b(const Matrix_b *__A, const size_t __i);
+uint8_t Matrix_col_sum_b(const Matrix_b *__A, const size_t __i);
+uint8_t Matrix_diag_sum_b(const Matrix_b *__A, const size_t __i);
+MatIter_b matcolpos_b(const Matrix_b *__A, size_t __i, size_t __j);
+MatIter_b Matrix_col_end_b(const Matrix_b *__A, size_t __j);
+MatIter_b Matrix_col_begin_b(const Matrix_b *__A, size_t __j);
+MatIter_b matcolbegin_b(const Matrix_b *__A, size_t __i);
+MatIter_b matcolend_b(const Matrix_b *__A, size_t __i);
+MatIter_b matrowpos_b(const Matrix_b *__A, size_t __i, size_t __j);
+MatIter_b matrowbegin_b(const Matrix_b *__A, size_t __i);
+MatIter_b matrowend_b(const Matrix_b *__A, size_t __i);
+MatIter_b Matrix_row_end_b(const Matrix_b *__A, size_t __i);
+MatIter_b Matrix_row_begin_b(const Matrix_b *__A, size_t __i);
+static inline MatIter_b MatIter_new_b(uint8_t *__ptr, size_t __ptr_diff) {
+    MatIter_b c = {.ptr = __ptr, .ptr_diff = __ptr_diff};
+    return c;
+}
+static inline MatIter_b MatIter_null_b() {
+    MatIter_b null = {.ptr = ((void *)0), .ptr_diff = 0};
+    return null;
+}
+static inline _Bool MatIter_is_null_b(MatIter_b __i) {
+    return __i.ptr == ((void *)0);
+}
+static inline MatIter_b MatIter_next_b(MatIter_b __c) {
+    MatIter_b next = {.ptr = __c.ptr += __c.ptr_diff, .ptr_diff = __c.ptr_diff};
+    return next;
+}
+static inline _Bool MatIter_cmp_b(const MatIter_b __lhs, const MatIter_b __rhs) {
+    return __lhs.ptr == __rhs.ptr;
+}
+static inline uint8_t MatIter_value_b(const MatIter_b __c) {
+    return *(__c.ptr);
+}
+static inline size_t MatIter_length_b(const MatIter_b begin, const MatIter_b end) {
+    size_t diff = end.ptr - begin.ptr;
+    return diff / begin.ptr_diff;
+}
+uint8_t MatIter_sum_b(const MatIter_b __begin, const MatIter_b __end);
+uint8_t MatIter_prod_b(const MatIter_b __begin, const MatIter_b __end);
+uint8_t MatIter_max_b(MatIter_b __a, const MatIter_b __b);
+uint8_t MatIter_min_b(MatIter_b __a, const MatIter_b __b);
+void MatIter_set_b(MatIter_b __r, const uint8_t __k);
+void MatIter_add_k_b(MatIter_b __r, const uint8_t __k);
+void MatIter_sub_k_b(MatIter_b __r, const uint8_t __k);
+void MatIter_mult_k_b(MatIter_b __r, const uint8_t __k);
+void MatIter_div_k_b(MatIter_b __r, const uint8_t __k);
+void MatIter_set_ptr_b(MatIter_b __r, const uint8_t *__ptr);
+void MatIter_add_ptr_b(MatIter_b __r, const uint8_t *__ptr);
+void MatIter_sub_ptr_b(MatIter_b __r, const uint8_t *__ptr);
+void MatIter_mult_ptr_b(MatIter_b __r, const uint8_t *__ptr);
+void MatIter_div_ptr_b(MatIter_b __r, const uint8_t *__ptr);
+void MatIter_set_iter_b(MatIter_b __a, const MatIter_b __b);
+void MatIter_set_iter_pow_b(MatIter_b __a, const MatIter_b __b, uint8_t __n);
+void MatIter_add_iter_b(MatIter_b __a, const MatIter_b __b);
+void MatIter_add_iter_scaled_b(MatIter_b __a, const MatIter_b __b, const uint8_t __k);
+void MatIter_sub_iter_b(MatIter_b __a, const MatIter_b __b);
+void MatIter_mult_iter_b(MatIter_b __a, const MatIter_b __b);
+void MatIter_div_iter_b(MatIter_b __a, const MatIter_b __b);
+void MatIter_row_set_k_b(const MatIter_b __rbegin, const MatIter_b __rend, const uint8_t __k);
+void MatIter_row_set_iter_b(const MatIter_b __rbegin, const MatIter_b __rend, const MatIter_b __bbegin);
+void MatIter_row_add_k_b(const MatIter_b __rbegin, const MatIter_b __rend, const uint8_t __k);
+void MatIter_row_sub_k_b(const MatIter_b __rbegin, const MatIter_b __rend, const uint8_t __k);
+void MatIter_row_mult_k_b(const MatIter_b __rbegin, const MatIter_b __rend, const uint8_t __k);
+void MatIter_row_div_k_b(const MatIter_b __rbegin, const MatIter_b __rend, const uint8_t __k);
+void MatIter_row_add_row_b(const MatIter_b __abegin, const MatIter_b __aend, const MatIter_b __bbegin);
+void MatIter_apply_b(const MatIter_b __rbegin, const MatIter_b __rend, MatIterFn_b __fn);
+void MatIter_apply_k_b(const MatIter_b __rbegin, const MatIter_b __rend, const uint8_t __k, MatIterFn_k_b __fn_k);
+void MatIter_apply_ptr_b(const MatIter_b __rbegin, const MatIter_b __rend, const uint8_t *__ptr, MatIterFn_ptr_b __fn_ptr);
+void MatIter_apply_iter_b(const MatIter_b __abegin, const MatIter_b __aend, const MatIter_b __bbegin, MatIterFn_iter_b __fn_iter);
+void MatIter_apply_iter_scaled_b(const MatIter_b __abegin, const MatIter_b __aend, const MatIter_b __bbegin, const uint8_t __k, MatIterFn_iter_k_b __fn_iter_k);
+void MatIter_apply_set_k_b(MatIter_b __rbegin, const MatIter_b __rend, const uint8_t __k);
+void MatIter_apply_add_k_b(MatIter_b __rbegin, const MatIter_b __rend, const uint8_t __k);
+void MatIter_apply_sub_k_b(MatIter_b __rbegin, const MatIter_b __rend, const uint8_t __k);
+void MatIter_apply_mult_k_b(MatIter_b __rbegin, const MatIter_b __rend, const uint8_t __k);
+void MatIter_apply_div_k_b(MatIter_b __rbegin, const MatIter_b __rend, const uint8_t __k);
+void MatIter_apply_set_ptr_b(MatIter_b __rbegin, const MatIter_b __rend, const uint8_t *__ptr);
+void MatIter_apply_add_ptr_b(MatIter_b __rbegin, const MatIter_b __rend, const uint8_t *__ptr);
+void MatIter_apply_sub_ptr_b(MatIter_b __rbegin, const MatIter_b __rend, const uint8_t *__ptr);
+void MatIter_apply_mult_ptr_b(MatIter_b __rbegin, const MatIter_b __rend, const uint8_t *__ptr);
+void MatIter_apply_div_ptr_b(MatIter_b __rbegin, const MatIter_b __rend, const uint8_t *__ptr);
+void MatIter_apply_set_iter_b(MatIter_b __abegin, const MatIter_b __aend, MatIter_b __bbegin);
+void MatIter_apply_set_iter_pow_b(MatIter_b __abegin, const MatIter_b __aend, MatIter_b __bbegin, double __n);
+void MatIter_apply_add_iter_b(MatIter_b __abegin, const MatIter_b __aend, MatIter_b __bbegin);
+void MatIter_apply_sub_iter_b(MatIter_b __abegin, const MatIter_b __aend, MatIter_b __bbegin);
+void MatIter_apply_mult_iter_b(MatIter_b __abegin, const MatIter_b __aend, MatIter_b __bbegin);
+void MatIter_apply_div_iter_b(MatIter_b __abegin, const MatIter_b __aend, MatIter_b __bbegin);
+void MatIter_apply_add_iter_scaled_b(MatIter_b __abegin, const MatIter_b __aend, MatIter_b __bbegin, const uint8_t __k);
+Matrix_b *Matrix_set_col_iter_b(Matrix_b *__m, size_t __j, MatIter_b __source);
+Matrix_b *Matrix_set_row_iter_b(Matrix_b *__m, size_t __i, MatIter_b __source);
+MatIter_b Matrix_row_begin_from_col_b(const Matrix_b *__A, size_t __i, size_t __j);
+MatIter_b Matrix_col_begin_from_row_b(const Matrix_b *__A, size_t __j, size_t __i);
+MatIter_b Matrix_diag_end_b(const Matrix_b *__m, const int __d);
+MatIter_b Matrix_diag_begin_b(const Matrix_b *__m, const int __d);
+ Vector_b*MatIter_difference_b(MatIter_b __abegin, const MatIter_b __aend, MatIter_b __bbegin);
+Matrix_b *Matrix_pow_b(Matrix_b * __A, size_t __power);
+double Matrix_det_b(const Matrix_b * __A);
+uint8_t matcdr_check_b(const Matrix_b *__A, const Matrix_b *__B, size_t __irow, size_t __icol);
+static inline uint8_t matcdr_b(const Matrix_b *__A, const Matrix_b *__B, size_t __irow, size_t __icol) {
+        uint8_t inner_product = 0;
+        for (size_t i = 0; i < __A->ncols; i++) {
+            inner_product += (matat_b(__A, __irow, i) * matat_b(__B, i, __icol));
+        }
+        return inner_product;
+}
+static inline Matrix_b *matmul_b(const Matrix_b *__A, const Matrix_b *__B) {
+    Matrix_b *product = Matrix_new_b(__A->nrows, __B->ncols);
+    if (product){
+        for (size_t i = 0; i < __A->nrows; i++) {
+            for (size_t j = 0; j < __B->ncols; j++) {
+                matset_b(product, i, j, matcdr_b(__A, __B, i, j));
+            }
+        }
+    }
+    return product;
+}
+Matrix_b * Matrix_multiply_b(const Matrix_b *__A, const Matrix_b *__B);
+void matadd_b(Matrix_b *__A, const Matrix_b *__B);
+Matrix_b *Matrix_add_b(const Matrix_b *__A, const Matrix_b *__B);
+void mathad_b(Matrix_b *__A, const Matrix_b *__B);
+void mathad_check_b(Matrix_b *__A, const Matrix_b *__B);
+void mathadexp_b(Matrix_b *__A, int __k);
+Matrix_b *Matrix_hadamard_b(const Matrix_b *__A, const Matrix_b *__B);
+void matsub_b(Matrix_b *__A, const Matrix_b *__B);
+Matrix_b *Matrix_subtract_b(const Matrix_b *__A, const Matrix_b *__B);
+uint8_t colnorm_b(const MatIter_b __begin, const MatIter_b __end);
+uint8_t Matrix_col_norm_b(const Matrix_b *__A, size_t __j);
+void matnormcol_b(const MatIter_b __begin, const MatIter_b __end);
+void matnormcols_b(Matrix_b *__A);
+void Matrix_normalize_col_b(Matrix_b *__A, size_t __j);
+void Matrix_normalize_cols_b(Matrix_b *__A);
+uint8_t Matrix_frobenius_b(const Matrix_b *__A);
+Matrix_b *matlu_nopivot_b(Matrix_b *__A);
+LU_b Matrix_lu_b(const Matrix_b *__A);
+Matrix_b *Matrix_solve_lu_b(const Matrix_b *__A, const Vector_b*__b);
+Matrix_b *gausselim_b(const Matrix_b *__A, const Matrix_b *__B);
+Matrix_b *Matrix_inverse_b(const Matrix_b *__A);
+ Vector_b*jacobi_iteration_b(const Matrix_b *__A, const Vector_b*__b, const Vector_b*__x0, uint8_t __crit);
+Matrix_b *Matrix_vandermonde_b(const Vector_b*__v);
+Matrix_b *Matrix_vandermonde_reduced_b(const Vector_b*__v, size_t __degree);
+void Row_switch_b(Index_b *__ind, size_t __r1, size_t __r2);
+void Row_multiply_b(Matrix_b *__m, Index_b *__ind, size_t __r, double __k);
+void Row_addition_b(Matrix_b *__m, Index_b *__ind, size_t __r1, size_t __r2);
+void Row_addition_k_b(Matrix_b *__m, Index_b *__ind, size_t __r1, size_t __r2, double __k);
+ Vector_b*vector_b(int __count, ...);
+ Vector_b*Vector_new_b(size_t __nrows);
+ Vector_b*Vector_ones_b(size_t __nrows);
+ Vector_b*Vector_from_iter_b(MatIter_b __begin, MatIter_b __end);
+ Vector_b*Vector_rand_b(size_t __nrows);
+ Vector_b*Vector_random_b(size_t __nrows, int __min, int __max);
+ Vector_b*Vector_from_b(const uint8_t* __arr, size_t __nrows);
+ Vector_b*Vector_clone_b(const Vector_b*__v);
+ Vector_b*Vector_from_matrix_b(const Matrix_b *__m);
+ Vector_b*Vector_as_col_b(const Vector_b*__v);
+ Vector_b*Vector_as_row_b(const Vector_b*__v);
+void Vector_free_b( Vector_b*__v);
+void Vector_reset_b( Vector_b**__v);
+ Vector_b*Matrix_as_col_b(const Matrix_b *__m);
+ Vector_b*Matrix_as_row_b(const Matrix_b *__m);
+size_t Vector_size_b(const Vector_b*__v);
+void Vector_set_b( Vector_b*__v, size_t __pos, uint8_t __val);
+void Vector_set_first_b( Vector_b*__v, uint8_t __val);
+void Vector_set_last_b( Vector_b*__v, uint8_t __val);
+uint8_t Vector_first_b(const Vector_b*__v);
+uint8_t Vector_last_b(const Vector_b*__v);
+MatIter_b Vector_begin_b(const Vector_b*__v);
+MatIter_b Vector_end_b(const Vector_b*__v);
+MatIter_b Vector_iter_b(const Vector_b*__v, size_t i);
+uint8_t Vector_max_b(const Vector_b*__v);
+uint8_t Vector_at_b(const Vector_b*__v, size_t __i);
+static inline uint8_t vecat_b(const Vector_b*__v, size_t i) {
+    return __v->data[i];
+}
+static inline uint8_t *vecacc_b(const Vector_b*__v, size_t i) {
+    return &__v->data[i];
+}
+static inline void vecset_b(const Vector_b*__v, size_t i, uint8_t k) {
+    __v->data[i] = k;
+}
+static inline uint8_t *vecptr_b(const Vector_b*__v, size_t i) {
+    return &__v->data[i];
+}
+uint8_t *Vector_access_b(const Vector_b*__v, size_t __i);
+ Vector_b*Vector_map_b(const Vector_b*__v, function_b __fn);
+uint8_t Vector_sum_b(const Vector_b*__v);
+void Vector_print_as_row_b(const Vector_b*__v);
+uint8_t vecdot_b(const Vector_b*__u, const Vector_b*__v);
+uint8_t Vector_inner_b(const Vector_b*__u, const Vector_b*__v);
+ Vector_b*vecproject_b(const Vector_b*__v, const Vector_b*__u);
+ Vector_b*Vector_project_onto_b(const Vector_b*__v, const Vector_b*__u);
+uint8_t Vector_dot_b(const Vector_b*__u, const Vector_b*__v);
+ Vector_b*Vector_hadamard_b(const Vector_b*__u, const Vector_b*__v);
+Matrix_b *Vector_outer_b(const Vector_b*__u, const Vector_b*__v);
+Matrix_b *Vector_orthogonal_projection_b(const Vector_b*__v);
+uint8_t vecpnorm_b(const Vector_b*__u, const int __p);
+static inline uint8_t vecnorm_b(const Vector_b*__A) {
+    uint8_t sum = 0;
+    const size_t n = Matrix_size_b(__A);
+    for (size_t i = 0; i < n; i++) {
+        sum += __A->data[i] * __A->data[i];
+    }
+    return sqrt(sum);
+}
+void vecnormalize_b( Vector_b*__u);
+uint8_t Vector_norm_b(const Vector_b*__u);
+uint8_t Vector_pnorm_b(const Vector_b*__u, const size_t __p);
+ Vector_b*Vector_normalize_b(const Vector_b*__u);
+ Vector_b*ascol_b( Vector_b*__v);
+ Vector_b*asrow_b( Vector_b*__v);
+uint8_t Vector_distance_b(const Vector_b*__v, const Vector_b*__u);
+ Vector_b*Vector_difference_b(const Vector_b*__v, const Vector_b*__u);
+static inline uint8_t log_b(uint8_t x) {
+    return log(x);
+}
+uint8_t MatIter_mean_b(const MatIter_b __begin, const MatIter_b __end);
+uint8_t MatIter_sum_squared_b(const MatIter_b __begin, const MatIter_b __end);
+uint8_t MatIter_mean_squared_b(const MatIter_b __begin, const MatIter_b __end);
+uint8_t MatIter_rms_b(const MatIter_b __begin, const MatIter_b __end);
+uint8_t MatIter_var_b(const MatIter_b __begin, const MatIter_b __end);
+uint8_t MatIter_std_b(const MatIter_b __begin, const MatIter_b __end);
+uint8_t MatIter_sumabs_b(const MatIter_b __begin, const MatIter_b __end);
+uint8_t Vector_iter_sum_b(const Vector_b*__v);
+uint8_t Vector_iter_prod_b(const Vector_b*__v);
+uint8_t Vector_iter_mean_b(const Vector_b*__v);
+uint8_t Vector_iter_mean_squared_b(const Vector_b*__v);
+uint8_t Vector_iter_rms_b(const Vector_b*__v);
+uint8_t Vector_iter_min_b(const Vector_b*__v);
+uint8_t Vector_iter_max_b(const Vector_b*__v);
+uint8_t Vector_iter_var_b(const Vector_b*__v);
+uint8_t Vector_iter_std_b(const Vector_b*__v);
+uint8_t Matrix_iter_sum_b(const Matrix_b *__m);
+uint8_t Matrix_iter_prod_b(const Matrix_b *__m);
+uint8_t Matrix_iter_mean_b(const Matrix_b *__m);
+uint8_t Matrix_iter_mean_squared_b(const Matrix_b *__m);
+uint8_t Matrix_iter_rms_b(const Matrix_b *__m);
+uint8_t Matrix_iter_min_b(const Matrix_b *__m);
+uint8_t Matrix_iter_max_b(const Matrix_b *__m);
+uint8_t Matrix_iter_var_b(const Matrix_b *__m);
+uint8_t Matrix_iter_std_b(const Matrix_b *__m);
+typedef uint8_t (* mat_iter_fn_b) (const MatIter_b, const MatIter_b);
+uint8_t Matrix_iterate_b(const Matrix_b *__m, mat_iter_fn_b fn);
+uint8_t mean_b(const Matrix_b *__m);
+uint8_t sum_b(const Matrix_b *__m);
+uint8_t std_b(const Matrix_b *__m);
+uint8_t var_b(const Matrix_b *__m);
+uint8_t min_b(const Matrix_b *__m);
+uint8_t max_b(const Matrix_b *__m);
+uint8_t maxabs_b(const Matrix_b *__m);
+uint8_t sumabs_b(const Matrix_b *__m);
+uint8_t rms_b(const Matrix_b *__m);
+uint8_t mean_squared_b(const Matrix_b *__m);
+uint8_t cov_b(const Matrix_b *__x, const Matrix_b *__y);
+uint8_t prod_b(const Matrix_b *__m);
+uint8_t cor_b(const Matrix_b *__x, const Matrix_b *__y);
+uint8_t cmoment_b(const Vector_b*__v, int __k);
+uint8_t rmoment_b(const Vector_b*__v, int __k);
+ Vector_b*linear_regression_b(const Vector_b*__x, const Vector_b*__y);
+static inline uint8_t ejovo_log_b (const uint8_t x) {
+    return log(x);
+}
+static inline uint8_t ejovo_fabs_b (const uint8_t x) {
+    return fabs((double) x);
+}
+ Vector_b*loglog_regression_b(const Vector_b*__x, const Vector_b*__y);
+ Vector_b*least_squares_b(const Vector_b*__x, const Vector_b*__y, int degree);
+Matrix_b *runif_b(int n, uint8_t a, uint8_t b);
+Matrix_b *rnorm_b(int n, uint8_t mu, uint8_t sigma);
+Matrix_b *rnorm_rng_b(int n, uint8_t mu, uint8_t sigma, RNG_FN rng_fn);
+Matrix_b *runif_rng_b(int n, uint8_t a, uint8_t b, RNG_FN rng_fn);
+Vector_b *Vector_runif_b(size_t __n, double __a, double __b);
+Vector_b *Vector_rnorm_b(size_t __n, double __mean, double __std);
+Vector_b *Vector_rexp_b(size_t __n, double __rate);
+uint8_t Id_b(uint8_t x);
+uint8_t x_squared_b(uint8_t x);
+uint8_t x_cubed_b(uint8_t x);
+ Vector_b*filter_b(const Vector_b*__v, predicate_fn_b __pred);
+ Vector_b*filter_if_not_b(const Vector_b*__v, predicate_fn_b __pred);
+ Vector_b*filter_lt_b(const Vector_b*__v, uint8_t __cutoff);
+ Vector_b*filter_lteq_b(const Vector_b*__v, uint8_t __cutoff);
+ Vector_b*filter_gt_b(const Vector_b*__v, uint8_t __cutoff);
+ Vector_b*filter_gteq_b(const Vector_b*__v, uint8_t __cutoff);
+Matrix_b *map_b(const Matrix_b *__m, function_b fn);
+Matrix_b *apply_b(Matrix_b *__m, function_b fn);
+uint8_t head_b(const Matrix_b *__m);
+Matrix_b *take_b(const Matrix_b *__m, int n_el);
+ Vector_b*tail_b(const Matrix_b *__m);
+uint8_t last_b(const Matrix_b *__m);
+ Vector_b*init_b(const Matrix_b *__m);
+extern uint8_t TRUE_b;
+extern uint8_t FALSE_b;
+typedef Matrix_b Logical_b;
+typedef uint8_t (* pred_fn_b) (uint8_t);
+uint8_t true_fn_b(uint8_t d);
+uint8_t NOT_b(uint8_t d);
+uint8_t AND_b(uint8_t a, uint8_t b);
+uint8_t OR_b(uint8_t a, uint8_t b);
+_Bool Matrix_is_logical_b(const Matrix_b *__log);
+_Bool Vector_is_logical_b(const Vector_b*__log);
+int Matrix_mask_count_b(const Matrix_b *__mask);
+int Vector_mask_count_b(const Vector_b*__mask);
+Matrix_b *Matrix_as_logical_b(const Matrix_b *__m, pred_fn_b __fn);
+Matrix_b *Matrix_as_true_b(const Matrix_b *__m);
+Logical_b *Matrix_lt_b(const Matrix_b *__m, uint8_t __k);
+Logical_b *Matrix_lteq_b(const Matrix_b *__m, uint8_t __k);
+Logical_b *Matrix_gt_b(const Matrix_b *__m, uint8_t __k);
+Logical_b *Matrix_gteq_b(const Matrix_b *__m, uint8_t __k);
+void matsetmask_b(Matrix_b *__m, const Matrix_b *__mask, uint8_t __val);
+void matsetpred_b(Matrix_b *__m, pred_fn_b __predicate, uint8_t __val);
+ Vector_b*Matrix_filter_mask_b(const Matrix_b *__m, const Matrix_b *__mask);
+_Bool Logical_all_b(const Matrix_b *__mask);
+_Bool Logical_any_b(const Matrix_b *__mask);
+Logical_b *Logical_not_b(const Matrix_b *__mask);
+Matrix_b *Matrix_as_index_b(const Matrix_b *__m);
+ Vector_b*Matrix_scrub_index_b(const Matrix_b *__m, const Index_b *__ind);
+ Vector_b*matindex_b(const Matrix_b *__m, const Index_b *__ind);
+ Vector_b*Matrix_index_b(const Matrix_b *__m, const Index_b *__ind);
+ Vector_b*Matrix_logical_index_b(const Matrix_b *__m, const Logical_b *__log);
+Index_b *Matrix_where_b(const Matrix_b *__m, pred_fn_b __fn);
+static inline Index_b *Logical_get_index_b(const Logical_b *__log) {
+    Index_b *ind = Vector_new_b(Vector_mask_count_b(__log));
+    MatIter_b it = Matrix_begin_b(ind);
+    for (size_t i = 0; i < Matrix_size_b(__log); i++) {
+        if (matget_b(__log, i) == TRUE_b) {
+            MatIter_set_b(it, i);
+            it = MatIter_next_b(it);
+        }
+    }
+    return ind;
+}
+Index_b *Matrix_where_lt_b(const Matrix_b *__m, double __k);
+Index_b *Matrix_where_lteq_b(const Matrix_b *__m, double __k);
+Index_b *Matrix_where_gt_b(const Matrix_b *__m, double __k);
+Index_b *Matrix_where_gteq_b(const Matrix_b *__m, double __k);
+Matrix_b *matsetind_b(Matrix_b *__m, const Matrix_b *__ind, const Matrix_b *__val);
+Matrix_b *Matrix_set_index_b(const Matrix_b *__m, const Matrix_b *__ind, const Matrix_b *__val);
+Matrix_b *Matrix_extract_rows_b(const Matrix_b *__m, Index_b *__ind);
+Matrix_b *Matrix_extract_cols_b(const Matrix_b *__m, Index_b *__ind);
+ Vector_b*Matrix_scrub_col_index_b(const Matrix_b *__m, const Index_b *__ind);
+ Vector_b*Matrix_scrub_row_index_b(const Matrix_b *__m, const Index_b *__ind);
+static inline _Bool is_int_b(double x) {
+    return x == floor(x);
+}
+static inline _Bool are_col_indices_valid_b(const Matrix_b *__m, const Index_b *__ind) {
+    MatIter_b it = Matrix_begin_b(__ind);
+    const MatIter_b end = Matrix_begin_b(__ind);
+    for(; !MatIter_cmp_b(it, end); it = MatIter_next_b(it)) {
+        double val = MatIter_value_b(it);
+        if (val < 0 || !is_int_b(val) || val >= __m->ncols) return 0;
+    }
+    return 1;
+}
+static inline _Bool are_row_indices_valid_b(const Matrix_b *__m, const Index_b *__ind) {
+    MatIter_b it = Matrix_begin_b(__ind);
+    const MatIter_b end = Matrix_begin_b(__ind);
+    for(; !MatIter_cmp_b(it, end); it = MatIter_next_b(it)) {
+        double val = MatIter_value_b(it);
+        if (val < 0 || !is_int_b(val) || val >= __m->nrows) return 0;
+    }
+    return 1;
+}
+int MatIter_max_index_b(MatIter_b begin, const MatIter_b end);
+int MatIter_min_index_b(MatIter_b begin, const MatIter_b end);
+int Matrix_row_min_index_b(const Matrix_b *__m, size_t __i);
+int Matrix_row_max_index_b(const Matrix_b *__m, size_t __i);
+int Matrix_col_min_index_b(const Matrix_b *__m, size_t __i);
+int Matrix_col_max_index_b(const Matrix_b *__m, size_t __i);
+int Matrix_col_max_index_from_row_b(const Matrix_b *__m, size_t __j, size_t __i);
+int Matrix_col_min_index_from_row_b(const Matrix_b *__m, size_t __j, size_t __i);
+int Matrix_row_max_index_from_col_b(const Matrix_b *__m, size_t __i, size_t __j);
+int Matrix_row_min_index_from_col_b(const Matrix_b *__m, size_t __i, size_t __j);
+Matrix_b *Matrix_runif_b(size_t __m, size_t __n, uint8_t __a, uint8_t __b);
+Matrix_b *Matrix_rnorm_b(size_t __m, size_t __n, uint8_t __mean, uint8_t __std);
+Matrix_b *as_stochastic_b(Matrix_b *__m);
+Matrix_b *as_row_stochastic_b(Matrix_b *__m);
+Matrix_b *as_col_stochastic_b(Matrix_b *__m);
+Matrix_b *as_doubly_stochastic_b(Matrix_b *__m);
+Matrix_b *as_doubly_stochastic_DEPRECATED_b(Matrix_b *__m);
+Matrix_b *Matrix_rexp_b(size_t __m, size_t __n, double __rate);
+Matrix_b *Matrix_as_stochastic_b(const Matrix_b *__m);
+Matrix_b *Stochastic_runif_b(size_t __n, double __a, double __b);
+Matrix_b *Stochastic_rnorm_b(size_t __n, double __mean, double __std);
+Matrix_b *Stochastic_rexp_b(size_t __n, double __rate);
+ Vector_b*Vector_prob_unif_b(size_t __n);
+ Vector_b*compute_row_sums_b(const Matrix_b *__m);
+ Vector_b*compute_col_sums_b(const Matrix_b *__m);

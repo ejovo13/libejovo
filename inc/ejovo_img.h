@@ -18,6 +18,14 @@ typedef struct {
 
 } img_t;
 
+
+
+
+
+
+
+
+
 // Make sure that all of the matricese are the same size
 img_t *newImage(const Matrix_d *r, const Matrix_d *g, const Matrix_d *b);
 
@@ -55,6 +63,10 @@ Matrix_d *normalize_minmax(Matrix_d *A);
 
 void writePPM(const img_t *img, const char *filename);
 
+// This function takes a bitmap and writes it to a PGM file to 
+// be visualized
+void writePGM(const Matrix_b *image, const char* filename);
+
 void write_ppm_gray(const Matrix_i *image, const char *filename);
 
 void write_ppm_gray_d(const Matrix_d *image, const char *filename);
@@ -65,6 +77,39 @@ void write_ppm_color_minmax_d(const Matrix_d *image, const ColorPalette *cp, dou
 // img_t *toGrayscale(const imt_t *img) {
 
 // }
+
+/**========================================================================
+ *!                           uint8_t image processing
+ *========================================================================**/
+// Take a grayscale image and set to black if below a certain threshold,
+// modifying the image in place
+static inline Matrix_b *filterImage_(Matrix_b *img, uint8_t luminosity) {
+    FORIJ(img,
+        , 
+        ///
+        *matacc_b(img, i, j) = matat_b(img, i, j) < luminosity ? 0 : 255;
+        ,
+    )
+    return img;
+}
+
+static inline Matrix_b *filterImage(const Matrix_b *img, uint8_t luminosity) {
+    // First copy the img
+    Matrix_b *img_copy = Matrix_clone_b(img);
+    filterImage_(img_copy, luminosity);
+    return img_copy;
+}
+
+// Compute the x gradient of a single image
+Matrix_b *gradientX(const Matrix_b *img);
+
+Matrix_b *gradientY(const Matrix_b *img); 
+
+Matrix_b *gradientT(const Matrix_b *img_0, const Matrix_b *img_1);
+
+// Compute the discrete laplacian, ignoring the border pixels
+Matrix_b *laplacian(const Matrix_b *img);
+
 
 
 /**========================================================================

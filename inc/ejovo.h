@@ -1,6 +1,8 @@
 #ifndef EJOVO
 #define EJOVO
 
+#define _GNU_SOURCE
+
 #include "ejovo_matrix_generic.h"
 
 #include "ejovo_bin.h"
@@ -20,6 +22,7 @@
 #include "ejovo_time.h"
 #include "ejovo_color.h"
 #include "ejovo_img.h"
+#include "ejovo_vid.h"
 
 #ifdef PCG_RANDOM
     #include "pcg_variants.h"
