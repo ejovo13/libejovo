@@ -21,9 +21,15 @@ list(APPEND TESTS
     pcg
     benchmark
     img
-    vidTest
+    # vidTest
     # rand
 )
+
+if (${FFMPEG_FOUND})
+
+list(APPEND TESTS vidTest)
+endif()
+
 
 list(APPEND TEST_LIBS
     ejovo
