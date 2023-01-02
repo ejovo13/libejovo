@@ -62,6 +62,7 @@ void usage(char ** argv)
     printf("--out-dur <s>           .mp4 output file \n");
     printf("--smooth                smooth the video to reduce noise\n");
     printf("--filter <value>        filter the input video with the given luminosity\n");
+    printf("--hs                    compute horn schunck on the current output video\n");
     printf("\n");
     printf("\n");
     printf("Examples:\n");
@@ -103,8 +104,9 @@ args_t *process_command_line_options(int argc, char ** argv)
         {"out", required_argument, NULL, 'o'},
         {"out-fps", required_argument, NULL, 'f'},
         {"out-dur", required_argument, NULL, 'd'},
-        {"smooth", optional_argument, NULL, 's'},
+        {"smooth", no_argument, NULL, 's'},
         {"filter", required_argument, NULL, 'l'},
+        {"hs", no_argument, NULL, 'h'},
         {NULL, 0, NULL, 0}
     };
 
@@ -131,6 +133,14 @@ args_t *process_command_line_options(int argc, char ** argv)
         case 'd':
             args->duration_s = atoi(optarg);
             args->out_fps = args->input->n_frames / args->duration_s;
+            break;
+        case 'h':
+            if (args->output == NULL) {
+                args->output = hornSchunckVideo(args->input, 10, 0.5);
+            } else {
+                Video *temp = hornSchunckVideo(args->output, 10, 0.5);
+                args->output = temp;
+            }
             break;
         case 's':
             args->should_smooth = true;
