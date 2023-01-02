@@ -30,10 +30,13 @@ set (EJOVO_LIB
     ejovo_color.c
     ejovo_time.c
     ejovo_img.c
-    ejovo_vid.c
-
 )
 
+if (${FFMPEG_FOUND})
+
+else()
+    list(APPEND EJOVO_LIB ejovo_vid.c)
+endif()
 # I don't remember why I have to do this weird shit...
 set (EJOVO_LIB_HEADERS
 
