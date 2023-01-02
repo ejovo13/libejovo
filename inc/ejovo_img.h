@@ -155,4 +155,8 @@ Matrix_b *d_to_b(const Matrix_d *__values);
 
 Matrix_d *opticalMagnitude(const optical_flow_t uv);
 
+// We aren't calculating the discrete laplacian here instead we are doing a simple convolution by averaging the values to see if
+// we can filter out the noise
+Matrix_b *smoothFrame(const Matrix_b *frame);
+
 #endif

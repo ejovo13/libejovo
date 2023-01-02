@@ -175,5 +175,35 @@ int main() {
     // writeMP4(frameToVideo(examineFrame(v, 100), 30, 5), "v_f100.mp4");
     writeMP4(still, "v_f100.mp4");
 
+    /**========================================================================
+     *!                           Draco 3 this one is crazy
+     *========================================================================**/
+    Video *draco3 = fromMP4("draco3.avi");
+    // I have to remember to set the framerate really slow for .avi
+    draco3->fps = 20;
+
+    Video *draco3_f220 = filterVideo(draco3, 220); 
+    draco3_f220->fps = 10;
+    // writeMP4(filterVideo(draco3, 220), "draco3_f220.mp4");
+    writeMP4(filterVideo(draco3, 230), "draco3_f230.mp4");
+    // writeMP4(filterVideo(draco3, 200), "draco3_f200.mp4");
+    // writeMP4(hornSchunckVideo(draco3_f220, 10, 0.5), "draco3_220_hs.mp4");
+
+    Video *draco3_f220_smooth = smoothVideo(filterVideo(draco3, 230));
+    Video *draco3_f220_smooth_f200 = filterVideo(draco3_f220_smooth, 200);
+    // I want to transform draco3_f230 and remove the noise by using local averages
+    writeMP4(smoothVideo(filterVideo(draco3, 230)), "draco3_f230_smooth.mp4");
+    writeMP4(filterVideo(smoothVideo(filterVideo(draco3, 230)), 200), "draco3_f230_smooth_f200.mp4");
+
+    // Now let's perform horn schunck on draco3_f220_smooth_f200;
+    // writeMP4(filterVideo(hornSchunckVideo(draco3_f220_smooth_f200, 50, 0.05), 50), "draco3_mod_hs.mp4");
+
+    // nice smooth capture of things that have a higher magnitude than 50 
+    Video *d3_hs_smooth = filterVideo(hornSchunckVideo(draco3_f220_smooth_f200, 50, 0.05), 50);
+
+    writePGM(pixelAverages_b(d3_hs_smooth), "draco3_smooth_avg.pgm");
+
+
+
     return 0;
 }

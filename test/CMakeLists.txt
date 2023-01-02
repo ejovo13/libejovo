@@ -95,6 +95,7 @@ copy_file(draco2.avi)
 copy_file(melee_move.mp4)
 copy_file(melee.mp4)
 copy_file(test.mp4)
+copy_file(draco3.avi)
 
 # ============================================
 #            Google tests

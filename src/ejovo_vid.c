@@ -370,6 +370,7 @@ Matrix_b *pixelAverages_b(const Video* video) {
     Matrix_b *out = Matrix_new_b(video->height, video->width);
     FORIJ(out, int sum = 0;
     ,
+        sum = 0;
         // across t, sum up the pixels)
         for (int t = 0; t < video->n_frames; t++) {
             sum += matat_b(video->frames[t], i, j);
@@ -382,6 +383,8 @@ Matrix_b *pixelAverages_b(const Video* video) {
 
     return out;
 }
+
+// Now that we have the pixel averages, we want to go ahead and compute the variance of each pixel
 
 // Take a single frame and turn it into a video
 Video *frameToVideo(const Matrix_b *frame, int fps, double s) {
@@ -396,3 +399,13 @@ Video *frameToVideo(const Matrix_b *frame, int fps, double s) {
     return out;
 }
 
+Video *smoothVideo(const Video *video) {
+
+    Video *out = newVideo(video->width, video->height, video->n_frames, video->fps);
+
+    for (int i = 0; i < out->n_frames; i++) {
+        out->frames[i] = smoothFrame(video->frames[i]);
+    }
+
+    return out;
+}

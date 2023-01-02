@@ -513,6 +513,25 @@ double localAverage(const Matrix_d *__m, int i, int j) {
 
 // void 
 
+Matrix_b *smoothFrame(const Matrix_b *frame) {
+
+    Matrix_b *out = Matrix_new_b(frame->nrows, frame->ncols);
+    // I want to get the local average
+    FORIJ(frame, int mu = 0;,
+        if (i == 0 || i == frame->nrows - 1|| j == 0 || j == frame->ncols - 1) {
+            // mu_u = 0;
+            // mu_v = 0;
+            mu = matat_b(frame, i, j);
+        } else {
+            mu = (((double) matat_b(frame, i + 1, j)) + matat_b(frame, i, j + 1) + matat_b(frame, i - 1, j) + matat_b(frame, i, j - 1)) * (0.5 / 4.0) + (0.5) * matat_b(frame, i, j);
+        }
+        *matacc_b(out, i, j) = mu;
+    ,) 
+
+        // if we are on any border
+    return out;
+
+}
 
 void update_flow_field(Matrix_d *u, Matrix_d *v, const Matrix_i* I_x, const Matrix_i* I_y, const Matrix_i* I_t, double alpha) {
 
