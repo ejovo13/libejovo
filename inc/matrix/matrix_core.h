@@ -74,14 +74,17 @@ static inline void TYPED(Matrix_reset)(TYPED(Matrix) **__A_ptr) {
         if ((*__A_ptr)->data) free((*__A_ptr)->data);
         free (*__A_ptr);
     }
-
-    *__A_ptr = NULL;
+    #ifdef __cplusplus
+        *__A_ptr = nullptr;   
+    #else
+        *__A_ptr = NULL;
+    #endif
 }
 
 TYPED(Matrix) *TYPED(Matrix_renew)(TYPED(Matrix) *A, int m, int n);
 // Copy the bytes
 // this is a utility function and should not be used by the end user
-static inline bool TYPED(matcpy)(TYPED(Matrix) *restrict __dest, const TYPED(Matrix) *restrict __src) {
+static inline bool TYPED(matcpy)(TYPED(Matrix) *__dest, const TYPED(Matrix) *__src) {
 
     // Copy the bytes of __src->data into __dest->data
     memcpy(__dest->data, __src->data, sizeof(MATRIX_TYPE)*(__src->nrows * __src->ncols));
@@ -94,7 +97,7 @@ static inline bool TYPED(matcpy)(TYPED(Matrix) *restrict __dest, const TYPED(Mat
     }
 }
 // copy the contents of matrix __src into __dest
-TYPED(Matrix) * TYPED(matclone)(const TYPED(Matrix) *restrict __src);
+TYPED(Matrix) * TYPED(matclone)(const TYPED(Matrix) *__src);
 
 // Catch an unnamed TYPED(Matrix) pointer returned from the right side and store it in the
 // lhs_ptr. Return the rhs
@@ -148,7 +151,7 @@ TYPED(Matrix) *TYPED(Matrix_colvec)(const MATRIX_TYPE *arr, size_t nrows);
 
 TYPED(Matrix) *TYPED(Matrix_rowvec)(const MATRIX_TYPE *arr, size_t ncols);
 
-TYPED(Matrix) * TYPED(Matrix_clone)(const TYPED(Matrix) *restrict src);
+TYPED(Matrix) * TYPED(Matrix_clone)(const TYPED(Matrix) *src);
 
 // matrix of all ones
 TYPED(Matrix) * TYPED(Matrix_ones)(size_t nrows, size_t ncols);

@@ -4,6 +4,11 @@
 #pragma once
 #define MAX_STEP_SIZE 100000
 
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
@@ -12,6 +17,10 @@
 #include <string.h>
 #include <stdarg.h>
 #include <complex.h>
+
+#ifdef __cplusplus
+}
+#endif
 
 #define MATRIX_SIZE(__MATRIX) __MATRIX->nrows * __MATRIX->ncols
 
@@ -110,10 +119,10 @@ static inline void Matrix_reset_d(Matrix_d **__A_ptr) {
         if ((*__A_ptr)->data) free((*__A_ptr)->data);
         free (*__A_ptr);
     }
-    *__A_ptr = ((void *)0);
+        *__A_ptr = ((void *)0);
 }
 Matrix_d *Matrix_renew_d(Matrix_d *A, int m, int n);
-static inline _Bool matcpy_d(Matrix_d *restrict __dest, const Matrix_d *restrict __src) {
+static inline _Bool matcpy_d(Matrix_d *__dest, const Matrix_d *__src) {
     memcpy(__dest->data, __src->data, sizeof(double)*(__src->nrows * __src->ncols));
     __dest->ncols = __src->ncols;
     __dest->nrows = __src->nrows;
@@ -123,7 +132,7 @@ static inline _Bool matcpy_d(Matrix_d *restrict __dest, const Matrix_d *restrict
         return 0;
     }
 }
-Matrix_d * matclone_d(const Matrix_d *restrict __src);
+Matrix_d * matclone_d(const Matrix_d *__src);
 Matrix_d *Matrix_catch_d(Matrix_d **__lhs_ptr, Matrix_d *__anon_rhs);
 Matrix_d *Matrix_anon_d(Matrix_d *__anon_rhs);
 void Matrix_anon_free_d();
@@ -135,7 +144,7 @@ Matrix_d *Matrix_move_d(double **arr_ptr, size_t nrows, size_t ncols);
 Matrix_d *Matrix_from_d(const double *arr, size_t nrows, size_t ncols);
 Matrix_d *Matrix_colvec_d(const double *arr, size_t nrows);
 Matrix_d *Matrix_rowvec_d(const double *arr, size_t ncols);
-Matrix_d * Matrix_clone_d(const Matrix_d *restrict src);
+Matrix_d * Matrix_clone_d(const Matrix_d *src);
 Matrix_d * Matrix_ones_d(size_t nrows, size_t ncols);
 Matrix_d * Matrix_ij_d(size_t nrows, size_t ncols);
  Vector_d*linspace_d(double start, double end, int N);
@@ -841,10 +850,10 @@ static inline void Matrix_reset_f(Matrix_f **__A_ptr) {
         if ((*__A_ptr)->data) free((*__A_ptr)->data);
         free (*__A_ptr);
     }
-    *__A_ptr = ((void *)0);
+        *__A_ptr = ((void *)0);
 }
 Matrix_f *Matrix_renew_f(Matrix_f *A, int m, int n);
-static inline _Bool matcpy_f(Matrix_f *restrict __dest, const Matrix_f *restrict __src) {
+static inline _Bool matcpy_f(Matrix_f *__dest, const Matrix_f *__src) {
     memcpy(__dest->data, __src->data, sizeof(float)*(__src->nrows * __src->ncols));
     __dest->ncols = __src->ncols;
     __dest->nrows = __src->nrows;
@@ -854,7 +863,7 @@ static inline _Bool matcpy_f(Matrix_f *restrict __dest, const Matrix_f *restrict
         return 0;
     }
 }
-Matrix_f * matclone_f(const Matrix_f *restrict __src);
+Matrix_f * matclone_f(const Matrix_f *__src);
 Matrix_f *Matrix_catch_f(Matrix_f **__lhs_ptr, Matrix_f *__anon_rhs);
 Matrix_f *Matrix_anon_f(Matrix_f *__anon_rhs);
 void Matrix_anon_free_f();
@@ -866,7 +875,7 @@ Matrix_f *Matrix_move_f(float **arr_ptr, size_t nrows, size_t ncols);
 Matrix_f *Matrix_from_f(const float *arr, size_t nrows, size_t ncols);
 Matrix_f *Matrix_colvec_f(const float *arr, size_t nrows);
 Matrix_f *Matrix_rowvec_f(const float *arr, size_t ncols);
-Matrix_f * Matrix_clone_f(const Matrix_f *restrict src);
+Matrix_f * Matrix_clone_f(const Matrix_f *src);
 Matrix_f * Matrix_ones_f(size_t nrows, size_t ncols);
 Matrix_f * Matrix_ij_f(size_t nrows, size_t ncols);
  Vector_f*linspace_f(float start, float end, int N);
@@ -1572,10 +1581,10 @@ static inline void Matrix_reset_i(Matrix_i **__A_ptr) {
         if ((*__A_ptr)->data) free((*__A_ptr)->data);
         free (*__A_ptr);
     }
-    *__A_ptr = ((void *)0);
+        *__A_ptr = ((void *)0);
 }
 Matrix_i *Matrix_renew_i(Matrix_i *A, int m, int n);
-static inline _Bool matcpy_i(Matrix_i *restrict __dest, const Matrix_i *restrict __src) {
+static inline _Bool matcpy_i(Matrix_i *__dest, const Matrix_i *__src) {
     memcpy(__dest->data, __src->data, sizeof(int)*(__src->nrows * __src->ncols));
     __dest->ncols = __src->ncols;
     __dest->nrows = __src->nrows;
@@ -1585,7 +1594,7 @@ static inline _Bool matcpy_i(Matrix_i *restrict __dest, const Matrix_i *restrict
         return 0;
     }
 }
-Matrix_i * matclone_i(const Matrix_i *restrict __src);
+Matrix_i * matclone_i(const Matrix_i *__src);
 Matrix_i *Matrix_catch_i(Matrix_i **__lhs_ptr, Matrix_i *__anon_rhs);
 Matrix_i *Matrix_anon_i(Matrix_i *__anon_rhs);
 void Matrix_anon_free_i();
@@ -1597,7 +1606,7 @@ Matrix_i *Matrix_move_i(int **arr_ptr, size_t nrows, size_t ncols);
 Matrix_i *Matrix_from_i(const int *arr, size_t nrows, size_t ncols);
 Matrix_i *Matrix_colvec_i(const int *arr, size_t nrows);
 Matrix_i *Matrix_rowvec_i(const int *arr, size_t ncols);
-Matrix_i * Matrix_clone_i(const Matrix_i *restrict src);
+Matrix_i * Matrix_clone_i(const Matrix_i *src);
 Matrix_i * Matrix_ones_i(size_t nrows, size_t ncols);
 Matrix_i * Matrix_ij_i(size_t nrows, size_t ncols);
  Vector_i*linspace_i(int start, int end, int N);
@@ -2303,10 +2312,10 @@ static inline void Matrix_reset_c(Matrix_c **__A_ptr) {
         if ((*__A_ptr)->data) free((*__A_ptr)->data);
         free (*__A_ptr);
     }
-    *__A_ptr = ((void *)0);
+        *__A_ptr = ((void *)0);
 }
 Matrix_c *Matrix_renew_c(Matrix_c *A, int m, int n);
-static inline _Bool matcpy_c(Matrix_c *restrict __dest, const Matrix_c *restrict __src) {
+static inline _Bool matcpy_c(Matrix_c *__dest, const Matrix_c *__src) {
     memcpy(__dest->data, __src->data, sizeof(double _Complex)*(__src->nrows * __src->ncols));
     __dest->ncols = __src->ncols;
     __dest->nrows = __src->nrows;
@@ -2316,7 +2325,7 @@ static inline _Bool matcpy_c(Matrix_c *restrict __dest, const Matrix_c *restrict
         return 0;
     }
 }
-Matrix_c * matclone_c(const Matrix_c *restrict __src);
+Matrix_c * matclone_c(const Matrix_c *__src);
 Matrix_c *Matrix_catch_c(Matrix_c **__lhs_ptr, Matrix_c *__anon_rhs);
 Matrix_c *Matrix_anon_c(Matrix_c *__anon_rhs);
 void Matrix_anon_free_c();
@@ -2328,7 +2337,7 @@ Matrix_c *Matrix_move_c(double _Complex **arr_ptr, size_t nrows, size_t ncols);
 Matrix_c *Matrix_from_c(const double _Complex *arr, size_t nrows, size_t ncols);
 Matrix_c *Matrix_colvec_c(const double _Complex *arr, size_t nrows);
 Matrix_c *Matrix_rowvec_c(const double _Complex *arr, size_t ncols);
-Matrix_c * Matrix_clone_c(const Matrix_c *restrict src);
+Matrix_c * Matrix_clone_c(const Matrix_c *src);
 Matrix_c * Matrix_ones_c(size_t nrows, size_t ncols);
 Matrix_c * Matrix_ij_c(size_t nrows, size_t ncols);
  Vector_c*linspace_c(double _Complex start, double _Complex end, int N);
@@ -3034,10 +3043,10 @@ static inline void Matrix_reset_b(Matrix_b **__A_ptr) {
         if ((*__A_ptr)->data) free((*__A_ptr)->data);
         free (*__A_ptr);
     }
-    *__A_ptr = ((void *)0);
+        *__A_ptr = ((void *)0);
 }
 Matrix_b *Matrix_renew_b(Matrix_b *A, int m, int n);
-static inline _Bool matcpy_b(Matrix_b *restrict __dest, const Matrix_b *restrict __src) {
+static inline _Bool matcpy_b(Matrix_b *__dest, const Matrix_b *__src) {
     memcpy(__dest->data, __src->data, sizeof(uint8_t)*(__src->nrows * __src->ncols));
     __dest->ncols = __src->ncols;
     __dest->nrows = __src->nrows;
@@ -3047,7 +3056,7 @@ static inline _Bool matcpy_b(Matrix_b *restrict __dest, const Matrix_b *restrict
         return 0;
     }
 }
-Matrix_b * matclone_b(const Matrix_b *restrict __src);
+Matrix_b * matclone_b(const Matrix_b *__src);
 Matrix_b *Matrix_catch_b(Matrix_b **__lhs_ptr, Matrix_b *__anon_rhs);
 Matrix_b *Matrix_anon_b(Matrix_b *__anon_rhs);
 void Matrix_anon_free_b();
@@ -3059,7 +3068,7 @@ Matrix_b *Matrix_move_b(uint8_t **arr_ptr, size_t nrows, size_t ncols);
 Matrix_b *Matrix_from_b(const uint8_t *arr, size_t nrows, size_t ncols);
 Matrix_b *Matrix_colvec_b(const uint8_t *arr, size_t nrows);
 Matrix_b *Matrix_rowvec_b(const uint8_t *arr, size_t ncols);
-Matrix_b * Matrix_clone_b(const Matrix_b *restrict src);
+Matrix_b * Matrix_clone_b(const Matrix_b *src);
 Matrix_b * Matrix_ones_b(size_t nrows, size_t ncols);
 Matrix_b * Matrix_ij_b(size_t nrows, size_t ncols);
  Vector_b*linspace_b(uint8_t start, uint8_t end, int N);

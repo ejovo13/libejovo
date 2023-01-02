@@ -13,10 +13,19 @@
 #ifndef EJOVO_VID_H
 #define EJOVO_VID_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define _GNU_SOURCE
 
 #include <stdlib.h>
 #include <stdio.h>
+
+#ifdef __cplusplus
+}
+#endif
+
 #include "ejovo_matrix_generic.h"
 #include "ejovo_color.h"
 #include "ejovo_string.h"
@@ -58,6 +67,8 @@ Video *laplacianVideo(const Video *video);
 Video *cloneVideo(const Video *video);
 
 Video *hornSchunckVideo(const Video *video, int nb_iter, double alpha);
+
+Video *smoothVideo(const Video *video);
 
 // Take n frames from a video
 Video *takeFrames(const Video *video, int __n);

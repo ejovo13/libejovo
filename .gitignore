@@ -6,4 +6,4 @@ debug
 .github/
 /latex
 /html
-lib/*
+lib/*.a

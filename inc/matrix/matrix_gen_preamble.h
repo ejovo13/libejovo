@@ -4,6 +4,11 @@
 #pragma once
 #define MAX_STEP_SIZE 100000
 
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
@@ -12,6 +17,10 @@
 #include <string.h>
 #include <stdarg.h>
 #include <complex.h>
+
+#ifdef __cplusplus
+}
+#endif
 
 #define MATRIX_SIZE(__MATRIX) __MATRIX->nrows * __MATRIX->ncols
 

@@ -46,6 +46,11 @@
 //     uint64_t high;
 // } uint128_t;
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+  // Header content
 
 
 // // implement function to add a 128bit integer
@@ -169,10 +174,20 @@ uint64_t unif_xoroshiro();
  *========================================================================**/
 double std_unifd_rng(RNG_FN rng);
 
-
 double unifd_rng(double a, double b, RNG_FN rng);
 
+// #include <>
+
+// #ifdef __cplusplus
+
+    // complex unifc_rng(complex a, complex b, RNG_FN rng);
+// #else 
+#ifndef __cplusplus
 double complex unifc_rng(double complex a, double complex b, RNG_FN rng);
+#endif
+
+
+// #endif
 
 
 int unifi_rng(int a, int b, RNG_FN rng);
@@ -182,7 +197,9 @@ double std_norm_rng(RNG_FN rng);
 
 double normd_rng(double mean, double std, RNG_FN rng);
 
+#ifndef __cplusplus
 double complex normc_rng(double complex mean, double complex sigma, RNG_FN rng);
+#endif
 
 /**========================================================================
  *!                           Default generators
@@ -200,8 +217,10 @@ int unifi(int a, int b);
 double std_norm();
 
 double normd(double mean, double std);
-
+#ifdef __cplusplus 
+#else
 double complex normc(double complex mean, double complex sigma);
+#endif
 
 
 /**
@@ -254,5 +273,12 @@ double get_double();
 void ejovo_seed();
 
 int *fischer_yates(int n);
+
+
+#ifdef __cplusplus
+}
+#endif
+
+
 
 #endif
