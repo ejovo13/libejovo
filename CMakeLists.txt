@@ -21,11 +21,16 @@ set(CMAKE_CXX_STANDARD 14)
 # set(CMAKE_PREFIX_PATH ${CMAKE_SOURCE_DIR}/FindFFmpeg.cmake)
 set(CMAKE_PREFIX_PATH ${CMAKE_SOURCE_DIR})
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR})
-find_package(FFmpeg)
+
+if (EXISTS ${CMAKE_SOURCE_DIR}/FindFFmpeg.cmake)
+    find_package(FFmpeg)
+else()
+    message("==== FindFFmpeg.cmake not found, skipping `find_package(FFmpeg)`")
+endif()
 
 message("==== CMAKE_MODULE_PATH: ${CMAKE_MODULE_PATH}")
 
-if (FFMPEG_FOUND) 
+if (FFMPEG_FOUND)
 message("===== Ffmpeg found")
 add_compile_definitions(LIBJOVO_FFMPEG_FOUND)
 else()
@@ -34,7 +39,7 @@ endif()
 # We must have the c implementation of pcg-c installed
 # which can be found here: https://github.com/imneme/pcg-c
 find_library(PCG_RANDOM_LIBRARY
-    NAMES pcg_random 
+    NAMES pcg_random
     # REQUIRED
 )
 
