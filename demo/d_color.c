@@ -4,14 +4,10 @@
 int main() {
 
     color_red();
-
     printf("ERROR: ");
-
     color_reset();
 
     printf("You done fucked up\n");
-
-
     printf("Yuh\n");
 
     // Now let's create our own colors
@@ -28,14 +24,8 @@ int main() {
     ColorPalette_print(cp);
 
     Matrix_i *pal = ColorPalette_to_matrix(cp, 255);
-
     // Matrix_print_i(pal);
-
-
     // Let's create a new matrix that can test out the color palette
-
-
-
     Matrix_d *test_palette = Matrix_new_d(100, 1000);
 
     for (int i = 0; i < 100; i++) {
