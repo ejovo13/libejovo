@@ -3,11 +3,7 @@
 
 // Provide functions that allow us to create a bitmap given a Img structure
 #include <stdlib.h>
-#include "ejovo_matrix_generic.h"
 #include "ejovo_color.h"
-#include "ejovo_string.h"
-
-// #include "matrix/matrix_i.h"
 
 
 typedef struct {

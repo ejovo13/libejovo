@@ -7,3 +7,4 @@ debug
 /latex
 /html
 lib/*.a
+.cache

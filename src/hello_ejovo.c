@@ -6,4 +6,8 @@ int main() {
     color_red();
     printf("Hello Ejovo :)\n");
     color_reset();
+
+
+
+
 }
