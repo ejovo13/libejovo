@@ -11,7 +11,7 @@ in
   stdenv.mkDerivation {
     name = "libejovo";
     src = ./.;
-    buildInputs = [pkgs.cmake pkgs.ffmpeg pkgs.pcg_c];
+    buildInputs = [pkgs.cmake pkgs.ffmpeg pkgs.pcg_c pkgs.pkg-config];
 
     # Manual override of different phases:
     #

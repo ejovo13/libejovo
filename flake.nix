@@ -15,7 +15,6 @@
       pkgs = pkgs;
     };
     devShells.x86_64-linux.default = pkgs.mkShell {
-      # nativeBuildInputs = [pkgs.ffmpeg];
       buildInputs = [pkgs.ffmpeg pkgs.cmake pkgs.pcg_c pkgs.pkg-config];
 
       shellHook = ''
