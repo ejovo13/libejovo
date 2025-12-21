@@ -5,8 +5,8 @@
 #include <stddef.h>
 // #define MATRIX_TYPE int
 // #include "ejovo_matrix_generic.h"
-// #include "matrix/matrix_d.h"
-#include "ejovo_matrix.h"
+#include "matrix/matrix_d.h"
+// #include "ejovo_matrix.h"
 
 // This file contains some functions to generate a labyrinth and then later how to solve the maze
 // #ifndef MATRIX_TYPE

@@ -30,6 +30,7 @@ set (EJOVO_LIB
     ejovo_color.c
     ejovo_time.c
     ejovo_img.c
+    ejovo_vid.c
 )
 
 if (${FFMPEG_FOUND})
@@ -84,25 +85,12 @@ set (EJOVO_MATRIX_HEADERS
     ${INC}/matrix/generic_macros.h
 )
 
-# set (PCG_HEADERS
-
-#     ${INC}/pcg/
-
-
-
-
-
-# )
-
 message("Current source: ${CMAKE_CURRENT_SOURCE_DIR}")
 message("Source: ${CMAKE_SOURCE_DIR}")
 message("Project: ${PROJECT_SOURCE_DIR}")
 
 add_subdirectory(matrix)
 
-# add_library(ejovo STATIC ${EJOVO_LIB} $<TARGET_OBJECTS:ejovo_matrix_double>)
-# add_library(ejovo STATIC ${EJOVO_LIB} $<TARGET_OBJECTS:ejovo_matrix_int>)
-# add_library(ejovo STATIC ${EJOVO_LIB} $<TARGET_OBJECTS:ejovo_matrix_float>)
 add_library(ejovo STATIC ${EJOVO_LIB}
     $<TARGET_OBJECTS:ejovo_matrix_double>
     $<TARGET_OBJECTS:ejovo_matrix_int>
@@ -110,7 +98,7 @@ add_library(ejovo STATIC ${EJOVO_LIB}
     $<TARGET_OBJECTS:ejovo_matrix_complex>
     $<TARGET_OBJECTS:ejovo_matrix_byte>
 )
-# target_link_libraries(ejovo PUBLIC ${PCG_RANDOM_LIBRARY})
+
 if (NOT WIN32)
     if (EXISTS ${PCG_RANDOM_LIBRARY})
         target_link_libraries(ejovo m ${PCG_RANDOM_LIBRARY})
@@ -122,17 +110,13 @@ target_include_directories(ejovo PUBLIC "${INC}")
 target_include_directories(ejovo PUBLIC "${INC}/matrix")
 
 set_target_properties(ejovo PROPERTIES
-
     PUBLIC_HEADER "${EJOVO_LIB_HEADERS}"
-    # MATRIX_HEADER "${EJOVO_MATRIX_HEADERS}"
-
 )
 
 include(GNUInstallDirs)
 install(TARGETS ejovo
     PUBLIC_HEADER
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/ejovo
-    # MATRIX_HEADER ${CMAKE_INSTALL_INCLUDEDIR}/matrix
 )
 
 install(DIRECTORY ${INC}/matrix

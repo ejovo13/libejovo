@@ -12,9 +12,6 @@ set(CMAKE_CXX_STANDARD 14)
 # settings set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 # FetchContent_MakeAvailable(googletest) enable_testing(ON)
 
-# include(GNU)
-
-# set(CMAKE_PREFIX_PATH ${CMAKE_SOURCE_DIR}/FindFFmpeg.cmake)
 set(CMAKE_PREFIX_PATH ${CMAKE_SOURCE_DIR})
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR})
 
@@ -42,7 +39,6 @@ if(EXISTS ${PCG_RANDOM_LIBRARY})
   add_compile_options(-DPCG_RANDOM=1)
 endif()
 
-# If we actually found the library then when compiling use the flag -D
 
 set(INC ${PROJECT_SOURCE_DIR}/inc)
 set(SRC ${PROJECT_SOURCE_DIR}/src)
@@ -53,6 +49,7 @@ set(LIB ${PROJECT_SOURCE_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${BIN})
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${LIB})
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${LIB})
+
 
 # set(EJOVO_HEADERS ${CMAKE_})
 
@@ -67,13 +64,15 @@ add_compile_options(
   # -fprofile-arcs -ftest-coverage --coverage -g -pg
   -O3)
 
+# Options for cmaked
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 add_link_options(# -fprofile-arcs -ftest-coverage --coverage -g -pg -lgcov
 )
 
 file(MAKE_DIRECTORY ${BIN})
 file(MAKE_DIRECTORY ${LIB})
 file(MAKE_DIRECTORY ${INC}/matrix)
-# file(MAKE_DIRECTORY ${})
 
 include_directories(${INC})
 # include_directories(inc) include_directories(inc/battleship)
